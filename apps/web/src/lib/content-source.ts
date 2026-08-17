@@ -1,5 +1,6 @@
 import fixtures from '@/data/content-fixtures.json';
 import expectedRetainedPaths from '@/data/expected-retained-paths.json';
+import coreContentV7 from '@/data/core-content-v7.json';
 import type { ContentRecord } from './types';
 
 const normalizePath = (path: string) => {
@@ -109,6 +110,31 @@ async function fetchDirectusContent(base: string): Promise<ContentRecord[]> {
   return items;
 }
 
+function getFixtureContent(): ContentRecord[] {
+  const overrides = coreContentV7 as Record<string, Partial<ContentRecord>>;
+  const fixturePaths = new Set((fixtures as ContentRecord[]).map((item) => normalizePath(item.path)));
+
+  for (const [path, override] of Object.entries(overrides)) {
+    const normalizedPath = normalizePath(path);
+    if (!fixturePaths.has(normalizedPath)) throw new Error(`V7 fixture override points to unknown retained route: ${normalizedPath}`);
+    if (override.body_html) assertSafeHtml(override.body_html, normalizedPath);
+  }
+
+  return (fixtures as ContentRecord[]).map((item) => {
+    const override = overrides[normalizePath(item.path)] ?? {};
+    return {
+      ...item,
+      ...override,
+      // V7 is review/fixture content only. These safety gates cannot be relaxed by an override.
+      path: normalizePath(item.path),
+      status: 'fixture_stub',
+      robots_index: false,
+      owner_approved_at: null,
+      body_html_safety_status: 'fixture',
+    };
+  });
+}
+
 export async function getAllContent(): Promise<ContentRecord[]> {
   const directusUrl = import.meta.env.DIRECTUS_URL;
   const releaseMode = import.meta.env.AEROVENTA_RELEASE_MODE;
@@ -119,8 +145,8 @@ export async function getAllContent(): Promise<ContentRecord[]> {
     throw new Error('Production release requires DIRECTUS_URL; fixture content is forbidden');
   }
 
-  // Local/CI implementation fixture only. All fixture records are intentionally noindex.
-  return fixtures as ContentRecord[];
+  // Local/CI implementation fixture only. V7 review overlays stay noindex and cannot relax fixture safety gates.
+  return getFixtureContent();
 }
 
 export async function getByPath(path: string): Promise<ContentRecord | undefined> {
