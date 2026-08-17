@@ -45,7 +45,29 @@ const assertAsset = async (relativePath, kind) => {
 
 check(await exists(dist), 'Astro dist directory is missing');
 check(await exists(path.join(dist, '.htaccess')), 'Built .htaccess is missing');
-check(await exists(path.join(dist, '404', 'index.html')), 'Branded 404 page is missing');
+
+const notFoundCandidates = [
+  path.join(dist, '404.html'),
+  path.join(dist, '404', 'index.html'),
+];
+let notFoundFile = null;
+for (const candidate of notFoundCandidates) {
+  if (await exists(candidate)) {
+    notFoundFile = candidate;
+    break;
+  }
+}
+check(Boolean(notFoundFile), 'Branded 404 page is missing');
+if (notFoundFile) {
+  const html404 = await fs.readFile(notFoundFile, 'utf8');
+  check(/<h1(?:\s|>)/i.test(html404), 'Branded 404 page has no H1');
+  check(
+    /<meta\s+name=["']robots["']\s+content=["'][^"']*noindex/i.test(html404)
+      || /<meta\s+content=["'][^"']*noindex[^"']*["']\s+name=["']robots["']/i.test(html404),
+    'Branded 404 page must be noindex'
+  );
+}
+
 check(await exists(path.join(dist, 'sitemap.xml')), 'sitemap.xml is missing');
 check(await exists(path.join(dist, 'robots.txt')), 'robots.txt is missing');
 
@@ -56,7 +78,11 @@ for (const r of html200) {
   if (await exists(file)) {
     const html = await fs.readFile(file, 'utf8');
     const expectedCanonical = new URL(r.path, 'https://aeroventa.ru').toString();
-    check(html.includes(`rel="canonical" href="${expectedCanonical}"`) || html.includes(`href="${expectedCanonical}" rel="canonical"`), `Canonical missing/wrong for ${r.path}`);
+    check(
+      html.includes(`rel="canonical" href="${expectedCanonical}"`)
+        || html.includes(`href="${expectedCanonical}" rel="canonical"`),
+      `Canonical missing/wrong for ${r.path}`
+    );
     check(/<h1(?:\s|>)/i.test(html), `H1 missing for ${r.path}`);
     if (production) {
       check(!html.includes('Implementation fixture'), `Fixture marker present in production build: ${r.path}`);
@@ -112,6 +138,7 @@ const result = {
   release_mode: releaseMode,
   retained_html_routes: html200.length,
   preserved_media: media.length,
+  branded_404_file: notFoundFile ? path.relative(dist, notFoundFile) : null,
   failures,
   warnings,
   verdict: failures.length ? 'FAIL' : (warnings.length ? 'PASS_WITH_WARNINGS' : 'PASS'),
