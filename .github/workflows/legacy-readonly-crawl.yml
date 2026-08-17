@@ -1,0 +1,48 @@
+name: legacy-readonly-crawl
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'migration/route-contract.json'
+      - 'migration/preserved-media.json'
+      - 'scripts/crawl-legacy.mjs'
+      - 'scripts/validate-implementation.mjs'
+      - '.github/workflows/legacy-readonly-crawl.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+
+      - name: Read current legacy pages and exact-path assets
+        env:
+          LEGACY_ORIGIN: https://aeroventa.ru
+        run: node scripts/crawl-legacy.mjs
+
+      - name: Validate implementation with fetched source bytes
+        run: npm run validate
+
+      - name: Package read-only migration capture
+        run: |
+          tar -czf aeroventa-legacy-readonly-capture.tgz migration/legacy-crawl apps/web/public/upload
+
+      - name: Upload crawl artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: aeroventa-legacy-readonly-capture
+          path: aeroventa-legacy-readonly-capture.tgz
+          if-no-files-found: error
+          retention-days: 7
