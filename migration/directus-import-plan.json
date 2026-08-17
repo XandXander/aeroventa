@@ -1,7 +1,7 @@
 {
   "format": "aeroventa-directus-import-plan-v1",
   "safety": "DRAFT_ONLY_NO_PUBLISH",
-  "generated_at": "2026-08-17T13:31:16.831Z",
+  "generated_at": "2026-08-17T14:15:34.654Z",
   "collections": {
     "content": [
       {
@@ -1004,11 +1004,11 @@
         "content_type": "project",
         "path": "/blog/detail/montazh-ventilyatsii-v-karelii/",
         "slug": "montazh-ventilyatsii-v-karelii",
-        "title": "Монтаж вентиляции в Республике Карелия",
-        "h1": "Монтаж вентиляции в Республике Карелия",
-        "excerpt": null,
-        "body_html": null,
-        "body_html_safety_status": "not_applicable",
+        "title": "Монтаж вентиляции в Карелии — сервисно-образовательный центр PONSSE",
+        "h1": "Монтаж вентиляции в Карелии",
+        "excerpt": "Монтаж приточно-вытяжной вентиляции и оборудования на объекте в Питкяранте, Республика Карелия.",
+        "body_html": "<p>Исторический объект AEROVENTA в городе Питкяранта, Республика Карелия.</p><p>По исходной странице выполнялся монтаж приточно-вытяжной вентиляции и оборудования в сервисно-образовательном центре компании PONSSE.</p><p>Указанный в legacy-источнике срок монтажа — две недели. Там же отмечено, что это был не первый объект AEROVENTA, связанный с этой площадкой/заказчиком.</p><h2>Профиль проекта</h2><ul><li>сервисно-образовательный центр;</li><li>приточно-вытяжная вентиляция;</li><li>монтаж вентиляционного оборудования;</li><li>объект за пределами Санкт-Петербурга и Ленинградской области.</li></ul>",
+        "body_html_safety_status": "pending_review",
         "owner_approved_at": null,
         "business_role": "CORE_VENTILATION_CASE",
         "primary_topic": "вентиляция",
@@ -1027,11 +1027,11 @@
             "decision_confidence": "HIGH",
             "content_requirement": null
           },
-          "draft_basis": null,
-          "verification_status": "PENDING_SOURCE_MIGRATION"
+          "draft_basis": "legacy HTML capture 2026-08-17; public historical project page",
+          "verification_status": "SOURCE_CAPTURED_OWNER_APPROVAL_PENDING"
         },
-        "seo_title": "Монтаж вентиляции в Республике Карелия",
-        "seo_description": null,
+        "seo_title": "Монтаж вентиляции в Карелии — кейс AEROVENTA",
+        "seo_description": "Исторический объект AEROVENTA: монтаж приточно-вытяжной вентиляции и оборудования в сервисно-образовательном центре PONSSE в Питкяранте.",
         "canonical_override": null,
         "robots_index": false,
         "robots_follow": true,
@@ -1142,11 +1142,11 @@
         "content_type": "project",
         "path": "/blog/detail/kafe-rimskogo-korsakova-3/",
         "slug": "kafe-rimskogo-korsakova-3",
-        "title": "Кафе на Римского-Корсакова объект AEROVENTA.RU",
-        "h1": "Кафе на Римского-Корсакова объект AEROVENTA.RU",
-        "excerpt": null,
-        "body_html": null,
-        "body_html_safety_status": "not_applicable",
+        "title": "Кафе на Римского-Корсакова — монтаж вентиляции",
+        "h1": "Кафе на Римского-Корсакова, 3",
+        "excerpt": "Исторический объект: монтаж приточно-вытяжной вентиляции и оборудования в кафе на проспекте Римского-Корсакова, 3.",
+        "body_html": "<p>Объект — кафе на проспекте Римского-Корсакова, 3, Санкт-Петербург.</p><p>По исходной странице AEROVENTA выполняла монтаж приточно-вытяжной вентиляции и вентиляционного оборудования.</p><p>В legacy-источнике указан объект площадью 200 м² и срок выполнения пять дней.</p><h2>Профиль проекта</h2><ul><li>кафе и коммерческое помещение;</li><li>приточно-вытяжная вентиляция;</li><li>монтаж вентиляционного оборудования;</li><li>исторический срок работ — 5 дней по исходной странице.</li></ul>",
+        "body_html_safety_status": "pending_review",
         "owner_approved_at": null,
         "business_role": "CORE_VENTILATION_CASE",
         "primary_topic": "вентиляция",
@@ -1165,11 +1165,11 @@
             "decision_confidence": "HIGH",
             "content_requirement": null
           },
-          "draft_basis": null,
-          "verification_status": "PENDING_SOURCE_MIGRATION"
+          "draft_basis": "legacy HTML capture 2026-08-17; public historical project page",
+          "verification_status": "SOURCE_CAPTURED_OWNER_APPROVAL_PENDING"
         },
-        "seo_title": "Кафе на Римского-Корсакова объект AEROVENTA.RU",
-        "seo_description": null,
+        "seo_title": "Монтаж вентиляции в кафе на Римского-Корсакова — AEROVENTA",
+        "seo_description": "Исторический кейс AEROVENTA: монтаж приточно-вытяжной вентиляции и вентиляционного оборудования в кафе в Санкт-Петербурге.",
         "canonical_override": null,
         "robots_index": false,
         "robots_follow": true,
@@ -2100,6 +2100,34 @@
           "приточно-вытяжная вентиляция"
         ],
         "work_volume": "около 100 погонных метров с оборудованием по legacy-источнику",
+        "duration": "5 дней по legacy-источнику",
+        "completion_date": null,
+        "commercial_visibility": "public_historical_case"
+      },
+      {
+        "path_ref": "/blog/detail/montazh-ventilyatsii-v-karelii/",
+        "object_type": "сервисно-образовательный центр",
+        "location": "Питкяранта, Республика Карелия",
+        "client_display_name": "PONSSE",
+        "scope": "Монтаж приточно-вытяжной вентиляции и оборудования",
+        "systems": [
+          "приточно-вытяжная вентиляция"
+        ],
+        "work_volume": null,
+        "duration": "2 недели по legacy-источнику",
+        "completion_date": null,
+        "commercial_visibility": "public_historical_case"
+      },
+      {
+        "path_ref": "/blog/detail/kafe-rimskogo-korsakova-3/",
+        "object_type": "кафе",
+        "location": "проспект Римского-Корсакова, 3, Санкт-Петербург",
+        "client_display_name": null,
+        "scope": "Монтаж приточно-вытяжной вентиляции и вентиляционного оборудования",
+        "systems": [
+          "приточно-вытяжная вентиляция"
+        ],
+        "work_volume": "200 м² по legacy-источнику",
         "duration": "5 дней по legacy-источнику",
         "completion_date": null,
         "commercial_visibility": "public_historical_case"

@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import crypto from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -7,6 +8,7 @@ const root = path.resolve(here, '..');
 const dist = path.join(root, 'apps/web/dist');
 const routes = JSON.parse(await fs.readFile(path.join(root, 'migration/route-contract.json'), 'utf8'));
 const media = JSON.parse(await fs.readFile(path.join(root, 'migration/preserved-media.json'), 'utf8'));
+const indexedPdf = JSON.parse(await fs.readFile(path.join(root, 'migration/indexed-pdf.json'), 'utf8'));
 const releaseMode = process.env.AEROVENTA_RELEASE_MODE || 'fixture';
 const production = releaseMode === 'production';
 
@@ -18,7 +20,8 @@ const htmlFileFor = (routePath) => routePath === '/'
   ? path.join(dist, 'index.html')
   : path.join(dist, routePath.replace(/^\//, '').replace(/\/$/, ''), 'index.html');
 
-const assertAsset = async (relativePath, kind) => {
+const assertAsset = async (item, kind) => {
+  const relativePath = item.path;
   const file = path.join(dist, relativePath.replace(/^\//, ''));
   if (!(await exists(file))) {
     const message = `Preserved ${kind} missing in build: ${relativePath}`;
@@ -27,6 +30,11 @@ const assertAsset = async (relativePath, kind) => {
     return;
   }
   const body = await fs.readFile(file);
+  if (item.source_bytes != null && body.length !== Number(item.source_bytes)) failures.push(`Preserved ${kind} byte-size drift: ${relativePath}`);
+  if (item.source_sha256) {
+    const digest = crypto.createHash('sha256').update(body).digest('hex');
+    if (digest !== item.source_sha256) failures.push(`Preserved ${kind} SHA-256 drift: ${relativePath}`);
+  }
   if (body.length < 32) {
     failures.push(`Preserved ${kind} is implausibly small: ${relativePath} (${body.length} bytes)`);
     return;
@@ -96,9 +104,8 @@ for (const r of routes.filter((x) => [301, 410].includes(Number(x.http_outcome))
   check(!(await exists(file)), `Redirect/410 path unexpectedly generated as HTML: ${r.path}`);
 }
 
-for (const item of media) await assertAsset(item.path, 'image');
-const pdfPath = '/upload/medialibrary/fa1/fa1b840c9474c6030bf2ccb0c725c3e4.pdf';
-await assertAsset(pdfPath, 'pdf');
+for (const item of media) await assertAsset(item, 'image');
+await assertAsset(indexedPdf, 'pdf');
 
 if (await exists(path.join(dist, 'sitemap.xml'))) {
   const sitemap = await fs.readFile(path.join(dist, 'sitemap.xml'), 'utf8');

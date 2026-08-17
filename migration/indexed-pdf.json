@@ -1,0 +1,8 @@
+{
+  "path": "/upload/medialibrary/fa1/fa1b840c9474c6030bf2ccb0c725c3e4.pdf",
+  "http_outcome": 200,
+  "source_sha256": "b1cb1780b4bf816a9e39dbc2529666abb438114c8108b6a68f9d40e978e192a2",
+  "source_bytes": 2079631,
+  "source_content_type": "application/pdf",
+  "requirement": "Preserve exact indexed legacy REHVA PDF path and bytes in static output."
+}

@@ -1,0 +1,378 @@
+{
+  "format": "aeroventa-legacy-source-manifest-v1",
+  "origin": "https://aeroventa.ru",
+  "captured_at": "2026-08-17T14:11:12.315Z",
+  "capture_commit": "32395a4a3cf5312932b43d1e57f49e744e2d4e4f",
+  "pages": [
+    {
+      "path": "/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 72561,
+      "sha256": "5e5d2894d481c118c6011976488753de0ea218d771a016a6aade24c45215286e",
+      "file": "blog__detail__kak-vytashchit-zastryavshuyu-koronku-iz-betona.html",
+      "source_state": "FETCHED_HTML"
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 107362,
+      "sha256": "0d2a646f68d7b4f6034f30c023639ed6c8afcb28a3b8c9e6e22779089e74a8e9",
+      "file": "__home__.html",
+      "source_state": "FETCHED_HTML"
+    },
+    {
+      "path": "/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 72308,
+      "sha256": "9f264a9bb2169f7d90dd954979e3ef410c6533fbbc890390f80039460d0ddfb0",
+      "file": "blog__detail__almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya.html",
+      "source_state": "FETCHED_HTML"
+    },
+    {
+      "path": "/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 68912,
+      "sha256": "7e7c80ec66a7db0c85384fc991436db696a4419a4842ff86cd532cb8c3a80883",
+      "file": "blog__detail__stoimost-almaznogo-bureniya-kak-rasschitat-tsenu.html",
+      "source_state": "FETCHED_HTML"
+    },
+    {
+      "path": "/almaznoe-burenie/",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/almaznoe-burenie/",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 124887,
+      "sha256": "4fd4f64ba8295f1ea77365cda7a3aa5018502fe94b07706ab0cf8e060b4bb688",
+      "file": "almaznoe-burenie.html",
+      "source_state": "FETCHED_HTML"
+    },
+    {
+      "path": "/blog/detail/gorizontalnoe-almaznoe-burenie/",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/blog/detail/gorizontalnoe-almaznoe-burenie/",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 72899,
+      "sha256": "d01f2cbe3dde912172c54e1badb56a0ed8493a7ed8cec329093106be4b1549a4",
+      "file": "blog__detail__gorizontalnoe-almaznoe-burenie.html",
+      "source_state": "FETCHED_HTML"
+    },
+    {
+      "path": "/vakansii/",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/vakansii/",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 59585,
+      "sha256": "d147f746906f0a41b003dd63ee6cb6aca7270bd088e1264c0f85acad1ed8da3f",
+      "file": "vakansii.html",
+      "source_state": "FETCHED_HTML"
+    },
+    {
+      "path": "/blog/poleznye-stati/",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/blog/poleznye-stati/",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 65437,
+      "sha256": "34a459e3049dd957b4f71bd9740d07e5155c6a5fba72c77cf6eb016609885f26",
+      "file": "blog__poleznye-stati.html",
+      "source_state": "FETCHED_HTML"
+    },
+    {
+      "path": "/montazh-ventiliacii/",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/montazh-ventiliacii/",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 71291,
+      "sha256": "8688320fe3f455400719bbb959e976316965b843f66795d14f2d688e431d13c7",
+      "file": "montazh-ventiliacii.html",
+      "source_state": "FETCHED_HTML"
+    },
+    {
+      "path": "/about/",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/about/",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 68896,
+      "sha256": "cd21f6a015ff78837e6a1dcb25adbb61d15153e4e128a4ed0a4936806aec907a",
+      "file": "about.html",
+      "source_state": "FETCHED_HTML"
+    },
+    {
+      "path": "/contact/",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/contact/",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 73697,
+      "sha256": "84dde3ba6db00a30e2bc71fe9892697935437fcac58838938d93b4c7d8233a56",
+      "file": "contact.html",
+      "source_state": "FETCHED_HTML"
+    },
+    {
+      "path": "/covid-pritochnaya-ventilacia/",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/covid-pritochnaya-ventilacia/",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 75711,
+      "sha256": "ace2c7f6e4248c9e57c7a3d4d9d4599afa76a15bcec42a9483d6821dfa9d6d10",
+      "file": "covid-pritochnaya-ventilacia.html",
+      "source_state": "FETCHED_HTML"
+    },
+    {
+      "path": "/portfolio/",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/portfolio/",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 85329,
+      "sha256": "9ea708b9ba0cd02e332dd13c6f346c013f64ffe3909928028294660a849a0d45",
+      "file": "portfolio.html",
+      "source_state": "FETCHED_HTML"
+    },
+    {
+      "path": "/blog/detail/restoran-v-zhk-leontevskiy-mys/",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/blog/detail/restoran-v-zhk-leontevskiy-mys/",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 71405,
+      "sha256": "a487858204fc8d797e4d2bc210629890f4f1648ff146a34886b87beabe672d7e",
+      "file": "blog__detail__restoran-v-zhk-leontevskiy-mys.html",
+      "source_state": "FETCHED_HTML"
+    },
+    {
+      "path": "/services/",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/services/",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 62128,
+      "sha256": "8857df2b8cdea06f926130f5153d15ab9327973da18f6ae60616d1f754e2efd9",
+      "file": "services.html",
+      "source_state": "FETCHED_HTML"
+    },
+    {
+      "path": "/blog/",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/blog/",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 73791,
+      "sha256": "7a73a2a662419f29d0eaa468ab26706acd5a08fb9e49e3681538af202c6df0d8",
+      "file": "blog.html",
+      "source_state": "FETCHED_HTML"
+    },
+    {
+      "path": "/news/",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/news/",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 60713,
+      "sha256": "509063b17d7d9dbe9e6ef2282c2249b9590cc3f192e031e8d473623a701be052",
+      "file": "news.html",
+      "source_state": "FETCHED_HTML"
+    },
+    {
+      "path": "/blog/detail/ntff-polisan/",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/blog/detail/ntff-polisan/",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 66051,
+      "sha256": "952986a5758b456acdb30eab39952b34366215d2c10062d6104ad5c1f8a4db36",
+      "file": "blog__detail__ntff-polisan.html",
+      "source_state": "FETCHED_HTML"
+    },
+    {
+      "path": "/blog/detail/kak-my-sdali-7-domov/",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/blog/detail/kak-my-sdali-7-domov/",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 66006,
+      "sha256": "729b75fc03bff54feca458ff4f61ed04d5312c473a4d918a5608080069cf7825",
+      "file": "blog__detail__kak-my-sdali-7-domov.html",
+      "source_state": "FETCHED_HTML"
+    },
+    {
+      "path": "/blog/istorii-proektov/",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/blog/istorii-proektov/",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 78138,
+      "sha256": "40a82d5e8fd7731a77e4447f7fa79ee712056edba70143459a5ced8b1da289b6",
+      "file": "blog__istorii-proektov.html",
+      "source_state": "FETCHED_HTML"
+    },
+    {
+      "path": "/blog/detail/kvartira-na-zhukova/",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/blog/detail/kvartira-na-zhukova/",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 61581,
+      "sha256": "94fbe8a46b7709005203eba809e531c9f32d2ed045370c20a859fe457f16c54d",
+      "file": "blog__detail__kvartira-na-zhukova.html",
+      "source_state": "FETCHED_HTML"
+    },
+    {
+      "path": "/blog/detail/montazh-ventilyatsii-v-karelii/",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/blog/detail/montazh-ventilyatsii-v-karelii/",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 90050,
+      "sha256": "cf1cd0c60accc4894a6f156563fcbd394207e24b7b849e2b2475ea3510e43c05",
+      "file": "blog__detail__montazh-ventilyatsii-v-karelii.html",
+      "source_state": "FETCHED_HTML"
+    },
+    {
+      "path": "/blog/detail/novoe-almaznoe-burenie/",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/blog/detail/novoe-almaznoe-burenie/",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 62841,
+      "sha256": "6a59fc2ee71c1a39a9dc60a05006404227d2ddc2ec7146fe6d4c2e60f2cf7a48",
+      "file": "blog__detail__novoe-almaznoe-burenie.html",
+      "source_state": "FETCHED_HTML"
+    },
+    {
+      "path": "/news/korporativnaya-zhizn/",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/news/korporativnaya-zhizn/",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 60277,
+      "sha256": "eb29130e07dc8a6eb57fb4234fc6b8a872d8d406586019906e39b6fe7c94bbd8",
+      "file": "news__korporativnaya-zhizn.html",
+      "source_state": "FETCHED_HTML"
+    },
+    {
+      "path": "/blog/detail/kafe-rimskogo-korsakova-3/",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/blog/detail/kafe-rimskogo-korsakova-3/",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 64083,
+      "sha256": "767f90b37c7c14af0bcf89756915181dc08f2d3e018d75316eda66aa785c1ce3",
+      "file": "blog__detail__kafe-rimskogo-korsakova-3.html",
+      "source_state": "FETCHED_HTML"
+    },
+    {
+      "path": "/news/istoriya-kompanii/",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/news/istoriya-kompanii/",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 57412,
+      "sha256": "5a2be1e852ba2a64dbd9252238a8b4a456089c57344c5e530b1737169e27924e",
+      "file": "news__istoriya-kompanii.html",
+      "source_state": "FETCHED_HTML"
+    },
+    {
+      "path": "/faq/",
+      "status": 404,
+      "final_url": "https://aeroventa.ru/faq/",
+      "content_type": "text/html; charset=UTF-8",
+      "source_state": "SOURCE_404"
+    },
+    {
+      "path": "/blog/obzory-i-intervyu/",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/blog/obzory-i-intervyu/",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 76382,
+      "sha256": "bde220520b1ea7119abbe24c63e8ab2f83a47f0071f1d59b0701db1df23be13e",
+      "file": "blog__obzory-i-intervyu.html",
+      "source_state": "FETCHED_HTML"
+    },
+    {
+      "path": "/news/znachimye-sobytiya/",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/news/znachimye-sobytiya/",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 64346,
+      "sha256": "a169da770c3c4e9edbace420e1c2aa37bbd2d5fa91291f3c1aabf8712e0309e6",
+      "file": "news__znachimye-sobytiya.html",
+      "source_state": "FETCHED_HTML"
+    }
+  ],
+  "assets": [
+    {
+      "path": "/upload/medialibrary/1e0/1e03a5c54309ab78f133df9068a70b33.jpg",
+      "kind": "image",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/upload/medialibrary/1e0/1e03a5c54309ab78f133df9068a70b33.jpg",
+      "content_type": "image/jpeg",
+      "bytes": 112517,
+      "sha256": "0d9af0b6efc4f2371148aac177c64937e1af7e97716cd20809ead8db09f3fa57"
+    },
+    {
+      "path": "/upload/medialibrary/548/5488fb415056eee52ac63ff9d4850c63.jpg",
+      "kind": "image",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/upload/medialibrary/548/5488fb415056eee52ac63ff9d4850c63.jpg",
+      "content_type": "image/jpeg",
+      "bytes": 237662,
+      "sha256": "8c328521a89b890f70819d87538f3ea8c38128abe1d87b47cc04020c66b5a658"
+    },
+    {
+      "path": "/upload/kraken/e99/e99136800119b55d4c6029caefa21b6b.jpg",
+      "kind": "image",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/upload/kraken/e99/e99136800119b55d4c6029caefa21b6b.jpg",
+      "content_type": "image/jpeg",
+      "bytes": 162020,
+      "sha256": "31d5d1138ccb3bfe01c5f39fb26b4ec79cdd6d4de5cc3fb7895a26f34d7e5b49"
+    },
+    {
+      "path": "/upload/iblock/f53/f532ef949feebe6e0d478bdbebd4165a.jpg",
+      "kind": "image",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/upload/iblock/f53/f532ef949feebe6e0d478bdbebd4165a.jpg",
+      "content_type": "image/jpeg",
+      "bytes": 71805,
+      "sha256": "3089a81ca6f758f9796e1d29116f436684034e753789b2b97eeac7b5a0f82651"
+    },
+    {
+      "path": "/upload/kraken/327/327cf2dfaba564b13c7ff355d144de5d.jpg",
+      "kind": "image",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/upload/kraken/327/327cf2dfaba564b13c7ff355d144de5d.jpg",
+      "content_type": "image/jpeg",
+      "bytes": 310094,
+      "sha256": "a7edf84763378098be22c27087c7ea58a9d7581d02e3a99637fb064c0a1cbb07"
+    },
+    {
+      "path": "/upload/medialibrary/935/935bf64b726fad1bb5d94f54bf308111.png",
+      "kind": "image",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/upload/medialibrary/935/935bf64b726fad1bb5d94f54bf308111.png",
+      "content_type": "image/png",
+      "bytes": 40364,
+      "sha256": "91b5ff4fb9ca24a56a18253076436b2739345ccb773f3151e0d2e3c736d13e53"
+    },
+    {
+      "path": "/upload/medialibrary/9c5/9c5cced342ee32161fa7d7869cdf57d6.png",
+      "kind": "image",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/upload/medialibrary/9c5/9c5cced342ee32161fa7d7869cdf57d6.png",
+      "content_type": "image/png",
+      "bytes": 52229,
+      "sha256": "2ecfa78e5d433fce4cf7e7665cd6f22dd6125e9e4b7a235aecc7567851fef254"
+    },
+    {
+      "path": "/upload/medialibrary/cdc/cdc67a61f0a10cababb07858755c561f.png",
+      "kind": "image",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/upload/medialibrary/cdc/cdc67a61f0a10cababb07858755c561f.png",
+      "content_type": "image/png",
+      "bytes": 72554,
+      "sha256": "761765e369ff117a89cd472f7aaf8524f7d65e8153bec619cc5eb213639754e0"
+    },
+    {
+      "path": "/upload/medialibrary/fa1/fa1b840c9474c6030bf2ccb0c725c3e4.pdf",
+      "kind": "pdf",
+      "status": 200,
+      "final_url": "https://aeroventa.ru/upload/medialibrary/fa1/fa1b840c9474c6030bf2ccb0c725c3e4.pdf",
+      "content_type": "application/pdf",
+      "bytes": 2079631,
+      "sha256": "b1cb1780b4bf816a9e39dbc2529666abb438114c8108b6a68f9d40e978e192a2"
+    }
+  ]
+}

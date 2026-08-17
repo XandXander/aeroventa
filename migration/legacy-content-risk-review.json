@@ -1,0 +1,126 @@
+[
+  {
+    "path": "/",
+    "flags": [
+      "HEALTH_CLAIM_REVIEW",
+      "STALE_COMMERCIAL_REVIEW"
+    ]
+  },
+  {
+    "path": "/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/",
+    "flags": [
+      "HISTORICAL_PROJECT_FACTS",
+      "STALE_COMMERCIAL_REVIEW"
+    ]
+  },
+  {
+    "path": "/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/",
+    "flags": [
+      "STALE_COMMERCIAL_REVIEW"
+    ]
+  },
+  {
+    "path": "/almaznoe-burenie/",
+    "flags": [
+      "CURRENT_BUSINESS_FACT_REVIEW",
+      "STALE_COMMERCIAL_REVIEW"
+    ]
+  },
+  {
+    "path": "/blog/detail/gorizontalnoe-almaznoe-burenie/",
+    "flags": [
+      "STALE_COMMERCIAL_REVIEW"
+    ]
+  },
+  {
+    "path": "/blog/poleznye-stati/",
+    "flags": [
+      "STALE_COMMERCIAL_REVIEW"
+    ]
+  },
+  {
+    "path": "/montazh-ventiliacii/",
+    "flags": [
+      "CURRENT_BUSINESS_FACT_REVIEW"
+    ]
+  },
+  {
+    "path": "/covid-pritochnaya-ventilacia/",
+    "flags": [
+      "HEALTH_CLAIM_REVIEW"
+    ]
+  },
+  {
+    "path": "/blog/detail/restoran-v-zhk-leontevskiy-mys/",
+    "flags": [
+      "HISTORICAL_PROJECT_FACTS"
+    ]
+  },
+  {
+    "path": "/services/",
+    "flags": [
+      "STALE_COMMERCIAL_REVIEW"
+    ]
+  },
+  {
+    "path": "/blog/",
+    "flags": [
+      "STALE_COMMERCIAL_REVIEW"
+    ]
+  },
+  {
+    "path": "/news/",
+    "flags": [
+      "HEALTH_CLAIM_REVIEW"
+    ]
+  },
+  {
+    "path": "/blog/detail/ntff-polisan/",
+    "flags": [
+      "HISTORICAL_PROJECT_FACTS"
+    ]
+  },
+  {
+    "path": "/blog/detail/kak-my-sdali-7-domov/",
+    "flags": [
+      "HISTORICAL_PROJECT_FACTS"
+    ]
+  },
+  {
+    "path": "/blog/detail/kvartira-na-zhukova/",
+    "flags": [
+      "HISTORICAL_PROJECT_FACTS"
+    ]
+  },
+  {
+    "path": "/blog/detail/montazh-ventilyatsii-v-karelii/",
+    "flags": [
+      "HISTORICAL_PROJECT_FACTS"
+    ]
+  },
+  {
+    "path": "/blog/detail/novoe-almaznoe-burenie/",
+    "flags": [
+      "HISTORICAL_PROJECT_FACTS",
+      "STALE_COMMERCIAL_REVIEW"
+    ]
+  },
+  {
+    "path": "/blog/detail/kafe-rimskogo-korsakova-3/",
+    "flags": [
+      "HISTORICAL_PROJECT_FACTS"
+    ]
+  },
+  {
+    "path": "/blog/obzory-i-intervyu/",
+    "flags": [
+      "STALE_COMMERCIAL_REVIEW"
+    ]
+  },
+  {
+    "path": "/news/znachimye-sobytiya/",
+    "flags": [
+      "HEALTH_CLAIM_REVIEW"
+    ]
+  }
+]

@@ -3,48 +3,72 @@
     "path": "/upload/medialibrary/1e0/1e03a5c54309ab78f133df9068a70b33.jpg",
     "known_related_page": "/covid-pritochnaya-ventilacia/",
     "http_outcome": 200,
-    "requirement": "Preserve exact legacy path in Astro/Beget static output. Used in the COVID/REHVA ventilation article; do not rename or relocate."
+    "requirement": "Preserve exact legacy path in Astro/Beget static output. Used in the COVID/REHVA ventilation article; do not rename or relocate.",
+    "source_sha256": "0d9af0b6efc4f2371148aac177c64937e1af7e97716cd20809ead8db09f3fa57",
+    "source_bytes": 112517,
+    "source_content_type": "image/jpeg"
   },
   {
     "path": "/upload/medialibrary/548/5488fb415056eee52ac63ff9d4850c63.jpg",
     "known_related_page": null,
     "http_outcome": 200,
-    "requirement": "Preserve exact legacy path in Astro/Beget static output."
+    "requirement": "Preserve exact legacy path in Astro/Beget static output.",
+    "source_sha256": "8c328521a89b890f70819d87538f3ea8c38128abe1d87b47cc04020c66b5a658",
+    "source_bytes": 237662,
+    "source_content_type": "image/jpeg"
   },
   {
     "path": "/upload/kraken/e99/e99136800119b55d4c6029caefa21b6b.jpg",
     "known_related_page": null,
     "http_outcome": 200,
-    "requirement": "Preserve exact legacy path in Astro/Beget static output."
+    "requirement": "Preserve exact legacy path in Astro/Beget static output.",
+    "source_sha256": "31d5d1138ccb3bfe01c5f39fb26b4ec79cdd6d4de5cc3fb7895a26f34d7e5b49",
+    "source_bytes": 162020,
+    "source_content_type": "image/jpeg"
   },
   {
     "path": "/upload/iblock/f53/f532ef949feebe6e0d478bdbebd4165a.jpg",
     "known_related_page": null,
     "http_outcome": 200,
-    "requirement": "Preserve exact legacy path in Astro/Beget static output."
+    "requirement": "Preserve exact legacy path in Astro/Beget static output.",
+    "source_sha256": "3089a81ca6f758f9796e1d29116f436684034e753789b2b97eeac7b5a0f82651",
+    "source_bytes": 71805,
+    "source_content_type": "image/jpeg"
   },
   {
     "path": "/upload/kraken/327/327cf2dfaba564b13c7ff355d144de5d.jpg",
     "known_related_page": null,
     "http_outcome": 200,
-    "requirement": "Preserve exact legacy path in Astro/Beget static output."
+    "requirement": "Preserve exact legacy path in Astro/Beget static output.",
+    "source_sha256": "a7edf84763378098be22c27087c7ea58a9d7581d02e3a99637fb064c0a1cbb07",
+    "source_bytes": 310094,
+    "source_content_type": "image/jpeg"
   },
   {
     "path": "/upload/medialibrary/935/935bf64b726fad1bb5d94f54bf308111.png",
     "known_related_page": null,
     "http_outcome": 200,
-    "requirement": "Preserve exact legacy path in Astro/Beget static output."
+    "requirement": "Preserve exact legacy path in Astro/Beget static output.",
+    "source_sha256": "91b5ff4fb9ca24a56a18253076436b2739345ccb773f3151e0d2e3c736d13e53",
+    "source_bytes": 40364,
+    "source_content_type": "image/png"
   },
   {
     "path": "/upload/medialibrary/9c5/9c5cced342ee32161fa7d7869cdf57d6.png",
     "known_related_page": null,
     "http_outcome": 200,
-    "requirement": "Preserve exact legacy path in Astro/Beget static output."
+    "requirement": "Preserve exact legacy path in Astro/Beget static output.",
+    "source_sha256": "2ecfa78e5d433fce4cf7e7665cd6f22dd6125e9e4b7a235aecc7567851fef254",
+    "source_bytes": 52229,
+    "source_content_type": "image/png"
   },
   {
     "path": "/upload/medialibrary/cdc/cdc67a61f0a10cababb07858755c561f.png",
     "known_related_page": null,
     "http_outcome": 200,
-    "requirement": "Preserve exact legacy path in Astro/Beget static output."
+    "requirement": "Preserve exact legacy path in Astro/Beget static output.",
+    "source_sha256": "761765e369ff117a89cd472f7aaf8524f7d65e8153bec619cc5eb213639754e0",
+    "source_bytes": 72554,
+    "source_content_type": "image/png"
   }
 ]

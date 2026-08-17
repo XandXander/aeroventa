@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import crypto from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -8,6 +9,7 @@ const routes = JSON.parse(await fs.readFile(path.join(root, 'migration/route-con
 let privateEvidence = null;
 try { privateEvidence = JSON.parse(await fs.readFile(path.join(root, 'migration/private/canonical-routes.evidence.json'), 'utf8')); } catch {}
 const media = JSON.parse(await fs.readFile(path.join(root, 'migration/preserved-media.json'), 'utf8'));
+const indexedPdf = JSON.parse(await fs.readFile(path.join(root, 'migration/indexed-pdf.json'), 'utf8'));
 const fixtures = JSON.parse(await fs.readFile(path.join(root, 'apps/web/src/data/content-fixtures.json'), 'utf8'));
 const schema = JSON.parse(await fs.readFile(path.join(root, 'directus/desired-schema-contract.json'), 'utf8'));
 const importPlan = JSON.parse(await fs.readFile(path.join(root, 'migration/directus-import-plan.json'), 'utf8'));
@@ -82,7 +84,8 @@ check(extractionQueue[0]?.path === '/montazh-ventiliacii/', 'Primary commercial 
 check((rules.match(/^RedirectMatch 301 /gm) || []).length === 13, 'Generated .htaccess redirect count mismatch');
 check((rules.match(/^RedirectMatch gone /gm) || []).length === 54, 'Generated .htaccess 410 count mismatch');
 
-async function validateSourceAsset(relativePath, kind) {
+async function validateSourceAsset(item, kind) {
+  const relativePath = item.path;
   const local = path.join(root, 'apps/web/public', relativePath.replace(/^\//, ''));
   let body;
   try { body = await fs.readFile(local); } catch {
@@ -91,6 +94,11 @@ async function validateSourceAsset(relativePath, kind) {
   }
 
   check(body.length >= 32, `Preserved ${kind} source is implausibly small: ${relativePath}`);
+  if (item.source_bytes != null) check(body.length === Number(item.source_bytes), `Preserved ${kind} byte-size drift: ${relativePath}`);
+  if (item.source_sha256) {
+    const digest = crypto.createHash('sha256').update(body).digest('hex');
+    check(digest === item.source_sha256, `Preserved ${kind} SHA-256 drift: ${relativePath}`);
+  }
   const hex = body.subarray(0, 12).toString('hex');
   if (kind === 'image') {
     const jpg = hex.startsWith('ffd8ff');
@@ -103,9 +111,8 @@ async function validateSourceAsset(relativePath, kind) {
   }
 }
 
-for (const item of media) await validateSourceAsset(item.path, 'image');
-const pdfPath = '/upload/medialibrary/fa1/fa1b840c9474c6030bf2ccb0c725c3e4.pdf';
-await validateSourceAsset(pdfPath, 'pdf');
+for (const item of media) await validateSourceAsset(item, 'image');
+await validateSourceAsset(indexedPdf, 'pdf');
 
 // lightweight secret scan over implementation text/json/config files
 async function walk(dir) {
@@ -128,7 +135,7 @@ for (const file of await walk(root)) {
 
 const status = {
   generated_at: new Date().toISOString(),
-  verdict: failures.length ? 'FAIL' : 'PASS_WITH_PENDING_SOURCE_BYTES',
+  verdict: failures.length ? 'FAIL' : (warnings.some((w) => w.startsWith('PENDING_')) ? 'PASS_WITH_PENDING_SOURCE_BYTES' : (warnings.length ? 'PASS_WITH_WARNINGS' : 'PASS')),
   counts,
   canonical_routes: routes.length,
   html_fixture_pages: fixtures.length,
