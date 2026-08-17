@@ -18,14 +18,15 @@ jobs:
   crawl:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '22.12.0'
+          node-version-file: '.nvmrc'
 
       - name: Read current legacy pages and exact-path assets
         env:
@@ -40,7 +41,7 @@ jobs:
           tar -czf aeroventa-legacy-readonly-capture.tgz migration/legacy-crawl apps/web/public/upload
 
       - name: Upload crawl artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: aeroventa-legacy-readonly-capture
           path: aeroventa-legacy-readonly-capture.tgz
