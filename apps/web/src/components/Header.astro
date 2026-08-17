@@ -1,0 +1,16 @@
+---
+import { SITE } from '@/lib/site';
+---
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a class="brand" href="/" aria-label="AEROVENTA — главная">AEROVENTA</a>
+    <nav class="nav" aria-label="Основная навигация">
+      <a href="/montazh-ventiliacii/">Монтаж вентиляции</a>
+      <a href="/portfolio/">Объекты</a>
+      <a href="/blog/">Блог</a>
+      <a href="/about/">О компании</a>
+      <a href="/contact/">Контакты</a>
+      <a class="cta" href={`tel:${SITE.phone.replace(/[^+\d]/g, '')}`}>Позвонить</a>
+    </nav>
+  </div>
+</header>

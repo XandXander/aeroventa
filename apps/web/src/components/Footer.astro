@@ -1,0 +1,15 @@
+---
+import { SITE } from '@/lib/site';
+---
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <strong>AEROVENTA</strong><br />
+      {SITE.primaryBusiness} · {SITE.serviceArea}
+    </div>
+    <div>
+      <a href={`tel:${SITE.phone.replace(/[^+\d]/g, '')}`}>{SITE.phone}</a><br />
+      <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,50 @@
+[
+  {
+    "path": "/upload/medialibrary/1e0/1e03a5c54309ab78f133df9068a70b33.jpg",
+    "known_related_page": "/covid-pritochnaya-ventilacia/",
+    "http_outcome": 200,
+    "requirement": "Preserve exact legacy path in Astro/Beget static output. Used in the COVID/REHVA ventilation article; do not rename or relocate."
+  },
+  {
+    "path": "/upload/medialibrary/548/5488fb415056eee52ac63ff9d4850c63.jpg",
+    "known_related_page": null,
+    "http_outcome": 200,
+    "requirement": "Preserve exact legacy path in Astro/Beget static output."
+  },
+  {
+    "path": "/upload/kraken/e99/e99136800119b55d4c6029caefa21b6b.jpg",
+    "known_related_page": null,
+    "http_outcome": 200,
+    "requirement": "Preserve exact legacy path in Astro/Beget static output."
+  },
+  {
+    "path": "/upload/iblock/f53/f532ef949feebe6e0d478bdbebd4165a.jpg",
+    "known_related_page": null,
+    "http_outcome": 200,
+    "requirement": "Preserve exact legacy path in Astro/Beget static output."
+  },
+  {
+    "path": "/upload/kraken/327/327cf2dfaba564b13c7ff355d144de5d.jpg",
+    "known_related_page": null,
+    "http_outcome": 200,
+    "requirement": "Preserve exact legacy path in Astro/Beget static output."
+  },
+  {
+    "path": "/upload/medialibrary/935/935bf64b726fad1bb5d94f54bf308111.png",
+    "known_related_page": null,
+    "http_outcome": 200,
+    "requirement": "Preserve exact legacy path in Astro/Beget static output."
+  },
+  {
+    "path": "/upload/medialibrary/9c5/9c5cced342ee32161fa7d7869cdf57d6.png",
+    "known_related_page": null,
+    "http_outcome": 200,
+    "requirement": "Preserve exact legacy path in Astro/Beget static output."
+  },
+  {
+    "path": "/upload/medialibrary/cdc/cdc67a61f0a10cababb07858755c561f.png",
+    "known_related_page": null,
+    "http_outcome": 200,
+    "requirement": "Preserve exact legacy path in Astro/Beget static output."
+  }
+]

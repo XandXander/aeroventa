@@ -1,0 +1,614 @@
+{
+  "format": "aeroventa-directus-desired-schema-contract-v1",
+  "note": "Version-independent desired model. Not a Directus schema snapshot; generate/apply a real snapshot only after read-only capture of the actual Directus version/database schema.",
+  "collections": [
+    {
+      "name": "content",
+      "singleton": false,
+      "primary_key": "id",
+      "fields": [
+        [
+          "id",
+          "uuid",
+          "primary"
+        ],
+        [
+          "status",
+          "string",
+          "required"
+        ],
+        [
+          "content_type",
+          "string",
+          "required"
+        ],
+        [
+          "path",
+          "string",
+          "required unique"
+        ],
+        [
+          "legacy_paths",
+          "json",
+          "optional"
+        ],
+        [
+          "slug",
+          "string",
+          "optional"
+        ],
+        [
+          "title",
+          "string",
+          "required"
+        ],
+        [
+          "h1",
+          "string",
+          "required"
+        ],
+        [
+          "excerpt",
+          "text",
+          "optional"
+        ],
+        [
+          "body_html",
+          "text",
+          "migration bridge; structured blocks target"
+        ],
+        [
+          "body_blocks",
+          "alias",
+          "O2M content_block_map; target structured content relation"
+        ],
+        [
+          "hero_file",
+          "uuid",
+          "M2O directus_files optional"
+        ],
+        [
+          "published_at",
+          "timestamp",
+          "optional"
+        ],
+        [
+          "updated_at_public",
+          "timestamp",
+          "optional"
+        ],
+        [
+          "owner_approved_at",
+          "timestamp",
+          "required for production publish"
+        ],
+        [
+          "business_role",
+          "string",
+          "required"
+        ],
+        [
+          "primary_topic",
+          "string",
+          "optional"
+        ],
+        [
+          "knowledge_allowed",
+          "boolean",
+          "default false"
+        ],
+        [
+          "lead_intent",
+          "string",
+          "optional"
+        ],
+        [
+          "source_legacy_url",
+          "string",
+          "optional"
+        ],
+        [
+          "migration_evidence",
+          "json",
+          "optional"
+        ],
+        [
+          "seo_title",
+          "string",
+          "required for indexable content"
+        ],
+        [
+          "seo_description",
+          "text",
+          "optional"
+        ],
+        [
+          "canonical_override",
+          "string",
+          "normally null"
+        ],
+        [
+          "robots_index",
+          "boolean",
+          "default false"
+        ],
+        [
+          "robots_follow",
+          "boolean",
+          "default true"
+        ],
+        [
+          "og_title",
+          "string",
+          "optional"
+        ],
+        [
+          "og_description",
+          "text",
+          "optional"
+        ],
+        [
+          "og_image",
+          "uuid",
+          "M2O directus_files optional"
+        ],
+        [
+          "schema_type",
+          "string",
+          "optional"
+        ],
+        [
+          "schema_json_extra",
+          "json",
+          "optional"
+        ],
+        [
+          "sitemap_include",
+          "boolean",
+          "default false"
+        ],
+        [
+          "sitemap_priority",
+          "decimal",
+          "optional"
+        ],
+        [
+          "ai_origin",
+          "boolean",
+          "default false"
+        ],
+        [
+          "research_snapshot_id",
+          "string",
+          "optional"
+        ],
+        [
+          "fact_check_status",
+          "string",
+          "optional"
+        ],
+        [
+          "duplicate_check_status",
+          "string",
+          "optional"
+        ],
+        [
+          "cannibalization_check_status",
+          "string",
+          "optional"
+        ],
+        [
+          "publication_job_id",
+          "string",
+          "optional"
+        ],
+        [
+          "post_publish_validation_status",
+          "string",
+          "optional"
+        ]
+      ]
+    },
+    {
+      "name": "content_blocks",
+      "singleton": false,
+      "primary_key": "id",
+      "fields": [
+        [
+          "id",
+          "uuid",
+          "primary"
+        ],
+        [
+          "block_type",
+          "string",
+          "required"
+        ],
+        [
+          "data",
+          "json",
+          "required"
+        ],
+        [
+          "source_html",
+          "text",
+          "optional migration provenance"
+        ],
+        [
+          "fact_checked",
+          "boolean",
+          "default false"
+        ]
+      ]
+    },
+    {
+      "name": "content_block_map",
+      "singleton": false,
+      "primary_key": "id",
+      "fields": [
+        [
+          "id",
+          "integer",
+          "primary"
+        ],
+        [
+          "content_id",
+          "uuid",
+          "M2O content"
+        ],
+        [
+          "block_id",
+          "uuid",
+          "M2O content_blocks"
+        ],
+        [
+          "sort",
+          "integer",
+          "required"
+        ]
+      ]
+    },
+    {
+      "name": "content_categories",
+      "singleton": false,
+      "primary_key": "id",
+      "fields": [
+        [
+          "id",
+          "uuid",
+          "primary"
+        ],
+        [
+          "status",
+          "string",
+          "required"
+        ],
+        [
+          "name",
+          "string",
+          "required"
+        ],
+        [
+          "slug",
+          "string",
+          "required"
+        ],
+        [
+          "path",
+          "string",
+          "required unique"
+        ],
+        [
+          "category_type",
+          "string",
+          "required"
+        ],
+        [
+          "description",
+          "text",
+          "optional"
+        ],
+        [
+          "seo_title",
+          "string",
+          "optional"
+        ],
+        [
+          "seo_description",
+          "text",
+          "optional"
+        ],
+        [
+          "robots_index",
+          "boolean",
+          "default true"
+        ]
+      ]
+    },
+    {
+      "name": "content_category_map",
+      "singleton": false,
+      "primary_key": "id",
+      "fields": [
+        [
+          "id",
+          "integer",
+          "primary"
+        ],
+        [
+          "content_id",
+          "uuid",
+          "M2O content"
+        ],
+        [
+          "category_id",
+          "uuid",
+          "M2O content_categories"
+        ]
+      ]
+    },
+    {
+      "name": "project_details",
+      "singleton": false,
+      "primary_key": "content_id",
+      "fields": [
+        [
+          "content_id",
+          "uuid",
+          "primary O2O content"
+        ],
+        [
+          "object_type",
+          "string",
+          "optional"
+        ],
+        [
+          "location",
+          "string",
+          "optional"
+        ],
+        [
+          "client_display_name",
+          "string",
+          "optional"
+        ],
+        [
+          "scope",
+          "text",
+          "optional"
+        ],
+        [
+          "systems",
+          "json",
+          "optional"
+        ],
+        [
+          "work_volume",
+          "text",
+          "optional"
+        ],
+        [
+          "duration",
+          "string",
+          "optional"
+        ],
+        [
+          "completion_date",
+          "date",
+          "optional"
+        ],
+        [
+          "constraints",
+          "text",
+          "optional"
+        ],
+        [
+          "result",
+          "text",
+          "optional"
+        ],
+        [
+          "gallery",
+          "json",
+          "optional"
+        ],
+        [
+          "testimonial",
+          "text",
+          "optional"
+        ],
+        [
+          "commercial_visibility",
+          "string",
+          "optional"
+        ]
+      ]
+    },
+    {
+      "name": "service_details",
+      "singleton": false,
+      "primary_key": "content_id",
+      "fields": [
+        [
+          "content_id",
+          "uuid",
+          "primary O2O content"
+        ],
+        [
+          "service_family",
+          "string",
+          "required"
+        ],
+        [
+          "service_area",
+          "string",
+          "optional"
+        ],
+        [
+          "target_customer",
+          "text",
+          "optional"
+        ],
+        [
+          "supported_object_types",
+          "json",
+          "optional"
+        ],
+        [
+          "lead_form_variant",
+          "string",
+          "optional"
+        ],
+        [
+          "pricing_visibility",
+          "string",
+          "optional"
+        ],
+        [
+          "direct_execution",
+          "boolean",
+          "required"
+        ],
+        [
+          "fulfillment_model",
+          "string",
+          "required: internal|partner|mixed"
+        ]
+      ]
+    },
+    {
+      "name": "redirects",
+      "singleton": false,
+      "primary_key": "id",
+      "fields": [
+        [
+          "id",
+          "uuid",
+          "primary"
+        ],
+        [
+          "source_path",
+          "string",
+          "required unique"
+        ],
+        [
+          "target_path",
+          "string",
+          "nullable for 410"
+        ],
+        [
+          "status_code",
+          "integer",
+          "301 or 410"
+        ],
+        [
+          "reason",
+          "text",
+          "required"
+        ],
+        [
+          "source_evidence",
+          "json",
+          "optional"
+        ],
+        [
+          "active",
+          "boolean",
+          "default true"
+        ],
+        [
+          "validated_at",
+          "timestamp",
+          "optional"
+        ]
+      ]
+    },
+    {
+      "name": "site_settings",
+      "singleton": true,
+      "primary_key": "id",
+      "fields": [
+        [
+          "id",
+          "integer",
+          "primary"
+        ],
+        [
+          "company_display_name",
+          "string",
+          "required"
+        ],
+        [
+          "primary_business",
+          "string",
+          "required"
+        ],
+        [
+          "phone",
+          "string",
+          "required"
+        ],
+        [
+          "email",
+          "string",
+          "required"
+        ],
+        [
+          "service_region",
+          "string",
+          "required"
+        ],
+        [
+          "default_seo_title",
+          "string",
+          "optional"
+        ],
+        [
+          "default_seo_description",
+          "text",
+          "optional"
+        ],
+        [
+          "default_og_image",
+          "uuid",
+          "optional"
+        ],
+        [
+          "ai_consultant_enabled",
+          "boolean",
+          "default false"
+        ],
+        [
+          "emergency_disable_ai",
+          "boolean",
+          "default false"
+        ],
+        [
+          "privacy_path",
+          "string",
+          "optional"
+        ],
+        [
+          "offer_path",
+          "string",
+          "optional"
+        ],
+        [
+          "analytics_config",
+          "json",
+          "non-secret IDs/config only"
+        ]
+      ]
+    }
+  ],
+  "invariants": [
+    "content.path is unique and normalized",
+    "production content requires status=published and owner_approved_at non-null",
+    "sitemap_include implies robots_index=true and production-publishable state",
+    "redirect source_path cannot collide with published content.path",
+    "301 target_path must resolve to a retained 200 route",
+    "LEGACY_ACQUISITION does not imply direct_execution=true",
+    "/almaznoe-burenie/ service_details.direct_execution=false and fulfillment_model=partner",
+    "/montazh-ventiliacii/ is PRIMARY_COMMERCIAL"
+  ]
+}

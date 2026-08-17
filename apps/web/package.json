@@ -1,0 +1,15 @@
+{
+  "name": "@aeroventa/web",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && node ../../scripts/postbuild.mjs",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "astro": "7.1.6"
+  }
+}

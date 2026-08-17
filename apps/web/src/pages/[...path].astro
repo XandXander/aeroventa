@@ -1,0 +1,32 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import LeadCTA from '@/components/LeadCTA.astro';
+import { getAllContent } from '@/lib/content-source';
+import type { ContentRecord } from '@/lib/types';
+
+export async function getStaticPaths() {
+  const all = await getAllContent();
+  return all
+    .filter((item) => item.path !== '/')
+    .map((item) => ({
+      params: { path: item.path.replace(/^\//, '').replace(/\/$/, '') },
+      props: { content: item },
+    }));
+}
+
+interface Props { content: ContentRecord; }
+const { content } = Astro.props;
+const fixture = content.status === 'fixture_stub';
+const legacyDrilling = content.business_role === 'LEGACY_ACQUISITION';
+---
+<BaseLayout content={content}>
+  <article class="page">
+    <div class="container prose">
+      <h1>{content.h1}</h1>
+      {fixture && <div class="notice"><strong>Implementation fixture:</strong> исходный/новый контент ещё не прошёл миграцию и Owner approval. Эта сборка noindex.</div>}
+      {legacyDrilling && <div class="notice"><strong>Миграционное правило:</strong> этот URL сохраняется как SEO/lead-acquisition актив. Финальный текст обязан честно отражать, что заявки на алмазное бурение могут передаваться исполнителям/партнёрам.</div>}
+      <Fragment set:html={content.body_html} />
+      {content.business_role !== 'LEGACY_ACQUISITION' && <LeadCTA />}
+    </div>
+  </article>
+</BaseLayout>

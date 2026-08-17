@@ -1,0 +1,18 @@
+{
+  "name": "aeroventa-platform",
+  "private": true,
+  "version": "0.1.0-implementation-t2",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "validate": "node scripts/validate-implementation.mjs",
+    "generate:hosting-rules": "node scripts/generate-hosting-rules.mjs",
+    "build:web": "npm --workspace @aeroventa/web run build",
+    "dev:web": "npm --workspace @aeroventa/web run dev",
+    "validate:dist": "node scripts/validate-built-site.mjs"
+  }
+}
