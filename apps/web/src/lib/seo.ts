@@ -24,6 +24,13 @@ const schemaTypeFromContent = (content: ContentRecord) => {
   return 'WebPage';
 };
 
+const breadcrumbParent = (path: string) => {
+  if (path.startsWith('/blog/detail/')) return { name: 'Блог', path: '/blog/' };
+  if (path.startsWith('/blog/') && path !== '/blog/') return { name: 'Блог', path: '/blog/' };
+  if (path.startsWith('/news/') && path !== '/news/') return { name: 'Новости', path: '/news/' };
+  return null;
+};
+
 export function jsonLd(content: ContentRecord) {
   const type = schemaTypeFromContent(content);
   const reserved = new Set(['@context', '@type', 'url', 'name', 'headline']);
@@ -31,17 +38,39 @@ export function jsonLd(content: ContentRecord) {
     Object.entries(content.schema_json_extra || {}).filter(([key]) => !reserved.has(key))
   );
 
-  const base: Record<string, unknown> = {
-    '@context': 'https://schema.org',
+  const page: Record<string, unknown> = {
     '@type': type,
+    '@id': `${canonicalUrl(content.path, content.canonical_override)}#page`,
     name: content.h1,
     url: canonicalUrl(content.path, content.canonical_override),
     ...extra,
   };
 
-  if (['Article', 'BlogPosting', 'NewsArticle'].includes(type)) base.headline = content.h1;
-  if (type === 'Service') base.areaServed = SITE.serviceArea;
-  return base;
+  if (['Article', 'BlogPosting', 'NewsArticle'].includes(type)) {
+    page.headline = content.h1;
+    if (content.published_at) page.datePublished = content.published_at;
+    if (content.updated_at_public) page.dateModified = content.updated_at_public;
+  }
+  if (type === 'Service') page.areaServed = SITE.serviceArea;
+
+  const items: Record<string, unknown>[] = [
+    { '@type': 'ListItem', position: 1, name: 'Главная', item: SITE.origin },
+  ];
+  const parent = breadcrumbParent(content.path);
+  if (parent) items.push({ '@type': 'ListItem', position: 2, name: parent.name, item: canonicalUrl(parent.path) });
+  if (content.path !== '/') items.push({ '@type': 'ListItem', position: items.length + 1, name: content.h1, item: canonicalUrl(content.path, content.canonical_override) });
+
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      page,
+      {
+        '@type': 'BreadcrumbList',
+        '@id': `${canonicalUrl(content.path, content.canonical_override)}#breadcrumbs`,
+        itemListElement: items,
+      },
+    ],
+  };
 }
 
 export function serializeJsonLd(value: unknown): string {

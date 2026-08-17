@@ -32,6 +32,9 @@ export interface ContentRecord {
   canonical_override?: string | null;
   og_title?: string | null;
   og_description?: string | null;
+  og_image?: string | null;
+  published_at?: string | null;
+  updated_at_public?: string | null;
   schema_type?: string | null;
   schema_json_extra?: Record<string, unknown> | null;
   excerpt: string;

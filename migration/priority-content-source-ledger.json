@@ -1,0 +1,94 @@
+{
+  "format": "aeroventa-priority-content-source-ledger-v1",
+  "note": "Public-safe provenance only. No private analytics or credentials.",
+  "sources": {
+    "/": {
+      "legacy_url": "https://aeroventa.ru/",
+      "captured": "2026-08-17",
+      "status": "SOURCE_CAPTURED",
+      "notes": [
+        "Legacy home contains ventilation positioning and historical project links; stale team/statistical claims are excluded from drafts."
+      ]
+    },
+    "/montazh-ventiliacii/": {
+      "legacy_url": "https://aeroventa.ru/montazh-ventiliacii/",
+      "captured": "2026-08-17",
+      "status": "PARTIAL_SOURCE_CAPTURE",
+      "notes": [
+        "Direct crawler cache was unavailable; draft relies on Owner-confirmed business positioning plus ventilation copy visible on legacy home."
+      ]
+    },
+    "/about/": {
+      "legacy_url": "https://aeroventa.ru/about/",
+      "captured": "2026-08-17",
+      "status": "SOURCE_CAPTURED",
+      "notes": [
+        "Legacy registration/team/statistics are not assumed current."
+      ]
+    },
+    "/contact/": {
+      "legacy_url": "https://aeroventa.ru/contact/",
+      "captured": "2026-08-17",
+      "status": "SOURCE_CAPTURED",
+      "notes": [
+        "Phone/email captured from current legacy site; office address and staff roster require freshness verification."
+      ]
+    },
+    "/portfolio/": {
+      "legacy_url": "https://aeroventa.ru/portfolio/",
+      "captured": "2026-08-17",
+      "status": "SOURCE_CAPTURED",
+      "notes": [
+        "Case links retained; aggregate project/team/financial counters require verification."
+      ]
+    },
+    "/blog/detail/kak-my-sdali-7-domov/": {
+      "legacy_url": "https://aeroventa.ru/blog/detail/kak-my-sdali-7-domov/",
+      "captured": "2026-08-17",
+      "status": "SOURCE_CAPTURED",
+      "notes": [
+        "Legacy page states Pavlovsk, supply/exhaust ventilation, dates 2020-11-18 to 2020-12-10."
+      ]
+    },
+    "/almaznoe-burenie/": {
+      "legacy_url": "https://aeroventa.ru/almaznoe-burenie/",
+      "captured": "2026-08-17",
+      "status": "SOURCE_CAPTURED_STALE_COMMERCIAL",
+      "notes": [
+        "Legacy page contains obsolete direct-execution, crews, discounts and price claims; these are explicitly excluded."
+      ]
+    },
+    "/covid-pritochnaya-ventilacia/": {
+      "legacy_url": "https://aeroventa.ru/covid-pritochnaya-ventilacia/",
+      "captured": "2026-08-17",
+      "status": "SOURCE_CAPTURED_HEALTH_REVIEW_REQUIRED",
+      "notes": [
+        "Historical REHVA article; image relation confirmed by Owner. Current health/technical guidance must be re-verified before publication."
+      ]
+    },
+    "/blog/detail/restoran-v-zhk-leontevskiy-mys/": {
+      "legacy_url": "https://aeroventa.ru/blog/detail/restoran-v-zhk-leontevskiy-mys/",
+      "captured": "2026-08-17",
+      "status": "SOURCE_CAPTURED",
+      "notes": [
+        "Legacy page states restaurant at Zhadanovskaya 45, supply/exhaust ventilation and equipment, duration two weeks."
+      ]
+    },
+    "/blog/detail/ntff-polisan/": {
+      "legacy_url": "https://aeroventa.ru/blog/detail/ntff-polisan/",
+      "captured": "2026-08-17",
+      "status": "SOURCE_CAPTURED",
+      "notes": [
+        "Legacy page states Polisan, Salova 72, supply/exhaust ventilation and equipment, June 2017 to June 2018."
+      ]
+    },
+    "/blog/detail/kvartira-na-zhukova/": {
+      "legacy_url": "https://aeroventa.ru/blog/detail/kvartira-na-zhukova/",
+      "captured": "2026-08-17",
+      "status": "SOURCE_CAPTURED",
+      "notes": [
+        "Legacy page states apartment on Marshal Zhukov, about 100 linear meters with equipment, five-day duration."
+      ]
+    }
+  }
+}

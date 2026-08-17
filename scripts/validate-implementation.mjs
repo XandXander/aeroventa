@@ -60,7 +60,20 @@ for (const c of requiredCollections) check(collectionNames.has(c), `Directus des
 check(importPlan.safety === 'DRAFT_ONLY_NO_PUBLISH', 'Directus import plan must be draft-only');
 check(importPlan.collections.content.length === 29, 'Directus content import plan must contain 29 retained HTML routes');
 check(importPlan.collections.redirects.length === 67, 'Directus redirect plan must contain 13 redirects + 54 gone routes');
-check(importPlan.collections.content.every((x) => x.status === 'draft' && x.robots_index === false && x.owner_approved_at === null && x.body_html_safety_status === 'not_applicable'), 'Directus planned content must remain draft + noindex + unapproved + HTML-safe bridge state');
+const draftHtmlForbidden = [
+  /<\s*(?:script|style|iframe|object|embed|base|form|input|button|textarea|select|option|link|meta|svg|math)\b/i,
+  /\son[a-z0-9_-]+\s*=/i,
+  /\sstyle\s*=/i,
+  /\ssrcdoc\s*=/i,
+  /(?:javascript|vbscript)\s*:/i,
+  /data\s*:\s*text\/html/i,
+];
+check(importPlan.collections.content.every((x) => {
+  if (!(x.status === 'draft' && x.robots_index === false && x.owner_approved_at === null)) return false;
+  if (!x.body_html) return x.body_html_safety_status === 'not_applicable';
+  if (x.body_html_safety_status !== 'pending_review') return false;
+  return !draftHtmlForbidden.some((pattern) => pattern.test(x.body_html));
+}), 'Directus planned content must remain draft + noindex + unapproved, and any draft HTML must pass bounded safety checks');
 const drillingService = importPlan.collections.service_details.find((x) => x.path_ref === '/almaznoe-burenie/');
 check(drillingService?.direct_execution === false && drillingService?.fulfillment_model === 'partner', 'Diamond drilling service contract must be partner fulfillment, not direct execution');
 check(extractionQueue.length === 29, 'Content extraction queue must contain 29 retained HTML routes');

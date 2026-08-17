@@ -77,7 +77,8 @@ async function fetchDirectusPage(base: string, offset: number): Promise<ContentR
       'path','title','h1','content_type','business_role','status',
       'robots_index','robots_follow','sitemap_include',
       'seo_title','seo_description','canonical_override',
-      'og_title','og_description','schema_type','schema_json_extra',
+      'og_title','og_description','og_image','schema_type','schema_json_extra',
+      'published_at','updated_at_public',
       'excerpt','body_html','body_html_safety_status','lead_intent','owner_approved_at'
     ].join(',')
   );

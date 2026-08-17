@@ -6,26 +6,33 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..');
 const routes = JSON.parse(await fs.readFile(path.join(root, 'migration/route-contract.json'), 'utf8'));
 const fixtures = JSON.parse(await fs.readFile(path.join(root, 'apps/web/src/data/content-fixtures.json'), 'utf8'));
+const priorityDrafts = JSON.parse(await fs.readFile(path.join(root, 'migration/priority-content-drafts.json'), 'utf8'));
 
-const content = fixtures.map((item) => ({
+const content = fixtures.map((item) => {
+  const draft = priorityDrafts[item.path] ?? null;
+  return ({
   status: 'draft',
   content_type: item.content_type,
   path: item.path,
   slug: item.path === '/' ? 'home' : item.path.replace(/^\//, '').replace(/\/$/, '').split('/').at(-1),
-  title: item.title,
-  h1: item.h1,
-  excerpt: null,
-  body_html: null,
-  body_html_safety_status: 'not_applicable',
+  title: draft?.title ?? item.title,
+  h1: draft?.h1 ?? item.h1,
+  excerpt: draft?.excerpt ?? null,
+  body_html: draft?.body_html ?? null,
+  body_html_safety_status: draft?.body_html ? 'pending_review' : 'not_applicable',
   owner_approved_at: null,
   business_role: item.business_role,
   primary_topic: item.lead_intent === 'DRILLING_PARTNER' ? 'алмазное бурение' : (item.business_role.includes('VENTILATION') || item.business_role === 'PRIMARY_COMMERCIAL' || item.business_role === 'PRIMARY_BRAND_HOME' ? 'вентиляция' : null),
   knowledge_allowed: false,
   lead_intent: item.lead_intent ?? null,
   source_legacy_url: new URL(item.path, 'https://aeroventa.ru').toString(),
-  migration_evidence: routes.find((r) => r.path === item.path) ?? null,
-  seo_title: item.seo_title,
-  seo_description: null,
+  migration_evidence: {
+    route: routes.find((r) => r.path === item.path) ?? null,
+    draft_basis: draft?.source_basis ?? null,
+    verification_status: draft?.verification ?? 'PENDING_SOURCE_MIGRATION',
+  },
+  seo_title: draft?.seo_title ?? item.seo_title,
+  seo_description: draft?.seo_description ?? null,
   canonical_override: null,
   robots_index: false,
   robots_follow: true,
@@ -38,7 +45,8 @@ const content = fixtures.map((item) => ({
   fact_check_status: 'pending',
   duplicate_check_status: 'pending',
   cannibalization_check_status: 'pending',
-}));
+  });
+});
 
 const redirects = routes
   .filter((r) => [301, 410].includes(Number(r.http_outcome)))
@@ -84,6 +92,56 @@ const plan = {
     content,
     content_categories: categories,
     redirects,
+    project_details: [
+      {
+        path_ref: '/blog/detail/kak-my-sdali-7-domov/',
+        object_type: 'жилой квартал',
+        location: 'Павловск, Ленинградская область',
+        client_display_name: null,
+        scope: 'Монтаж приточно-вытяжной вентиляции',
+        systems: ['приточно-вытяжная вентиляция'],
+        work_volume: '7 домов',
+        duration: '18.11.2020–10.12.2020',
+        completion_date: '2020-12-10',
+        commercial_visibility: 'public_historical_case',
+      },
+      {
+        path_ref: '/blog/detail/restoran-v-zhk-leontevskiy-mys/',
+        object_type: 'ресторан',
+        location: 'ЖК «Леонтьевский Мыс», Ждановская ул., 45, Санкт-Петербург',
+        client_display_name: null,
+        scope: 'Монтаж приточно-вытяжной вентиляции и вентиляционного оборудования',
+        systems: ['приточно-вытяжная вентиляция'],
+        work_volume: null,
+        duration: '2 недели по legacy-источнику',
+        completion_date: null,
+        commercial_visibility: 'public_historical_case',
+      },
+      {
+        path_ref: '/blog/detail/ntff-polisan/',
+        object_type: 'фармацевтическое предприятие',
+        location: 'ул. Салова, 72, Санкт-Петербург',
+        client_display_name: 'НТФФ «Полисан»',
+        scope: 'Монтаж приточно-вытяжной вентиляции и оборудования',
+        systems: ['приточно-вытяжная вентиляция'],
+        work_volume: null,
+        duration: 'июнь 2017 – июнь 2018',
+        completion_date: null,
+        commercial_visibility: 'public_historical_case',
+      },
+      {
+        path_ref: '/blog/detail/kvartira-na-zhukova/',
+        object_type: 'квартира',
+        location: 'Маршала Жукова, Санкт-Петербург',
+        client_display_name: null,
+        scope: 'Монтаж приточно-вытяжной вентиляции',
+        systems: ['приточно-вытяжная вентиляция'],
+        work_volume: 'около 100 погонных метров с оборудованием по legacy-источнику',
+        duration: '5 дней по legacy-источнику',
+        completion_date: null,
+        commercial_visibility: 'public_historical_case',
+      },
+    ],
     service_details: [
       {
         path_ref: '/montazh-ventiliacii/',

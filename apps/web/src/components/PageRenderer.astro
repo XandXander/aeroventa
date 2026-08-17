@@ -1,0 +1,19 @@
+---
+import GenericPage from '@/components/pages/GenericPage.astro';
+import ServicePage from '@/components/pages/ServicePage.astro';
+import ArticlePage from '@/components/pages/ArticlePage.astro';
+import ProjectPage from '@/components/pages/ProjectPage.astro';
+import type { ContentRecord } from '@/lib/types';
+interface Props { content: ContentRecord; }
+const { content } = Astro.props;
+const fixture = content.status === 'fixture_stub';
+---
+{content.content_type === 'service' ? (
+  <ServicePage content={content} fixture={fixture} />
+) : content.content_type === 'project' ? (
+  <ProjectPage content={content} fixture={fixture} />
+) : ['article', 'news'].includes(content.content_type) ? (
+  <ArticlePage content={content} fixture={fixture} />
+) : (
+  <GenericPage content={content} fixture={fixture} />
+)}

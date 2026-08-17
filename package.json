@@ -13,6 +13,8 @@
     "generate:hosting-rules": "node scripts/generate-hosting-rules.mjs",
     "build:web": "npm --workspace @aeroventa/web run build",
     "dev:web": "npm --workspace @aeroventa/web run dev",
-    "validate:dist": "node scripts/validate-built-site.mjs"
+    "validate:dist": "node scripts/validate-built-site.mjs",
+    "directus:snapshot:readonly": "node scripts/directus-schema-readonly.mjs",
+    "directus:diff:readonly": "node scripts/directus-schema-diff-readonly.mjs"
   }
 }

@@ -12,6 +12,7 @@ const robots = robotsValue(content);
 const schema = jsonLd(content);
 const ogTitle = content.og_title || content.seo_title || content.title;
 const ogDescription = content.og_description || content.seo_description;
+const ogImage = content.og_image ? new URL(content.og_image, 'https://aeroventa.ru').toString() : null;
 ---
 <!doctype html>
 <html lang="ru">
@@ -27,6 +28,11 @@ const ogDescription = content.og_description || content.seo_description;
     <meta property="og:url" content={canonical} />
     <meta property="og:type" content={['article', 'news'].includes(content.content_type) ? 'article' : 'website'} />
     <meta property="og:site_name" content="AEROVENTA" />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:title" content={ogTitle} />
+    {ogDescription && <meta name="twitter:description" content={ogDescription} />}
+    {ogImage && <meta name="twitter:image" content={ogImage} />}
     <script type="application/ld+json" set:html={serializeJsonLd(schema)}></script>
   </head>
   <body>

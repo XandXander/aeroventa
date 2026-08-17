@@ -32,3 +32,4 @@ main { min-height: 60vh; }
 }
 
 .lead-cta{margin-top:40px;padding:28px;border:1px solid #dbe3ea;border-radius:12px;background:#f8fafc}.lead-cta--partner{background:#fffaf0}.lead-cta__actions{display:flex;gap:12px;flex-wrap:wrap}.lead-cta__note{font-size:.9rem;color:#4b5563}
+.lede{font-size:clamp(1.08rem,2vw,1.3rem);color:#4b5563}.eyebrow{text-transform:uppercase;letter-spacing:.08em;font-size:.78rem;font-weight:800;color:#4b5563}.service-hero,.article-header,.project-header{padding:56px 0 28px;background:#f8fafc}.service-body,.article-body,.project-body{padding-top:24px}.prose h2{margin-top:2.2em;line-height:1.2}.prose ul{padding-left:1.25rem}.prose img{max-width:100%;height:auto;border-radius:10px}.service-page--legacy .service-hero{background:#fffaf0}
