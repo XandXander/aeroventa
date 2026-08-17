@@ -1,0 +1,28 @@
+node_modules/
+dist/
+.astro/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+Thumbs.db
+coverage/
+.tmp/
+.directus/
+
+# Never commit migration source backups/dumps/secrets
+*.sql
+*.sql.gz
+*.tar.gz
+*.tar.gz.*
+*.pem
+*.key
+
+# Private migration evidence / analytics: never publish in public repository
+docs/source-of-truth/
+migration/private/
+migration/legacy-crawl/
+IMPLEMENTATION_STATUS_T2.json
+IMPLEMENTATION_REPORT_T2.md
+SHA256SUMS.txt
