@@ -1,14 +1,23 @@
 ---
 import { SITE } from '@/lib/site';
-interface Props { title?: string; }
-const { title = 'Обсудить объект' } = Astro.props;
+interface Props {
+  intent?: 'VENTILATION_PROJECT' | 'DRILLING_PARTNER' | string | null;
+  title?: string;
+}
+const { intent = 'VENTILATION_PROJECT', title } = Astro.props;
 const tel = SITE.phone.replace(/[^+\d]/g, '');
+const isDrilling = intent === 'DRILLING_PARTNER';
+const heading = title || (isDrilling ? 'Нужны работы по алмазному бурению?' : 'Обсудить объект');
+const copy = isDrilling
+  ? 'Оставьте контакт и кратко опишите задачу. Заявку на алмазное бурение можем передать профильному исполнителю.'
+  : 'Опишите задачу по вентиляции. На этапе интеграции здесь будет защищённая форма заявки; до этого доступны прямые контакты.';
 ---
-<section aria-labelledby="lead-cta-title" style="margin-top:40px;padding:28px;border-radius:12px;background:#f3f4f6">
-  <h2 id="lead-cta-title">{title}</h2>
-  <p>Опишите задачу по вентиляции. На этапе интеграции здесь будет защищённая форма заявки; до этого доступны прямые контакты.</p>
-  <p style="display:flex;gap:12px;flex-wrap:wrap">
+<section aria-labelledby="lead-cta-title" class:list={['lead-cta', { 'lead-cta--partner': isDrilling }]}>
+  <h2 id="lead-cta-title">{heading}</h2>
+  <p>{copy}</p>
+  <p class="lead-cta__actions">
     <a class="cta" href={`tel:${tel}`}>{SITE.phone}</a>
     <a class="cta" href={`mailto:${SITE.email}`}>Написать на e-mail</a>
   </p>
+  {isDrilling && <p class="lead-cta__note">Алмазное бурение не является основным направлением AEROVENTA и в текущей модели выполняется через профильных исполнителей.</p>}
 </section>

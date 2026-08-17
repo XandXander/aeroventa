@@ -50,9 +50,9 @@ check(Boolean(critical), 'Critical COVID article image missing from media manife
 check(critical?.known_related_page === '/covid-pritochnaya-ventilacia/', 'Critical image related-page contract is wrong');
 
 check(fixtures.length === 29, `Expected 29 HTML fixture pages, got ${fixtures.length}`);
-check(fixtures.every((x) => x.status === 'fixture_stub' && x.robots_index === false), 'Fixture content must remain fixture_stub + noindex');
+check(fixtures.every((x) => x.status === 'fixture_stub' && x.robots_index === false && x.body_html_safety_status === 'fixture'), 'Fixture content must remain fixture_stub + noindex + fixture safety status');
 check(fixtures.some((x) => x.path === '/montazh-ventiliacii/' && x.business_role === 'PRIMARY_COMMERCIAL'), 'Primary ventilation route contract missing');
-check(fixtures.some((x) => x.path === '/almaznoe-burenie/' && x.business_role === 'LEGACY_ACQUISITION'), 'Legacy drilling role contract missing');
+check(fixtures.some((x) => x.path === '/almaznoe-burenie/' && x.business_role === 'LEGACY_ACQUISITION' && x.lead_intent === 'DRILLING_PARTNER'), 'Legacy drilling role/lead contract missing');
 
 const requiredCollections = ['content','content_blocks','content_block_map','content_categories','content_category_map','project_details','service_details','redirects','site_settings'];
 const collectionNames = new Set(schema.collections.map((c) => c.name));
@@ -60,7 +60,7 @@ for (const c of requiredCollections) check(collectionNames.has(c), `Directus des
 check(importPlan.safety === 'DRAFT_ONLY_NO_PUBLISH', 'Directus import plan must be draft-only');
 check(importPlan.collections.content.length === 29, 'Directus content import plan must contain 29 retained HTML routes');
 check(importPlan.collections.redirects.length === 67, 'Directus redirect plan must contain 13 redirects + 54 gone routes');
-check(importPlan.collections.content.every((x) => x.status === 'draft' && x.robots_index === false && x.owner_approved_at === null), 'Directus planned content must remain draft + noindex + unapproved');
+check(importPlan.collections.content.every((x) => x.status === 'draft' && x.robots_index === false && x.owner_approved_at === null && x.body_html_safety_status === 'not_applicable'), 'Directus planned content must remain draft + noindex + unapproved + HTML-safe bridge state');
 const drillingService = importPlan.collections.service_details.find((x) => x.path_ref === '/almaznoe-burenie/');
 check(drillingService?.direct_execution === false && drillingService?.fulfillment_model === 'partner', 'Diamond drilling service contract must be partner fulfillment, not direct execution');
 check(extractionQueue.length === 29, 'Content extraction queue must contain 29 retained HTML routes');
@@ -69,12 +69,30 @@ check(extractionQueue[0]?.path === '/montazh-ventiliacii/', 'Primary commercial 
 check((rules.match(/^RedirectMatch 301 /gm) || []).length === 13, 'Generated .htaccess redirect count mismatch');
 check((rules.match(/^RedirectMatch gone /gm) || []).length === 54, 'Generated .htaccess 410 count mismatch');
 
-for (const item of media) {
-  const local = path.join(root, 'apps/web/public', item.path.replace(/^\//, ''));
-  try { await fs.access(local); } catch { warnings.push(`PENDING_MEDIA_BYTES ${item.path}`); }
+async function validateSourceAsset(relativePath, kind) {
+  const local = path.join(root, 'apps/web/public', relativePath.replace(/^\//, ''));
+  let body;
+  try { body = await fs.readFile(local); } catch {
+    warnings.push(`${kind === 'pdf' ? 'PENDING_INDEXED_PDF_BYTES' : 'PENDING_MEDIA_BYTES'} ${relativePath}`);
+    return;
+  }
+
+  check(body.length >= 32, `Preserved ${kind} source is implausibly small: ${relativePath}`);
+  const hex = body.subarray(0, 12).toString('hex');
+  if (kind === 'image') {
+    const jpg = hex.startsWith('ffd8ff');
+    const png = hex.startsWith('89504e470d0a1a0a');
+    const webp = body.subarray(0, 4).toString('ascii') === 'RIFF' && body.subarray(8, 12).toString('ascii') === 'WEBP';
+    check(jpg || png || webp, `Preserved image source has invalid signature: ${relativePath}`);
+  }
+  if (kind === 'pdf') {
+    check(body.subarray(0, 5).toString('ascii') === '%PDF-', `Preserved PDF source has invalid signature: ${relativePath}`);
+  }
 }
-const pdf = path.join(root, 'apps/web/public/upload/medialibrary/fa1/fa1b840c9474c6030bf2ccb0c725c3e4.pdf');
-try { await fs.access(pdf); } catch { warnings.push('PENDING_INDEXED_PDF_BYTES /upload/medialibrary/fa1/fa1b840c9474c6030bf2ccb0c725c3e4.pdf'); }
+
+for (const item of media) await validateSourceAsset(item.path, 'image');
+const pdfPath = '/upload/medialibrary/fa1/fa1b840c9474c6030bf2ccb0c725c3e4.pdf';
+await validateSourceAsset(pdfPath, 'pdf');
 
 // lightweight secret scan over implementation text/json/config files
 async function walk(dir) {

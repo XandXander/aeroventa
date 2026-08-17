@@ -15,6 +15,8 @@ export type BusinessRole =
   | 'SUPPORTING_CONTENT'
   | 'LEGACY_ACQUISITION';
 
+export type LeadIntent = 'VENTILATION_PROJECT' | 'DRILLING_PARTNER' | string;
+
 export interface ContentRecord {
   path: string;
   title: string;
@@ -34,5 +36,7 @@ export interface ContentRecord {
   schema_json_extra?: Record<string, unknown> | null;
   excerpt: string;
   body_html: string;
+  body_html_safety_status?: 'fixture' | 'reviewed_safe' | 'not_applicable' | string | null;
+  lead_intent?: LeadIntent | null;
   owner_approved_at: string | null;
 }

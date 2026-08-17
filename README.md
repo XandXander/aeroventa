@@ -9,7 +9,7 @@ Local implementation package for the migration of `aeroventa.ru` from legacy Bit
 
 ## Current status
 
-This package is **implementation preparation only**. It has not been written to GitHub, Directus, Beget, VPS, n8n or production.
+Repository baseline is now present in GitHub. This remains **implementation/staging preparation only**: nothing has been written to Directus, Beget, VPS, n8n or production.
 
 Primary business contract:
 
@@ -21,6 +21,11 @@ Diamond-drilling content is retained only as `LEGACY_ACQUISITION` where it provi
 
 Fixture pages are intentionally `noindex` and are not production content. Do not deploy this package until migrated/approved content and the acceptance matrix pass.
 
+## Automated safety checks
+
+GitHub Actions `implementation-ci` validates route contracts and builds the fixture site without deployment.
+`legacy-readonly-crawl` performs read-only HTTP GETs against the current site only when its migration inputs change (or when manually started). It stores the retained HTML/assets in a short-lived workflow artifact and never commits back to the repository.
+
 ## Local checks
 
 ```bash
@@ -28,7 +33,7 @@ node scripts/generate-hosting-rules.mjs
 node scripts/validate-implementation.mjs
 ```
 
-Astro v6+ requires Node 22.12.0+; `.nvmrc` is set accordingly.
+Current Astro prerequisites require Node 22.12.0+; `.nvmrc` is set accordingly.
 
 When package installation is available:
 
@@ -43,6 +48,7 @@ npm run build:web
 - `directus` — desired schema contract and future schema-apply gate.
 - `migration` — canonical route/media manifests and generated Apache routing.
 - `scripts` — deterministic route generation/validation.
+- `.github/workflows` — validation only; no production deployment workflow exists.
 - `docs/source-of-truth` — T2 approved architecture/discovery artifacts.
 
 ## Production write gate

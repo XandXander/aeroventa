@@ -11,7 +11,9 @@
     "seo_description": "",
     "excerpt": "Implementation fixture. Replace with migrated/approved Directus content before production.",
     "body_html": "<p>Implementation fixture. This page is intentionally noindex until migrated content is approved.</p>",
-    "owner_approved_at": null
+    "owner_approved_at": null,
+    "lead_intent": "DRILLING_PARTNER",
+    "body_html_safety_status": "fixture"
   },
   {
     "path": "/",
@@ -25,7 +27,9 @@
     "seo_description": "Монтаж систем вентиляции для квартир, домов, коммерческих и сложных объектов в Санкт-Петербурге и Ленинградской области.",
     "excerpt": "Implementation fixture. Replace with migrated/approved Directus content before production.",
     "body_html": "<p>Implementation fixture. This page is intentionally noindex until migrated content is approved.</p>",
-    "owner_approved_at": null
+    "owner_approved_at": null,
+    "lead_intent": null,
+    "body_html_safety_status": "fixture"
   },
   {
     "path": "/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/",
@@ -39,7 +43,9 @@
     "seo_description": "",
     "excerpt": "Implementation fixture. Replace with migrated/approved Directus content before production.",
     "body_html": "<p>Implementation fixture. This page is intentionally noindex until migrated content is approved.</p>",
-    "owner_approved_at": null
+    "owner_approved_at": null,
+    "lead_intent": "DRILLING_PARTNER",
+    "body_html_safety_status": "fixture"
   },
   {
     "path": "/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/",
@@ -53,7 +59,9 @@
     "seo_description": "",
     "excerpt": "Implementation fixture. Replace with migrated/approved Directus content before production.",
     "body_html": "<p>Implementation fixture. This page is intentionally noindex until migrated content is approved.</p>",
-    "owner_approved_at": null
+    "owner_approved_at": null,
+    "lead_intent": "DRILLING_PARTNER",
+    "body_html_safety_status": "fixture"
   },
   {
     "path": "/almaznoe-burenie/",
@@ -67,7 +75,9 @@
     "seo_description": "Сохранённая информационная страница по алмазному бурению. Заявки на бурение могут передаваться профильным исполнителям.",
     "excerpt": "Implementation fixture. Replace with migrated/approved Directus content before production.",
     "body_html": "<p>Implementation fixture. This page is intentionally noindex until migrated content is approved.</p>",
-    "owner_approved_at": null
+    "owner_approved_at": null,
+    "lead_intent": "DRILLING_PARTNER",
+    "body_html_safety_status": "fixture"
   },
   {
     "path": "/blog/detail/gorizontalnoe-almaznoe-burenie/",
@@ -81,7 +91,9 @@
     "seo_description": "",
     "excerpt": "Implementation fixture. Replace with migrated/approved Directus content before production.",
     "body_html": "<p>Implementation fixture. This page is intentionally noindex until migrated content is approved.</p>",
-    "owner_approved_at": null
+    "owner_approved_at": null,
+    "lead_intent": "DRILLING_PARTNER",
+    "body_html_safety_status": "fixture"
   },
   {
     "path": "/vakansii/",
@@ -95,7 +107,9 @@
     "seo_description": "",
     "excerpt": "Implementation fixture. Replace with migrated/approved Directus content before production.",
     "body_html": "<p>Implementation fixture. This page is intentionally noindex until migrated content is approved.</p>",
-    "owner_approved_at": null
+    "owner_approved_at": null,
+    "lead_intent": null,
+    "body_html_safety_status": "fixture"
   },
   {
     "path": "/blog/poleznye-stati/",
@@ -109,7 +123,9 @@
     "seo_description": "",
     "excerpt": "Implementation fixture. Replace with migrated/approved Directus content before production.",
     "body_html": "<p>Implementation fixture. This page is intentionally noindex until migrated content is approved.</p>",
-    "owner_approved_at": null
+    "owner_approved_at": null,
+    "lead_intent": null,
+    "body_html_safety_status": "fixture"
   },
   {
     "path": "/montazh-ventiliacii/",
@@ -123,7 +139,9 @@
     "seo_description": "",
     "excerpt": "Implementation fixture. Replace with migrated/approved Directus content before production.",
     "body_html": "<p>Implementation fixture. This page is intentionally noindex until migrated content is approved.</p>",
-    "owner_approved_at": null
+    "owner_approved_at": null,
+    "lead_intent": "VENTILATION_PROJECT",
+    "body_html_safety_status": "fixture"
   },
   {
     "path": "/about/",
@@ -137,7 +155,9 @@
     "seo_description": "",
     "excerpt": "Implementation fixture. Replace with migrated/approved Directus content before production.",
     "body_html": "<p>Implementation fixture. This page is intentionally noindex until migrated content is approved.</p>",
-    "owner_approved_at": null
+    "owner_approved_at": null,
+    "lead_intent": null,
+    "body_html_safety_status": "fixture"
   },
   {
     "path": "/contact/",
@@ -151,7 +171,9 @@
     "seo_description": "",
     "excerpt": "Implementation fixture. Replace with migrated/approved Directus content before production.",
     "body_html": "<p>Implementation fixture. This page is intentionally noindex until migrated content is approved.</p>",
-    "owner_approved_at": null
+    "owner_approved_at": null,
+    "lead_intent": null,
+    "body_html_safety_status": "fixture"
   },
   {
     "path": "/covid-pritochnaya-ventilacia/",
@@ -165,7 +187,9 @@
     "seo_description": "",
     "excerpt": "Implementation fixture. Replace with migrated/approved Directus content before production.",
     "body_html": "<p>Implementation fixture. This page is intentionally noindex until migrated content is approved.</p>",
-    "owner_approved_at": null
+    "owner_approved_at": null,
+    "lead_intent": null,
+    "body_html_safety_status": "fixture"
   },
   {
     "path": "/portfolio/",
@@ -179,7 +203,9 @@
     "seo_description": "",
     "excerpt": "Implementation fixture. Replace with migrated/approved Directus content before production.",
     "body_html": "<p>Implementation fixture. This page is intentionally noindex until migrated content is approved.</p>",
-    "owner_approved_at": null
+    "owner_approved_at": null,
+    "lead_intent": null,
+    "body_html_safety_status": "fixture"
   },
   {
     "path": "/blog/detail/restoran-v-zhk-leontevskiy-mys/",
@@ -193,7 +219,9 @@
     "seo_description": "",
     "excerpt": "Implementation fixture. Replace with migrated/approved Directus content before production.",
     "body_html": "<p>Implementation fixture. This page is intentionally noindex until migrated content is approved.</p>",
-    "owner_approved_at": null
+    "owner_approved_at": null,
+    "lead_intent": null,
+    "body_html_safety_status": "fixture"
   },
   {
     "path": "/services/",
@@ -207,7 +235,9 @@
     "seo_description": "",
     "excerpt": "Implementation fixture. Replace with migrated/approved Directus content before production.",
     "body_html": "<p>Implementation fixture. This page is intentionally noindex until migrated content is approved.</p>",
-    "owner_approved_at": null
+    "owner_approved_at": null,
+    "lead_intent": null,
+    "body_html_safety_status": "fixture"
   },
   {
     "path": "/blog/",
@@ -221,7 +251,9 @@
     "seo_description": "",
     "excerpt": "Implementation fixture. Replace with migrated/approved Directus content before production.",
     "body_html": "<p>Implementation fixture. This page is intentionally noindex until migrated content is approved.</p>",
-    "owner_approved_at": null
+    "owner_approved_at": null,
+    "lead_intent": null,
+    "body_html_safety_status": "fixture"
   },
   {
     "path": "/news/",
@@ -235,7 +267,9 @@
     "seo_description": "",
     "excerpt": "Implementation fixture. Replace with migrated/approved Directus content before production.",
     "body_html": "<p>Implementation fixture. This page is intentionally noindex until migrated content is approved.</p>",
-    "owner_approved_at": null
+    "owner_approved_at": null,
+    "lead_intent": null,
+    "body_html_safety_status": "fixture"
   },
   {
     "path": "/blog/detail/ntff-polisan/",
@@ -249,7 +283,9 @@
     "seo_description": "",
     "excerpt": "Implementation fixture. Replace with migrated/approved Directus content before production.",
     "body_html": "<p>Implementation fixture. This page is intentionally noindex until migrated content is approved.</p>",
-    "owner_approved_at": null
+    "owner_approved_at": null,
+    "lead_intent": null,
+    "body_html_safety_status": "fixture"
   },
   {
     "path": "/blog/detail/kak-my-sdali-7-domov/",
@@ -263,7 +299,9 @@
     "seo_description": "",
     "excerpt": "Implementation fixture. Replace with migrated/approved Directus content before production.",
     "body_html": "<p>Implementation fixture. This page is intentionally noindex until migrated content is approved.</p>",
-    "owner_approved_at": null
+    "owner_approved_at": null,
+    "lead_intent": null,
+    "body_html_safety_status": "fixture"
   },
   {
     "path": "/blog/istorii-proektov/",
@@ -277,7 +315,9 @@
     "seo_description": "",
     "excerpt": "Implementation fixture. Replace with migrated/approved Directus content before production.",
     "body_html": "<p>Implementation fixture. This page is intentionally noindex until migrated content is approved.</p>",
-    "owner_approved_at": null
+    "owner_approved_at": null,
+    "lead_intent": null,
+    "body_html_safety_status": "fixture"
   },
   {
     "path": "/blog/detail/kvartira-na-zhukova/",
@@ -291,7 +331,9 @@
     "seo_description": "",
     "excerpt": "Implementation fixture. Replace with migrated/approved Directus content before production.",
     "body_html": "<p>Implementation fixture. This page is intentionally noindex until migrated content is approved.</p>",
-    "owner_approved_at": null
+    "owner_approved_at": null,
+    "lead_intent": null,
+    "body_html_safety_status": "fixture"
   },
   {
     "path": "/blog/detail/montazh-ventilyatsii-v-karelii/",
@@ -305,7 +347,9 @@
     "seo_description": "",
     "excerpt": "Implementation fixture. Replace with migrated/approved Directus content before production.",
     "body_html": "<p>Implementation fixture. This page is intentionally noindex until migrated content is approved.</p>",
-    "owner_approved_at": null
+    "owner_approved_at": null,
+    "lead_intent": null,
+    "body_html_safety_status": "fixture"
   },
   {
     "path": "/blog/detail/novoe-almaznoe-burenie/",
@@ -319,7 +363,9 @@
     "seo_description": "",
     "excerpt": "Implementation fixture. Replace with migrated/approved Directus content before production.",
     "body_html": "<p>Implementation fixture. This page is intentionally noindex until migrated content is approved.</p>",
-    "owner_approved_at": null
+    "owner_approved_at": null,
+    "lead_intent": "DRILLING_PARTNER",
+    "body_html_safety_status": "fixture"
   },
   {
     "path": "/news/korporativnaya-zhizn/",
@@ -333,7 +379,9 @@
     "seo_description": "",
     "excerpt": "Implementation fixture. Replace with migrated/approved Directus content before production.",
     "body_html": "<p>Implementation fixture. This page is intentionally noindex until migrated content is approved.</p>",
-    "owner_approved_at": null
+    "owner_approved_at": null,
+    "lead_intent": null,
+    "body_html_safety_status": "fixture"
   },
   {
     "path": "/blog/detail/kafe-rimskogo-korsakova-3/",
@@ -347,7 +395,9 @@
     "seo_description": "",
     "excerpt": "Implementation fixture. Replace with migrated/approved Directus content before production.",
     "body_html": "<p>Implementation fixture. This page is intentionally noindex until migrated content is approved.</p>",
-    "owner_approved_at": null
+    "owner_approved_at": null,
+    "lead_intent": null,
+    "body_html_safety_status": "fixture"
   },
   {
     "path": "/news/istoriya-kompanii/",
@@ -361,7 +411,9 @@
     "seo_description": "",
     "excerpt": "Implementation fixture. Replace with migrated/approved Directus content before production.",
     "body_html": "<p>Implementation fixture. This page is intentionally noindex until migrated content is approved.</p>",
-    "owner_approved_at": null
+    "owner_approved_at": null,
+    "lead_intent": null,
+    "body_html_safety_status": "fixture"
   },
   {
     "path": "/faq/",
@@ -375,7 +427,9 @@
     "seo_description": "",
     "excerpt": "Implementation fixture. Replace with migrated/approved Directus content before production.",
     "body_html": "<p>Implementation fixture. This page is intentionally noindex until migrated content is approved.</p>",
-    "owner_approved_at": null
+    "owner_approved_at": null,
+    "lead_intent": null,
+    "body_html_safety_status": "fixture"
   },
   {
     "path": "/blog/obzory-i-intervyu/",
@@ -389,7 +443,9 @@
     "seo_description": "",
     "excerpt": "Implementation fixture. Replace with migrated/approved Directus content before production.",
     "body_html": "<p>Implementation fixture. This page is intentionally noindex until migrated content is approved.</p>",
-    "owner_approved_at": null
+    "owner_approved_at": null,
+    "lead_intent": null,
+    "body_html_safety_status": "fixture"
   },
   {
     "path": "/news/znachimye-sobytiya/",
@@ -403,6 +459,8 @@
     "seo_description": "",
     "excerpt": "Implementation fixture. Replace with migrated/approved Directus content before production.",
     "body_html": "<p>Implementation fixture. This page is intentionally noindex until migrated content is approved.</p>",
-    "owner_approved_at": null
+    "owner_approved_at": null,
+    "lead_intent": null,
+    "body_html_safety_status": "fixture"
   }
 ]

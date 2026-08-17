@@ -1,7 +1,7 @@
 ---
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
-import { canonicalUrl, jsonLd, robotsValue } from '@/lib/seo';
+import { canonicalUrl, jsonLd, robotsValue, serializeJsonLd } from '@/lib/seo';
 import type { ContentRecord } from '@/lib/types';
 import '@/styles/global.css';
 
@@ -27,7 +27,7 @@ const ogDescription = content.og_description || content.seo_description;
     <meta property="og:url" content={canonical} />
     <meta property="og:type" content={['article', 'news'].includes(content.content_type) ? 'article' : 'website'} />
     <meta property="og:site_name" content="AEROVENTA" />
-    <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+    <script type="application/ld+json" set:html={serializeJsonLd(schema)}></script>
   </head>
   <body>
     <Header />

@@ -43,3 +43,10 @@ export function jsonLd(content: ContentRecord) {
   if (type === 'Service') base.areaServed = SITE.serviceArea;
   return base;
 }
+
+export function serializeJsonLd(value: unknown): string {
+  return JSON.stringify(value)
+    .replaceAll('&', '\\u0026')
+    .replaceAll('<', '\\u003c')
+    .replaceAll('>', '\\u003e');
+}

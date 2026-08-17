@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import LeadCTA from '@/components/LeadCTA.astro';
 import { getByPath } from '@/lib/content-source';
 const content = await getByPath('/');
 if (!content) throw new Error('Home content is missing');
@@ -9,10 +10,12 @@ const fixture = content.status === 'fixture_stub';
   <section class="hero">
     <div class="container">
       <p><strong>Основное направление</strong></p>
-      <h1>Монтаж вентиляции для квартир, бизнеса и сложных объектов</h1>
-      <p>Проектируем практичную реализацию, выполняем монтаж и решаем нестандартные инженерные задачи в Санкт-Петербурге и Ленинградской области.</p>
-      <p><a class="cta" href="/montazh-ventiliacii/">Обсудить вентиляцию</a></p>
+      <h1>{content.h1}</h1>
+      {content.excerpt && <p>{content.excerpt}</p>}
+      <Fragment set:html={content.body_html} />
       {fixture && <div class="notice"><strong>Implementation fixture:</strong> production-контент ещё не мигрирован; страница принудительно noindex.</div>}
+      <p><a class="cta" href="/montazh-ventiliacii/">Монтаж вентиляции</a></p>
+      <LeadCTA intent="VENTILATION_PROJECT" title="Обсудить вентиляцию" />
     </div>
   </section>
 </BaseLayout>

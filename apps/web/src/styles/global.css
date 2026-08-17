@@ -30,3 +30,5 @@ main { min-height: 60vh; }
   .nav { gap: 10px 14px; justify-content: flex-end; }
   .footer-grid { grid-template-columns: 1fr; }
 }
+
+.lead-cta{margin-top:40px;padding:28px;border:1px solid #dbe3ea;border-radius:12px;background:#f8fafc}.lead-cta--partner{background:#fffaf0}.lead-cta__actions{display:flex;gap:12px;flex-wrap:wrap}.lead-cta__note{font-size:.9rem;color:#4b5563}

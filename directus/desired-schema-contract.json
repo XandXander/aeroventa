@@ -58,6 +58,11 @@
           "migration bridge; structured blocks target"
         ],
         [
+          "body_html_safety_status",
+          "string",
+          "required when body_html is used; reviewed_safe before publish"
+        ],
+        [
           "body_blocks",
           "alias",
           "O2M content_block_map; target structured content relation"
