@@ -1,0 +1,54 @@
+name: implementation-ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Generate route rules
+        run: npm run generate:hosting-rules
+
+      - name: Validate implementation contracts
+        run: npm run validate
+
+      - name: Build fixture site
+        env:
+          AEROVENTA_RELEASE_MODE: fixture
+        run: npm run build:web
+
+      - name: Validate generated static site
+        env:
+          AEROVENTA_RELEASE_MODE: fixture
+        run: npm run validate:dist
+
+      - name: Upload validation artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: aeroventa-implementation-ci
+          path: |
+            package-lock.json
+            IMPLEMENTATION_STATUS_T2.json
+            BUILD_VALIDATION_T2.json
+            apps/web/dist
+          if-no-files-found: error
+          retention-days: 7
