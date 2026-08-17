@@ -1,51 +1,101 @@
+import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..');
-const routes = JSON.parse(await fs.readFile(path.join(root, 'migration/route-contract.json'), 'utf8'));
-const fixtures = JSON.parse(await fs.readFile(path.join(root, 'apps/web/src/data/content-fixtures.json'), 'utf8'));
-const priorityDrafts = JSON.parse(await fs.readFile(path.join(root, 'migration/priority-content-drafts.json'), 'utf8'));
+
+const routeContractPath = path.join(root, 'migration/route-contract.json');
+const fixturesPath = path.join(root, 'apps/web/src/data/content-fixtures.json');
+const priorityDraftsPath = path.join(root, 'migration/priority-content-drafts.json');
+const coreContentV7Path = path.join(root, 'apps/web/src/data/core-content-v7.json');
+const outPath = path.join(root, 'migration/directus-import-plan.json');
+
+const [routeBytes, fixtureBytes, priorityBytes, coreV7Bytes] = await Promise.all([
+  fs.readFile(routeContractPath),
+  fs.readFile(fixturesPath),
+  fs.readFile(priorityDraftsPath),
+  fs.readFile(coreContentV7Path),
+]);
+
+const routes = JSON.parse(routeBytes.toString('utf8'));
+const fixtures = JSON.parse(fixtureBytes.toString('utf8'));
+const priorityDrafts = JSON.parse(priorityBytes.toString('utf8'));
+const coreContentV7 = JSON.parse(coreV7Bytes.toString('utf8'));
+
+const sourceFingerprint = crypto
+  .createHash('sha256')
+  .update(routeBytes)
+  .update(fixtureBytes)
+  .update(priorityBytes)
+  .update(coreV7Bytes)
+  .digest('hex');
+
+const coreOverridePaths = new Set(Object.keys(coreContentV7));
+const fixturePaths = new Set(fixtures.map((item) => item.path));
+for (const overridePath of coreOverridePaths) {
+  if (!fixturePaths.has(overridePath)) {
+    throw new Error(`core-content-v7 override has no retained fixture route: ${overridePath}`);
+  }
+}
 
 const content = fixtures.map((item) => {
   const draft = priorityDrafts[item.path] ?? null;
-  return ({
-  status: 'draft',
-  content_type: item.content_type,
-  path: item.path,
-  slug: item.path === '/' ? 'home' : item.path.replace(/^\//, '').replace(/\/$/, '').split('/').at(-1),
-  title: draft?.title ?? item.title,
-  h1: draft?.h1 ?? item.h1,
-  excerpt: draft?.excerpt ?? null,
-  body_html: draft?.body_html ?? null,
-  body_html_safety_status: draft?.body_html ? 'pending_review' : 'not_applicable',
-  owner_approved_at: null,
-  business_role: item.business_role,
-  primary_topic: item.lead_intent === 'DRILLING_PARTNER' ? 'алмазное бурение' : (item.business_role.includes('VENTILATION') || item.business_role === 'PRIMARY_COMMERCIAL' || item.business_role === 'PRIMARY_BRAND_HOME' ? 'вентиляция' : null),
-  knowledge_allowed: false,
-  lead_intent: item.lead_intent ?? null,
-  source_legacy_url: new URL(item.path, 'https://aeroventa.ru').toString(),
-  migration_evidence: {
-    route: routes.find((r) => r.path === item.path) ?? null,
-    draft_basis: draft?.source_basis ?? null,
-    verification_status: draft?.verification ?? 'PENDING_SOURCE_MIGRATION',
-  },
-  seo_title: draft?.seo_title ?? item.seo_title,
-  seo_description: draft?.seo_description ?? null,
-  canonical_override: null,
-  robots_index: false,
-  robots_follow: true,
-  sitemap_include: false,
-  og_title: null,
-  og_description: null,
-  schema_type: item.content_type === 'service' ? 'Service' : (item.content_type === 'article' ? 'Article' : (item.content_type === 'news' ? 'NewsArticle' : 'WebPage')),
-  schema_json_extra: null,
-  ai_origin: false,
-  fact_check_status: 'pending',
-  duplicate_check_status: 'pending',
-  cannibalization_check_status: 'pending',
-  });
+  const coreOverride = coreContentV7[item.path] ?? null;
+  const bodyHtml = coreOverride?.body_html ?? draft?.body_html ?? null;
+
+  return {
+    status: 'draft',
+    content_type: item.content_type,
+    path: item.path,
+    slug: item.path === '/' ? 'home' : item.path.replace(/^\//, '').replace(/\/$/, '').split('/').at(-1),
+    title: coreOverride?.title ?? draft?.title ?? item.title,
+    h1: coreOverride?.h1 ?? draft?.h1 ?? item.h1,
+    excerpt: coreOverride?.excerpt ?? draft?.excerpt ?? null,
+    body_html: bodyHtml,
+    body_html_safety_status: bodyHtml ? 'pending_review' : 'not_applicable',
+    owner_approved_at: null,
+    business_role: item.business_role,
+    primary_topic:
+      (coreOverride?.lead_intent ?? item.lead_intent) === 'DRILLING_PARTNER'
+        ? 'алмазное бурение'
+        : (item.business_role.includes('VENTILATION') ||
+            item.business_role === 'PRIMARY_COMMERCIAL' ||
+            item.business_role === 'PRIMARY_BRAND_HOME'
+          ? 'вентиляция'
+          : null),
+    knowledge_allowed: false,
+    lead_intent: coreOverride?.lead_intent ?? item.lead_intent ?? null,
+    source_legacy_url: new URL(item.path, 'https://aeroventa.ru').toString(),
+    migration_evidence: {
+      route: routes.find((r) => r.path === item.path) ?? null,
+      draft_basis: draft?.source_basis ?? null,
+      verification_status: draft?.verification ?? 'PENDING_SOURCE_MIGRATION',
+      core_content_v7_override: Boolean(coreOverride),
+    },
+    seo_title: coreOverride?.seo_title ?? draft?.seo_title ?? item.seo_title,
+    seo_description: coreOverride?.seo_description ?? draft?.seo_description ?? null,
+    canonical_override: null,
+    robots_index: false,
+    robots_follow: true,
+    sitemap_include: false,
+    og_title: null,
+    og_description: null,
+    schema_type:
+      item.content_type === 'service'
+        ? 'Service'
+        : item.content_type === 'article'
+          ? 'Article'
+          : item.content_type === 'news'
+            ? 'NewsArticle'
+            : 'WebPage',
+    schema_json_extra: null,
+    ai_origin: false,
+    fact_check_status: 'pending',
+    duplicate_check_status: 'pending',
+    cannibalization_check_status: 'pending',
+  };
 });
 
 const redirects = routes
@@ -87,7 +137,8 @@ const categories = [
 const plan = {
   format: 'aeroventa-directus-import-plan-v1',
   safety: 'DRAFT_ONLY_NO_PUBLISH',
-  generated_at: new Date().toISOString(),
+  generated_at: null,
+  source_fingerprint_sha256: sourceFingerprint,
   collections: {
     content,
     content_categories: categories,
@@ -196,5 +247,7 @@ const plan = {
   },
 };
 
-await fs.writeFile(path.join(root, 'migration/directus-import-plan.json'), JSON.stringify(plan, null, 2));
-console.log(`Prepared Directus draft plan: ${content.length} content rows, ${redirects.length} route rules.`);
+await fs.writeFile(outPath, `${JSON.stringify(plan, null, 2)}\n`);
+console.log(
+  `Prepared deterministic Directus draft plan: ${content.length} content rows, ${redirects.length} route rules, source ${sourceFingerprint}.`,
+);

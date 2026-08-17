@@ -9,12 +9,16 @@
     "apps/*"
   ],
   "scripts": {
-    "validate": "node scripts/validate-implementation.mjs",
+    "validate": "node scripts/validate-implementation.mjs && node scripts/generate-directus-import-plan.mjs && node scripts/validate-directus-readiness.mjs",
     "generate:hosting-rules": "node scripts/generate-hosting-rules.mjs",
     "build:web": "npm --workspace @aeroventa/web run build",
     "dev:web": "npm --workspace @aeroventa/web run dev",
     "validate:dist": "node scripts/validate-built-site.mjs",
+    "directus:plan:generate": "node scripts/generate-directus-import-plan.mjs",
+    "directus:plan:validate": "node scripts/validate-directus-readiness.mjs",
+    "directus:preflight:local": "npm run directus:plan:generate && npm run directus:plan:validate",
     "directus:snapshot:readonly": "node scripts/directus-schema-readonly.mjs",
+    "directus:snapshot:inspect": "node scripts/directus-schema-inspect-readonly.mjs",
     "directus:diff:readonly": "node scripts/directus-schema-diff-readonly.mjs"
   }
 }
