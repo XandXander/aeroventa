@@ -1,0 +1,21 @@
+{
+  "package": "AEROVENTA_V12_DIRECTUS_DRAFT_IMPORTER",
+  "scope": "repo-only deterministic Directus DRAFT importer + readback validator",
+  "base_main_head": "346a16560719a83b6e3e1fbbadd63a16c60a9612",
+  "v11_apply_hash": "b3ed8151ee5f641550d4893369a1f46894f804cb",
+  "source_fingerprint_sha256": "4a33c77aa5578bf6272a2f2763c9a16e6a7dc678ff88596c11da1c233cd23c78",
+  "expected_counts": {
+    "content": 29,
+    "content_categories": 8,
+    "redirects": 67,
+    "project_details": 6,
+    "service_details": 2,
+    "site_settings": 1,
+    "content_blocks": 0,
+    "content_block_map": 0,
+    "content_category_map": 0
+  },
+  "production_write_performed": false,
+  "schema_write_performed": false,
+  "directus_data_write_performed": false
+}
