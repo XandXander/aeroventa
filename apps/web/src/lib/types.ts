@@ -27,6 +27,8 @@ export interface ContentRecord {
   robots_index: boolean;
   robots_follow?: boolean;
   sitemap_include?: boolean;
+  knowledge_allowed?: boolean;
+  ai_origin?: boolean;
   seo_title: string;
   seo_description: string;
   canonical_override?: string | null;

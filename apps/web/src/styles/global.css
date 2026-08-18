@@ -25,6 +25,8 @@ main { min-height: 60vh; }
 .prose { max-width: 850px; }
 .site-footer { border-top: 1px solid #e5e7eb; padding: 36px 0; color: #4b5563; }
 .footer-grid { display: grid; gap: 14px; grid-template-columns: 1fr auto; }
+.preview-banner { position: relative; z-index: 50; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; padding: 9px 16px; background: #7c2d12; color: #fff7ed; text-align: center; font-size: .9rem; line-height: 1.35; }
+.draft-preview .site-header { top: 0; }
 @media (max-width: 760px) {
   .site-header__inner { align-items: flex-start; padding-block: 14px; }
   .nav { gap: 10px 14px; justify-content: flex-end; }

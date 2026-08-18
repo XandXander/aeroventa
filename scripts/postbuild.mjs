@@ -6,9 +6,18 @@ import { spawn } from 'node:child_process';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..');
 const source = path.join(root, 'migration/hosting-rules.generated.conf');
-const target = path.join(root, 'apps/web/dist/.htaccess');
+const dist = path.join(root, 'apps/web/dist');
+const target = path.join(dist, '.htaccess');
+const releaseMode = process.env.AEROVENTA_RELEASE_MODE || 'fixture';
+
 await fs.copyFile(source, target);
 console.log(`Copied hosting rules to ${target}`);
+
+if (releaseMode === 'preview') {
+  const robots = 'User-agent: *\nDisallow: /\n';
+  await fs.writeFile(path.join(dist, 'robots.txt'), robots);
+  console.log('Applied V13 preview robots.txt: Disallow: /');
+}
 
 await new Promise((resolve, reject) => {
   const child = spawn(process.execPath, [path.join(root, 'scripts/validate-built-site.mjs')], {

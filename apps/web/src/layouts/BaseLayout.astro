@@ -7,9 +7,10 @@ import '@/styles/global.css';
 
 interface Props { content: ContentRecord; }
 const { content } = Astro.props;
+const preview = import.meta.env.AEROVENTA_RELEASE_MODE === 'preview';
 const canonical = canonicalUrl(content.path, content.canonical_override);
-const robots = robotsValue(content);
-const schema = jsonLd(content);
+const robots = preview ? 'noindex,nofollow,noarchive,nosnippet' : robotsValue(content);
+const schema = preview ? null : jsonLd(content);
 const ogTitle = content.og_title || content.seo_title || content.title;
 const ogDescription = content.og_description || content.seo_description;
 const ogImage = content.og_image ? new URL(content.og_image, 'https://aeroventa.ru').toString() : null;
@@ -33,9 +34,15 @@ const ogImage = content.og_image ? new URL(content.og_image, 'https://aeroventa.
     <meta name="twitter:title" content={ogTitle} />
     {ogDescription && <meta name="twitter:description" content={ogDescription} />}
     {ogImage && <meta name="twitter:image" content={ogImage} />}
-    <script type="application/ld+json" set:html={serializeJsonLd(schema)}></script>
+    {schema && <script type="application/ld+json" set:html={serializeJsonLd(schema)}></script>}
   </head>
-  <body>
+  <body class={preview ? 'draft-preview' : undefined}>
+    {preview && (
+      <div class="preview-banner" data-aeroventa-preview="draft" role="status">
+        <strong>AEROVENTA DRAFT PREVIEW</strong>
+        <span>Черновик из Directus. Не опубликован, не одобрен Owner и закрыт от индексации.</span>
+      </div>
+    )}
     <Header />
     <main>
       <slot />

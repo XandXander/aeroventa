@@ -9,7 +9,7 @@
     "apps/*"
   ],
   "scripts": {
-    "validate": "node scripts/validate-implementation.mjs && node scripts/generate-directus-import-plan.mjs && node scripts/validate-directus-readiness.mjs && node scripts/generate-directus-native-target-v11.mjs && node scripts/validate-directus-native-target-v11.mjs && node scripts/validate-directus-v12-static.mjs",
+    "validate": "node scripts/validate-implementation.mjs && node scripts/generate-directus-import-plan.mjs && node scripts/validate-directus-readiness.mjs && node scripts/generate-directus-native-target-v11.mjs && node scripts/validate-directus-native-target-v11.mjs && node scripts/validate-directus-v12-static.mjs && node scripts/validate-directus-v13-static.mjs",
     "generate:hosting-rules": "node scripts/generate-hosting-rules.mjs",
     "build:web": "npm --workspace @aeroventa/web run build",
     "dev:web": "npm --workspace @aeroventa/web run dev",
@@ -25,6 +25,8 @@
     "directus:v12:prepare": "node scripts/generate-directus-import-plan.mjs && node scripts/validate-directus-readiness.mjs && node scripts/validate-directus-native-target-v11.mjs && node scripts/validate-directus-v12-static.mjs",
     "directus:v12:dry-run": "npm run directus:v12:prepare && node scripts/directus-v12-import.mjs --dry-run",
     "directus:v12:apply": "npm run directus:v12:prepare && node scripts/directus-v12-import.mjs --apply",
-    "directus:v12:readback": "npm run directus:v12:prepare && node scripts/directus-v12-readback.mjs"
+    "directus:v12:readback": "npm run directus:v12:prepare && node scripts/directus-v12-readback.mjs",
+    "directus:v13:preview:validate": "node scripts/validate-directus-v13-static.mjs",
+    "directus:v13:preview:build": "npm run directus:v13:preview:validate && node scripts/build-directus-v13-preview.mjs"
   }
 }

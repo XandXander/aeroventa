@@ -11,6 +11,7 @@ const normalizePath = (path: string) => {
 };
 
 const forbiddenPublishedPaths = new Set(['/404.php']);
+const allowedReleaseModes = new Set(['fixture', 'preview', 'production']);
 
 function assertSafeHtml(html: string, itemPath: string) {
   if (!html) return;
@@ -55,6 +56,38 @@ function assertSafePublishedRecord(item: ContentRecord): ContentRecord {
   return { ...item, path: normalizedPath };
 }
 
+function assertSafePreviewRecord(item: ContentRecord): ContentRecord {
+  if (!item.path) throw new Error('Preview content item has no path');
+  const normalizedPath = normalizePath(item.path);
+  if (forbiddenPublishedPaths.has(normalizedPath)) {
+    throw new Error(`Preview content conflicts with reserved migration route: ${normalizedPath}`);
+  }
+  if (item.status !== 'draft') throw new Error(`Preview accepts draft content only: ${normalizedPath}`);
+  if (item.owner_approved_at !== null) throw new Error(`Preview draft unexpectedly has owner approval: ${normalizedPath}`);
+  if (item.robots_index !== false) throw new Error(`Preview draft is indexable in Directus: ${normalizedPath}`);
+  if (item.sitemap_include !== false) throw new Error(`Preview draft is included in sitemap: ${normalizedPath}`);
+  if (item.knowledge_allowed !== false) throw new Error(`Preview draft is enabled for AI knowledge: ${normalizedPath}`);
+  if (item.ai_origin !== false) throw new Error(`Preview draft unexpectedly claims AI origin: ${normalizedPath}`);
+  if (!item.title?.trim()) throw new Error(`Preview content item has no title: ${normalizedPath}`);
+  if (!item.h1?.trim()) throw new Error(`Preview content item has no H1: ${normalizedPath}`);
+
+  const body = item.body_html || '';
+  if (body) {
+    if (!['pending_review', 'reviewed_safe'].includes(String(item.body_html_safety_status))) {
+      throw new Error(`Preview HTML bridge has invalid safety status: ${normalizedPath}`);
+    }
+    assertSafeHtml(body, normalizedPath);
+  }
+
+  return {
+    ...item,
+    path: normalizedPath,
+    robots_index: false,
+    sitemap_include: false,
+    owner_approved_at: null,
+  };
+}
+
 function assertCompleteRouteSet(items: ContentRecord[]) {
   const normalized = items.map((item) => normalizePath(item.path));
   const published = new Set(normalized);
@@ -66,47 +99,70 @@ function assertCompleteRouteSet(items: ContentRecord[]) {
   }
 }
 
-async function fetchDirectusPage(base: string, offset: number): Promise<ContentRecord[]> {
+function assertExactPreviewRouteSet(items: ContentRecord[]) {
+  const normalized = items.map((item) => normalizePath(item.path));
+  const actual = new Set(normalized);
+  const expected = new Set((expectedRetainedPaths as string[]).map(normalizePath));
+
+  if (actual.size !== normalized.length) throw new Error('Directus preview contains duplicate canonical paths');
+
+  const missing = [...expected].filter((path) => !actual.has(path));
+  const unexpected = [...actual].filter((path) => !expected.has(path));
+  if (missing.length || unexpected.length) {
+    throw new Error(
+      `Directus preview route-set drift: missing=${missing.join(', ') || 'none'}; unexpected=${unexpected.join(', ') || 'none'}`,
+    );
+  }
+}
+
+type DirectusMode = 'preview' | 'production';
+
+const directusFields = [
+  'path','title','h1','content_type','business_role','status',
+  'robots_index','robots_follow','sitemap_include','knowledge_allowed','ai_origin',
+  'seo_title','seo_description','canonical_override',
+  'og_title','og_description','og_image','schema_type','schema_json_extra',
+  'published_at','updated_at_public',
+  'excerpt','body_html','body_html_safety_status','lead_intent','owner_approved_at'
+].join(',');
+
+async function fetchDirectusPage(base: string, offset: number, mode: DirectusMode): Promise<ContentRecord[]> {
   const url = new URL('/items/content', base);
-  url.searchParams.set('filter[status][_eq]', 'published');
-  url.searchParams.set('filter[owner_approved_at][_nnull]', 'true');
+  if (mode === 'production') {
+    url.searchParams.set('filter[status][_eq]', 'published');
+    url.searchParams.set('filter[owner_approved_at][_nnull]', 'true');
+  } else {
+    url.searchParams.set('filter[status][_eq]', 'draft');
+    url.searchParams.set('filter[owner_approved_at][_null]', 'true');
+  }
   url.searchParams.set('limit', '100');
   url.searchParams.set('offset', String(offset));
-  url.searchParams.set(
-    'fields',
-    [
-      'path','title','h1','content_type','business_role','status',
-      'robots_index','robots_follow','sitemap_include',
-      'seo_title','seo_description','canonical_override',
-      'og_title','og_description','og_image','schema_type','schema_json_extra',
-      'published_at','updated_at_public',
-      'excerpt','body_html','body_html_safety_status','lead_intent','owner_approved_at'
-    ].join(',')
-  );
+  url.searchParams.set('fields', directusFields);
 
   const headers: Record<string, string> = { Accept: 'application/json' };
   const token = import.meta.env.DIRECTUS_STATIC_TOKEN;
   if (token) headers.Authorization = `Bearer ${token}`;
 
   const response = await fetch(url, { headers });
-  if (!response.ok) throw new Error(`Directus build fetch failed: HTTP ${response.status}`);
+  if (!response.ok) throw new Error(`Directus ${mode} build fetch failed: HTTP ${response.status}`);
 
   const payload = await response.json();
   if (!Array.isArray(payload?.data)) throw new Error('Directus payload.data is not an array');
-  return payload.data.map(assertSafePublishedRecord);
+  return payload.data.map(mode === 'production' ? assertSafePublishedRecord : assertSafePreviewRecord);
 }
 
-async function fetchDirectusContent(base: string): Promise<ContentRecord[]> {
+async function fetchDirectusContent(base: string, mode: DirectusMode): Promise<ContentRecord[]> {
   const items: ContentRecord[] = [];
   for (let offset = 0; ; offset += 100) {
-    const page = await fetchDirectusPage(base, offset);
+    const page = await fetchDirectusPage(base, offset, mode);
     items.push(...page);
     if (page.length < 100) break;
     if (offset > 10000) throw new Error('Directus pagination safety limit exceeded');
   }
 
-  if (!items.length) throw new Error('DIRECTUS_URL is configured but no approved published content was returned');
-  assertCompleteRouteSet(items);
+  if (!items.length) throw new Error(`DIRECTUS_URL is configured but no ${mode} content was returned`);
+  if (mode === 'production') assertCompleteRouteSet(items);
+  else assertExactPreviewRouteSet(items);
   return items;
 }
 
@@ -137,15 +193,29 @@ function getFixtureContent(): ContentRecord[] {
 
 export async function getAllContent(): Promise<ContentRecord[]> {
   const directusUrl = import.meta.env.DIRECTUS_URL;
-  const releaseMode = import.meta.env.AEROVENTA_RELEASE_MODE;
+  const releaseMode = import.meta.env.AEROVENTA_RELEASE_MODE || 'fixture';
 
-  if (directusUrl) return fetchDirectusContent(directusUrl);
-
-  if (releaseMode === 'production') {
-    throw new Error('Production release requires DIRECTUS_URL; fixture content is forbidden');
+  if (!allowedReleaseModes.has(releaseMode)) {
+    throw new Error(`Unsupported AEROVENTA_RELEASE_MODE: ${releaseMode}`);
   }
 
-  // Local/CI implementation fixture only. V7 review overlays stay noindex and cannot relax fixture safety gates.
+  if (releaseMode === 'preview') {
+    if (!directusUrl) throw new Error('Directus draft preview requires DIRECTUS_URL');
+    if (!import.meta.env.DIRECTUS_STATIC_TOKEN) {
+      throw new Error('Directus draft preview requires a dedicated read-only DIRECTUS_STATIC_TOKEN');
+    }
+    return fetchDirectusContent(directusUrl, 'preview');
+  }
+
+  if (releaseMode === 'production') {
+    if (!directusUrl) throw new Error('Production release requires DIRECTUS_URL; fixture content is forbidden');
+    return fetchDirectusContent(directusUrl, 'production');
+  }
+
+  if (directusUrl) {
+    throw new Error('DIRECTUS_URL is set in fixture mode; choose AEROVENTA_RELEASE_MODE=preview or production explicitly');
+  }
+
   return getFixtureContent();
 }
 
