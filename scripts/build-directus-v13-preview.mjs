@@ -8,8 +8,8 @@ if (!token) throw new Error('DIRECTUS_STATIC_TOKEN is required for V13 draft pre
 
 const directusUrl = new URL(directusUrlRaw);
 if (directusUrl.protocol !== 'https:') throw new Error('V13 draft preview requires HTTPS DIRECTUS_URL');
-const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
-const child = spawn(npmCommand, ['--workspace', '@aeroventa/web', 'run', 'build'], {
+const child = spawn('npm', ['--workspace', '@aeroventa/web', 'run', 'build'], {
+  shell: process.platform === 'win32',
   stdio: 'inherit',
   env: {
     ...process.env,
