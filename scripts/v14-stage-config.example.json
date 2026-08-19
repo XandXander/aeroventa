@@ -1,1 +1,15 @@
-PLACEHOLDER_SEE_FULL_CONTENT_IN_EXECUTION
+{
+  "_comment": "V14 staging config TEMPLATE. Copy to v14-stage-config.local.json (gitignored) and fill in real values. Never commit the .local.json copy or real credentials.",
+  "staging": {
+    "ftpHost": "REPLACE_WITH_BEGET_FTP_OR_SFTP_HOST",
+    "ftpPort": 21,
+    "protocol": "ftp",
+    "remoteRoot": "/staging.aeroventa.ru/public_html",
+    "htpasswdRemotePath": "/staging.aeroventa.ru/.htpasswd_staging",
+    "localDistDir": "apps/web/dist",
+    "basicAuthRealm": "AEROVENTA STAGING - AUTHORIZED ACCESS ONLY",
+    "acceptanceBaseUrl": "https://staging.aeroventa.ru",
+    "productionBaseUrl": "https://aeroventa.ru",
+    "requiredPathSegment": "staging"
+  }
+}
