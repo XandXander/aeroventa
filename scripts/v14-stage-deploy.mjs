@@ -1,44 +1,49 @@
 #!/usr/bin/env node
 /**
- * V14 - Isolated staging deploy for AEROVENTA.RU (hardened correction).
+ * V14 - Isolated staging deploy for AEROVENTA.RU (correction 2).
  *
- * Defects closed vs. the first V14 draft:
- *  (1) Loads the existing Windows-DPAPI-encrypted Build Reader token
- *      (decrypted by the PowerShell runner, handed in here only via
- *      process.env.DIRECTUS_URL / DIRECTUS_STATIC_TOKEN for this run).
- *      This script never creates, requests, or persists a credential.
- *  (6) Uploads over explicit FTPS (basic-ftp secure:true), not plaintext FTP.
- *  (8) Staging-target guard is config-attested + host-verified + a live
- *      pre-upload directory-listing check that aborts if Bitrix production
- *      markers (bitrix/, local/, urlrewrite.php) are present at the
- *      remote root - independent of what the hostname string claims.
- *  (9) HARD FAILS unless scripts/v14-stage-config.local.json exists and
- *      contains no literal "REPLACE" placeholder text anywhere. The
- *      .example config is never used for a real deploy.
- *  (5) Basic Auth is fully automated: htpasswd hash generated in-memory
- *      from credentials supplied via env vars for this run only, uploaded
- *      to the configured absolute AuthUserFile path (outside public_html),
- *      and a merged .htaccess (auth directives + the existing built
- *      redirect/410 rules from apps/web/dist/.htaccess) is uploaded to
- *      the remote root. No manual paste step.
+ * This script is the ONLY place the V13 build + postbuild are invoked for
+ * a staging run (defect #1 fix). The runner must NOT pre-build; it only
+ * decrypts/sets DIRECTUS_URL + DIRECTUS_STATIC_TOKEN, preflights them,
+ * then calls this script once.
  *
- * Required env vars for this run (set by the runner, cleared after):
- *   DIRECTUS_URL, DIRECTUS_STATIC_TOKEN   - for the reused V13 build step
- *   V14_FTP_LOGIN, V14_FTP_PASSWORD       - staging FTP(S) credentials
- *   V14_BASIC_AUTH_USER, V14_BASIC_AUTH_PASSWORD - staging Basic Auth creds
+ * Defects closed vs. correction 1:
+ *  (1) Exactly one V13 build + one postbuild happen here, and only here.
+ *  (5) authUserFileAbsolutePath (used inside the generated .htaccess,
+ *      an Apache filesystem path) is now distinct from
+ *      authUserFileFtpPath (the path basic-ftp actually uploads to, as
+ *      seen from inside the scoped FTP account). They are never the
+ *      same field anymore.
+ *  (6) preUploadSafetyListing no longer swallows list() errors into an
+ *      empty array - any failure to list the remote root is a HARD ABORT,
+ *      and cfg.stagingHostname is required to literally equal
+ *      "staging.aeroventa.ru".
+ *  (7) Temporary auth files are written to the OS temp directory with a
+ *      randomized name, and always deleted in a finally block regardless
+ *      of upload success or failure. No raw password is ever written to
+ *      disk (only the generated htpasswd hash line).
+ *  (8) basic-ftp availability is verified/installed BEFORE any credential
+ *      is required by this script's own preflight (mirrors the runner's
+ *      pre-prompt check; this script re-checks independently so it is
+ *      still safe if invoked directly).
  *
- * Requires the optional dependency "basic-ftp" (not added to package.json,
- * kept out of the committed manifest deliberately):
- *   npm install --no-save --package-lock=false --no-audit --no-fund basic-ftp
+ * Required env vars for this run (set by the runner, cleared by the
+ * runner's outer finally after acceptance completes - NOT by this script):
+ *   DIRECTUS_URL, DIRECTUS_STATIC_TOKEN
+ *   V14_FTP_LOGIN, V14_FTP_PASSWORD
+ *   V14_BASIC_AUTH_USER, V14_BASIC_AUTH_PASSWORD
  */
 import { execFileSync } from "node:child_process";
-import { readFileSync, existsSync, writeFileSync } from "node:fs";
+import { readFileSync, existsSync, writeFileSync, unlinkSync } from "node:fs";
+import { randomBytes } from "node:crypto";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { generateHtpasswdLine } from "./v14-htpasswd.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, "..");
+const REQUIRED_STAGING_HOSTNAME = "staging.aeroventa.ru";
 
 function loadConfigStrict() {
   const localPath = path.join(repoRoot, "scripts", "v14-stage-config.local.json");
@@ -60,6 +65,12 @@ function loadConfigStrict() {
 }
 
 function assertSafeTarget(cfg) {
+  if (cfg.stagingHostname !== REQUIRED_STAGING_HOSTNAME) {
+    throw new Error(
+      "[v14-deploy] REFUSING: config.stagingHostname must be exactly \"" + REQUIRED_STAGING_HOSTNAME +
+      "\", got \"" + cfg.stagingHostname + "\"."
+    );
+  }
   let url;
   try {
     url = new URL(cfg.acceptanceBaseUrl);
@@ -76,7 +87,9 @@ function assertSafeTarget(cfg) {
     );
   }
   const forbidden = (cfg.forbiddenHostnames || []).map((h) => h.toLowerCase());
-  if (forbidden.includes(url.hostname.toLowerCase())) {
+  if (forbidden.includes(url.hostname.toLowerCase()) ||
+      url.hostname.toLowerCase() === "aeroventa.ru" ||
+      url.hostname.toLowerCase() === "www.aeroventa.ru") {
     throw new Error("[v14-deploy] REFUSING: staging hostname is a forbidden production hostname.");
   }
   if (cfg.acceptanceBaseUrl === cfg.productionBaseUrl) {
@@ -92,19 +105,56 @@ function assertSafeTarget(cfg) {
       "scoped to the staging site only. Set it to true only after confirming that in the Beget panel."
     );
   }
+  if (!cfg.authUserFileAbsolutePath || !cfg.authUserFileFtpPath) {
+    throw new Error(
+      "[v14-deploy] REFUSING: both authUserFileAbsolutePath (used in .htaccess) and " +
+      "authUserFileFtpPath (used for the FTP upload) must be set, and are intentionally distinct fields."
+    );
+  }
+}
+
+async function ensureBasicFtpAvailable() {
+  try {
+    await import("basic-ftp");
+    return;
+  } catch {
+    console.warn("[v14-deploy] 'basic-ftp' not resolvable, attempting local install (not saved to package.json)...");
+  }
+  try {
+    execFileSync(
+      "npm",
+      ["install", "--no-save", "--package-lock=false", "--no-audit", "--no-fund", "basic-ftp"],
+      { cwd: repoRoot, stdio: "inherit" }
+    );
+  } catch (err) {
+    throw new Error("[v14-deploy] npm install of 'basic-ftp' failed: " + (err.message || err));
+  }
+  try {
+    await import("basic-ftp");
+  } catch {
+    throw new Error("[v14-deploy] 'basic-ftp' still not resolvable after install attempt. Aborting before any upload.");
+  }
 }
 
 async function preUploadSafetyListing(client, cfg) {
   const markers = cfg.productionMarkers || ["bitrix/", "local/", "urlrewrite.php"];
-  const entries = await client.list(cfg.remoteRoot).catch(() => []);
+  let entries;
+  try {
+    entries = await client.list(cfg.remoteRoot);
+  } catch (err) {
+    throw new Error(
+      "[v14-deploy] ABORTING: could not list remote root " + cfg.remoteRoot + " (" + (err.message || err) + "). " +
+      "A failed listing is treated as unsafe by design - refusing to upload without positive proof the " +
+      "directory is clear of production markers."
+    );
+  }
   const names = entries.map((e) => e.name.toLowerCase());
   for (const marker of markers) {
     const bare = marker.replace(/\/$/, "").toLowerCase();
     if (names.includes(bare)) {
       throw new Error(
         "[v14-deploy] ABORTING: remote root " + cfg.remoteRoot + " already contains \"" + marker + "\", " +
-        "which looks like a production Bitrix marker. Refusing to upload - this FTP scope may not be " +
-        "isolated to staging as configured."
+        "which looks like a production Bitrix marker. Refusing to upload."
       );
     }
   }
@@ -149,20 +199,16 @@ async function uploadDist(cfg) {
   const htpasswdLine = generateHtpasswdLine(basicUser, basicPassword);
   const mergedHtaccess = buildMergedHtaccess(cfg);
 
-  let ftpMod;
-  try {
-    ftpMod = await import("basic-ftp");
-  } catch {
-    throw new Error(
-      "[v14-deploy] Optional dependency 'basic-ftp' is not installed. Run:\n" +
-      "  npm install --no-save --package-lock=false --no-audit --no-fund basic-ftp"
-    );
-  }
+  const ftpMod = await import("basic-ftp");
 
   const distDir = path.join(repoRoot, cfg.localDistDir);
   if (!existsSync(distDir)) {
     throw new Error("[v14-deploy] Local dist dir not found: " + distDir + ". Did the build step run?");
   }
+
+  const tmpSuffix = randomBytes(8).toString("hex");
+  const tmpHtaccess = path.join(os.tmpdir(), "v14-htaccess-" + tmpSuffix);
+  const tmpHtpasswd = path.join(os.tmpdir(), "v14-htpasswd-" + tmpSuffix);
 
   const client = new ftpMod.Client();
   client.ftp.verbose = false;
@@ -183,37 +229,38 @@ async function uploadDist(cfg) {
     await client.uploadFromDir(distDir, cfg.remoteRoot);
 
     console.log("[v14-deploy] Uploading merged staging .htaccess (auth + existing redirect/410 rules)");
-    const tmpHtaccess = path.join(repoRoot, ".v14-tmp-htaccess");
     writeFileSync(tmpHtaccess, mergedHtaccess, "utf8");
     await client.uploadFrom(tmpHtaccess, path.posix.join(cfg.remoteRoot, ".htaccess"));
 
-    console.log("[v14-deploy] Uploading htpasswd to absolute path outside public_html: " + cfg.authUserFileAbsolutePath);
-    const tmpHtpasswd = path.join(repoRoot, ".v14-tmp-htpasswd");
+    console.log("[v14-deploy] Uploading htpasswd via FTP path: " + cfg.authUserFileFtpPath);
     writeFileSync(tmpHtpasswd, htpasswdLine + "\n", "utf8");
-    await client.uploadFrom(tmpHtpasswd, cfg.authUserFileAbsolutePath);
+    await client.uploadFrom(tmpHtpasswd, cfg.authUserFileFtpPath);
 
     console.log("[v14-deploy] Upload complete.");
   } finally {
     client.close();
+    for (const f of [tmpHtaccess, tmpHtpasswd]) {
+      try { if (existsSync(f)) unlinkSync(f); } catch { /* best-effort cleanup */ }
+    }
   }
 }
 
 async function main() {
   const cfg = loadConfigStrict();
   assertSafeTarget(cfg);
-
-  runStep("Verify worktree/HEAD (branch=main, clean tree)", "node", ["scripts/v14-verify-head.mjs"]);
+  await ensureBasicFtpAvailable();
 
   if (!process.env.DIRECTUS_URL || !process.env.DIRECTUS_STATIC_TOKEN) {
     throw new Error(
       "[v14-deploy] Missing DIRECTUS_URL / DIRECTUS_STATIC_TOKEN in environment. " +
       "The runner must decrypt the existing DPAPI Build Reader token and export both " +
-      "for this process only, then clear them afterward."
+      "before calling this script."
     );
   }
 
-  runStep("Directus V13 preview build (reused pipeline, unmodified)", "node", ["scripts/build-directus-v13-preview.mjs"]);
-  runStep("Postbuild (reused pipeline: writes robots Disallow:/ + runs validate-built-site internally)", "node", ["scripts/postbuild.mjs"]);
+  runStep("Verify worktree/HEAD (branch=main, clean tree)", "node", ["scripts/v14-verify-head.mjs"]);
+  runStep("Directus V13 preview build (reused pipeline, unmodified) - ONE build only", "node", ["scripts/build-directus-v13-preview.mjs"]);
+  runStep("Postbuild (reused pipeline: writes robots Disallow:/ + runs validate-built-site internally) - ONE postbuild only", "node", ["scripts/postbuild.mjs"]);
 
   await uploadDist(cfg);
 

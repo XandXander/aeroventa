@@ -1,28 +1,26 @@
 #!/usr/bin/env node
 /**
- * V14 - External acceptance checks (hardened correction).
+ * V14 - External acceptance checks (correction 2).
  *
- * Uses the EXACT canonical migration schema (confirmed, not guessed):
- *   migration/route-contract.json   - ARRAY of { path, target, http_outcome }
- *     exact counts required: 200=30, 301=13, 404=1, 410=54 (29 of the 200
- *     entries are retained HTML pages; this script does not need to know
- *     which 29 specifically, it validates every entry against its own
- *     declared http_outcome).
- *   migration/preserved-media.json  - ARRAY of
- *     { path, http_outcome, source_sha256, source_bytes, source_content_type }
- *     exact count required: 8
- *   migration/indexed-pdf.json      - single OBJECT, same identity fields
- *     (path: /upload/medialibrary/fa1/fa1b840c9474c6030bf2ccb0c725c3e4.pdf)
- *
- * Hard-fails (does not just warn) if any of the counts above don't match
- * exactly, before making a single HTTP request.
+ * Fixes vs. correction 1:
+ *  (3) The indexed PDF is confirmed to be the 30th HTTP-200 entry inside
+ *      route-contract.json (29 HTML + 1 PDF = 30). This script now
+ *      identifies the route-contract entry whose path equals
+ *      indexedPdf.path and excludes it from all HTML-only checks
+ *      (canonical/meta-robots/banner/JSON-LD/token-scan), validating it
+ *      instead with the binary-identity check (status + exact bytes +
+ *      exact SHA-256). It hard-asserts exactly 29 remaining HTML 200
+ *      entries after that exclusion.
+ *  (4) 301 Location is now compared against
+ *      canonicalOrigin + route.target (route-contract.json stores
+ *      relative targets; the hosting rules emit absolute redirects to
+ *      https://aeroventa.ru), not against route.target alone.
  *
  * Usage:
  *   node scripts/v14-external-acceptance.mjs
- *   Reads target/credential info from scripts/v14-stage-config.local.json
- *   plus V14_BASIC_AUTH_USER / V14_BASIC_AUTH_PASSWORD env vars for the
- *   authenticated checks, and (optionally) DIRECTUS_STATIC_TOKEN to assert
- *   its exact value never appears in any served response body.
+ *   Reads scripts/v14-stage-config.local.json plus
+ *   V14_BASIC_AUTH_USER / V14_BASIC_AUTH_PASSWORD env vars, and
+ *   (optionally) DIRECTUS_STATIC_TOKEN for the exact-absence check.
  */
 import { readFileSync, existsSync, writeFileSync, mkdirSync } from "node:fs";
 import { createHash } from "node:crypto";
@@ -48,7 +46,7 @@ function loadJsonRequired(relPath) {
   return JSON.parse(readFileSync(p, "utf8"));
 }
 
-function assertExactCounts(routeContract, preservedMedia, indexedPdf) {
+function assertExactCountsAndSplitPdf(routeContract, preservedMedia, indexedPdf) {
   const counts = { 200: 0, 301: 0, 404: 0, 410: 0 };
   for (const r of routeContract) {
     if (!(r.http_outcome in counts)) {
@@ -71,7 +69,24 @@ function assertExactCounts(routeContract, preservedMedia, indexedPdf) {
   if (Array.isArray(indexedPdf) || typeof indexedPdf !== "object" || indexedPdf === null) {
     throw new Error("[v14-accept] indexed-pdf.json must be a single object.");
   }
-  console.log("[v14-accept] Contract counts verified exactly: 200=30, 301=13, 404=1, 410=54, preserved-media=8, indexed-pdf=1 object.");
+
+  const twoHundredEntries = routeContract.filter((r) => r.http_outcome === 200);
+  const pdfEntry = twoHundredEntries.find((r) => r.path === indexedPdf.path);
+  if (!pdfEntry) {
+    throw new Error(
+      "[v14-accept] Indexed PDF path " + indexedPdf.path + " was not found among the 30 HTTP-200 " +
+      "route-contract entries - contract/identity mismatch, STOP."
+    );
+  }
+  const htmlEntries = twoHundredEntries.filter((r) => r.path !== indexedPdf.path);
+  if (htmlEntries.length !== 29) {
+    throw new Error(
+      "[v14-accept] After excluding the indexed PDF, expected exactly 29 HTML HTTP-200 entries, got " +
+      htmlEntries.length + ". STOP."
+    );
+  }
+  console.log("[v14-accept] Contract counts verified exactly: 200=30 (29 HTML + 1 PDF), 301=13, 404=1, 410=54, preserved-media=8.");
+  return { htmlEntries, pdfEntry };
 }
 
 async function fetchRaw(url, opts = {}) {
@@ -102,7 +117,7 @@ async function main() {
   const preservedMedia = loadJsonRequired("migration/preserved-media.json");
   const indexedPdf = loadJsonRequired("migration/indexed-pdf.json");
 
-  assertExactCounts(routeContract, preservedMedia, indexedPdf);
+  const { htmlEntries, pdfEntry } = assertExactCountsAndSplitPdf(routeContract, preservedMedia, indexedPdf);
 
   const auth = basicAuthHeader();
   if (!auth) {
@@ -116,47 +131,73 @@ async function main() {
   const unauth = await fetchRaw(baseUrl + "/");
   record("Unauthenticated staging -> 401", unauth.ok && unauth.status === 401, "status=" + (unauth.status ?? unauth.error));
 
-  // 2. Route contract, authenticated
-  for (const route of routeContract) {
+  // 2. The 29 HTML 200 routes
+  for (const route of htmlEntries) {
     const res = await fetchRaw(baseUrl + route.path, { headers: { Authorization: auth } });
-    if (route.http_outcome === 200) {
-      const pass = res.ok && res.status === 200;
-      record("200 " + route.path, pass, "got=" + (res.status ?? res.error));
-      if (pass) {
-        const expectedCanonical = canonicalOrigin + route.path;
-        const escaped = expectedCanonical.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-        const canonicalMatch = new RegExp('rel=["\']canonical["\'][^>]*href=["\']' + escaped + '["\']|href=["\']' + escaped + '["\'][^>]*rel=["\']canonical["\']').test(res.text);
-        record("  canonical == " + expectedCanonical, canonicalMatch, canonicalMatch ? "found" : "NOT FOUND");
-        const robotsOk = ["noindex", "nofollow", "noarchive", "nosnippet"].every((d) => res.text.includes(d));
-        record("  meta robots full directive set", robotsOk, robotsOk ? "all 4 present" : "missing directive(s)");
-        record("  AEROVENTA DRAFT PREVIEW banner", res.text.includes("AEROVENTA DRAFT PREVIEW"), "checked body");
-        record("  JSON-LD absent", !/application\/ld\+json/.test(res.text), "checked head/body");
-        if (tokenValue) {
-          record("  exact token absent", !res.text.includes(tokenValue), "substring scan");
-        }
+    const pass = res.ok && res.status === 200;
+    record("200 HTML " + route.path, pass, "got=" + (res.status ?? res.error));
+    if (pass) {
+      const expectedCanonical = canonicalOrigin + route.path;
+      const escaped = expectedCanonical.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const canonicalMatch = new RegExp('rel=["\']canonical["\'][^>]*href=["\']' + escaped + '["\']|href=["\']' + escaped + '["\'][^>]*rel=["\']canonical["\']').test(res.text);
+      record("  canonical == " + expectedCanonical, canonicalMatch, canonicalMatch ? "found" : "NOT FOUND");
+      const robotsOk = ["noindex", "nofollow", "noarchive", "nosnippet"].every((d) => res.text.includes(d));
+      record("  meta robots full directive set", robotsOk, robotsOk ? "all 4 present" : "missing directive(s)");
+      record("  AEROVENTA DRAFT PREVIEW banner", res.text.includes("AEROVENTA DRAFT PREVIEW"), "checked body");
+      record("  JSON-LD absent", !/application\/ld\+json/.test(res.text), "checked head/body");
+      if (tokenValue) {
+        record("  exact token absent", !res.text.includes(tokenValue), "substring scan");
       }
-    } else if (route.http_outcome === 301) {
-      const pass = res.ok && res.status === 301 && res.headers.get("location") === route.target;
-      record("301 " + route.path + " -> " + route.target, pass, "status=" + (res.status ?? res.error) + " location=" + res.headers?.get?.("location"));
-    } else if (route.http_outcome === 410) {
-      record("410 " + route.path, res.ok && res.status === 410, "got=" + (res.status ?? res.error));
-    } else if (route.http_outcome === 404) {
-      record("404 (contract) " + route.path, res.ok && res.status === 404, "got=" + (res.status ?? res.error));
     }
   }
 
-  // 3. Random unknown path -> 404 + sanity
+  // 3. Indexed PDF - binary identity only, no HTML checks
+  {
+    const res = await fetchRaw(baseUrl + pdfEntry.path, { headers: { Authorization: auth } });
+    const pass = res.ok && res.status === 200;
+    record("Indexed PDF " + pdfEntry.path, pass, "status=" + (res.status ?? res.error));
+    if (pass) {
+      record("  exact bytes (PDF)", res.buf.length === indexedPdf.source_bytes, "got=" + res.buf.length + " expected=" + indexedPdf.source_bytes);
+      const sha = createHash("sha256").update(res.buf).digest("hex");
+      record("  exact sha256 (PDF)", sha === indexedPdf.source_sha256, sha === indexedPdf.source_sha256 ? "match" : "MISMATCH");
+      if (tokenValue) {
+        record("  exact token absent (PDF)", !res.buf.toString("latin1").includes(tokenValue), "substring scan");
+      }
+    }
+  }
+
+  // 4. Redirects - exact absolute production Location
+  for (const route of routeContract.filter((r) => r.http_outcome === 301)) {
+    const res = await fetchRaw(baseUrl + route.path, { headers: { Authorization: auth } });
+    const expectedLocation = canonicalOrigin + route.target;
+    const pass = res.ok && res.status === 301 && res.headers.get("location") === expectedLocation;
+    record("301 " + route.path + " -> " + expectedLocation, pass, "status=" + (res.status ?? res.error) + " location=" + res.headers?.get?.("location"));
+  }
+
+  // 5. Gone
+  for (const route of routeContract.filter((r) => r.http_outcome === 410)) {
+    const res = await fetchRaw(baseUrl + route.path, { headers: { Authorization: auth } });
+    record("410 " + route.path, res.ok && res.status === 410, "got=" + (res.status ?? res.error));
+  }
+
+  // 6. Contract 404
+  for (const route of routeContract.filter((r) => r.http_outcome === 404)) {
+    const res = await fetchRaw(baseUrl + route.path, { headers: { Authorization: auth } });
+    record("404 (contract) " + route.path, res.ok && res.status === 404, "got=" + (res.status ?? res.error));
+  }
+
+  // 7. Random unknown path -> 404 + sanity
   const unknown = await fetchRaw(baseUrl + "/v14-acceptance-unknown-" + Date.now(), { headers: { Authorization: auth } });
   record("Unknown path -> 404", unknown.ok && unknown.status === 404, "status=" + (unknown.status ?? unknown.error));
   if (unknown.ok) {
     record("  404 branded/noindex sanity", unknown.text.includes("AEROVENTA DRAFT PREVIEW") || unknown.text.includes("noindex"), "checked body");
   }
 
-  // 4. robots.txt
+  // 8. robots.txt
   const robots = await fetchRaw(baseUrl + "/robots.txt", { headers: { Authorization: auth } });
   record("robots.txt Disallow: / present", robots.ok && /Disallow:\s*\/\s*$/m.test(robots.text), "status=" + (robots.status ?? robots.error));
 
-  // 5. Preserved media - exact bytes + sha256
+  // 9. Preserved media - exact bytes + sha256
   for (const media of preservedMedia) {
     const res = await fetchRaw(baseUrl + media.path, { headers: { Authorization: auth } });
     const pass = res.ok && res.status === 200;
@@ -168,19 +209,7 @@ async function main() {
     }
   }
 
-  // 6. Indexed PDF - exact bytes + sha256
-  {
-    const res = await fetchRaw(baseUrl + indexedPdf.path, { headers: { Authorization: auth } });
-    const pass = res.ok && res.status === 200;
-    record("Indexed PDF " + indexedPdf.path, pass, "status=" + (res.status ?? res.error));
-    if (pass) {
-      record("  exact bytes (PDF)", res.buf.length === indexedPdf.source_bytes, "got=" + res.buf.length + " expected=" + indexedPdf.source_bytes);
-      const sha = createHash("sha256").update(res.buf).digest("hex");
-      record("  exact sha256 (PDF)", sha === indexedPdf.source_sha256, sha === indexedPdf.source_sha256 ? "match" : "MISMATCH");
-    }
-  }
-
-  // 7. Production separation
+  // 10. Production separation
   const prod = await fetchRaw(productionUrl + "/");
   record("Production " + productionUrl + " -> 200", prod.ok && prod.status === 200, "status=" + (prod.status ?? prod.error));
   if (prod.ok) {
