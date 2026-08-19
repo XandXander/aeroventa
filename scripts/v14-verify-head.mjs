@@ -1,46 +1,38 @@
 #!/usr/bin/env node
 /**
- * V14 - Fresh HEAD verifier.
- * Confirms the local checkout HEAD matches the SHA the Owner/orchestrator
- * expects before any staging build/deploy proceeds. Fails closed.
+ * V14 - Worktree/HEAD sanity check (no frozen SHA).
+ *
+ * The frozen-baseline-SHA gate from the first V14 draft has been removed
+ * per the V14 correction: an orchestrator-frozen SHA goes stale the moment
+ * anyone else pushes to main. Freshness is now established by the runner
+ * (git fetch + fast-forward-only pull) BEFORE this script runs; this
+ * script only asserts the resulting local state is safe to build from:
+ *   - branch is exactly "main"
+ *   - tracked worktree is clean (no uncommitted changes)
+ * It prints the resulting HEAD for the log; it does not compare it to
+ * anything frozen.
  *
  * Usage:
- *   node scripts/v14-verify-head.mjs <expectedShaOrRef>
- *   node scripts/v14-verify-head.mjs        (prints current HEAD only)
+ *   node scripts/v14-verify-head.mjs
  */
 import { execSync } from "node:child_process";
 
-function currentHead() {
-  return execSync("git rev-parse HEAD", { encoding: "utf8" }).trim();
+function sh(cmd) {
+  return execSync(cmd, { encoding: "utf8" }).trim();
 }
 
-function currentBranch() {
-  try {
-    return execSync("git rev-parse --abbrev-ref HEAD", { encoding: "utf8" }).trim();
-  } catch {
-    return "unknown";
-  }
-}
-
-const expected = process.argv[2];
-const head = currentHead();
-const branch = currentBranch();
-
-console.log("[v14-verify-head] branch=" + branch + " head=" + head);
-
-if (!expected) {
-  console.log("[v14-verify-head] No expected SHA supplied; printed current HEAD only.");
-  process.exit(0);
-}
-
-if (head.toLowerCase() !== expected.toLowerCase() &&
-    !head.toLowerCase().startsWith(expected.toLowerCase())) {
-  console.error(
-    "[v14-verify-head] MISMATCH: local HEAD (" + head + ") != expected (" + expected + "). " +
-    "Refusing to proceed. Pull/checkout the correct commit before re-running."
-  );
+const branch = sh("git rev-parse --abbrev-ref HEAD");
+if (branch !== "main") {
+  console.error("[v14-verify-head] REFUSING: current branch is \"" + branch + "\", not \"main\". Aborting.");
   process.exit(1);
 }
 
-console.log("[v14-verify-head] OK: local HEAD matches expected baseline.");
+const status = sh("git status --porcelain");
+if (status.length > 0) {
+  console.error("[v14-verify-head] REFUSING: tracked worktree is not clean. Commit/stash changes first.\n" + status);
+  process.exit(1);
+}
+
+const head = sh("git rev-parse HEAD");
+console.log("[v14-verify-head] OK: branch=main, worktree clean, HEAD=" + head);
 process.exit(0);

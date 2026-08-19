@@ -1,15 +1,20 @@
 {
-  "_comment": "V14 staging config TEMPLATE. Copy to v14-stage-config.local.json (gitignored) and fill in real values. Never commit the .local.json copy or real credentials.",
+  "_comment": "V14 staging config TEMPLATE. Copy to v14-stage-config.local.json (gitignored) and fill in real values. Real deploy HARD FAILS if any value below still contains the literal text REPLACE, or if this .example file is used directly.",
   "staging": {
-    "ftpHost": "REPLACE_WITH_BEGET_FTP_OR_SFTP_HOST",
+    "directusUrl": "https://cms.aeroventa.ru",
+    "buildReaderDpapiPath": "REPLACE_WITH_ABSOLUTE_WINDOWS_PATH_TO_build-reader.dpapi",
+    "ftpHost": "REPLACE_WITH_BEGET_FTP_HOST",
     "ftpPort": 21,
-    "protocol": "ftp",
-    "remoteRoot": "/staging.aeroventa.ru/public_html",
-    "htpasswdRemotePath": "/staging.aeroventa.ru/.htpasswd_staging",
+    "ftpAccountScopedToStagingOnly": false,
+    "remoteRoot": "/public_html",
+    "authUserFileAbsolutePath": "REPLACE_WITH_ABSOLUTE_BEGET_PATH_OUTSIDE_PUBLIC_HTML/.htpasswd_staging",
     "localDistDir": "apps/web/dist",
     "basicAuthRealm": "AEROVENTA STAGING - AUTHORIZED ACCESS ONLY",
+    "stagingHostname": "staging.aeroventa.ru",
     "acceptanceBaseUrl": "https://staging.aeroventa.ru",
     "productionBaseUrl": "https://aeroventa.ru",
-    "requiredPathSegment": "staging"
+    "forbiddenHostnames": ["aeroventa.ru", "www.aeroventa.ru"],
+    "productionMarkers": ["bitrix/", "local/", "urlrewrite.php"],
+    "canonicalOrigin": "https://aeroventa.ru"
   }
 }

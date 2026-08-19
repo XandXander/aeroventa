@@ -1,23 +1,31 @@
 #!/usr/bin/env node
 /**
- * V14 - External acceptance checks against the isolated staging deploy.
+ * V14 - External acceptance checks (hardened correction).
  *
- * Read-only over HTTPS. Never touches Beget/GitHub write APIs. Safe to run
- * repeatedly, including against production for the separation sanity check.
+ * Uses the EXACT canonical migration schema (confirmed, not guessed):
+ *   migration/route-contract.json   - ARRAY of { path, target, http_outcome }
+ *     exact counts required: 200=30, 301=13, 404=1, 410=54 (29 of the 200
+ *     entries are retained HTML pages; this script does not need to know
+ *     which 29 specifically, it validates every entry against its own
+ *     declared http_outcome).
+ *   migration/preserved-media.json  - ARRAY of
+ *     { path, http_outcome, source_sha256, source_bytes, source_content_type }
+ *     exact count required: 8
+ *   migration/indexed-pdf.json      - single OBJECT, same identity fields
+ *     (path: /upload/medialibrary/fa1/fa1b840c9474c6030bf2ccb0c725c3e4.pdf)
  *
- * NOTE ON ASSUMPTIONS: this script could not be authored against a byte-
- * level read of migration/route-contract.json / migration/preserved-media.json
- * in this session (tool limitation - see V14 runbook "Known Limitation").
- * It therefore parses those files defensively, tolerating several plausible
- * field-name shapes, and logs a warning (not a hard failure) for any entry
- * it cannot interpret. Re-validate field-name assumptions against the real
- * file once a human/agent with raw file read confirms the schema.
+ * Hard-fails (does not just warn) if any of the counts above don't match
+ * exactly, before making a single HTTP request.
  *
  * Usage:
- *   node scripts/v14-external-acceptance.mjs [baseUrl] [productionUrl]
- *   Defaults come from scripts/v14-stage-config.(local|example).json
+ *   node scripts/v14-external-acceptance.mjs
+ *   Reads target/credential info from scripts/v14-stage-config.local.json
+ *   plus V14_BASIC_AUTH_USER / V14_BASIC_AUTH_PASSWORD env vars for the
+ *   authenticated checks, and (optionally) DIRECTUS_STATIC_TOKEN to assert
+ *   its exact value never appears in any served response body.
  */
 import { readFileSync, existsSync, writeFileSync, mkdirSync } from "node:fs";
+import { createHash } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -28,115 +36,156 @@ function loadConfig() {
   const localPath = path.join(repoRoot, "scripts", "v14-stage-config.local.json");
   const examplePath = path.join(repoRoot, "scripts", "v14-stage-config.example.json");
   const configPath = existsSync(localPath) ? localPath : examplePath;
+  if (configPath === examplePath) {
+    console.warn("[v14-accept] WARNING: no local config found, using EXAMPLE config for URL defaults only.");
+  }
   return JSON.parse(readFileSync(configPath, "utf8")).staging;
 }
 
-function loadJsonIfExists(relPath) {
+function loadJsonRequired(relPath) {
   const p = path.join(repoRoot, relPath);
-  if (!existsSync(p)) return null;
-  try {
-    return JSON.parse(readFileSync(p, "utf8"));
-  } catch {
-    return null;
-  }
+  if (!existsSync(p)) throw new Error("[v14-accept] REQUIRED FILE MISSING: " + relPath);
+  return JSON.parse(readFileSync(p, "utf8"));
 }
 
-function normalizeRoutes(raw) {
-  if (!raw) return [];
-  const list = Array.isArray(raw) ? raw : raw.routes || raw.retained || raw.entries || [];
-  return list.map((entry) => {
-    if (typeof entry === "string") return { path: entry, expectedStatus: 200 };
-    const p = entry.path || entry.route || entry.url || entry.slug;
-    let status = entry.expectedStatus || entry.status || entry.httpStatus;
-    if (!status) {
-      const type = (entry.type || entry.action || "").toLowerCase();
-      if (type.includes("redirect") || type === "301") status = 301;
-      else if (type.includes("gone") || type === "410") status = 410;
-      else status = 200;
+function assertExactCounts(routeContract, preservedMedia, indexedPdf) {
+  const counts = { 200: 0, 301: 0, 404: 0, 410: 0 };
+  for (const r of routeContract) {
+    if (!(r.http_outcome in counts)) {
+      throw new Error("[v14-accept] Unexpected http_outcome in route-contract.json: " + r.http_outcome);
     }
-    return { path: p, expectedStatus: Number(status) };
-  }).filter((r) => !!r.path);
+    counts[r.http_outcome]++;
+  }
+  const expected = { 200: 30, 301: 13, 404: 1, 410: 54 };
+  for (const key of Object.keys(expected)) {
+    if (counts[key] !== expected[key]) {
+      throw new Error(
+        "[v14-accept] route-contract.json count mismatch for http_outcome=" + key +
+        ": expected " + expected[key] + ", got " + counts[key] + ". Contract has drifted - STOP."
+      );
+    }
+  }
+  if (preservedMedia.length !== 8) {
+    throw new Error("[v14-accept] preserved-media.json count mismatch: expected 8, got " + preservedMedia.length);
+  }
+  if (Array.isArray(indexedPdf) || typeof indexedPdf !== "object" || indexedPdf === null) {
+    throw new Error("[v14-accept] indexed-pdf.json must be a single object.");
+  }
+  console.log("[v14-accept] Contract counts verified exactly: 200=30, 301=13, 404=1, 410=54, preserved-media=8, indexed-pdf=1 object.");
 }
 
-function normalizeMedia(raw) {
-  if (!raw) return [];
-  const list = Array.isArray(raw) ? raw : raw.media || raw.preserved || raw.entries || [];
-  return list.map((entry) => (typeof entry === "string" ? entry : entry.path || entry.url || entry.file)).filter(Boolean);
-}
-
-async function fetchRaw(url) {
+async function fetchRaw(url, opts = {}) {
   try {
-    const res = await fetch(url, { redirect: "manual" });
-    const text = await res.text().catch(() => "");
-    return { ok: true, status: res.status, headers: res.headers, text };
+    const res = await fetch(url, { redirect: "manual", ...opts });
+    const buf = Buffer.from(await res.arrayBuffer().catch(() => new ArrayBuffer(0)));
+    return { ok: true, status: res.status, headers: res.headers, buf, text: buf.toString("utf8") };
   } catch (err) {
     return { ok: false, error: err.message };
   }
 }
 
-const TOKEN_LIKE = /(?:token|bearer|secret|apikey|api_key)["'\s:=]+[A-Za-z0-9._-]{16,}/i;
+function basicAuthHeader() {
+  const user = process.env.V14_BASIC_AUTH_USER;
+  const pass = process.env.V14_BASIC_AUTH_PASSWORD;
+  if (!user || !pass) return null;
+  return "Basic " + Buffer.from(user + ":" + pass, "utf8").toString("base64");
+}
 
 async function main() {
   const cfg = loadConfig();
-  const baseUrl = process.argv[2] || cfg.acceptanceBaseUrl;
-  const productionUrl = process.argv[3] || cfg.productionBaseUrl;
-  const routeContract = normalizeRoutes(loadJsonIfExists("migration/route-contract.json"));
-  const preservedMedia = normalizeMedia(loadJsonIfExists("migration/preserved-media.json"));
+  const baseUrl = cfg.acceptanceBaseUrl;
+  const productionUrl = cfg.productionBaseUrl;
+  const canonicalOrigin = cfg.canonicalOrigin || productionUrl;
+  const tokenValue = process.env.DIRECTUS_STATIC_TOKEN || null;
+
+  const routeContract = loadJsonRequired("migration/route-contract.json");
+  const preservedMedia = loadJsonRequired("migration/preserved-media.json");
+  const indexedPdf = loadJsonRequired("migration/indexed-pdf.json");
+
+  assertExactCounts(routeContract, preservedMedia, indexedPdf);
+
+  const auth = basicAuthHeader();
+  if (!auth) {
+    throw new Error("[v14-accept] Missing V14_BASIC_AUTH_USER / V14_BASIC_AUTH_PASSWORD env vars for authenticated checks.");
+  }
 
   const results = [];
   const record = (name, pass, detail) => results.push({ name, pass, detail });
 
-  console.log("[v14-accept] Target staging base: " + baseUrl);
+  // 1. Unauthenticated staging must be 401
+  const unauth = await fetchRaw(baseUrl + "/");
+  record("Unauthenticated staging -> 401", unauth.ok && unauth.status === 401, "status=" + (unauth.status ?? unauth.error));
 
-  const root = await fetchRaw(baseUrl + "/");
-  record("Staging root reachable", root.ok && root.status === 200, "status=" + (root.status ?? root.error));
-
-  if (root.ok) {
-    record("Meta robots noindex/nofollow/noarchive/nosnippet present",
-      /noindex/.test(root.text) && /nofollow/.test(root.text) && /noarchive/.test(root.text) && /nosnippet/.test(root.text),
-      "checked root HTML head");
-    record("AEROVENTA DRAFT PREVIEW banner present", root.text.includes("AEROVENTA DRAFT PREVIEW"), "checked root HTML body");
-    record("JSON-LD absent", !/application\/ld\+json/.test(root.text), "checked for <script type=application/ld+json>");
-    record("No obvious token leakage on root page", !TOKEN_LIKE.test(root.text), "regex scan of root HTML");
-  }
-
-  const robots = await fetchRaw(baseUrl + "/robots.txt");
-  record("robots.txt Disallow: / present", robots.ok && /Disallow:\s*\/\s*$/m.test(robots.text), "status=" + (robots.status ?? robots.error));
-
-  const notFound = await fetchRaw(baseUrl + "/v14-acceptance-nonexistent-check-" + Date.now());
-  record("Branded 404 on unknown path", notFound.ok && notFound.status === 404, "status=" + (notFound.status ?? notFound.error));
-
-  if (routeContract.length === 0) {
-    record("Route contract parsed", false, "migration/route-contract.json missing or unparseable by this script's assumed schema - MANUAL SCHEMA CHECK NEEDED");
-  } else {
-    for (const route of routeContract) {
-      const res = await fetchRaw(baseUrl + route.path);
-      const pass = res.ok && res.status === route.expectedStatus;
-      record("Route " + route.path + " -> expect " + route.expectedStatus, pass, "got=" + (res.status ?? res.error));
-      if (res.ok && res.status === 200) {
-        if (!TOKEN_LIKE.test(res.text)) {
-          record("  no token leakage on " + route.path, true, "regex scan clean");
-        } else {
-          record("  no token leakage on " + route.path, false, "TOKEN-LIKE STRING FOUND - investigate before wider staging exposure");
+  // 2. Route contract, authenticated
+  for (const route of routeContract) {
+    const res = await fetchRaw(baseUrl + route.path, { headers: { Authorization: auth } });
+    if (route.http_outcome === 200) {
+      const pass = res.ok && res.status === 200;
+      record("200 " + route.path, pass, "got=" + (res.status ?? res.error));
+      if (pass) {
+        const expectedCanonical = canonicalOrigin + route.path;
+        const escaped = expectedCanonical.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        const canonicalMatch = new RegExp('rel=["\']canonical["\'][^>]*href=["\']' + escaped + '["\']|href=["\']' + escaped + '["\'][^>]*rel=["\']canonical["\']').test(res.text);
+        record("  canonical == " + expectedCanonical, canonicalMatch, canonicalMatch ? "found" : "NOT FOUND");
+        const robotsOk = ["noindex", "nofollow", "noarchive", "nosnippet"].every((d) => res.text.includes(d));
+        record("  meta robots full directive set", robotsOk, robotsOk ? "all 4 present" : "missing directive(s)");
+        record("  AEROVENTA DRAFT PREVIEW banner", res.text.includes("AEROVENTA DRAFT PREVIEW"), "checked body");
+        record("  JSON-LD absent", !/application\/ld\+json/.test(res.text), "checked head/body");
+        if (tokenValue) {
+          record("  exact token absent", !res.text.includes(tokenValue), "substring scan");
         }
       }
+    } else if (route.http_outcome === 301) {
+      const pass = res.ok && res.status === 301 && res.headers.get("location") === route.target;
+      record("301 " + route.path + " -> " + route.target, pass, "status=" + (res.status ?? res.error) + " location=" + res.headers?.get?.("location"));
+    } else if (route.http_outcome === 410) {
+      record("410 " + route.path, res.ok && res.status === 410, "got=" + (res.status ?? res.error));
+    } else if (route.http_outcome === 404) {
+      record("404 (contract) " + route.path, res.ok && res.status === 404, "got=" + (res.status ?? res.error));
     }
   }
 
-  if (preservedMedia.length === 0) {
-    record("Preserved media list parsed", false, "migration/preserved-media.json missing or unparseable by this script's assumed schema - MANUAL SCHEMA CHECK NEEDED");
-  } else {
-    for (const mediaPath of preservedMedia) {
-      const res = await fetchRaw(baseUrl + mediaPath);
-      record("Preserved media " + mediaPath, res.ok && res.status === 200, "status=" + (res.status ?? res.error));
+  // 3. Random unknown path -> 404 + sanity
+  const unknown = await fetchRaw(baseUrl + "/v14-acceptance-unknown-" + Date.now(), { headers: { Authorization: auth } });
+  record("Unknown path -> 404", unknown.ok && unknown.status === 404, "status=" + (unknown.status ?? unknown.error));
+  if (unknown.ok) {
+    record("  404 branded/noindex sanity", unknown.text.includes("AEROVENTA DRAFT PREVIEW") || unknown.text.includes("noindex"), "checked body");
+  }
+
+  // 4. robots.txt
+  const robots = await fetchRaw(baseUrl + "/robots.txt", { headers: { Authorization: auth } });
+  record("robots.txt Disallow: / present", robots.ok && /Disallow:\s*\/\s*$/m.test(robots.text), "status=" + (robots.status ?? robots.error));
+
+  // 5. Preserved media - exact bytes + sha256
+  for (const media of preservedMedia) {
+    const res = await fetchRaw(baseUrl + media.path, { headers: { Authorization: auth } });
+    const pass = res.ok && res.status === 200;
+    record("Preserved media " + media.path, pass, "status=" + (res.status ?? res.error));
+    if (pass) {
+      record("  exact bytes " + media.path, res.buf.length === media.source_bytes, "got=" + res.buf.length + " expected=" + media.source_bytes);
+      const sha = createHash("sha256").update(res.buf).digest("hex");
+      record("  exact sha256 " + media.path, sha === media.source_sha256, sha === media.source_sha256 ? "match" : "MISMATCH");
     }
   }
 
+  // 6. Indexed PDF - exact bytes + sha256
+  {
+    const res = await fetchRaw(baseUrl + indexedPdf.path, { headers: { Authorization: auth } });
+    const pass = res.ok && res.status === 200;
+    record("Indexed PDF " + indexedPdf.path, pass, "status=" + (res.status ?? res.error));
+    if (pass) {
+      record("  exact bytes (PDF)", res.buf.length === indexedPdf.source_bytes, "got=" + res.buf.length + " expected=" + indexedPdf.source_bytes);
+      const sha = createHash("sha256").update(res.buf).digest("hex");
+      record("  exact sha256 (PDF)", sha === indexedPdf.source_sha256, sha === indexedPdf.source_sha256 ? "match" : "MISMATCH");
+    }
+  }
+
+  // 7. Production separation
   const prod = await fetchRaw(productionUrl + "/");
-  record("Production " + productionUrl + " still live (200)", prod.ok && prod.status === 200, "status=" + (prod.status ?? prod.error));
+  record("Production " + productionUrl + " -> 200", prod.ok && prod.status === 200, "status=" + (prod.status ?? prod.error));
   if (prod.ok) {
-    record("Production page does NOT show staging banner (separation sanity)",
-      !prod.text.includes("AEROVENTA DRAFT PREVIEW"), "checked production HTML body");
+    record("  no preview banner on production", !prod.text.includes("AEROVENTA DRAFT PREVIEW"), "checked body");
+    record("  no Basic Auth challenge on production", !prod.headers.get("www-authenticate"), "checked headers");
   }
 
   const passCount = results.filter((r) => r.pass).length;
@@ -151,10 +200,13 @@ async function main() {
   if (!existsSync(outDir)) mkdirSync(outDir);
   const outFile = path.join(outDir, "v14-acceptance-" + Date.now() + ".log");
   writeFileSync(outFile, summary, "utf8");
-  console.log("\n[v14-accept] Result log written locally to: " + outFile + " (not committed to git)");
+  console.log("\n[v14-accept] Result log written locally to: " + outFile + " (gitignored, not committed)");
 
   const hardFail = results.some((r) => !r.pass);
   process.exit(hardFail ? 1 : 0);
 }
 
-main();
+main().catch((err) => {
+  console.error("[v14-accept] FATAL: " + (err.message || err));
+  process.exit(1);
+});

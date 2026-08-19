@@ -1,21 +1,26 @@
 #!/usr/bin/env node
 /**
- * V14 - Local .htpasswd (Apache "{SHA}" format) line generator.
+ * V14 - Apache "{SHA}" htpasswd line generator (shared module + CLI).
  *
- * Generates a Basic-Auth credential line for the isolated staging
- * directory WITHOUT ever writing the plaintext password to disk or git.
- * Uses Apache's native "{SHA}" htpasswd format (sha1 + base64), which
- * mod_auth_basic on standard Apache/Beget hosting accepts natively - no
- * external dependency required.
+ * Exports generateHtpasswdLine(username, password) so the automated
+ * deploy pipeline can build the credential file in-memory (no manual
+ * paste step - see V14 defect #5). Also runnable standalone for a human
+ * to preview the generated line; standalone mode never writes anything
+ * to disk or git.
  *
- * Usage:
+ * Usage (standalone):
  *   node scripts/v14-htpasswd.mjs <username>
- *   -> prompts for a password interactively (input hidden), prints
- *      "username:{SHA}xxxx" to stdout only. Nothing is persisted by this
- *      script. Paste the printed line into the server-side htpasswd file.
  */
 import { createHash } from "node:crypto";
 import { stdin, stdout } from "node:process";
+
+export function generateHtpasswdLine(username, password) {
+  if (!username || !password || password.length < 8) {
+    throw new Error("[v14-htpasswd] username required and password must be >= 8 chars.");
+  }
+  const sha1b64 = createHash("sha1").update(password, "utf8").digest("base64");
+  return username + ":{SHA}" + sha1b64;
+}
 
 function readSecret(promptText) {
   return new Promise((resolve) => {
@@ -43,21 +48,20 @@ function readSecret(promptText) {
   });
 }
 
-const username = process.argv[2];
-if (!username) {
-  console.error("Usage: node scripts/v14-htpasswd.mjs <username>");
-  process.exit(1);
+const isMain = process.argv[1] && process.argv[1].endsWith("v14-htpasswd.mjs");
+if (isMain) {
+  const username = process.argv[2];
+  if (!username) {
+    console.error("Usage: node scripts/v14-htpasswd.mjs <username>");
+    process.exit(1);
+  }
+  const password = await readSecret('Password for staging user "' + username + '" (input hidden): ');
+  try {
+    const line = generateHtpasswdLine(username, password);
+    console.log("\n--- Preview only (standalone mode writes nothing to disk/git) ---");
+    console.log(line);
+  } catch (e) {
+    console.error(e.message);
+    process.exit(1);
+  }
 }
-
-const password = await readSecret('Password for staging user "' + username + '" (input hidden): ');
-if (!password || password.length < 8) {
-  console.error("[v14-htpasswd] Refusing weak/empty password (min 8 chars).");
-  process.exit(1);
-}
-
-const sha1b64 = createHash("sha1").update(password, "utf8").digest("base64");
-const line = username + ":{SHA}" + sha1b64;
-
-console.log("\n--- Copy the line below into the staging .htpasswd file on the server ---");
-console.log(line);
-console.log("--- Nothing above was written to disk or git by this script. ---");
