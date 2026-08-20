@@ -1,16 +1,28 @@
 ---
+import '@/styles/global.css';
+
 const title = 'Страница не найдена — AEROVENTA';
+const preview = import.meta.env.AEROVENTA_RELEASE_MODE === 'preview';
+const robots = preview ? 'noindex,nofollow,noarchive,nosnippet' : 'noindex,follow';
 ---
 <!doctype html>
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <meta name="robots" content="noindex,follow" />
+    <meta name="robots" content={robots} />
     <title>{title}</title>
     <style>
       body{font-family:system-ui,sans-serif;margin:0;background:#f8fafc;color:#111827}.box{max-width:760px;margin:12vh auto;padding:32px}.code{font-size:clamp(4rem,14vw,9rem);font-weight:800;line-height:1}.a{display:inline-block;margin-top:18px;padding:12px 18px;background:#111827;color:#fff;text-decoration:none;border-radius:8px}
     </style>
   </head>
-  <body><main class="box"><div class="code">404</div><h1>Страница не найдена</h1><p>Перейдите к основному направлению AEROVENTA — монтажу вентиляции.</p><a class="a" href="/montazh-ventiliacii/">Монтаж вентиляции</a></main></body>
+  <body class={preview ? 'draft-preview' : undefined}>
+    {preview && (
+      <div class="preview-banner" data-aeroventa-preview="draft" role="status">
+        <strong>AEROVENTA DRAFT PREVIEW</strong>
+        <span>Черновик из Directus. Не опубликован, не одобрен Owner и закрыт от индексации.</span>
+      </div>
+    )}
+    <main class="box"><div class="code">404</div><h1>Страница не найдена</h1><p>Перейдите к основному направлению AEROVENTA — монтажу вентиляции.</p><a class="a" href="/montazh-ventiliacii/">Монтаж вентиляции</a></main>
+  </body>
 </html>
