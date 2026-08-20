@@ -1,125 +1,113 @@
 # V14 - Isolated Staging Preview Deploy (AEROVENTA.RU)
 
-Status: CORRECTION 2 applied (runtime-consistency fixes, found by GPT-5.6
-Sol reading the actual committed file bodies). Gate: V14 STAGING PREVIEW
+Status: CORRECTION 3 applied, following a REAL staging run (build + FTPS
+upload + external acceptance PASS 273/275). Gate: V14 STAGING PREVIEW
 DEPLOY (Owner-authorized). V13 remains closed and untouched.
 
-## What changed in Correction 2 (8 confirmed runtime defects closed)
+## What changed in Correction 3
 
-1. **Duplicate build / cleared-env crash fixed.** The runner previously
-   built once itself, cleared `DIRECTUS_URL`/`DIRECTUS_STATIC_TOKEN`, then
-   called the deploy script - which also builds and requires those same
-   env vars, guaranteeing failure. The runner **no longer pre-builds**. It
-   only decrypts/sets the Directus env, hard-preflights it, prompts
-   credentials, and calls `v14-stage-deploy.mjs` exactly once; that script
-   is now the single place the V13 build + postbuild run. The token stays
-   set through the acceptance step (so acceptance can assert its exact
-   value is absent from served bodies) and is cleared in one outer
-   `finally` in the runner, alongside every other secret.
-2. **Directus preflight is now a hard gate on both checks.** Content read
-   uses `GET /items/content?limit=1` and must return exactly `200`
-   (previously non-200 was logged and ignored); `/users` must return `401`
-   or `403` (unchanged, already hard). The status-code helper
-   (`Get-HttpStatusCode`) uses plain try/catch against
-   `Invoke-WebRequest`'s thrown exception, which works on both Windows
-   PowerShell 5.1 and PowerShell 7+ - it no longer depends on
-   `-SkipHttpErrorCheck`, which is a PowerShell-7-only parameter that would
-   error out on the Owner's default Windows PowerShell 5.1.
-3. **Indexed PDF confirmed as the 30th HTTP-200 contract entry.**
-   `route-contract.json`'s 30 `200` entries are 29 HTML routes + the
-   indexed PDF (`/upload/medialibrary/fa1/fa1b840c9474c6030bf2ccb0c725c3e4.pdf`).
-   The acceptance script now locates the contract entry whose `path`
-   equals `indexedPdf.path`, hard-asserts exactly 29 entries remain, and
-   applies HTML-only checks (canonical/meta-robots/banner/JSON-LD/token
-   scan) only to those 29 - the PDF entry gets only the binary-identity
-   check (status 200 + exact byte length + exact SHA-256).
-4. **Redirect target comparison fixed.** `route-contract.json` stores
-   relative targets (e.g. `/almaznoe-burenie/`), but the generated hosting
-   rules issue absolute redirects to `https://aeroventa.ru/...`. The
-   acceptance script now requires
-   `Location === canonicalOrigin + route.target` for every 301, not
-   `route.target` alone.
-5. **Apache path vs. FTP path split.** `authUserFileAbsolutePath` (used
-   inside the generated `.htaccess`'s `AuthUserFile` directive - an Apache
-   filesystem path) and `authUserFileFtpPath` (the path `basic-ftp`
-   actually uploads to, as seen from inside the staging-scoped FTP
-   account) are now two distinct required config fields. The deploy script
-   uses each for its correct purpose and never conflates them.
-6. **Pre-upload safety listing now fails closed.** `client.list(...)` is
-   no longer wrapped in `.catch(() => [])`; any failure to list the remote
-   root **aborts the whole deploy** rather than silently treating an
-   unreadable directory as "empty and therefore safe." `stagingHostname`
-   is now also hard-required to literally equal `staging.aeroventa.ru`.
-7. **Temp auth files no longer leak into the repo.** The merged
-   `.htaccess` and the generated `.htpasswd` line are now written to the
-   OS temp directory (`os.tmpdir()`) with a randomized filename, and are
-   deleted in a `finally` block on both success and failure. No raw Basic
-   Auth or FTP password is ever written to disk - only the generated
-   htpasswd hash line, and only transiently.
-8. **Dependency preflight moved before any credential prompt.** The
-   runner (and, independently, the deploy script if invoked directly)
-   checks whether `basic-ftp` is resolvable, installs it locally with
-   `npm install --no-save --package-lock=false --no-audit --no-fund
-   basic-ftp` if missing, and hard-fails **before** prompting for any
-   secret if it still cannot be resolved after the install attempt.
-   `package.json`/`package-lock.json` are never modified.
+1. **Duplicate postbuild closed (KNOWN FACT A).** `apps/web`'s own build
+   script already chains `astro build && node ../../scripts/postbuild.mjs`,
+   and `scripts/build-directus-v13-preview.mjs` drives that same npm
+   workspace build - so postbuild already ran exactly once as part of the
+   single build step. `scripts/v14-stage-deploy.mjs` previously ALSO
+   invoked `scripts/postbuild.mjs` explicitly afterward. Real logs from
+   an actual run showed this second, redundant postbuild executing with
+   `release_mode=fixture` (a stale/wrong context) after the real
+   `release_mode=preview` postbuild had already run correctly inside the
+   build step. The explicit second call has been removed. The pipeline is
+   now genuinely ONE Astro build + ONE postbuild.
+2. **404 sanity check strengthened, not weakened (KNOWN FACT C).** The
+   "random unknown path" acceptance check previously accepted
+   `banner OR noindex`. It now requires the actual intended contract:
+   the branded Astro 404 page carries BOTH the `AEROVENTA DRAFT PREVIEW`
+   banner AND the full `noindex,nofollow,noarchive,nosnippet` directive
+   set - matching the same bar already applied to the 29 HTML 200 routes.
+   This correctly continues to FAIL while the underlying hosting-rule
+   `ErrorDocument` mismatch (see Known Limitation below) is unresolved.
+3. **Production fetch made more diagnosable, not weaker (KNOWN FACT D).**
+   `fetchRaw()` now retries once after a short delay before reporting
+   failure, and surfaces Node's underlying `err.cause` (e.g. a TLS/DNS/
+   connection error code) in the failure detail. The production-
+   separation check remains a hard gate; the run still fails if
+   production is genuinely unreachable from the acceptance process. The
+   observed `fetch failed` in the prior run is NOT evidence production is
+   down (the site is separately confirmed reachable) - it indicates a
+   Node-process-local network condition that needs a runtime recheck with
+   the improved diagnostics to root-cause further.
+
+## KNOWN FACT B - NOT fixed in this commit (explicit blocker)
+
+The branded-404 body mismatch (`ErrorDocument 404 /404/` in the generated
+hosting rules vs. the actual built file `apps/web/dist/404.html`) requires
+editing `scripts/generate-hosting-rules.mjs` (the source generator) and
+regenerating `migration/hosting-rules.generated.conf`. This session's
+GitHub file-read tooling could not return the current body of either
+file (same connector limitation documented in every prior V14 commit:
+`get_file_contents` returns a bare confirmation with no inline text, and
+generic fetches against `github.com` / `raw.githubusercontent.com` fail).
+Editing a V13-adjacent generator/config file without seeing its current
+exact content risks corrupting already-closed, working hosting rules -
+which this bounded correction is not authorized to risk. This defect is
+therefore left as a hard, correctly-failing acceptance check rather than
+patched blind. It needs either a session/tool with working raw file read,
+or the current content of those two files supplied directly, to produce
+a precise, minimal patch (most likely: change the `ErrorDocument 404`
+target from `/404/` to `/404.html` to match the real Astro output path,
+or alternatively adjust Astro's trailing-slash output so `/404/index.html`
+exists - the correct choice depends on seeing the actual generator logic
+and how other routes' trailing slashes are handled).
+
+`apps/web/public/.htaccess` was verified via a fresh directory listing to
+NOT be a tracked file (only `robots.txt` and `upload/` exist there) - the
+earlier expectation of a fourth tracked diff in that path was incorrect
+and is not repeated here.
 
 ## Changed files (this commit)
 
 | File | Change |
 |---|---|
-| `scripts/v14-stage-config.example.json` | split `authUserFileAbsolutePath` / `authUserFileFtpPath` |
-| `scripts/v14-stage-deploy.mjs` | single build/postbuild owner, fail-closed listing, temp-file cleanup, dependency preflight, split auth-path fields |
-| `scripts/v14-external-acceptance.mjs` | PDF/HTML split (29 vs 30), absolute redirect target comparison |
-| `scripts/v14-staging-runner.ps1` | no pre-build, hard content preflight via PS5.1-safe helper, dependency preflight before credential prompt, single outer secret-clearing `finally` |
-| `docs/V14_STAGING_DEPLOY_RUNBOOK.md` | this file, rewritten |
+| `scripts/v14-stage-deploy.mjs` | removed the duplicate explicit postbuild step; build step now documented as the single source of the one postbuild run |
+| `scripts/v14-external-acceptance.mjs` | 404 sanity now requires banner AND full noindex set (was OR); `fetchRaw` retries once and surfaces `err.cause` diagnostics |
+| `docs/V14_STAGING_DEPLOY_RUNBOOK.md` | this file, updated |
 
-`scripts/v14-verify-head.mjs` and `scripts/v14-htpasswd.mjs` are
-unchanged from Correction 1 (no defect touched them). No `package.json`
-change. No `build-directus-v13-preview.mjs`, `postbuild.mjs`, or
-`validate-built-site.mjs` change. V13 not reopened.
+No other file touched. `scripts/generate-hosting-rules.mjs` and
+`migration/hosting-rules.generated.conf` are explicitly NOT touched in
+this commit (see Known Fact B above). `scripts/v14-staging-runner.ps1`,
+`scripts/v14-verify-head.mjs`, `scripts/v14-htpasswd.mjs`,
+`scripts/v14-stage-config.example.json` unchanged from Correction 2. No
+`package.json` change. No V13 pipeline file change. V13 not reopened.
+Directus credentials not created/rotated - the existing Build Reader
+credential (now loaded correctly per the separate, already-landed DPAPI
+text-credential fix) is reused as-is.
 
-## One-click sequence (now structurally consistent end to end)
+## Quality bar preserved
 
-1. Require `main` + clean tree; `git fetch origin main`; fast-forward
-   only; record the exact resulting HEAD.
-2. Require local config with no `REPLACE` placeholders.
-3. Ensure `basic-ftp` resolvable (install if needed) - before any
-   credential prompt.
-4. Decrypt the existing DPAPI Build Reader token in memory.
-5. Hard preflight: `/items/content?limit=1` = 200; `/users` = 401/403.
-6. Prompt locally for Basic Auth + FTP(S) credentials (hidden input).
-7. Call the deploy script once: it runs the ONE V13 preview build, the
-   ONE postbuild, the fail-closed pre-upload safety listing, generates
-   Basic Auth, and uploads over FTPS.
-8. Call the acceptance script: unauthenticated 401; 29 HTML routes get
-   the full HTML preview matrix; the indexed PDF gets binary-identity
-   checks only; 13 redirects checked against the exact absolute
-   production Location; 54 Gone routes checked; the 1 contract 404
-   checked; a random unknown path checked for branded 404 + noindex;
-   `robots.txt` checked; 8 preserved-media entries checked for exact
-   bytes/SHA-256; production checked for 200/no-banner/no-Basic-Auth.
-9. Temp auth files deleted. All secrets cleared in one outer `finally`.
+This correction does not touch any of the previously-passing 273 checks'
+underlying logic: the 29 retained HTML routes, 13 exact 301s, 54 exact
+410s, contract 404, indexed PDF identity, 8 preserved media identities,
+staging Basic Auth, production canonicals, full preview robots meta,
+visible draft banner, JSON-LD suppression, `robots.txt` disallow, token
+non-leakage, and the staging-only FTP guard are all unchanged. Only the
+duplicate-postbuild removal, the 404-sanity strengthening, and the fetch
+diagnostics were touched.
 
-No claim of a real Beget staging PASS is made without an actual execution
-against real infrastructure - this commit is a structural/code
-correction only.
+## Owner one-shot recovery + re-run
 
-## Owner action still required (unchanged, still not requested yet)
-
-The Owner is **not** being asked to create the Beget staging site in this
-correction. That remains the same one action documented previously:
-confirm/create the isolated staging site + scoped FTP account in the
-Beget panel, then fill in `scripts/v14-stage-config.local.json` (now
-including both `authUserFileAbsolutePath` and `authUserFileFtpPath`) and
-set `ftpAccountScopedToStagingOnly: true` only once that scoping is
-visually confirmed.
+The Owner's local worktree has uncommitted edits from an aborted patch
+attempt in exactly three tracked files:
+`migration/hosting-rules.generated.conf`, `scripts/generate-hosting-rules.mjs`,
+`scripts/v14-stage-deploy.mjs`. None of that was committed or pushed.
+Remote `main` (this commit) is authoritative. The Owner should discard
+those three local edits, fast-forward to this new `main`, and re-run the
+staging runner - see the copy-ready PowerShell block provided in the
+final chat response.
 
 ## Security boundaries (unchanged, reaffirmed)
 
 - No secrets requested in chat at any point.
-- No new Directus credential created; the existing Build Reader token is
-  reused, decrypted locally, and cleared in one outer `finally`.
+- No new Directus credential created or rotated; the existing Build
+  Reader credential is reused as-is.
 - Real deploy is impossible without a filled-in local config with no
   placeholder text and an explicit human attestation of FTP scoping.
 - A live, fail-closed pre-upload directory listing independently defends

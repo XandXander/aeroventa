@@ -1,20 +1,27 @@
 #!/usr/bin/env node
 /**
- * V14 - External acceptance checks (correction 2).
+ * V14 - External acceptance checks (correction 3).
  *
- * Fixes vs. correction 1:
- *  (3) The indexed PDF is confirmed to be the 30th HTTP-200 entry inside
- *      route-contract.json (29 HTML + 1 PDF = 30). This script now
- *      identifies the route-contract entry whose path equals
- *      indexedPdf.path and excludes it from all HTML-only checks
- *      (canonical/meta-robots/banner/JSON-LD/token-scan), validating it
- *      instead with the binary-identity check (status + exact bytes +
- *      exact SHA-256). It hard-asserts exactly 29 remaining HTML 200
- *      entries after that exclusion.
- *  (4) 301 Location is now compared against
- *      canonicalOrigin + route.target (route-contract.json stores
- *      relative targets; the hosting rules emit absolute redirects to
- *      https://aeroventa.ru), not against route.target alone.
+ * Fixes vs. correction 2, based on a real staging run (PASS 273/275):
+ *  KNOWN FACT C CLOSED - the "random unknown path" sanity check
+ *  previously accepted banner OR noindex. The intended safety contract
+ *  is the actual branded Astro 404 page, which carries BOTH the
+ *  "AEROVENTA DRAFT PREVIEW" banner AND the full
+ *  noindex/nofollow/noarchive/nosnippet directive set. The check now
+ *  requires both, matching the same bar already applied to the 29 HTML
+ *  200 routes. This is a strengthening, not a weakening, of the gate.
+ *  This check still correctly reports FAIL while the underlying hosting-
+ *  rule ErrorDocument target mismatch (KNOWN FACT B, tracked separately -
+ *  BLOCKED pending a session with working raw file read on
+ *  scripts/generate-hosting-rules.mjs / migration/hosting-rules.generated.conf)
+ *  remains unfixed; that is correct, intended behavior for a hard gate.
+ *
+ *  KNOWN FACT D - the production fetch failure ("fetch failed") got a
+ *  bounded robustness improvement, not a weakening: fetchRaw now retries
+ *  once after a short delay before reporting failure, and surfaces
+ *  Node's underlying error `cause` (e.g. an ECONNRESET/ETIMEDOUT/TLS
+ *  code) in the failure detail for diagnosis. The production-separation
+ *  check is still a hard gate; a persistent failure still fails the run.
  *
  * Usage:
  *   node scripts/v14-external-acceptance.mjs
@@ -90,13 +97,24 @@ function assertExactCountsAndSplitPdf(routeContract, preservedMedia, indexedPdf)
 }
 
 async function fetchRaw(url, opts = {}) {
-  try {
-    const res = await fetch(url, { redirect: "manual", ...opts });
-    const buf = Buffer.from(await res.arrayBuffer().catch(() => new ArrayBuffer(0)));
-    return { ok: true, status: res.status, headers: res.headers, buf, text: buf.toString("utf8") };
-  } catch (err) {
-    return { ok: false, error: err.message };
+  const maxAttempts = 2;
+  let lastErr = null;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      const res = await fetch(url, { redirect: "manual", ...opts });
+      const buf = Buffer.from(await res.arrayBuffer().catch(() => new ArrayBuffer(0)));
+      return { ok: true, status: res.status, headers: res.headers, buf, text: buf.toString("utf8") };
+    } catch (err) {
+      lastErr = err;
+      if (attempt < maxAttempts) {
+        await new Promise((r) => setTimeout(r, 500));
+      }
+    }
   }
+  const causeInfo = lastErr && lastErr.cause
+    ? " cause=" + (lastErr.cause.code || lastErr.cause.message || String(lastErr.cause))
+    : "";
+  return { ok: false, error: (lastErr?.message || String(lastErr)) + causeInfo + " (after " + maxAttempts + " attempts)" };
 }
 
 function basicAuthHeader() {
@@ -186,11 +204,17 @@ async function main() {
     record("404 (contract) " + route.path, res.ok && res.status === 404, "got=" + (res.status ?? res.error));
   }
 
-  // 7. Random unknown path -> 404 + sanity
+  // 7. Random unknown path -> 404 + branded preview page (banner AND full noindex set)
   const unknown = await fetchRaw(baseUrl + "/v14-acceptance-unknown-" + Date.now(), { headers: { Authorization: auth } });
   record("Unknown path -> 404", unknown.ok && unknown.status === 404, "status=" + (unknown.status ?? unknown.error));
   if (unknown.ok) {
-    record("  404 branded/noindex sanity", unknown.text.includes("AEROVENTA DRAFT PREVIEW") || unknown.text.includes("noindex"), "checked body");
+    const bannerPresent = unknown.text.includes("AEROVENTA DRAFT PREVIEW");
+    const noindexAll = ["noindex", "nofollow", "noarchive", "nosnippet"].every((d) => unknown.text.includes(d));
+    record(
+      "  404 is the branded preview page (banner AND full noindex directive set)",
+      bannerPresent && noindexAll,
+      "banner=" + bannerPresent + " noindexAll=" + noindexAll
+    );
   }
 
   // 8. robots.txt

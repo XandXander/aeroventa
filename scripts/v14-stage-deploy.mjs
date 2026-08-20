@@ -1,31 +1,32 @@
 #!/usr/bin/env node
 /**
- * V14 - Isolated staging deploy for AEROVENTA.RU (correction 2).
+ * V14 - Isolated staging deploy for AEROVENTA.RU (correction 3).
  *
- * This script is the ONLY place the V13 build + postbuild are invoked for
- * a staging run (defect #1 fix). The runner must NOT pre-build; it only
- * decrypts/sets DIRECTUS_URL + DIRECTUS_STATIC_TOKEN, preflights them,
- * then calls this script once.
+ * Fix vs. correction 2 (confirmed by real runtime logs from an actual
+ * staging run, not re-guessed):
+ *  DUPLICATE POSTBUILD CLOSED. apps/web's own "build" script already
+ *  chains "astro build && node ../../scripts/postbuild.mjs", and
+ *  scripts/build-directus-v13-preview.mjs drives that same npm workspace
+ *  build - so postbuild.mjs already runs exactly once as part of the
+ *  single build step below. This script previously ALSO invoked
+ *  scripts/postbuild.mjs explicitly afterward, causing a second,
+ *  redundant postbuild pass that ran against a stale/fixture release
+ *  context (observed in real logs as release_mode=fixture on the second
+ *  run). That explicit second call has been removed. The pipeline is now
+ *  genuinely ONE Astro build + ONE postbuild, not two.
  *
- * Defects closed vs. correction 1:
- *  (1) Exactly one V13 build + one postbuild happen here, and only here.
- *  (5) authUserFileAbsolutePath (used inside the generated .htaccess,
- *      an Apache filesystem path) is now distinct from
- *      authUserFileFtpPath (the path basic-ftp actually uploads to, as
- *      seen from inside the scoped FTP account). They are never the
- *      same field anymore.
- *  (6) preUploadSafetyListing no longer swallows list() errors into an
- *      empty array - any failure to list the remote root is a HARD ABORT,
- *      and cfg.stagingHostname is required to literally equal
- *      "staging.aeroventa.ru".
- *  (7) Temporary auth files are written to the OS temp directory with a
- *      randomized name, and always deleted in a finally block regardless
- *      of upload success or failure. No raw password is ever written to
- *      disk (only the generated htpasswd hash line).
- *  (8) basic-ftp availability is verified/installed BEFORE any credential
- *      is required by this script's own preflight (mirrors the runner's
- *      pre-prompt check; this script re-checks independently so it is
- *      still safe if invoked directly).
+ * Everything else preserved from correction 2:
+ *  - Exactly one V13 build happens here, and only here.
+ *  - authUserFileAbsolutePath (used inside the generated .htaccess, an
+ *    Apache filesystem path) stays distinct from authUserFileFtpPath
+ *    (the path basic-ftp actually uploads to, as seen from inside the
+ *    scoped FTP account).
+ *  - preUploadSafetyListing hard-aborts on any listing failure; never
+ *    treats an unreadable directory as "empty and therefore safe."
+ *  - Temporary auth files are written to the OS temp directory with a
+ *    randomized name, and always deleted in a finally block.
+ *  - basic-ftp availability is verified/installed before any upload
+ *    attempt.
  *
  * Required env vars for this run (set by the runner, cleared by the
  * runner's outer finally after acceptance completes - NOT by this script):
@@ -253,14 +254,19 @@ async function main() {
   if (!process.env.DIRECTUS_URL || !process.env.DIRECTUS_STATIC_TOKEN) {
     throw new Error(
       "[v14-deploy] Missing DIRECTUS_URL / DIRECTUS_STATIC_TOKEN in environment. " +
-      "The runner must decrypt the existing DPAPI Build Reader token and export both " +
+      "The runner must decrypt the existing Build Reader credential and export both " +
       "before calling this script."
     );
   }
 
   runStep("Verify worktree/HEAD (branch=main, clean tree)", "node", ["scripts/v14-verify-head.mjs"]);
-  runStep("Directus V13 preview build (reused pipeline, unmodified) - ONE build only", "node", ["scripts/build-directus-v13-preview.mjs"]);
-  runStep("Postbuild (reused pipeline: writes robots Disallow:/ + runs validate-built-site internally) - ONE postbuild only", "node", ["scripts/postbuild.mjs"]);
+  runStep(
+    "Directus V13 preview build - ONE build, which itself chains the ONE postbuild " +
+    "(apps/web's own build script runs: astro build && node ../../scripts/postbuild.mjs). " +
+    "postbuild.mjs is intentionally NOT invoked again by this script.",
+    "node",
+    ["scripts/build-directus-v13-preview.mjs"]
+  );
 
   await uploadDist(cfg);
 
