@@ -1,4 +1,4 @@
-# V14 - Windows all-in-one staging runner for AEROVENTA.RU (correction 2)
+# V14 - Windows all-in-one staging runner for AEROVENTA.RU (correction 3)
 # Run from the repository root in PowerShell:
 #   .\scripts\v14-staging-runner.ps1
 #
@@ -53,11 +53,41 @@ function Unprotect-DpapiFile($dpapiPath) {
   if (-not (Test-Path $dpapiPath)) {
     throw ("Build Reader DPAPI file not found: " + $dpapiPath)
   }
-  $encrypted = [System.IO.File]::ReadAllBytes($dpapiPath)
-  $decrypted = [System.Security.Cryptography.ProtectedData]::Unprotect(
-    $encrypted, $null, [System.Security.Cryptography.DataProtectionScope]::CurrentUser
-  )
-  return [System.Text.Encoding]::UTF8.GetString($decrypted)
+
+  # Canonical existing file: ConvertFrom-SecureString text protected
+  # with DPAPI for the current Windows user.
+  $dpapiText = [System.IO.File]::ReadAllText(
+    $dpapiPath,
+    [System.Text.Encoding]::UTF8
+  ).Trim()
+
+  if ($dpapiText -match '^[0-9A-Fa-f]+$') {
+    try {
+      $secure = ConvertTo-SecureString -String $dpapiText
+      $ptr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
+      try {
+        return [Runtime.InteropServices.Marshal]::PtrToStringBSTR($ptr)
+      }
+      finally {
+        [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($ptr)
+      }
+    }
+    catch {
+      throw ("Build Reader DPAPI text credential could not be decrypted for current Windows user: " + $_.Exception.Message)
+    }
+  }
+
+  # Compatibility fallback for raw ProtectedData files.
+  try {
+    $encrypted = [System.IO.File]::ReadAllBytes($dpapiPath)
+    $decrypted = [System.Security.Cryptography.ProtectedData]::Unprotect(
+      $encrypted, $null, [System.Security.Cryptography.DataProtectionScope]::CurrentUser
+    )
+    return [System.Text.Encoding]::UTF8.GetString($decrypted)
+  }
+  catch {
+    throw ("Build Reader DPAPI credential format/decryption failed: " + $_.Exception.Message)
+  }
 }
 
 function Get-HttpStatusCode($Uri, $Headers) {
@@ -76,7 +106,7 @@ function Get-HttpStatusCode($Uri, $Headers) {
   }
 }
 
-Write-Log "=== V14 STAGING RUNNER START (correction 2) ==="
+Write-Log "=== V14 STAGING RUNNER START (correction 3) ==="
 
 # --- Require main branch ---
 Invoke-Step "Require branch=main" {
@@ -117,7 +147,7 @@ if (-not (Test-Path $ConfigLocalPath)) {
   Write-Log "FAILED: scripts/v14-stage-config.local.json not found. Copy the .example file and fill in real values."
   exit 1
 }
-$ConfigRaw = Get-Content -Raw -Path $ConfigLocalPath
+$ConfigRaw = [System.IO.File]::ReadAllText($ConfigLocalPath, [System.Text.Encoding]::UTF8)
 if ($ConfigRaw -match "REPLACE") {
   Write-Log "FAILED: v14-stage-config.local.json still contains a REPLACE placeholder."
   exit 1
