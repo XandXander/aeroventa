@@ -15,6 +15,20 @@
  *  run). That explicit second call has been removed. The pipeline is now
  *  genuinely ONE Astro build + ONE postbuild, not two.
  *
+ * Correction 4 (this change):
+ *  Real staging acceptance run showed PASS 276/277, with the sole
+ *  remaining failure being the branded/noindex 404 page not being served
+ *  for unknown paths (banner=false, noindexAll=false) even though the
+ *  HTTP status was correctly 404. Root cause: the generated staging
+ *  .htaccess applies "Require valid-user" to the whole directory,
+ *  including 404.html. Apache's ErrorDocument 404 mechanism performs an
+ *  internal redirect to that same path, which is then itself subjected to
+ *  the same Basic Auth requirement, so Apache falls back to a bare
+ *  default error body instead of serving the branded static page. Fixed
+ *  by carving out an explicit <Files "404.html"> exception that grants
+ *  unauthenticated access to only that one physical file, while every
+ *  other path on staging remains behind Basic Auth exactly as before.
+ *
  * Everything else preserved from correction 2:
  *  - Exactly one V13 build happens here, and only here.
  *  - authUserFileAbsolutePath (used inside the generated .htaccess, an
@@ -177,6 +191,9 @@ function buildMergedHtaccess(cfg) {
     "AuthName \"" + cfg.basicAuthRealm + "\"\n" +
     "AuthUserFile \"" + cfg.authUserFileAbsolutePath + "\"\n" +
     "Require valid-user\n" +
+    "<Files \"404.html\">\n" +
+    "  Require all granted\n" +
+    "</Files>\n" +
     "# --- end V14 staging Basic Auth ---\n\n";
 
   const distHtaccessPath = path.join(repoRoot, cfg.localDistDir, ".htaccess");
