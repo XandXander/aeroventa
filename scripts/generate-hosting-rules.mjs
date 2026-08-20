@@ -18,7 +18,7 @@ const lines = [
   '',
   'Options -Indexes',
   'DirectoryIndex index.html',
-  'ErrorDocument 404 /404/',
+  'ErrorDocument 404 /404.html',
   '',
   '# Exact 301 redirects',
 ];
