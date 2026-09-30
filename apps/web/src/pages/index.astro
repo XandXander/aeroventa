@@ -1,21 +1,254 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import LeadCTA from '@/components/LeadCTA.astro';
 import { getByPath } from '@/lib/content-source';
+
 const content = await getByPath('/');
 if (!content) throw new Error('Home content is missing');
-const fixture = content.status === 'fixture_stub';
+
+const page = {
+  ...content,
+  h1: 'Инженерная вентиляция без лишнего.',
+  seo_title: 'Монтаж вентиляции в СПб и Ленобласти — AEROVENTA',
+  seo_description: 'AEROVENTA — монтаж вентиляции для квартир, домов, ресторанов, коммерческих, производственных и крупных объектов. Санкт-Петербург и Ленинградская область; берём объекты в Москве и Карелии.',
+};
+
+const objects = [
+  ['01', 'Квартиры / дома'],
+  ['02', 'Коттеджи / бани'],
+  ['03', 'Рестораны / офисы'],
+  ['04', 'Магазины / склады'],
+  ['05', 'Производства'],
+  ['06', 'Новостройки'],
+];
+
+const questions = [
+  'Можно ли понять бюджет без проекта?',
+  'Как сравнивать две сметы на вентиляцию?',
+  'Что должно быть решено до выхода монтажников?',
+  'Что делать, если проект не совпадает с реальным объектом?',
+  'Что проверить до закрытия потолков?',
+];
 ---
-<BaseLayout content={content}>
-  <section class="hero">
-    <div class="container">
-      <p><strong>Основное направление</strong></p>
-      <h1>{content.h1}</h1>
-      {content.excerpt && <p>{content.excerpt}</p>}
-      <Fragment set:html={content.body_html} />
-      {fixture && <div class="notice"><strong>Implementation fixture:</strong> production-контент ещё не мигрирован; страница принудительно noindex.</div>}
-      <p><a class="cta" href="/montazh-ventiliacii/">Монтаж вентиляции</a></p>
-      <LeadCTA intent="VENTILATION_PROJECT" title="Обсудить вентиляцию" />
+
+<BaseLayout content={page}>
+  <section class="home-hero" aria-labelledby="home-title">
+    <div class="home-shell home-hero__grid">
+      <div class="home-hero__copy">
+        <p class="home-kicker">Монтаж вентиляции</p>
+        <h1 id="home-title">Инженерная вентиляция без лишнего.</h1>
+        <p class="home-lede">
+          От квартиры и дома до ресторана, склада и производства. Работаем по проекту
+          или определяем следующий инженерный шаг — без ненужного усложнения системы и раздувания сметы.
+        </p>
+        <p class="home-geo">Санкт-Петербург · Ленинградская область · Москва · Карелия</p>
+        <div class="home-actions" aria-label="Основные действия">
+          <a class="button button--primary" href="/contact/?intent=budget">Получить ориентир стоимости <span aria-hidden="true">→</span></a>
+          <a class="button button--ghost" href="/contact/?intent=project">Есть проект — запросить смету</a>
+        </div>
+      </div>
+
+      <div class="hero-engineering" aria-label="Схема раздельных приточной и вытяжной магистралей">
+        <div class="hero-engineering__label hero-engineering__label--supply">Приточная магистраль</div>
+        <div class="hero-engineering__label hero-engineering__label--exhaust">Вытяжная магистраль</div>
+        <svg viewBox="0 0 760 470" role="img" aria-labelledby="airflow-title airflow-desc">
+          <title id="airflow-title">Приточная и вытяжная вентиляция</title>
+          <desc id="airflow-desc">Оранжевая приточная магистраль подаёт воздух к помещению, синяя вытяжная магистраль забирает воздух из помещения.</desc>
+          <defs>
+            <linearGradient id="metal" x1="0" x2="1">
+              <stop offset="0" stop-color="#d9dee2"/>
+              <stop offset=".5" stop-color="#f7f8f9"/>
+              <stop offset="1" stop-color="#aeb7bf"/>
+            </linearGradient>
+            <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+              <feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#0a1826" flood-opacity=".18"/>
+            </filter>
+            <marker id="arrow-orange" markerWidth="12" markerHeight="12" refX="7" refY="6" orient="auto">
+              <path d="M0,0 L12,6 L0,12 z" fill="#ff4d00"/>
+            </marker>
+            <marker id="arrow-blue" markerWidth="12" markerHeight="12" refX="7" refY="6" orient="auto">
+              <path d="M0,0 L12,6 L0,12 z" fill="#148cff"/>
+            </marker>
+          </defs>
+
+          <g opacity=".16" stroke="#718096" stroke-width="1">
+            <path d="M40 410 L710 410 M70 380 L680 380 M100 350 L650 350 M130 320 L620 320"/>
+            <path d="M130 320 L40 410 M220 320 L160 410 M310 320 L280 410 M400 320 L400 410 M490 320 L520 410 M580 320 L640 410 M670 320 L760 410"/>
+          </g>
+
+          <g filter="url(#soft)">
+            <path d="M80 110 H345 V245 H290" fill="none" stroke="url(#metal)" stroke-width="72" stroke-linejoin="round"/>
+            <path d="M470 115 H690 V250 H625" fill="none" stroke="url(#metal)" stroke-width="72" stroke-linejoin="round"/>
+            <path d="M80 110 H345 V245 H290" fill="none" stroke="#ff4d00" stroke-width="16" stroke-linejoin="round"/>
+            <path d="M470 115 H690 V250 H625" fill="none" stroke="#148cff" stroke-width="16" stroke-linejoin="round"/>
+          </g>
+
+          <g fill="#fff" stroke="#8f9ca8" stroke-width="3">
+            <rect x="238" y="250" width="104" height="38" rx="3"/>
+            <rect x="572" y="250" width="104" height="38" rx="3"/>
+          </g>
+          <g stroke="#5b6670" stroke-width="3">
+            <path d="M250 263 H330 M250 271 H330 M250 279 H330"/>
+            <path d="M584 263 H664 M584 271 H664 M584 279 H664"/>
+          </g>
+
+          <g fill="none" stroke-linecap="round" stroke-width="9">
+            <path d="M128 110 H285" stroke="#ff4d00" marker-end="url(#arrow-orange)"/>
+            <path d="M345 150 V225" stroke="#ff4d00" marker-end="url(#arrow-orange)"/>
+            <path d="M290 300 V350" stroke="#ff4d00" marker-end="url(#arrow-orange)"/>
+            <path d="M624 350 V300" stroke="#148cff" marker-end="url(#arrow-blue)"/>
+            <path d="M690 225 V150" stroke="#148cff" marker-end="url(#arrow-blue)"/>
+            <path d="M640 115 H520" stroke="#148cff" marker-end="url(#arrow-blue)"/>
+          </g>
+
+          <g fill="#101b27">
+            <circle cx="80" cy="110" r="7"/><circle cx="690" cy="115" r="7"/>
+          </g>
+          <text x="238" y="316" class="svg-label">Подача воздуха в помещение</text>
+          <text x="516" y="316" class="svg-label">Забор воздуха из помещения</text>
+        </svg>
+      </div>
+    </div>
+
+    <nav class="object-ribbon home-shell" aria-label="Типы объектов">
+      {objects.map(([number, label]) => (
+        <a href="#objects" class="object-ribbon__item">
+          <span class="object-ribbon__number">{number}</span>
+          <span>{label}</span>
+        </a>
+      ))}
+    </nav>
+  </section>
+
+  <section class="home-section home-solution" id="process" aria-labelledby="solution-title">
+    <div class="home-shell solution-grid">
+      <div class="section-copy">
+        <p class="section-index">01 / Продуманное решение</p>
+        <h2 id="solution-title">Система под объект, а не «по шаблону».</h2>
+        <p>
+          Состав монтажа определяем по задаче и условиям объекта. Учитываем реальные трассы,
+          сечения, оборудование, доступ и требования — без избыточных решений и скрытого усложнения.
+        </p>
+        <div class="decision-split">
+          <article>
+            <span class="decision-split__number">01</span>
+            <h3>Есть проект</h3>
+            <p>Смотрим проект и спецификацию, уточняем монтажный scope и вопросы, которые влияют на смету.</p>
+            <a href="/contact/?intent=project">Запросить смету →</a>
+          </article>
+          <article>
+            <span class="decision-split__number">02</span>
+            <h3>Проекта нет</h3>
+            <p>Определяем минимум исходных данных и даём понятный следующий шаг без имитации «точной сметы за минуту».</p>
+            <a href="/contact/?intent=budget">Получить ориентир →</a>
+          </article>
+        </div>
+      </div>
+
+      <div class="solution-diagram" aria-hidden="true">
+        <div class="solution-diagram__track solution-diagram__track--orange">
+          <span>Подача</span><i></i><i></i><i></i>
+        </div>
+        <div class="solution-diagram__track solution-diagram__track--blue">
+          <span>Вытяжка</span><i></i><i></i><i></i>
+        </div>
+        <div class="solution-diagram__node solution-diagram__node--a">Помещение</div>
+        <div class="solution-diagram__node solution-diagram__node--b">Помещение</div>
+      </div>
+    </div>
+
+    <div class="home-shell process-strip" aria-label="Этапы работы">
+      <div><b>01</b><span>Задача</span></div>
+      <div><b>02</b><span>Исходные данные</span></div>
+      <div><b>03</b><span>Монтаж</span></div>
+      <div><b>04</b><span>Сдача</span></div>
+    </div>
+  </section>
+
+  <section class="case-feature" aria-labelledby="case-title">
+    <div class="home-shell case-feature__grid">
+      <div>
+        <p class="section-index section-index--orange">02 / Объекты</p>
+        <h2 id="case-title">7 PARK</h2>
+        <p class="case-feature__subtitle">Павловск · Жилой квартал</p>
+        <div class="case-building" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+
+      <div class="case-flow" aria-label="Схема притока и вытяжки">
+        <div class="case-flow__orange">Приток</div>
+        <div class="case-flow__blue">Вытяжка</div>
+      </div>
+
+      <dl class="case-facts">
+        <div><dt>Тип системы</dt><dd>Приточно-вытяжная вентиляция</dd></div>
+        <div><dt>Объём</dt><dd>7 домов</dd></div>
+        <div><dt>Период</dt><dd>18.11.2020 — 10.12.2020</dd></div>
+        <div><dt>Локация</dt><dd>Павловск, Ленинградская область</dd></div>
+        <div><dt>Наша роль</dt><dd>Монтаж приточно-вытяжной вентиляции</dd></div>
+        <a class="button button--case" href="/blog/detail/kak-my-sdali-7-domov/">Посмотреть объект и ход работ →</a>
+      </dl>
+    </div>
+  </section>
+
+  <section class="home-section" id="objects" aria-labelledby="objects-title">
+    <div class="home-shell">
+      <div class="section-heading">
+        <div>
+          <p class="section-index">03 / Под конкретный объект</p>
+          <h2 id="objects-title">Разные объекты — разные ограничения.</h2>
+        </div>
+        <a href="/portfolio/">Смотреть реальные объекты →</a>
+      </div>
+
+      <div class="object-grid">
+        <article><span>01</span><h3>Производство</h3><p>Проект, действующий режим, трассы, доступ и границы монтажного scope.</p></article>
+        <article><span>02</span><h3>Рестораны и кафе</h3><p>Кухня, зал, оборудование, потолки и координация с отделкой.</p></article>
+        <article><span>03</span><h3>Новостройки</h3><p>Повторяемый объём, график по корпусам и управляемое усиление команды.</p></article>
+        <article><span>04</span><h3>Квартиры и дома</h3><p>Шум, пространство, отделка и аккуратная прокладка трасс.</p></article>
+        <article><span>05</span><h3>Склады</h3><p>Высота, доступ, эксплуатационный режим и логистика монтажа.</p></article>
+        <article><span>06</span><h3>Офисы и коммерция</h3><p>Fit-out, потолки, сроки открытия и смежные подрядчики.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section decision-preview" aria-labelledby="decisions-title">
+    <div class="home-shell decision-preview__grid">
+      <div class="section-copy">
+        <p class="section-index">04 / До монтажа</p>
+        <h2 id="decisions-title">Что важно решить до монтажа вентиляции</h2>
+        <p>
+          Не FAQ ради поисковика, а инженерный decision hub: что можно посчитать сейчас,
+          какие данные действительно нужны и где обычно появляются риски по смете и монтажу.
+        </p>
+        <a class="button button--ghost" href="/faq/">Разобрать вопросы по объекту →</a>
+      </div>
+      <div class="question-list">
+        {questions.map((question, index) => (
+          <a href="/faq/"><span>{String(index + 1).padStart(2, '0')}</span>{question}<b aria-hidden="true">→</b></a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="conversion-close" aria-labelledby="close-title">
+    <div class="home-shell">
+      <p class="section-index section-index--orange">05 / Следующий шаг</p>
+      <h2 id="close-title">Не заставляем проходить один и тот же сценарий всех.</h2>
+      <div class="conversion-grid">
+        <article>
+          <p class="conversion-grid__tag">Есть проект</p>
+          <h3>Пришлите проект или спецификацию.</h3>
+          <p>Посмотрим исходные данные, монтажный scope и вернёмся с конкретными вопросами по смете.</p>
+          <a class="button button--light" href="/contact/?intent=project">Запросить смету →</a>
+        </article>
+        <article>
+          <p class="conversion-grid__tag">Проекта нет</p>
+          <h3>Опишите объект и задачу.</h3>
+          <p>Определим, что можно оценить сейчас, какие данные нужны и какой следующий шаг имеет смысл.</p>
+          <a class="button button--light" href="/contact/?intent=budget">Получить ориентир →</a>
+        </article>
+      </div>
     </div>
   </section>
 </BaseLayout>
