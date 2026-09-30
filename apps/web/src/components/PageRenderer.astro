@@ -8,12 +8,14 @@ import FaqDecisionPage from '@/components/pages/FaqDecisionPage.astro';
 import AboutPage from '@/components/pages/AboutPage.astro';
 import ContactPage from '@/components/pages/ContactPage.astro';
 import P0LegacyArticlePage from '@/components/pages/P0LegacyArticlePage.astro';
+import PracticeHubPage from '@/components/pages/PracticeHubPage.astro';
 import ArticlePage from '@/components/pages/ArticlePage.astro';
 import ProjectPage from '@/components/pages/ProjectPage.astro';
 import type { ContentRecord } from '@/lib/types';
 interface Props { content: ContentRecord; }
 const { content } = Astro.props;
 const fixture = content.status === 'fixture_stub';
+const practiceHubPaths = new Set(['/blog/', '/blog/poleznye-stati/', '/blog/istorii-proektov/']);
 const p0LegacyPaths = new Set([
   '/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/',
   '/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/',
@@ -33,6 +35,8 @@ const p0LegacyPaths = new Set([
   <AboutPage content={content} fixture={fixture} />
 ) : content.path === '/contact/' ? (
   <ContactPage content={content} fixture={fixture} />
+) : practiceHubPaths.has(content.path) ? (
+  <PracticeHubPage content={content} fixture={fixture} />
 ) : p0LegacyPaths.has(content.path) ? (
   <P0LegacyArticlePage content={content} fixture={fixture} />
 ) : content.content_type === 'service' ? (

@@ -668,3 +668,33 @@ main { min-height: 60vh; }
   .p0-related__grid a { min-height:220px; }
   .p0-list li { grid-template-columns:34px 1fr; min-height:76px; }
 }
+
+
+/* V21 practice hubs */
+.practice-hero{background:#fff;border-bottom:1px solid var(--line);padding:clamp(60px,8vw,112px) 0 58px}
+.practice-hero__grid{display:grid;grid-template-columns:1fr 1fr;gap:76px;align-items:end}
+.practice-hero h1{margin:0;font-size:clamp(4rem,7vw,7.4rem);line-height:.88;letter-spacing:-.075em}
+.practice-hero__lede{margin:0;color:var(--muted);font-size:clamp(1.05rem,1.55vw,1.32rem);max-width:760px}
+.practice-back{display:inline-block;margin-top:26px;font-weight:900;text-decoration:none}
+.practice-entry{background:var(--navy);color:#fff;padding:clamp(72px,8vw,112px) 0}
+.practice-entry__grid,.practical-rules__grid,.story-rule__grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:80px}
+.practice-entry h2,.practice-featured h2,.practice-cases h2,.practical-index h2,.practical-rules h2,.story-index h2,.story-rule h2{margin:0;font-size:clamp(2.5rem,5vw,5rem);line-height:.97;letter-spacing:-.065em;max-width:1100px}
+.practice-entry__routes{border-top:1px solid #536a79}
+.practice-entry__routes a{min-height:94px;display:grid;grid-template-columns:44px 1fr auto;gap:18px;align-items:center;border-bottom:1px solid #405866;color:#fff;text-decoration:none}
+.practice-entry__routes span{color:#8196a5;font-size:.8rem}.practice-entry__routes h3{margin:0 0 4px;font-size:1.2rem}.practice-entry__routes p{margin:0;color:#c6d2d9;font-size:.91rem}.practice-entry__routes b{font-size:1.4rem}
+.practice-card-grid,.practical-index__grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:44px}
+.practice-card-grid a,.practical-index__grid a{min-height:300px;background:#fff;padding:27px;display:flex;flex-direction:column;text-decoration:none}
+.practice-card-grid span{color:var(--orange);text-transform:uppercase;font-size:.76rem;font-weight:900}
+.practice-card-grid h3,.practical-index__grid h3{margin:auto 0 12px;font-size:clamp(1.55rem,2.6vw,2.45rem);line-height:1;letter-spacing:-.045em}
+.practice-card-grid p,.practical-index__grid p{margin:0;color:var(--muted)}.practice-card-grid b,.practical-index__grid strong{margin-top:20px}
+.practice-cases{background:#f7f9fa;border-block:1px solid var(--line);padding:clamp(72px,8vw,112px) 0}
+.practice-case-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:44px}
+.practice-case-strip a{min-height:260px;background:#fff;padding:24px;display:flex;flex-direction:column;text-decoration:none}
+.practice-case-strip span,.story-index__grid b{color:var(--orange);text-transform:uppercase;font-size:.74rem;font-weight:900}.practice-case-strip h3{margin:auto 0 10px;font-size:1.55rem;letter-spacing:-.04em}.practice-case-strip p{margin:0;color:var(--muted);font-size:.9rem}.practice-case-strip b{margin-top:18px}
+.practical-index__top{display:flex;justify-content:space-between;gap:16px}.practical-index__top span{font-weight:900}.practical-index__top b{color:var(--orange);text-transform:uppercase;font-size:.74rem}
+.practical-rules{background:var(--navy);color:#fff;padding:clamp(72px,8vw,112px) 0}.practical-rules__list{border-top:1px solid #526a79}.practical-rules__list div{min-height:78px;display:grid;grid-template-columns:44px 1fr;gap:18px;align-items:center;border-bottom:1px solid #405866}.practical-rules__list span{color:#8196a5;font-size:.8rem}.practical-rules__list p{margin:0;color:#d0dbe1;font-weight:750}
+.practical-next__grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line)}.practical-next__grid a{min-height:280px;padding:28px;text-decoration:none;display:flex;flex-direction:column}.practical-next__grid span{color:var(--orange);text-transform:uppercase;font-size:.75rem;font-weight:900}.practical-next__grid h3{margin:auto 0 12px;font-size:2rem;letter-spacing:-.045em}.practical-next__grid p{color:var(--muted);margin:0}.practical-next__grid b{margin-top:20px}
+.story-index__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:44px}.story-index__grid a{min-height:310px;padding:25px;background:#fff;display:flex;flex-direction:column;text-decoration:none}.story-index__grid a>div{display:flex;justify-content:space-between}.story-index__grid span{font-weight:900}.story-index__grid h3{margin:auto 0 12px;font-size:1.7rem;letter-spacing:-.04em}.story-index__grid p{color:var(--muted);margin:0}.story-index__grid strong{margin-top:20px}
+.story-rule{background:#f7f9fa;border-top:1px solid var(--line);padding:clamp(72px,8vw,112px) 0}.story-rule__grid>div:last-child{color:var(--muted);font-size:1.05rem}
+@media(max-width:1050px){.practice-hero__grid,.practice-entry__grid,.practical-rules__grid,.story-rule__grid{grid-template-columns:1fr}.practice-case-strip,.story-index__grid{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){.practice-hero h1{font-size:clamp(3.3rem,16vw,5rem)}.practice-card-grid,.practice-case-strip,.practical-index__grid,.practical-next__grid,.story-index__grid{grid-template-columns:1fr}.practice-card-grid a,.practical-index__grid a,.story-index__grid a{min-height:235px}}

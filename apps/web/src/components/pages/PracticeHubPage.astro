@@ -1,0 +1,136 @@
+---
+import type { ContentRecord } from '@/lib/types';
+interface Props { content: ContentRecord; fixture: boolean; }
+const { content } = Astro.props;
+
+const p0 = [
+  { tag:'Полевой опыт', title:'Как вытащить застрявшую алмазную коронку из бетона', text:'Почему коронку заклинивает, что делать сначала и где заканчивается универсальный совет.', href:'/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/' },
+  { tag:'Реальный объект', title:'Бурение в стяжке под стояки отопления', text:'Слоистое перекрытие, крепление установки, готовая отделка и исходные данные.', href:'/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/' },
+  { tag:'Стоимость', title:'От чего зависит стоимость алмазного бурения', text:'Диаметр — только один фактор. Разбираем геометрию, материал, доступ и состав работ.', href:'/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/' },
+  { tag:'Вентиляция + проходка', title:'Алмазное бурение стены под вентиляцию', text:'Почему сначала определяют трассу и узел, а уже потом точку и геометрию отверстия.', href:'/blog/detail/gorizontalnoe-almaznoe-burenie/' },
+];
+
+const cases = [
+  {tag:'Новостройки',title:'7 PARK',meta:'Павловск · 7 домов',href:'/blog/detail/kak-my-sdali-7-domov/'},
+  {tag:'Ресторан',title:'ЖК «Леонтьевский Мыс»',meta:'Санкт-Петербург · приточно-вытяжная вентиляция + оборудование',href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/'},
+  {tag:'Производство',title:'НТФФ «Полисан»',meta:'Санкт-Петербург · исторический производственный кейс',href:'/blog/detail/ntff-polisan/'},
+  {tag:'Квартира',title:'Маршала Жукова',meta:'Санкт-Петербург · приточно-вытяжная вентиляция',href:'/blog/detail/kvartira-na-zhukova/'},
+  {tag:'Карелия',title:'Питкяранта / PONSSE',meta:'Сервисно-образовательный центр · вентиляция + оборудование',href:'/blog/detail/montazh-ventilyatsii-v-karelii/'},
+  {tag:'Кафе',title:'Римского-Корсакова, 3',meta:'Санкт-Петербург · приточно-вытяжная вентиляция + оборудование',href:'/blog/detail/kafe-rimskogo-korsakova-3/'},
+];
+
+const isRoot = content.path === '/blog/';
+const isPractical = content.path === '/blog/poleznye-stati/';
+const isStories = content.path === '/blog/istorii-proektov/';
+---
+
+{isRoot ? (
+  <article class="practice-hub">
+    <header class="practice-hero">
+      <div class="home-shell practice-hero__grid">
+        <div><p class="home-kicker">Практика AEROVENTA</p><h1>Практика</h1></div>
+        <div>
+          <p class="practice-hero__lede">Разборы объектов, инженерные вопросы и опыт с площадки. Материал должен либо помочь принять решение, либо показать реальный выполненный объект.</p>
+          <div class="home-actions"><a class="button button--primary" href="/blog/poleznye-stati/">Практические материалы →</a><a class="button button--ghost" href="/portfolio/">Реальные объекты</a></div>
+        </div>
+      </div>
+    </header>
+
+    <section class="practice-entry" aria-labelledby="practice-entry-title">
+      <div class="home-shell practice-entry__grid">
+        <div><p class="section-index section-index--orange">01 / С чего начать</p><h2 id="practice-entry-title">Не рубрики. Три типа полезного контента.</h2></div>
+        <div class="practice-entry__routes">
+          <a href="/faq/"><span>01</span><div><h3>Решение до монтажа</h3><p>Что прислать, как сравнить сметы, что согласовать и что проверить до закрытия.</p></div><b>→</b></a>
+          <a href="/blog/poleznye-stati/"><span>02</span><div><h3>Практическая проблема</h3><p>Конкретный вопрос, реальный опыт и полезная последовательность решений.</p></div><b>→</b></a>
+          <a href="/blog/istorii-proektov/"><span>03</span><div><h3>Реальный объект</h3><p>Задача, scope и подтверждённые исторические факты без рекламной надстройки.</p></div><b>→</b></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-section practice-featured" aria-labelledby="practice-featured-title">
+      <div class="home-shell">
+        <div class="section-heading"><div><p class="section-index">02 / Практические материалы</p><h2 id="practice-featured-title">Конкретная проблема + реальный опыт.</h2></div><a href="/blog/poleznye-stati/">Все материалы →</a></div>
+        <div class="practice-card-grid">
+          {p0.map((item,index) => <a href={item.href}><span>{String(index+1).padStart(2,'0')} / {item.tag}</span><h3>{item.title}</h3><p>{item.text}</p><b>Читать →</b></a>)}
+        </div>
+      </div>
+    </section>
+
+    <section class="practice-cases" aria-labelledby="practice-cases-title">
+      <div class="home-shell">
+        <div class="section-heading"><div><p class="section-index section-index--orange">03 / Истории объектов</p><h2 id="practice-cases-title">Опыт компании лучше читать по конкретным объектам.</h2></div><a href="/blog/istorii-proektov/">Все истории →</a></div>
+        <div class="practice-case-strip">
+          {cases.slice(0,4).map((item) => <a href={item.href}><span>{item.tag}</span><h3>{item.title}</h3><p>{item.meta}</p><b>Открыть →</b></a>)}
+        </div>
+      </div>
+    </section>
+
+    <section class="conversion-close">
+      <div class="home-shell"><p class="section-index section-index--orange">04 / Ваш вопрос</p><h2>Не нашли похожую статью — не нужно ждать, пока она появится.</h2><div class="home-actions"><a class="button button--light" href="/faq/">Что важно решить до монтажа →</a><a class="button button--light" href="/contact/">Задать вопрос по объекту</a></div></div>
+    </section>
+  </article>
+) : isPractical ? (
+  <article class="practice-hub">
+    <header class="practice-hero">
+      <div class="home-shell practice-hero__grid">
+        <div><p class="home-kicker">Практика / база знаний</p><h1>Практические материалы</h1></div>
+        <div><p class="practice-hero__lede">Материалы, в которых есть конкретная задача, first-hand опыт или понятная инженерная логика. Старые сильные статьи сохраняем на их URL, но не переносим устаревшие цены и коммерческие заявления.</p><a class="practice-back" href="/blog/">← Практика</a></div>
+      </div>
+    </header>
+
+    <section class="home-section practical-index">
+      <div class="home-shell"><p class="section-index">01 / Сильные legacy-материалы</p><h2>Не архив ради архива. Четыре страницы, которые решали реальные вопросы.</h2>
+        <div class="practical-index__grid">
+          {p0.map((item,index) => <a href={item.href}><div class="practical-index__top"><span>{String(index+1).padStart(2,'0')}</span><b>{item.tag}</b></div><h3>{item.title}</h3><p>{item.text}</p><strong>Читать материал →</strong></a>)}
+        </div>
+      </div>
+    </section>
+
+    <section class="practical-rules">
+      <div class="home-shell practical-rules__grid">
+        <div><p class="section-index section-index--orange">02 / Редакционный принцип</p><h2>Новая статья появляется только если ей есть что добавить.</h2></div>
+        <div class="practical-rules__list">
+          <div><span>01</span><p>Есть отдельный вопрос или search intent, а не просто новый набор ключевых слов.</p></div>
+          <div><span>02</span><p>Есть собственный факт, опыт, кейс или источник, который делает материал полезнее шаблонного ответа.</p></div>
+          <div><span>03</span><p>Ответ не дублирует service/object/FAQ-страницу и не создаёт каннибализацию.</p></div>
+          <div><span>04</span><p>Если достаточно добавить один хороший ответ в FAQ — новая URL не создаётся.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-section practical-next">
+      <div class="home-shell practical-next__grid">
+        <a href="/faq/"><span>До монтажа</span><h3>30 инженерных вопросов заказчика</h3><p>Короткий вывод → зависимость → исходные данные → следующий шаг.</p><b>Открыть FAQ →</b></a>
+        <a href="/blog/istorii-proektov/"><span>Доказательства</span><h3>Истории реальных объектов</h3><p>Кейсы AEROVENTA без второй копии тех же страниц.</p><b>Смотреть объекты →</b></a>
+      </div>
+    </section>
+  </article>
+) : isStories ? (
+  <article class="practice-hub">
+    <header class="practice-hero">
+      <div class="home-shell practice-hero__grid">
+        <div><p class="home-kicker">Практика / объекты</p><h1>Истории объектов</h1></div>
+        <div><p class="practice-hero__lede">Хронологический и редакционный вход в реальные кейсы AEROVENTA. Каноническая страница каждого объекта остаётся одна — этот раздел только помогает её найти.</p><div class="home-actions"><a class="button button--primary" href="/portfolio/">Портфолио / evidence hub →</a><a class="button button--ghost" href="/blog/">Практика</a></div></div>
+      </div>
+    </header>
+
+    <section class="home-section story-index">
+      <div class="home-shell"><p class="section-index">01 / Подтверждённые истории</p><h2>От квартиры до семи домов и производственного объекта.</h2>
+        <div class="story-index__grid">
+          {cases.map((item,index) => <a href={item.href}><div><span>{String(index+1).padStart(2,'0')}</span><b>{item.tag}</b></div><h3>{item.title}</h3><p>{item.meta}</p><strong>Открыть канонический кейс →</strong></a>)}
+        </div>
+      </div>
+    </section>
+
+    <section class="story-rule">
+      <div class="home-shell story-rule__grid">
+        <div><p class="section-index section-index--orange">02 / Без дублей</p><h2>Один объект — одна текущая страница с фактами.</h2></div>
+        <div><p>Этот индекс не создаёт вторые версии кейсов. Портфолио остаётся основным evidence hub, а исторические URL объектов — каноническими страницами деталей.</p><p>Если появляется новое доказательство — фотография, чертёж или уточнение scope — оно усиливает существующий кейс, а не порождает ещё одну SEO-страницу.</p></div>
+      </div>
+    </section>
+
+    <section class="conversion-close">
+      <div class="home-shell"><p class="section-index section-index--orange">03 / Похожий объект</p><h2>Ищете опыт именно под свой тип объекта?</h2><div class="home-actions"><a class="button button--light" href="/obekty/">Выбрать тип объекта →</a><a class="button button--light" href="/contact/?intent=project">Показать свой проект</a></div></div>
+    </section>
+  </article>
+) : null}
