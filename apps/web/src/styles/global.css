@@ -698,3 +698,28 @@ main { min-height: 60vh; }
 .story-rule{background:#f7f9fa;border-top:1px solid var(--line);padding:clamp(72px,8vw,112px) 0}.story-rule__grid>div:last-child{color:var(--muted);font-size:1.05rem}
 @media(max-width:1050px){.practice-hero__grid,.practice-entry__grid,.practical-rules__grid,.story-rule__grid{grid-template-columns:1fr}.practice-case-strip,.story-index__grid{grid-template-columns:1fr 1fr}}
 @media(max-width:760px){.practice-hero h1{font-size:clamp(3.3rem,16vw,5rem)}.practice-card-grid,.practice-case-strip,.practical-index__grid,.practical-next__grid,.story-index__grid{grid-template-columns:1fr}.practice-card-grid a,.practical-index__grid a,.story-index__grid a{min-height:235px}}
+
+
+/* V22 canonical evidence case pages */
+.case-detail-hero{background:#fff;border-bottom:1px solid var(--line);padding:clamp(60px,8vw,112px) 0 58px}
+.case-detail-hero__grid{display:grid;grid-template-columns:1.05fr .95fr;gap:76px;align-items:end}
+.case-detail-hero h1{margin:0;font-size:clamp(3.2rem,5.7vw,6.2rem);line-height:.91;letter-spacing:-.068em}
+.case-detail-hero__location{margin:0 0 16px;color:var(--orange);text-transform:uppercase;font-weight:900;font-size:.78rem}
+.case-detail-hero__lede{margin:0;color:var(--muted);font-size:clamp(1.04rem,1.55vw,1.3rem);line-height:1.4}
+.case-detail-facts{background:#f7f9fa;border-bottom:1px solid var(--line);padding:clamp(68px,7vw,100px) 0}
+.case-detail-facts h2,.case-detail-evidence h2,.case-detail-meaning h2,.case-detail-limits h2,.case-detail-related h2{margin:0;font-size:clamp(2.5rem,4.8vw,4.9rem);line-height:.97;letter-spacing:-.064em;max-width:1050px}
+.case-detail-facts__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin:42px 0 0}
+.case-detail-facts__grid div{background:#fff;min-height:145px;padding:22px;display:flex;flex-direction:column;justify-content:space-between}
+.case-detail-facts dt{color:#71808c;text-transform:uppercase;font-size:.72rem;font-weight:900}
+.case-detail-facts dd{margin:24px 0 0;font-weight:850;font-size:1.1rem}
+.case-detail-evidence{background:var(--navy);color:#fff;padding:clamp(72px,8vw,112px) 0}
+.case-detail-evidence__grid,.case-detail-meaning__grid,.case-detail-limits__grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:80px}
+.case-detail-evidence ol{list-style:none;margin:0;padding:0;border-top:1px solid #526a79}
+.case-detail-evidence li{min-height:80px;display:grid;grid-template-columns:44px 1fr;gap:18px;align-items:center;border-bottom:1px solid #405866}
+.case-detail-evidence li span{color:#8196a5;font-size:.8rem}.case-detail-evidence li p{margin:0;color:#d4dee4;font-weight:750}
+.case-detail-meaning__list{border-top:1px solid #aebac3}.case-detail-meaning__list div{min-height:82px;display:grid;grid-template-columns:44px 1fr;gap:18px;align-items:center;border-bottom:1px solid #ccd4da}.case-detail-meaning__list span{color:#7a8792;font-size:.8rem}.case-detail-meaning__list p{margin:0;font-weight:780}
+.case-detail-limits{background:#f2f5f6;border-block:1px solid var(--line);padding:clamp(72px,8vw,112px) 0}
+.case-detail-limits__list{border-top:1px solid #aebac3}.case-detail-limits__list div{padding:20px 0 20px 32px;border-bottom:1px solid #ccd4da;font-weight:800;position:relative}.case-detail-limits__list div::before{content:"—";position:absolute;left:0;color:var(--orange)}
+.case-detail-related__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:44px}.case-detail-related__grid a{min-height:260px;background:#fff;padding:24px;text-decoration:none;display:flex;flex-direction:column}.case-detail-related__grid span{font-weight:900;font-size:.8rem}.case-detail-related__grid h3{margin:auto 0 10px;font-size:1.5rem;letter-spacing:-.04em}.case-detail-related__grid p{margin:0;color:var(--muted)}.case-detail-related__grid b{margin-top:18px}
+@media(max-width:1050px){.case-detail-hero__grid,.case-detail-evidence__grid,.case-detail-meaning__grid,.case-detail-limits__grid{grid-template-columns:1fr}.case-detail-facts__grid{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){.case-detail-hero h1{font-size:clamp(2.9rem,13vw,4.3rem)}.case-detail-facts__grid,.case-detail-related__grid{grid-template-columns:1fr}.case-detail-facts__grid div{min-height:110px}.case-detail-related__grid a{min-height:210px}}

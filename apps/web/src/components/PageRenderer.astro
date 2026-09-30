@@ -9,6 +9,7 @@ import AboutPage from '@/components/pages/AboutPage.astro';
 import ContactPage from '@/components/pages/ContactPage.astro';
 import P0LegacyArticlePage from '@/components/pages/P0LegacyArticlePage.astro';
 import PracticeHubPage from '@/components/pages/PracticeHubPage.astro';
+import EvidenceCasePage from '@/components/pages/EvidenceCasePage.astro';
 import ArticlePage from '@/components/pages/ArticlePage.astro';
 import ProjectPage from '@/components/pages/ProjectPage.astro';
 import type { ContentRecord } from '@/lib/types';
@@ -16,6 +17,14 @@ interface Props { content: ContentRecord; }
 const { content } = Astro.props;
 const fixture = content.status === 'fixture_stub';
 const practiceHubPaths = new Set(['/blog/', '/blog/poleznye-stati/', '/blog/istorii-proektov/']);
+const evidenceCasePaths = new Set([
+  '/blog/detail/kak-my-sdali-7-domov/',
+  '/blog/detail/restoran-v-zhk-leontevskiy-mys/',
+  '/blog/detail/ntff-polisan/',
+  '/blog/detail/kvartira-na-zhukova/',
+  '/blog/detail/montazh-ventilyatsii-v-karelii/',
+  '/blog/detail/kafe-rimskogo-korsakova-3/',
+]);
 const p0LegacyPaths = new Set([
   '/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/',
   '/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/',
@@ -35,6 +44,8 @@ const p0LegacyPaths = new Set([
   <AboutPage content={content} fixture={fixture} />
 ) : content.path === '/contact/' ? (
   <ContactPage content={content} fixture={fixture} />
+) : evidenceCasePaths.has(content.path) ? (
+  <EvidenceCasePage content={content} fixture={fixture} />
 ) : practiceHubPaths.has(content.path) ? (
   <PracticeHubPage content={content} fixture={fixture} />
 ) : p0LegacyPaths.has(content.path) ? (
