@@ -1,0 +1,129 @@
+---
+import type { ContentRecord } from '@/lib/types';
+interface Props { content: ContentRecord; fixture: boolean; }
+const { content } = Astro.props;
+---
+
+<article class="covid-current">
+  <header class="covid-current__hero">
+    <div class="home-shell covid-current__hero-grid">
+      <div>
+        <p class="home-kicker">Обновлено по актуальным источникам · 30.09.2026</p>
+        <h1>{content.h1}</h1>
+      </div>
+      <div>
+        <p class="covid-current__lede">
+          Эта страница появилась в 2020 году как разбор рекомендаций REHVA по работе вентиляции во время COVID-19.
+          Сегодня мы сохраняем исходный материал как исторический источник, но отделяем его от того, что инженерно актуально сейчас.
+        </p>
+        <p class="covid-current__note">
+          Это материал о вентиляции и качестве воздуха, а не медицинская рекомендация.
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <section class="covid-current__now" aria-labelledby="covid-now-title">
+    <div class="home-shell covid-current__now-grid">
+      <div>
+        <p class="section-index section-index--orange">01 / Что осталось актуальным</p>
+        <h2 id="covid-now-title">Вентиляция снижает концентрацию аэрозолей. Но не превращает помещение в «безопасное» сама по себе.</h2>
+      </div>
+      <div class="covid-current__facts">
+        <article>
+          <span>CDC</span>
+          <h3>Больше чистого воздуха — меньше воздушных частиц.</h3>
+          <p>CDC рассматривает хорошую вентиляцию как важную часть здоровой внутренней среды и отмечает, что улучшение вентиляции может снижать концентрацию частиц и риск воздействия воздушных загрязнителей.</p>
+          <a href="https://www.cdc.gov/niosh/ventilation/about/index.html" target="_blank" rel="noopener noreferrer">Официальный источник →</a>
+        </article>
+        <article>
+          <span>ASHRAE 241</span>
+          <h3>Фокус уже шире одного вируса.</h3>
+          <p>Стандарт ASHRAE 241 посвящён контролю инфекционных аэрозолей в зданиях и охватывает наружный воздух, очистку воздуха, проектирование, монтаж, эксплуатацию и обслуживание систем.</p>
+          <a href="https://www.ashrae.org/technical-resources/bookstore/ashrae-standard-241-control-of-infectious-aerosols" target="_blank" rel="noopener noreferrer">О стандарте →</a>
+        </article>
+        <article>
+          <span>REHVA</span>
+          <h3>После COVID вопрос стал задачей качества воздуха и риска.</h3>
+          <p>REHVA развивает post-COVID подход к вентиляции, где инфекционный риск рассматривается как отдельный инженерный фактор, дополняющий обычные критерии качества воздуха.</p>
+          <a href="https://www.rehva.eu/activities/post-covid-ventilation" target="_blank" rel="noopener noreferrer">Post-COVID ventilation →</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section covid-current__archive" aria-labelledby="covid-archive-title">
+    <div class="home-shell covid-current__archive-grid">
+      <div class="covid-current__archive-copy">
+        <p class="section-index">02 / Исторический источник</p>
+        <h2 id="covid-archive-title">Что было в исходной статье 2020 года.</h2>
+        <p>
+          Старый материал пересказывал рекомендации REHVA того периода: увеличивать подачу наружного воздуха,
+          заранее запускать вентиляцию, проветривать помещения без механической вентиляции и осторожно относиться к рециркуляции.
+        </p>
+        <p>
+          Эти пункты важны как контекст пандемийной эксплуатации зданий, но мы <strong>не переносим их автоматически
+          на любой объект сегодня</strong>. Режим работы конкретной системы должен учитывать её конструкцию,
+          назначение здания, действующие требования и реальную задачу по качеству воздуха.
+        </p>
+        <div class="covid-current__archive-actions">
+          <a class="button button--ghost" href="/upload/medialibrary/fa1/fa1b840c9474c6030bf2ccb0c725c3e4.pdf">Архивный PDF REHVA →</a>
+          <span>PDF сохранён как legacy evidence, а не как текущая универсальная инструкция.</span>
+        </div>
+      </div>
+
+      <figure class="covid-current__figure">
+        <img src="/upload/medialibrary/1e0/1e03a5c54309ab78f133df9068a70b33.jpg" alt="Архивная иллюстрация к материалу AEROVENTA о вентиляции и рекомендациях REHVA" loading="lazy" />
+        <figcaption>Подтверждённая legacy-иллюстрация этой страницы. Сохранена вместе с исходным URL.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="covid-current__engineering" aria-labelledby="covid-engineering-title">
+    <div class="home-shell covid-current__engineering-grid">
+      <div>
+        <p class="section-index section-index--orange">03 / Инженерный вывод</p>
+        <h2 id="covid-engineering-title">Начинать надо не со старой памятки, а с того, как реально работает система.</h2>
+      </div>
+      <div class="covid-current__checklist">
+        <div><span>01</span><p><strong>Проверить фактическую работу вентиляции.</strong> Есть ли наружный воздух, какой режим системы, какие зоны она обслуживает.</p></div>
+        <div><span>02</span><p><strong>Не менять режимы вслепую.</strong> Повышение расхода, фильтрация, очистка воздуха и рециркуляция зависят от конкретной системы и объекта.</p></div>
+        <div><span>03</span><p><strong>Отделять вентиляцию от медицинских обещаний.</strong> Инженерные меры могут снижать концентрацию воздушных загрязнителей, но не дают гарантии отсутствия передачи инфекции.</p></div>
+        <div><span>04</span><p><strong>Для сложного объекта нужен профильный расчёт.</strong> Особенно если речь идёт о специальных режимах, медучреждениях, производстве или требованиях к контролю инфекционных аэрозолей.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section covid-current__sources" aria-labelledby="covid-sources-title">
+    <div class="home-shell">
+      <p class="section-index">04 / Актуальные источники</p>
+      <h2 id="covid-sources-title">На что опирается обновление.</h2>
+      <div class="covid-current__source-grid">
+        <a href="https://www.cdc.gov/niosh/ventilation/about/index.html" target="_blank" rel="noopener noreferrer">
+          <span>CDC / NIOSH</span><strong>Ventilation and Respiratory Viruses</strong><small>Актуальная инженерная рамка по вентиляции и респираторным вирусам.</small>
+        </a>
+        <a href="https://www.ashrae.org/technical-resources/bookstore/ashrae-standard-241-control-of-infectious-aerosols" target="_blank" rel="noopener noreferrer">
+          <span>ASHRAE</span><strong>Standard 241 — Control of Infectious Aerosols</strong><small>Минимальные требования по контролю инфекционных аэрозолей в зданиях.</small>
+        </a>
+        <a href="https://www.rehva.eu/activities/post-covid-ventilation" target="_blank" rel="noopener noreferrer">
+          <span>REHVA</span><strong>Post-COVID Ventilation</strong><small>Современное развитие темы, с которой начиналась исходная статья AEROVENTA.</small>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="conversion-close" aria-labelledby="covid-close-title">
+    <div class="home-shell">
+      <p class="section-index section-index--orange">05 / Если вопрос уже про ваш объект</p>
+      <h2 id="covid-close-title">Не переносите режимы из статьи на систему вслепую.</h2>
+      <p class="covid-current__close-copy">
+        Если задача связана с существующей вентиляцией, покажите объект, проект или схему и сформулируйте, что именно требуется:
+        монтаж, изменение системы, оценка существующего решения или исходные данные для следующего инженерного шага.
+      </p>
+      <div class="home-actions">
+        <a class="button button--light" href="/contact/?intent=project">Есть проект →</a>
+        <a class="button button--light" href="/contact/?intent=budget">Описать объект →</a>
+      </div>
+    </div>
+  </section>
+</article>

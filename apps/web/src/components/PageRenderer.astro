@@ -11,6 +11,7 @@ import P0LegacyArticlePage from '@/components/pages/P0LegacyArticlePage.astro';
 import PracticeHubPage from '@/components/pages/PracticeHubPage.astro';
 import EvidenceCasePage from '@/components/pages/EvidenceCasePage.astro';
 import LegacySupportPage from '@/components/pages/LegacySupportPage.astro';
+import CovidVentilationPage from '@/components/pages/CovidVentilationPage.astro';
 import ArticlePage from '@/components/pages/ArticlePage.astro';
 import ProjectPage from '@/components/pages/ProjectPage.astro';
 import type { ContentRecord } from '@/lib/types';
@@ -55,6 +56,8 @@ const p0LegacyPaths = new Set([
   <AboutPage content={content} fixture={fixture} />
 ) : content.path === '/contact/' ? (
   <ContactPage content={content} fixture={fixture} />
+) : content.path === '/covid-pritochnaya-ventilacia/' ? (
+  <CovidVentilationPage content={content} fixture={fixture} />
 ) : supportPaths.has(content.path) ? (
   <LegacySupportPage content={content} fixture={fixture} />
 ) : evidenceCasePaths.has(content.path) ? (

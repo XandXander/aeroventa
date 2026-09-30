@@ -752,3 +752,54 @@ main { min-height: 60vh; }
 
 .support-hero h1{overflow-wrap:anywhere}
 @media(max-width:760px){.support-hero h1{font-size:clamp(2.7rem,12.2vw,4rem);line-height:.92}}
+
+
+/* V24 current-source COVID / ventilation article */
+.covid-current__hero { background:#fff; border-bottom:1px solid var(--line); padding:clamp(60px,8vw,112px) 0 58px; }
+.covid-current__hero-grid { display:grid; grid-template-columns:1.05fr .95fr; gap:76px; align-items:end; }
+.covid-current__hero h1 { margin:0; font-size:clamp(3.4rem,6vw,6.5rem); line-height:.91; letter-spacing:-.07em; }
+.covid-current__lede { margin:0; color:var(--muted); font-size:clamp(1.05rem,1.6vw,1.35rem); }
+.covid-current__note { margin:24px 0 0; padding-top:18px; border-top:1px solid var(--line); font-weight:850; }
+
+.covid-current__now { background:var(--navy); color:#fff; padding:clamp(72px,8vw,112px) 0; }
+.covid-current__now-grid { display:grid; grid-template-columns:.9fr 1.1fr; gap:80px; }
+.covid-current__now h2,.covid-current__archive h2,.covid-current__engineering h2,.covid-current__sources h2 {
+  margin:0; font-size:clamp(2.5rem,5vw,5rem); line-height:.97; letter-spacing:-.065em;
+}
+.covid-current__facts { display:grid; gap:1px; background:#435b6b; border:1px solid #435b6b; }
+.covid-current__facts article { min-height:230px; background:#0a2233; padding:26px; display:flex; flex-direction:column; }
+.covid-current__facts span,.covid-current__source-grid span { color:#ff8550; text-transform:uppercase; font-weight:900; font-size:.76rem; }
+.covid-current__facts h3 { margin:24px 0 10px; font-size:1.45rem; letter-spacing:-.04em; }
+.covid-current__facts p { color:#c8d3da; margin:0; }
+.covid-current__facts a { margin-top:auto; padding-top:20px; color:#fff; text-decoration:none; font-weight:850; }
+
+.covid-current__archive-grid { display:grid; grid-template-columns:1fr 1fr; gap:70px; align-items:center; }
+.covid-current__archive-copy > p:not(.section-index) { color:var(--muted); font-size:1.04rem; }
+.covid-current__archive-actions { display:flex; flex-direction:column; gap:12px; margin-top:28px; align-items:flex-start; }
+.covid-current__archive-actions span { color:#667482; font-size:.86rem; max-width:620px; }
+.covid-current__figure { margin:0; border:1px solid var(--line); background:#f7f9fa; padding:16px; }
+.covid-current__figure img { width:100%; max-height:520px; object-fit:contain; background:#fff; }
+.covid-current__figure figcaption { color:#667482; font-size:.83rem; padding:12px 2px 0; }
+
+.covid-current__engineering { background:#f7f9fa; border-block:1px solid var(--line); padding:clamp(72px,8vw,112px) 0; }
+.covid-current__engineering-grid { display:grid; grid-template-columns:.9fr 1.1fr; gap:80px; }
+.covid-current__checklist { border-top:1px solid #aebbc4; }
+.covid-current__checklist div { display:grid; grid-template-columns:48px 1fr; gap:18px; min-height:92px; align-items:center; border-bottom:1px solid #c9d2d8; }
+.covid-current__checklist span { color:#7c8994; font-size:.8rem; }
+.covid-current__checklist p { margin:0; color:#384757; }
+
+.covid-current__source-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); margin-top:42px; }
+.covid-current__source-grid a { min-height:260px; padding:26px; background:#fff; text-decoration:none; display:flex; flex-direction:column; }
+.covid-current__source-grid strong { margin:auto 0 10px; font-size:1.35rem; letter-spacing:-.035em; }
+.covid-current__source-grid small { color:var(--muted); font-size:.9rem; }
+.covid-current__close-copy { color:#c8d3da; max-width:900px; font-size:1.05rem; }
+
+@media (max-width:1050px) {
+  .covid-current__hero-grid,.covid-current__now-grid,.covid-current__archive-grid,.covid-current__engineering-grid { grid-template-columns:1fr; }
+}
+@media (max-width:760px) {
+  .covid-current__hero h1 { font-size:clamp(3rem,14vw,4.55rem); }
+  .covid-current__source-grid { grid-template-columns:1fr; }
+  .covid-current__source-grid a { min-height:210px; }
+  .covid-current__facts article { min-height:210px; }
+}
