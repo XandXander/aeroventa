@@ -1,0 +1,138 @@
+---
+import type { ContentRecord } from '@/lib/types';
+interface Props { content: ContentRecord; fixture: boolean; }
+const { content } = Astro.props;
+
+const timeline = [
+  { year:'2017–2018', title:'НТФФ «Полисан»', text:'Монтаж приточно-вытяжной вентиляции и оборудования на фармацевтическом объекте.', href:'/blog/detail/ntff-polisan/' },
+  { year:'2019', title:'Квартира на Маршала Жукова', text:'Приточно-вытяжная вентиляция в жилом объекте — доказательство, что работа не ограничивается крупным B2B.', href:'/blog/detail/kvartira-na-zhukova/' },
+  { year:'2020', title:'7 PARK', text:'Семь домов в Павловске. Подтверждённый исторический период интенсивных работ: 18.11.2020–10.12.2020.', href:'/blog/detail/kak-my-sdali-7-domov/' },
+  { year:'2021', title:'ЖК «Леонтьевский Мыс»', text:'Ресторан: монтаж приточно-вытяжной вентиляции и оборудования.', href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/' },
+  { year:'2022', title:'Питкяранта / Карелия', text:'Сервисно-образовательный центр: монтаж вентиляции и оборудования.', href:'/blog/detail/montazh-ventilyatsii-v-karelii/' },
+];
+---
+
+<article class="about-premium">
+  <header class="about-hero">
+    <div class="home-shell about-hero__grid">
+      <div>
+        <p class="home-kicker">О AEROVENTA</p>
+        <h1>AEROVENTA — команда по монтажу вентиляции</h1>
+      </div>
+      <div>
+        <p class="about-hero__lede">
+          Постоянное ядро команды держит технический и организационный контроль объекта.
+          Когда объём или график требуют усиления, подключаем проверенных профильных специалистов.
+        </p>
+        <p class="home-geo">Работаем в Санкт-Петербурге и Ленинградской области. Берём объекты в Москве и Карелии.</p>
+        <div class="home-actions">
+          <a class="button button--primary" href="/portfolio/">Посмотреть реальные объекты →</a>
+          <a class="button button--ghost" href="/contact/">Связаться</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="about-principle" aria-labelledby="about-principle-title">
+    <div class="home-shell about-principle__grid">
+      <div>
+        <p class="section-index section-index--orange">01 / Как работаем</p>
+        <h2 id="about-principle-title">Без лишнего — это не про “дешевле любой ценой”.</h2>
+      </div>
+      <div class="about-principle__body">
+        <p>Сначала понимаем, что действительно требуется объекту и что входит в нашу работу.</p>
+        <p>Не добавляем сложность только потому, что её можно продать. Существенный элемент системы должен иметь понятную функцию.</p>
+        <p>Если проект конфликтует с реальным объектом, не превращаем это в незаметное изменение “по месту”: проблему нужно зафиксировать и согласовать.</p>
+        <p>Состав сметы и исключения должны быть понятны до начала работ, а не появляться постфактум.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section about-model" aria-labelledby="about-model-title">
+    <div class="home-shell">
+      <p class="section-index">02 / Команда</p>
+      <h2 id="about-model-title">Не изображаем большую постоянную структуру. Масштабируемся под объект.</h2>
+      <div class="about-model__grid">
+        <article>
+          <span>01</span>
+          <h3>Постоянное ядро</h3>
+          <p>Технический и организационный контроль не растворяется между случайными бригадами.</p>
+        </article>
+        <article>
+          <span>02</span>
+          <h3>Проверенное усиление</h3>
+          <p>Когда объект или график требуют большего состава, подключаем профильных специалистов под конкретный scope.</p>
+        </article>
+        <article>
+          <span>03</span>
+          <h3>Работа от задачи</h3>
+          <p>Размер команды и последовательность работ определяются реальным объектом, а не рекламной формулой.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="about-history" aria-labelledby="about-history-title">
+    <div class="home-shell">
+      <div class="section-heading">
+        <div>
+          <p class="section-index section-index--orange">03 / Опыт через объекты</p>
+          <h2 id="about-history-title">Проверять лучше по проектам, а не по счётчикам.</h2>
+        </div>
+        <a href="/portfolio/">Все объекты →</a>
+      </div>
+      <div class="about-timeline">
+        {timeline.map((item) => (
+          <a href={item.href}>
+            <span>{item.year}</span>
+            <h3>{item.title}</h3>
+            <p>{item.text}</p>
+            <b>Открыть кейс →</b>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="about-geography" aria-labelledby="about-geography-title">
+    <div class="home-shell about-geography__grid">
+      <div>
+        <p class="section-index">04 / География</p>
+        <h2 id="about-geography-title">Основная зона — СПб и Ленобласть. Выезжаем дальше, когда объект имеет смысл.</h2>
+      </div>
+      <div class="about-geography__facts">
+        <div><span>Основная зона</span><strong>Санкт-Петербург + Ленинградская область</strong></div>
+        <div><span>Берём объекты</span><strong>Москва + Республика Карелия</strong></div>
+        <div><span>Реальное доказательство</span><strong>Питкяранта, Карелия — исторический объект</strong><a href="/blog/detail/montazh-ventilyatsii-v-karelii/">Посмотреть →</a></div>
+        <p>Не изображаем региональные офисы там, где их нет. География означает готовность брать объект, а не наличие фиктивного адреса.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="about-honesty" aria-labelledby="about-honesty-title">
+    <div class="home-shell about-honesty__grid">
+      <div>
+        <p class="section-index section-index--orange">05 / Evidence first</p>
+        <h2 id="about-honesty-title">Что мы сознательно не используем как доказательство.</h2>
+      </div>
+      <div class="about-honesty__list">
+        <div>Нет выдуманного “№1”.</div>
+        <div>Нет неподтверждённых счётчиков проектов и клиентов.</div>
+        <div>Нет логотипов компаний, если отношения с ними не доказаны источником.</div>
+        <div>Нет AI-картинок вместо фотографий реального объекта.</div>
+        <div>Нет обещаний услуг, которые не определены текущим scope.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="conversion-close" aria-labelledby="about-close-title">
+    <div class="home-shell">
+      <p class="section-index section-index--orange">06 / Следующий шаг</p>
+      <h2 id="about-close-title">Если нужен подрядчик по монтажу — лучше начать с объекта, а не с презентации компании.</h2>
+      <div class="home-actions">
+        <a class="button button--light" href="/contact/?intent=project">Есть проект — запросить смету →</a>
+        <a class="button button--light" href="/contact/?intent=budget">Проекта нет — описать задачу</a>
+      </div>
+    </div>
+  </section>
+</article>

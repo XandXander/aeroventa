@@ -533,3 +533,87 @@ main { min-height: 60vh; }
 }
 
 .object-evidence__grid:has(> a:only-child) { grid-template-columns:1fr; }
+
+
+/* V19 about + contact */
+.about-hero,.contact-hero { background:#fff; border-bottom:1px solid var(--line); padding:clamp(60px,8vw,112px) 0 58px; }
+.about-hero__grid,.contact-hero__grid { display:grid; grid-template-columns:1fr 1fr; gap:76px; align-items:end; }
+.about-hero h1,.contact-hero h1 { margin:0; font-size:clamp(3.5rem,6vw,6.7rem); line-height:.9; letter-spacing:-.07em; }
+.about-hero__lede,.contact-hero__lede { margin:0; color:var(--muted); font-size:clamp(1.05rem,1.6vw,1.35rem); max-width:760px; }
+
+.about-principle { background:var(--navy); color:#fff; padding:clamp(72px,8vw,112px) 0; }
+.about-principle__grid,.about-geography__grid,.about-honesty__grid,.contact-area__grid,.contact-data__grid { display:grid; grid-template-columns:.9fr 1.1fr; gap:80px; }
+.about-principle h2,.about-model h2,.about-history h2,.about-geography h2,.about-honesty h2,
+.contact-routes h2,.contact-area h2,.contact-what h2,.contact-data h2 {
+  margin:0; font-size:clamp(2.5rem,5vw,5rem); line-height:.97; letter-spacing:-.065em; max-width:1080px;
+}
+.about-principle__body { border-top:1px solid #526a79; }
+.about-principle__body p { margin:0; padding:18px 0; border-bottom:1px solid #405866; color:#d6e0e6; font-weight:700; }
+
+.about-model__grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); margin-top:44px; }
+.about-model__grid article { min-height:300px; background:#fff; padding:26px; display:flex; flex-direction:column; }
+.about-model__grid span { font-weight:900; }
+.about-model__grid h3 { margin:auto 0 12px; font-size:1.7rem; letter-spacing:-.04em; }
+.about-model__grid p { color:var(--muted); margin:0; }
+
+.about-history { background:#f7f9fa; border-block:1px solid var(--line); padding:clamp(72px,8vw,112px) 0; }
+.about-timeline { display:grid; grid-template-columns:repeat(5,1fr); gap:1px; background:var(--line); border:1px solid var(--line); margin-top:44px; }
+.about-timeline a { min-height:310px; background:#fff; padding:24px; display:flex; flex-direction:column; text-decoration:none; }
+.about-timeline span { color:var(--orange); font-weight:900; }
+.about-timeline h3 { margin:auto 0 12px; font-size:1.55rem; letter-spacing:-.04em; }
+.about-timeline p { color:var(--muted); font-size:.92rem; }
+.about-timeline b { margin-top:18px; }
+
+.about-geography { background:#fff; padding:clamp(72px,8vw,112px) 0; }
+.about-geography__facts,.contact-area__facts { border-top:1px solid #aebac3; }
+.about-geography__facts > div,.contact-area__facts > div { min-height:82px; display:grid; grid-template-columns:160px 1fr auto; gap:18px; align-items:center; border-bottom:1px solid #ccd4da; }
+.about-geography__facts span,.contact-area__facts span { color:#687683; font-size:.82rem; text-transform:uppercase; font-weight:900; }
+.about-geography__facts a { font-weight:900; text-decoration:none; }
+.about-geography__facts > p,.contact-area__facts > p { color:var(--muted); margin:22px 0 0; }
+
+.about-honesty { background:#f7f9fa; border-top:1px solid var(--line); padding:clamp(72px,8vw,112px) 0; }
+.about-honesty__list { border-top:1px solid #aebac3; }
+.about-honesty__list div { padding:19px 0 19px 32px; border-bottom:1px solid #cad3d9; font-weight:800; position:relative; }
+.about-honesty__list div::before { content:"—"; color:var(--orange); position:absolute; left:0; }
+
+.contact-direct { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); border:1px solid var(--line); margin-top:28px; }
+.contact-direct a { min-height:100px; background:#fff; padding:18px; display:flex; flex-direction:column; justify-content:center; text-decoration:none; }
+.contact-direct span { color:#6b7884; text-transform:uppercase; font-size:.72rem; font-weight:900; }
+.contact-direct strong { margin-top:8px; font-size:1.1rem; }
+
+.contact-routes { background:#f7f9fa; padding:clamp(72px,8vw,112px) 0; border-bottom:1px solid var(--line); }
+.contact-routes__grid { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); border:1px solid var(--line); margin-top:44px; }
+.contact-routes__grid article { min-height:470px; background:#fff; padding:32px; display:flex; flex-direction:column; align-items:flex-start; }
+.contact-routes__tag { color:var(--orange); text-transform:uppercase; font-size:.8rem; font-weight:900; }
+.contact-routes h3 { margin:42px 0 16px; font-size:clamp(1.8rem,3vw,3rem); line-height:1; letter-spacing:-.05em; }
+.contact-routes p,.contact-routes li { color:var(--muted); }
+.contact-routes ul { padding-left:1.2rem; margin-bottom:30px; }
+.contact-routes .button { margin-top:auto; }
+
+.contact-area { background:var(--navy); color:#fff; padding:clamp(72px,8vw,112px) 0; }
+.contact-area__facts { border-color:#526978; }
+.contact-area__facts > div { border-color:#405866; }
+.contact-area__facts span,.contact-area__facts > p { color:#c7d2da; }
+
+.contact-what__grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); margin-top:44px; }
+.contact-what__grid article { min-height:280px; background:#fff; padding:25px; display:flex; flex-direction:column; }
+.contact-what__grid span { font-weight:900; }
+.contact-what__grid h3 { margin:auto 0 12px; font-size:1.5rem; letter-spacing:-.04em; }
+.contact-what__grid p { color:var(--muted); margin:0; }
+
+.contact-data { background:#f7f9fa; border-top:1px solid var(--line); padding:clamp(72px,8vw,112px) 0; }
+.contact-data__grid > div:last-child > p { color:var(--muted); font-size:1.02rem; }
+
+@media (max-width:1050px){
+  .about-hero__grid,.contact-hero__grid,.about-principle__grid,.about-geography__grid,.about-honesty__grid,.contact-area__grid,.contact-data__grid { grid-template-columns:1fr; }
+  .about-timeline { grid-template-columns:repeat(2,1fr); }
+  .contact-what__grid { grid-template-columns:1fr 1fr; }
+}
+@media (max-width:760px){
+  .about-hero h1,.contact-hero h1 { font-size:clamp(3rem,14vw,4.6rem); }
+  .about-model__grid,.about-timeline,.contact-routes__grid,.contact-what__grid,.contact-direct { grid-template-columns:1fr; }
+  .about-model__grid article,.about-timeline a,.contact-what__grid article { min-height:210px; }
+  .about-model__grid h3,.about-timeline h3,.contact-what__grid h3 { margin-top:38px; }
+  .about-geography__facts > div,.contact-area__facts > div { grid-template-columns:1fr; gap:7px; padding:17px 0; }
+  .contact-routes__grid article { min-height:430px; padding:26px; }
+}

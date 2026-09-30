@@ -5,6 +5,8 @@ import VentilationServicePage from '@/components/pages/VentilationServicePage.as
 import ServicesHubPage from '@/components/pages/ServicesHubPage.astro';
 import PortfolioHubPage from '@/components/pages/PortfolioHubPage.astro';
 import FaqDecisionPage from '@/components/pages/FaqDecisionPage.astro';
+import AboutPage from '@/components/pages/AboutPage.astro';
+import ContactPage from '@/components/pages/ContactPage.astro';
 import ArticlePage from '@/components/pages/ArticlePage.astro';
 import ProjectPage from '@/components/pages/ProjectPage.astro';
 import type { ContentRecord } from '@/lib/types';
@@ -20,6 +22,10 @@ const fixture = content.status === 'fixture_stub';
   <PortfolioHubPage content={content} fixture={fixture} />
 ) : content.path === '/faq/' ? (
   <FaqDecisionPage content={content} fixture={fixture} />
+) : content.path === '/about/' ? (
+  <AboutPage content={content} fixture={fixture} />
+) : content.path === '/contact/' ? (
+  <ContactPage content={content} fixture={fixture} />
 ) : content.content_type === 'service' ? (
   <ServicePage content={content} fixture={fixture} />
 ) : content.content_type === 'project' ? (
