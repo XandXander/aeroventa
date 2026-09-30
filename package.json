@@ -31,6 +31,8 @@
     "directus:vnext:plan": "node scripts/generate-directus-vnext-plan.mjs",
     "directus:vnext:validate": "node scripts/validate-directus-vnext-static.mjs",
     "directus:vnext:preflight:local": "npm run directus:vnext:plan && npm run directus:vnext:validate",
-    "directus:vnext:inspect": "node scripts/directus-vnext-inspect-readonly.mjs"
+    "directus:vnext:inspect": "node scripts/directus-vnext-inspect-readonly.mjs",
+    "directus:vnext:native:build": "node scripts/build-directus-vnext-native-target.mjs",
+    "directus:vnext:native:validate": "node scripts/validate-directus-vnext-native-target.mjs"
   }
 }
