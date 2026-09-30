@@ -723,3 +723,32 @@ main { min-height: 60vh; }
 .case-detail-related__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:44px}.case-detail-related__grid a{min-height:260px;background:#fff;padding:24px;text-decoration:none;display:flex;flex-direction:column}.case-detail-related__grid span{font-weight:900;font-size:.8rem}.case-detail-related__grid h3{margin:auto 0 10px;font-size:1.5rem;letter-spacing:-.04em}.case-detail-related__grid p{margin:0;color:var(--muted)}.case-detail-related__grid b{margin-top:18px}
 @media(max-width:1050px){.case-detail-hero__grid,.case-detail-evidence__grid,.case-detail-meaning__grid,.case-detail-limits__grid{grid-template-columns:1fr}.case-detail-facts__grid{grid-template-columns:1fr 1fr}}
 @media(max-width:760px){.case-detail-hero h1{font-size:clamp(2.9rem,13vw,4.3rem)}.case-detail-facts__grid,.case-detail-related__grid{grid-template-columns:1fr}.case-detail-facts__grid div{min-height:110px}.case-detail-related__grid a{min-height:210px}}
+
+
+/* V23 truthful legacy/support pages */
+.support-hero{background:#fff;border-bottom:1px solid var(--line);padding:clamp(60px,8vw,112px) 0 58px}
+.support-hero__grid{display:grid;grid-template-columns:1fr 1fr;gap:76px;align-items:end}
+.support-hero h1{margin:0;font-size:clamp(3.2rem,5.7vw,6.2rem);line-height:.91;letter-spacing:-.068em}
+.support-hero__lede{margin:0;color:var(--muted);font-size:clamp(1.04rem,1.55vw,1.3rem);line-height:1.4}
+.support-state{margin-top:26px;padding-top:18px;border-top:1px solid var(--line)}
+.support-state span{color:var(--orange);text-transform:uppercase;font-size:.75rem;font-weight:900}
+.support-state p{margin:8px 0 0;color:#43515f;font-weight:750}
+.support-section{padding:clamp(68px,7vw,102px) 0;background:#fff;border-bottom:1px solid var(--line)}
+.support-section:nth-child(even){background:#f7f9fa}
+.support-section__grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:80px}
+.support-section h2{margin:0;font-size:clamp(2.45rem,4.7vw,4.85rem);line-height:.98;letter-spacing:-.063em}
+.support-section__text{margin:0;color:var(--muted);font-size:1.07rem}
+.support-section ul{margin:28px 0 0;padding:0;list-style:none;border-top:1px solid #aebac3}
+.support-section li{padding:17px 0 17px 28px;border-bottom:1px solid #ccd4da;position:relative;font-weight:780}
+.support-section li::before{content:"—";position:absolute;left:0;color:var(--orange)}
+.support-cards__grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.support-cards__grid a{min-height:280px;background:#fff;padding:24px;text-decoration:none;display:flex;flex-direction:column}
+.support-cards__grid span{color:var(--orange);text-transform:uppercase;font-size:.72rem;font-weight:900}
+.support-cards__grid h3{margin:auto 0 12px;font-size:1.45rem;letter-spacing:-.04em}
+.support-cards__grid p{margin:0;color:var(--muted);font-size:.92rem}.support-cards__grid b{margin-top:18px}
+.support-close-copy{max-width:820px;color:#c9d4db;font-size:1.07rem;margin:0 0 26px}
+@media(max-width:1050px){.support-hero__grid,.support-section__grid{grid-template-columns:1fr}.support-cards__grid{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){.support-hero h1{font-size:clamp(2.9rem,13vw,4.3rem)}.support-cards__grid{grid-template-columns:1fr}.support-cards__grid a{min-height:215px}}
+
+.support-hero h1{overflow-wrap:anywhere}
+@media(max-width:760px){.support-hero h1{font-size:clamp(2.7rem,12.2vw,4rem);line-height:.92}}
