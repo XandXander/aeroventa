@@ -7,12 +7,19 @@ import PortfolioHubPage from '@/components/pages/PortfolioHubPage.astro';
 import FaqDecisionPage from '@/components/pages/FaqDecisionPage.astro';
 import AboutPage from '@/components/pages/AboutPage.astro';
 import ContactPage from '@/components/pages/ContactPage.astro';
+import P0LegacyArticlePage from '@/components/pages/P0LegacyArticlePage.astro';
 import ArticlePage from '@/components/pages/ArticlePage.astro';
 import ProjectPage from '@/components/pages/ProjectPage.astro';
 import type { ContentRecord } from '@/lib/types';
 interface Props { content: ContentRecord; }
 const { content } = Astro.props;
 const fixture = content.status === 'fixture_stub';
+const p0LegacyPaths = new Set([
+  '/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/',
+  '/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/',
+  '/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/',
+  '/blog/detail/gorizontalnoe-almaznoe-burenie/',
+]);
 ---
 {content.path === '/montazh-ventiliacii/' ? (
   <VentilationServicePage content={content} fixture={fixture} />
@@ -26,6 +33,8 @@ const fixture = content.status === 'fixture_stub';
   <AboutPage content={content} fixture={fixture} />
 ) : content.path === '/contact/' ? (
   <ContactPage content={content} fixture={fixture} />
+) : p0LegacyPaths.has(content.path) ? (
+  <P0LegacyArticlePage content={content} fixture={fixture} />
 ) : content.content_type === 'service' ? (
   <ServicePage content={content} fixture={fixture} />
 ) : content.content_type === 'project' ? (
