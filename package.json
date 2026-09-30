@@ -27,6 +27,10 @@
     "directus:v12:apply": "npm run directus:v12:prepare && node scripts/directus-v12-import.mjs --apply",
     "directus:v12:readback": "npm run directus:v12:prepare && node scripts/directus-v12-readback.mjs",
     "directus:v13:preview:validate": "node scripts/validate-directus-v13-static.mjs",
-    "directus:v13:preview:build": "npm run directus:v13:preview:validate && node scripts/build-directus-v13-preview.mjs"
+    "directus:v13:preview:build": "npm run directus:v13:preview:validate && node scripts/build-directus-v13-preview.mjs",
+    "directus:vnext:plan": "node scripts/generate-directus-vnext-plan.mjs",
+    "directus:vnext:validate": "node scripts/validate-directus-vnext-static.mjs",
+    "directus:vnext:preflight:local": "npm run directus:vnext:plan && npm run directus:vnext:validate",
+    "directus:vnext:inspect": "node scripts/directus-vnext-inspect-readonly.mjs"
   }
 }

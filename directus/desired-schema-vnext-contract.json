@@ -1,0 +1,302 @@
+{
+  "format": "aeroventa-directus-vnext-contract-v1",
+  "base_schema": "directus/target-schema-v11.json",
+  "mode": "ADDITIVE_ONLY",
+  "note": "Application-level VNext contract. Not a Directus-native snapshot. Real runtime schema work still requires a fresh admin snapshot and Directus-native diff/dry-run.",
+  "content_additions": [
+    {
+      "field": "page_purpose",
+      "type": "string",
+      "nullable": true
+    },
+    {
+      "field": "primary_user_intent",
+      "type": "string",
+      "nullable": true
+    },
+    {
+      "field": "primary_search_intent",
+      "type": "string",
+      "nullable": true
+    },
+    {
+      "field": "public_facts",
+      "type": "json",
+      "nullable": true
+    },
+    {
+      "field": "evidence_refs",
+      "type": "json",
+      "nullable": true
+    },
+    {
+      "field": "limitations",
+      "type": "json",
+      "nullable": true
+    },
+    {
+      "field": "agent_summary",
+      "type": "text",
+      "nullable": true
+    },
+    {
+      "field": "last_fact_verified_at",
+      "type": "timestamp",
+      "nullable": true
+    }
+  ],
+  "collection_additions": [
+    {
+      "name": "requests",
+      "singleton": false,
+      "primary_key": "id",
+      "fields": [
+        {
+          "field": "id",
+          "type": "uuid",
+          "primary": true,
+          "nullable": false
+        },
+        {
+          "field": "created_at",
+          "type": "timestamp",
+          "nullable": false
+        },
+        {
+          "field": "updated_at",
+          "type": "timestamp",
+          "nullable": true
+        },
+        {
+          "field": "status",
+          "type": "string",
+          "nullable": false
+        },
+        {
+          "field": "source_channel",
+          "type": "string",
+          "nullable": false
+        },
+        {
+          "field": "source_page",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "field": "source_campaign",
+          "type": "json",
+          "nullable": true
+        },
+        {
+          "field": "intent",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "field": "object_type",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "field": "geography",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "field": "project_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "field": "task_summary",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "field": "qualification_data",
+          "type": "json",
+          "nullable": true
+        },
+        {
+          "field": "preferred_contact_channel",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "field": "contact_name",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "field": "contact_value",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "field": "attachment_refs",
+          "type": "json",
+          "nullable": true
+        },
+        {
+          "field": "agent_context_summary",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "field": "owner_status",
+          "type": "string",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "name": "publication_jobs",
+      "singleton": false,
+      "primary_key": "id",
+      "fields": [
+        {
+          "field": "id",
+          "type": "uuid",
+          "primary": true,
+          "nullable": false
+        },
+        {
+          "field": "created_at",
+          "type": "timestamp",
+          "nullable": false
+        },
+        {
+          "field": "updated_at",
+          "type": "timestamp",
+          "nullable": true
+        },
+        {
+          "field": "status",
+          "type": "string",
+          "nullable": false
+        },
+        {
+          "field": "trigger_source",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "field": "requested_topic",
+          "type": "text",
+          "nullable": true
+        },
+        {
+          "field": "content_action",
+          "type": "string",
+          "nullable": false
+        },
+        {
+          "field": "target_content_id",
+          "type": "uuid",
+          "nullable": true
+        },
+        {
+          "field": "target_path",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "field": "research_snapshot_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "field": "evidence_refs",
+          "type": "json",
+          "nullable": true
+        },
+        {
+          "field": "unknowns_or_debt",
+          "type": "json",
+          "nullable": true
+        },
+        {
+          "field": "draft_content_id",
+          "type": "uuid",
+          "nullable": true
+        },
+        {
+          "field": "duplicate_check_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "field": "cannibalization_check_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "field": "fact_check_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "field": "media_check_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "field": "preview_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "field": "owner_decision",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "field": "owner_decided_at",
+          "type": "timestamp",
+          "nullable": true
+        },
+        {
+          "field": "build_validation_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "field": "post_publish_validation_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "field": "measurement_notes",
+          "type": "text",
+          "nullable": true
+        }
+      ]
+    }
+  ],
+  "relation_additions": [
+    {
+      "collection": "publication_jobs",
+      "field": "target_content_id",
+      "related_collection": "content",
+      "kind": "M2O",
+      "nullable": true
+    },
+    {
+      "collection": "publication_jobs",
+      "field": "draft_content_id",
+      "related_collection": "content",
+      "kind": "M2O",
+      "nullable": true
+    }
+  ],
+  "invariants": [
+    "No V11 collection or field is removed or renamed.",
+    "All content additions are nullable.",
+    "New collections do not publish public content by themselves.",
+    "Requests stores structured handoff data; raw premium-agent transcript is not required.",
+    "Publication Jobs is workflow state, not a second public content truth.",
+    "content.publication_job_id remains unchanged in V25; no destructive type migration is attempted.",
+    "No runtime apply is authorized by this contract.",
+    "A fresh Directus admin snapshot and native schema diff/dry-run are mandatory before any mutation."
+  ]
+}
