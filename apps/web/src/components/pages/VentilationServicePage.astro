@@ -1,0 +1,206 @@
+---
+import type { ContentRecord } from '@/lib/types';
+interface Props { content: ContentRecord; fixture: boolean; }
+const { content } = Astro.props;
+
+const scopes = [
+  ['01','Воздуховоды и фасонные элементы','Монтаж трасс и элементов системы в пределах согласованного проекта и монтажного scope.'],
+  ['02','Вентиляционное оборудование','Монтаж установок и оборудования, которое входит в согласованный состав работ.'],
+  ['03','Монтаж по готовому проекту','Работаем от проекта/спецификации, фиксируем вопросы, которые влияют на реализуемость и смету.'],
+  ['04','Объект без проекта','Определяем минимум исходных данных и честно отделяем ориентир от инженерной сметы.'],
+  ['05','Смежные проходки','Алмазное бурение при необходимости координируется как партнёрская/смежная работа, а не основной direct-service.'],
+];
+
+const drivers = [
+  'Объём и геометрия системы',
+  'Состав оборудования',
+  'Высота и доступ',
+  'Стадия отделки / готовность объекта',
+  'Координация со смежными работами',
+  'Работа на действующем объекте / временные окна',
+  'Логистика и перемещение материалов',
+  'Проходки и фактические расхождения с проектом',
+];
+
+const cases = [
+  ['7 PARK','Павловск','7 домов · приточно-вытяжная вентиляция','/blog/detail/kak-my-sdali-7-domov/'],
+  ['Леонтьевский Мыс','Санкт-Петербург','Ресторан · приточно-вытяжная вентиляция + оборудование','/blog/detail/restoran-v-zhk-leontevskiy-mys/'],
+  ['НТФФ «Полисан»','Санкт-Петербург','Фармацевтический объект · монтаж вентиляции и оборудования','/blog/detail/ntff-polisan/'],
+  ['Маршала Жукова','Санкт-Петербург','Квартира · приточно-вытяжная вентиляция','/blog/detail/kvartira-na-zhukova/'],
+];
+---
+
+<article class="service-premium">
+  <header class="service-premium__hero">
+    <div class="home-shell service-premium__hero-grid">
+      <div>
+        <p class="home-kicker">Основное направление AEROVENTA</p>
+        <h1>Монтаж вентиляции в Санкт-Петербурге и Ленинградской области</h1>
+        <p class="service-premium__lede">
+          От локальной задачи до большого объекта. Работаем по готовому проекту
+          или сначала определяем, какие исходные данные действительно нужны для осмысленной оценки.
+        </p>
+        <p class="home-geo">Санкт-Петербург · Ленинградская область · Москва · Карелия</p>
+        <div class="home-actions">
+          <a class="button button--primary" href="/contact/?intent=project">Есть проект — запросить смету →</a>
+          <a class="button button--ghost" href="/contact/?intent=budget">Проекта нет — получить ориентир</a>
+        </div>
+      </div>
+      <div class="service-premium__hero-proof" aria-label="Как устроена работа">
+        <div class="service-proof-card">
+          <span>01</span><strong>Исходные данные</strong><p>Проект, план, фото, стадия объекта и задача.</p>
+        </div>
+        <div class="service-proof-card">
+          <span>02</span><strong>Монтажный scope</strong><p>Что именно входит в работу и где остаются вопросы.</p>
+        </div>
+        <div class="service-proof-card">
+          <span>03</span><strong>Реальный объект</strong><p>Трассы, доступ, высота, отделка и смежные подрядчики.</p>
+        </div>
+        <div class="service-proof-card service-proof-card--accent">
+          <span>04</span><strong>Следующий шаг</strong><p>Смета по проекту или понятный перечень недостающих данных.</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="service-band" aria-labelledby="service-router-title">
+    <div class="home-shell">
+      <p class="section-index">01 / Два разных сценария</p>
+      <h2 id="service-router-title">Проект есть — не заставляем проходить квиз. Проекта нет — не притворяемся, что уже знаем точную цену.</h2>
+      <div class="service-router">
+        <article>
+          <p class="service-router__tag">Есть проект</p>
+          <h3>Отправьте проект или спецификацию.</h3>
+          <ol>
+            <li>Смотрим состав проекта и монтажный объём.</li>
+            <li>Фиксируем неоднозначности и недостающие исходные данные.</li>
+            <li>Готовим следующий коммерческий шаг через инженерный workflow.</li>
+          </ol>
+          <a class="button button--primary" href="/contact/?intent=project">Запросить смету →</a>
+        </article>
+        <article>
+          <p class="service-router__tag">Проекта нет</p>
+          <h3>Начинаем с объекта и задачи.</h3>
+          <ol>
+            <li>Тип объекта, локация и текущая стадия.</li>
+            <li>План/фото, если они уже есть.</li>
+            <li>Ориентир бюджета — только по одобренным референсным сценариям, без выдуманной точности.</li>
+          </ol>
+          <a class="button button--ghost" href="/contact/?intent=budget">Понять следующий шаг →</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section service-scope" aria-labelledby="scope-title">
+    <div class="home-shell">
+      <div class="section-heading">
+        <div>
+          <p class="section-index">02 / Что входит в работу</p>
+          <h2 id="scope-title">Монтажный scope должен быть понятен до начала работ.</h2>
+        </div>
+        <a href="/services/">Все работы →</a>
+      </div>
+      <div class="service-scope__grid">
+        {scopes.map(([number,title,text]) => (
+          <article>
+            <span>{number}</span>
+            <h3>{title}</h3>
+            <p>{text}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="service-drivers" aria-labelledby="drivers-title">
+    <div class="home-shell service-drivers__grid">
+      <div>
+        <p class="section-index section-index--orange">03 / Стоимость</p>
+        <h2 id="drivers-title">Цена монтажа — это не одна ставка за квадратный метр.</h2>
+        <p>
+          Даже на похожих по площади объектах итог отличается из-за состава системы,
+          трасс, высоты, готовности помещения и условий монтажа. Поэтому мы не публикуем
+          псевдоточную цифру без достаточных исходных данных.
+        </p>
+        <a class="button button--light" href="/faq/">Как сравнивать две сметы →</a>
+      </div>
+      <div class="driver-list">
+        {drivers.map((item,index) => (
+          <div><span>{String(index+1).padStart(2,'0')}</span><strong>{item}</strong></div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section service-cases" aria-labelledby="service-cases-title">
+    <div class="home-shell">
+      <p class="section-index">04 / Доказательства</p>
+      <h2 id="service-cases-title">Не «успешные проекты», а конкретные выполненные объекты.</h2>
+      <div class="service-cases__grid">
+        {cases.map(([title,location,scope,href]) => (
+          <a href={href} class="service-case-card">
+            <span>{location}</span>
+            <h3>{title}</h3>
+            <p>{scope}</p>
+            <b>Открыть кейс →</b>
+          </a>
+        ))}
+      </div>
+      <div class="service-cases__footer">
+        <a href="/portfolio/">Смотреть все объекты →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section service-conflict" aria-labelledby="conflict-title">
+    <div class="home-shell service-conflict__grid">
+      <div>
+        <p class="section-index">05 / Если проект не совпадает с объектом</p>
+        <h2 id="conflict-title">Расхождение не должно превращаться в незаметное изменение на площадке.</h2>
+      </div>
+      <div class="service-conflict__steps">
+        <div><span>01</span><p>Фиксируем фактическое расхождение.</p></div>
+        <div><span>02</span><p>Определяем, на что оно влияет в монтаже.</p></div>
+        <div><span>03</span><p>Предлагаем варианты в границах своей роли.</p></div>
+        <div><span>04</span><p>Согласуем материальное изменение с ответственным участником.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="service-limits" aria-labelledby="limits-title">
+    <div class="home-shell service-limits__grid">
+      <div>
+        <p class="section-index section-index--orange">06 / Честные границы</p>
+        <h2 id="limits-title">Что сайт не обещает вместо инженера.</h2>
+      </div>
+      <ul>
+        <li>Точную смету без достаточных исходных данных.</li>
+        <li>Автоматический полный расчёт по загруженному проекту.</li>
+        <li>Проектирование, ПНР, автоматику и смежные дисциплины «по умолчанию», если они не входят в согласованный scope.</li>
+        <li>Алмазное бурение как основную direct-service бригаду AEROVENTA.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="conversion-close" aria-labelledby="service-close-title">
+    <div class="home-shell">
+      <p class="section-index section-index--orange">07 / Следующий шаг</p>
+      <h2 id="service-close-title">Покажите объект в том виде, в каком он есть сейчас.</h2>
+      <div class="conversion-grid">
+        <article>
+          <p class="conversion-grid__tag">Есть проект</p>
+          <h3>Проект → первичная оценка → вопросы по монтажу и смете.</h3>
+          <p>PDF, спецификация, локация и короткое описание требуемого scope.</p>
+          <a class="button button--light" href="/contact/?intent=project">Отправить проект →</a>
+        </article>
+        <article>
+          <p class="conversion-grid__tag">Проекта нет</p>
+          <h3>Объект → исходные данные → понятный следующий шаг.</h3>
+          <p>Тип объекта, план/фото, стадия работ и задача — без длинной анкеты до первого полезного ответа.</p>
+          <a class="button button--light" href="/contact/?intent=budget">Описать объект →</a>
+        </article>
+      </div>
+    </div>
+  </section>
+</article>

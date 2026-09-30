@@ -16,7 +16,13 @@ export async function getStaticPaths() {
 
 interface Props { content: ContentRecord; }
 const { content } = Astro.props;
+const pageContent = content.path === '/montazh-ventiliacii/' ? {
+  ...content,
+  h1: 'Монтаж вентиляции в Санкт-Петербурге и Ленинградской области',
+  seo_title: 'Монтаж вентиляции в Санкт-Петербурге и Ленинградской области — AEROVENTA',
+  seo_description: 'Монтаж систем вентиляции для квартир, домов, ресторанов, коммерческих, производственных и крупных объектов. Работа по проекту или первичная оценка исходных данных, реальные кейсы AEROVENTA.',
+} : content;
 ---
-<BaseLayout content={content}>
-  <PageRenderer content={content} />
+<BaseLayout content={pageContent}>
+  <PageRenderer content={pageContent} />
 </BaseLayout>
