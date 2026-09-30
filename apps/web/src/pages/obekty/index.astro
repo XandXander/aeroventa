@@ -1,0 +1,145 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import type { ContentRecord } from '@/lib/types';
+
+const content: ContentRecord = {
+  path: '/obekty/',
+  title: 'Объекты — AEROVENTA',
+  h1: 'Вентиляция под конкретный объект',
+  content_type: 'landing',
+  business_role: 'CORE_SERVICE_HUB',
+  status: 'fixture_stub',
+  robots_index: false,
+  robots_follow: true,
+  sitemap_include: false,
+  knowledge_allowed: true,
+  ai_origin: false,
+  seo_title: 'Монтаж вентиляции по типу объекта — AEROVENTA',
+  seo_description: 'Монтаж вентиляции для ресторанов и кафе, новостроек, производства, квартир, домов, складов и коммерческих помещений. Реальные ограничения и подтверждённые кейсы AEROVENTA.',
+  excerpt: '',
+  body_html: '',
+  body_html_safety_status: 'not_applicable',
+  owner_approved_at: null,
+};
+
+const objects = [
+  {
+    id:'production', index:'01', title:'Производство',
+    text:'Проект, действующий режим объекта, трассы, доступ и границы монтажного scope.',
+    proof:'НТФФ «Полисан» — исторический производственный кейс.',
+    href:'/portfolio/'
+  },
+  {
+    id:'restaurants', index:'02', title:'Рестораны и кафе',
+    text:'Кухня, зал, оборудование, потолки, fit-out и работа с уже начатой отделкой.',
+    proof:'Леонтьевский Мыс + кафе на Римского-Корсакова, 3.',
+    href:'/obekty/restorany-i-kafe/'
+  },
+  {
+    id:'newbuilds', index:'03', title:'Новостройки и жилые комплексы',
+    text:'Повторяемый объём, логистика, последовательность по корпусам и контроль изменений.',
+    proof:'7 PARK — семь домов в Павловске.',
+    href:'/obekty/novostroyki-i-zhilye-kompleksy/'
+  },
+  {
+    id:'private', index:'04', title:'Квартиры и дома',
+    text:'Шум, пространство, отделка, потолки и аккуратная прокладка трасс.',
+    proof:'Квартира на Маршала Жукова — подтверждённый исторический кейс.',
+    href:'/portfolio/'
+  },
+  {
+    id:'warehouses', index:'05', title:'Склады и базы',
+    text:'Высота, доступ, режим эксплуатации и логистика монтажа.',
+    proof:'Берём такие объекты; отдельная evidence-page появится только после достаточной базы.',
+    href:'/contact/?intent=project'
+  },
+  {
+    id:'commercial', index:'06', title:'Офисы и коммерческие помещения',
+    text:'Потолки, сроки открытия, смежники, доступ и монтаж по проекту.',
+    proof:'Задачу оцениваем по реальному монтажному scope, а не по типовой площади.',
+    href:'/contact/?intent=project'
+  },
+];
+---
+
+<BaseLayout content={content}>
+  <article class="objects-hub">
+    <header class="objects-hero">
+      <div class="home-shell objects-hero__grid">
+        <div>
+          <p class="home-kicker">По типу объекта</p>
+          <h1>Вентиляция под конкретный объект</h1>
+        </div>
+        <div>
+          <p class="objects-hero__lede">
+            У квартиры, ресторана, склада и производства разные ограничения.
+            Поэтому начинаем не с шаблонной системы, а с задачи, объекта и исходных данных.
+          </p>
+          <p class="home-geo">Санкт-Петербург · Ленинградская область · Москва · Карелия</p>
+        </div>
+      </div>
+    </header>
+
+    <section class="home-section objects-index" aria-labelledby="objects-index-title">
+      <div class="home-shell">
+        <div class="section-heading">
+          <div>
+            <p class="section-index">01 / Выбрать контекст</p>
+            <h2 id="objects-index-title">Не шесть SEO-шаблонов. Шесть разных монтажных контекстов.</h2>
+          </div>
+        </div>
+
+        <div class="objects-index__grid">
+          {objects.map((item) => (
+            <a id={item.id} class="object-context-card" href={item.href}>
+              <div class="object-context-card__top"><span>{item.index}</span><b>Объект</b></div>
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+              <div class="object-context-card__proof">{item.proof}</div>
+              <strong>Следующий шаг →</strong>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="object-method" aria-labelledby="object-method-title">
+      <div class="home-shell object-method__grid">
+        <div>
+          <p class="section-index section-index--orange">02 / Как строим страницу объекта</p>
+          <h2 id="object-method-title">Задача → ограничения → монтаж → доказательства.</h2>
+        </div>
+        <div class="object-method__steps">
+          <div><span>01</span><p>Что заказчик хочет получить и что уже есть: проект, план, фото, спецификация.</p></div>
+          <div><span>02</span><p>Что в конкретном объекте влияет на трассы, оборудование, доступ и стоимость монтажа.</p></div>
+          <div><span>03</span><p>Что реально выполняет AEROVENTA и где начинается отдельный проектный или смежный scope.</p></div>
+          <div><span>04</span><p>Какие реальные кейсы подтверждают опыт именно в похожем контексте.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="objects-proof" aria-labelledby="objects-proof-title">
+      <div class="home-shell">
+        <p class="section-index">03 / Evidence first</p>
+        <h2 id="objects-proof-title">Если отдельной доказательной страницы пока нет — мы её не придумываем.</h2>
+        <div class="objects-proof__grid">
+          <a href="/blog/detail/restoran-v-zhk-leontevskiy-mys/"><span>Ресторан</span><strong>ЖК «Леонтьевский Мыс»</strong><small>Приточно-вытяжная вентиляция + оборудование</small></a>
+          <a href="/blog/detail/kak-my-sdali-7-domov/"><span>Новостройки</span><strong>7 PARK</strong><small>7 домов · Павловск · монтаж приточно-вытяжной вентиляции</small></a>
+          <a href="/blog/detail/ntff-polisan/"><span>Производство</span><strong>НТФФ «Полисан»</strong><small>Фармацевтический объект · исторический кейс</small></a>
+          <a href="/blog/detail/kvartira-na-zhukova/"><span>Квартира</span><strong>Маршала Жукова</strong><small>Приточно-вытяжная вентиляция</small></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="conversion-close" aria-labelledby="objects-close-title">
+      <div class="home-shell">
+        <p class="section-index section-index--orange">04 / Ваш объект</p>
+        <h2 id="objects-close-title">Тип объекта помогает начать. Смета всё равно зависит от реального scope.</h2>
+        <div class="home-actions">
+          <a class="button button--light" href="/contact/?intent=project">Есть проект — запросить смету →</a>
+          <a class="button button--light" href="/contact/?intent=budget">Проекта нет — описать задачу</a>
+        </div>
+      </div>
+    </section>
+  </article>
+</BaseLayout>

@@ -13,12 +13,12 @@ const page = {
 };
 
 const objects = [
-  ['01', 'Квартиры / дома'],
-  ['02', 'Коттеджи / бани'],
-  ['03', 'Рестораны / офисы'],
-  ['04', 'Магазины / склады'],
-  ['05', 'Производства'],
-  ['06', 'Новостройки'],
+  ['01', 'Квартиры / дома', '/obekty/#private'],
+  ['02', 'Коттеджи / бани', '/obekty/#private'],
+  ['03', 'Рестораны / кафе', '/obekty/restorany-i-kafe/'],
+  ['04', 'Магазины / склады', '/obekty/#warehouses'],
+  ['05', 'Производства', '/obekty/#production'],
+  ['06', 'Новостройки', '/obekty/novostroyki-i-zhilye-kompleksy/'],
 ];
 
 const questions = [
@@ -110,8 +110,8 @@ const questions = [
     </div>
 
     <nav class="object-ribbon home-shell" aria-label="Типы объектов">
-      {objects.map(([number, label]) => (
-        <a href="#objects" class="object-ribbon__item">
+      {objects.map(([number, label, href]) => (
+        <a href={href} class="object-ribbon__item">
           <span class="object-ribbon__number">{number}</span>
           <span>{label}</span>
         </a>
@@ -198,16 +198,16 @@ const questions = [
           <p class="section-index">03 / Под конкретный объект</p>
           <h2 id="objects-title">Разные объекты — разные ограничения.</h2>
         </div>
-        <a href="/portfolio/">Смотреть реальные объекты →</a>
+        <a href="/obekty/">Смотреть все типы объектов →</a>
       </div>
 
       <div class="object-grid">
-        <article><span>01</span><h3>Производство</h3><p>Проект, действующий режим, трассы, доступ и границы монтажного scope.</p></article>
-        <article><span>02</span><h3>Рестораны и кафе</h3><p>Кухня, зал, оборудование, потолки и координация с отделкой.</p></article>
-        <article><span>03</span><h3>Новостройки</h3><p>Повторяемый объём, график по корпусам и управляемое усиление команды.</p></article>
-        <article><span>04</span><h3>Квартиры и дома</h3><p>Шум, пространство, отделка и аккуратная прокладка трасс.</p></article>
-        <article><span>05</span><h3>Склады</h3><p>Высота, доступ, эксплуатационный режим и логистика монтажа.</p></article>
-        <article><span>06</span><h3>Офисы и коммерция</h3><p>Fit-out, потолки, сроки открытия и смежные подрядчики.</p></article>
+        <a class="object-link" href="/obekty/#production"><span>01</span><h3>Производство</h3><p>Проект, действующий режим, трассы, доступ и границы монтажного scope.</p></a>
+        <a class="object-link" href="/obekty/restorany-i-kafe/"><span>02</span><h3>Рестораны и кафе</h3><p>Кухня, зал, оборудование, потолки и координация с отделкой.</p></a>
+        <a class="object-link" href="/obekty/novostroyki-i-zhilye-kompleksy/"><span>03</span><h3>Новостройки</h3><p>Повторяемый объём, график по корпусам и управляемое усиление команды.</p></a>
+        <a class="object-link" href="/obekty/#private"><span>04</span><h3>Квартиры и дома</h3><p>Шум, пространство, отделка и аккуратная прокладка трасс.</p></a>
+        <a class="object-link" href="/obekty/#warehouses"><span>05</span><h3>Склады</h3><p>Высота, доступ, эксплуатационный режим и логистика монтажа.</p></a>
+        <a class="object-link" href="/obekty/#commercial"><span>06</span><h3>Офисы и коммерция</h3><p>Fit-out, потолки, сроки открытия и смежные подрядчики.</p></a>
       </div>
     </div>
   </section>

@@ -19,7 +19,9 @@ const ogImage = content.og_image ? new URL(content.og_image, 'https://aeroventa.
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />\n    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="shortcut icon" href="/favicon.ico" />
     <title>{content.seo_title || content.title}</title>
     {content.seo_description && <meta name="description" content={content.seo_description} />}
     <meta name="robots" content={robots} />

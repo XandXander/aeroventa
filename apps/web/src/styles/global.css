@@ -452,3 +452,84 @@ main { min-height: 60vh; }
   .faq-question__answer { padding-left:0; padding-right:0; }
   .faq-question__next { grid-template-columns:1fr; gap:6px; }
 }
+
+
+/* V18 object layer */
+.object-link { background:#fff; min-height:220px; padding:28px; text-decoration:none; display:block; transition:background .16s ease; }
+.object-link:hover { background:#f7f9fa; }
+.object-link > span { font-weight:900; font-size:.88rem; }
+.object-link h3 { margin:46px 0 10px; font-size:1.7rem; letter-spacing:-.04em; }
+.object-link p { color:var(--muted); margin:0; }
+
+.objects-hero,.object-detail__hero { background:#fff; border-bottom:1px solid var(--line); padding:clamp(60px,8vw,112px) 0 58px; }
+.objects-hero__grid,.object-detail__hero-grid { display:grid; grid-template-columns:1fr 1fr; gap:76px; align-items:end; }
+.objects-hero h1,.object-detail__hero h1 { margin:0; font-size:clamp(3.5rem,6vw,6.7rem); line-height:.9; letter-spacing:-.07em; }
+.objects-hero__lede,.object-detail__lede { margin:0; color:var(--muted); font-size:clamp(1.05rem,1.6vw,1.35rem); max-width:760px; }
+
+.objects-index h2,.object-method h2,.objects-proof h2,.object-evidence h2,.object-constraints h2,.object-drivers h2,.object-questions h2 {
+  margin:0; font-size:clamp(2.5rem,5vw,5rem); line-height:.97; letter-spacing:-.065em; max-width:1080px;
+}
+.objects-index__grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); margin-top:46px; }
+.object-context-card { min-height:330px; padding:25px; background:#fff; text-decoration:none; display:flex; flex-direction:column; }
+.object-context-card:hover { background:#f8fafb; }
+.object-context-card__top { display:flex; justify-content:space-between; }
+.object-context-card__top span { font-weight:900; }
+.object-context-card__top b { color:var(--orange); text-transform:uppercase; font-size:.75rem; }
+.object-context-card h3 { margin:56px 0 12px; font-size:1.8rem; letter-spacing:-.045em; }
+.object-context-card p { color:var(--muted); margin:0; }
+.object-context-card__proof { margin-top:auto; padding-top:18px; border-top:1px solid var(--line); color:#566473; font-size:.88rem; }
+.object-context-card strong { margin-top:14px; }
+
+.object-method { background:var(--navy); color:#fff; padding:clamp(72px,8vw,112px) 0; }
+.object-method__grid { display:grid; grid-template-columns:.9fr 1.1fr; gap:80px; }
+.object-method__steps { border-top:1px solid #526979; }
+.object-method__steps div { min-height:78px; display:grid; grid-template-columns:48px 1fr; gap:18px; align-items:center; border-bottom:1px solid #405867; }
+.object-method__steps span { color:#8398a7; font-size:.82rem; }
+.object-method__steps p { margin:0; font-weight:750; color:#d7e0e6; }
+
+.objects-proof { background:#f7f9fa; padding:clamp(72px,8vw,112px) 0; border-bottom:1px solid var(--line); }
+.objects-proof__grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); margin-top:42px; }
+.objects-proof__grid a { min-height:245px; background:#fff; padding:24px; display:flex; flex-direction:column; text-decoration:none; }
+.objects-proof__grid span { color:var(--orange); text-transform:uppercase; font-weight:900; font-size:.75rem; }
+.objects-proof__grid strong { margin:auto 0 10px; font-size:1.45rem; letter-spacing:-.04em; }
+.objects-proof__grid small { color:var(--muted); font-size:.9rem; }
+
+.object-evidence { background:var(--navy); color:#fff; padding:clamp(66px,7vw,100px) 0; }
+.object-evidence__grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:#435b6b; border:1px solid #435b6b; margin-top:40px; }
+.object-evidence__grid a { background:#0a2233; min-height:280px; padding:28px; text-decoration:none; display:flex; flex-direction:column; }
+.object-evidence__grid span { color:#ff8550; font-weight:900; text-transform:uppercase; font-size:.78rem; }
+.object-evidence__grid h3 { font-size:clamp(1.8rem,3vw,3rem); letter-spacing:-.05em; margin:auto 0 10px; }
+.object-evidence__grid p { color:#c7d2da; margin:0; }
+.object-evidence__grid b { margin-top:22px; }
+
+.object-constraints__grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); margin-top:44px; }
+.object-constraints__grid article { min-height:290px; background:#fff; padding:25px; display:flex; flex-direction:column; }
+.object-constraints__grid span { font-weight:900; }
+.object-constraints__grid h3 { margin:auto 0 12px; font-size:1.5rem; letter-spacing:-.04em; }
+.object-constraints__grid p { color:var(--muted); margin:0; }
+
+.object-drivers { background:#f7f9fa; border-block:1px solid var(--line); padding:clamp(72px,8vw,112px) 0; }
+.object-drivers__grid { display:grid; grid-template-columns:.9fr 1.1fr; gap:80px; }
+.object-drivers__grid > div:first-child > p:not(.section-index) { color:var(--muted); font-size:1.05rem; max-width:700px; }
+
+.object-questions__grid { display:grid; grid-template-columns:.8fr 1.2fr; gap:70px; align-items:start; }
+.object-questions__grid > div:first-child > a { display:inline-block; margin-top:24px; font-weight:900; text-decoration:none; }
+
+@media (max-width:1050px){
+  .objects-hero__grid,.object-detail__hero-grid,.object-method__grid,.object-drivers__grid,.object-questions__grid { grid-template-columns:1fr; }
+  .objects-index__grid { grid-template-columns:1fr 1fr; }
+  .objects-proof__grid { grid-template-columns:1fr 1fr; }
+  .object-constraints__grid { grid-template-columns:1fr 1fr; }
+}
+@media (max-width:760px){
+  .objects-hero h1,.object-detail__hero h1 { font-size:clamp(3rem,14vw,4.6rem); }
+  .objects-index__grid,.objects-proof__grid,.object-evidence__grid,.object-constraints__grid { grid-template-columns:1fr; }
+  .object-context-card { min-height:255px; }
+  .object-context-card h3 { margin-top:36px; }
+  .object-link { min-height:170px; }
+  .object-link h3 { margin-top:30px; }
+  .object-evidence__grid a { min-height:235px; }
+  .object-constraints__grid article { min-height:220px; }
+}
+
+.object-evidence__grid:has(> a:only-child) { grid-template-columns:1fr; }
