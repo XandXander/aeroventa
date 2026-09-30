@@ -1,0 +1,126 @@
+---
+import type { ContentRecord } from '@/lib/types';
+interface Props { content: ContentRecord; fixture: boolean; }
+const { content } = Astro.props;
+
+const timeline = [
+  ['2017–2018','НТФФ «Полисан»','Монтаж приточно-вытяжной вентиляции и оборудования.'],
+  ['2019','Маршала Жукова','Квартирный объект — приточно-вытяжная вентиляция.'],
+  ['2020','7 PARK','7 домов в Павловске — монтаж приточно-вытяжной вентиляции.'],
+  ['2021','Леонтьевский Мыс','Ресторан — приточно-вытяжная вентиляция и оборудование.'],
+  ['2022','Питкяранта / Карелия','Сервисно-образовательный центр — вентиляция и оборудование.'],
+];
+---
+
+<article class="about-premium">
+  <header class="about-hero">
+    <div class="home-shell about-hero__grid">
+      <div>
+        <p class="home-kicker">О компании</p>
+        <h1>AEROVENTA — команда по монтажу вентиляции</h1>
+      </div>
+      <div>
+        <p class="about-hero__lede">
+          Постоянное ядро команды держит технический и организационный контроль объекта.
+          Когда объём или график требует усиления, подключаем проверенных профильных специалистов.
+        </p>
+        <p class="home-geo">Работаем в Санкт-Петербурге и Ленинградской области. Берём объекты в Москве и Карелии.</p>
+      </div>
+    </div>
+  </header>
+
+  <section class="home-section about-positioning" aria-labelledby="about-positioning-title">
+    <div class="home-shell about-positioning__grid">
+      <div>
+        <p class="section-index">01 / Как работаем</p>
+        <h2 id="about-positioning-title">«Без лишнего» — это не про минимальную цену. Это про понятную инженерную логику.</h2>
+      </div>
+      <div class="about-positioning__list">
+        <div><span>01</span><p>Сначала понимаем, что действительно требуется объекту.</p></div>
+        <div><span>02</span><p>Не добавляем объём работ только потому, что его проще продать.</p></div>
+        <div><span>03</span><p>Материальные расхождения проекта и объекта не прячем в процессе монтажа.</p></div>
+        <div><span>04</span><p>Границы scope и исключения должны быть понятны до начала работ.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="about-team" aria-labelledby="about-team-title">
+    <div class="home-shell about-team__grid">
+      <div>
+        <p class="section-index section-index--orange">02 / Команда</p>
+        <h2 id="about-team-title">Не «два человека» и не выдуманная большая компания.</h2>
+        <p>
+          AEROVENTA работает небольшим постоянным ядром с личным контролем.
+          На крупный или интенсивный объект состав усиливается профильными монтажниками и смежными специалистами.
+          Это позволяет масштабироваться под задачу, не изображая постоянный штат, которого нет.
+        </p>
+      </div>
+      <div class="about-team__model">
+        <div><span>Постоянное ядро</span><strong>Контроль объекта и ключевых решений</strong></div>
+        <div><span>Усиление</span><strong>Проверенные специалисты под объём и график</strong></div>
+        <div><span>Инструмент</span><strong>Собственный профессиональный монтажный инструмент</strong></div>
+        <div><span>Смежные работы</span><strong>Подключаются отдельно, когда это реально нужно объекту</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section about-evidence" aria-labelledby="about-evidence-title">
+    <div class="home-shell">
+      <div class="section-heading">
+        <div>
+          <p class="section-index">03 / Проверять по объектам</p>
+          <h2 id="about-evidence-title">Вместо счётчиков «N лет / N проектов» — реальные страницы работ.</h2>
+        </div>
+        <a href="/portfolio/">Открыть объекты →</a>
+      </div>
+      <div class="about-timeline">
+        {timeline.map(([year,title,text]) => (
+          <a href="/portfolio/">
+            <span>{year}</span>
+            <h3>{title}</h3>
+            <p>{text}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="about-geography" aria-labelledby="about-geo-title">
+    <div class="home-shell about-geography__grid">
+      <div>
+        <p class="section-index section-index--orange">04 / География</p>
+        <h2 id="about-geo-title">Основная зона — СПб и ЛО. Москва и Карелия — объекты, а не выдуманные «офисы».</h2>
+      </div>
+      <div>
+        <p>Публично говорим только то, что соответствует текущей операционной модели: Санкт-Петербург и Ленинградская область — основная зона работы; объекты также берём в Москве и Республике Карелия.</p>
+        <a class="button button--light" href="/blog/detail/montazh-ventilyatsii-v-karelii/">Посмотреть кейс в Карелии →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="about-proof" aria-labelledby="about-proof-title">
+    <div class="home-shell about-proof__grid">
+      <div>
+        <p class="section-index">05 / Что не публикуем без доказательств</p>
+        <h2 id="about-proof-title">Доверие не строится из логотипов, сертификатов и цифр, которые нельзя подтвердить.</h2>
+      </div>
+      <ul>
+        <li>Не пишем «№1» и не обещаем абстрактную «гарантию качества».</li>
+        <li>Не показываем клиентский логотип, если не подтверждена корректность такой связи.</li>
+        <li>Не смешиваем Полисан, Химпром, Ростелеком и другие разные объектные контексты.</li>
+        <li>Не переносим исторические сроки/объёмы на новые объекты как обещание.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="conversion-close" aria-labelledby="about-close-title">
+    <div class="home-shell">
+      <p class="section-index section-index--orange">06 / Обсудить объект</p>
+      <h2 id="about-close-title">Лучше один конкретный вопрос по вашему объекту, чем ещё десять общих обещаний о компании.</h2>
+      <div class="home-actions">
+        <a class="button button--light" href="/contact/?intent=project">Есть проект →</a>
+        <a class="button button--light" href="/contact/?intent=budget">Описать задачу →</a>
+      </div>
+    </div>
+  </section>
+</article>
