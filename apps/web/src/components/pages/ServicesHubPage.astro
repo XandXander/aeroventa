@@ -1,0 +1,124 @@
+---
+import type { ContentRecord } from '@/lib/types';
+interface Props { content: ContentRecord; fixture: boolean; }
+const { content } = Astro.props;
+
+const capabilities = [
+  ['01','Монтаж систем вентиляции','Воздуховоды, фасонные элементы, крепления и оборудование — в пределах согласованного проекта и состава работ.'],
+  ['02','Монтаж по готовому проекту','Проект и спецификация становятся основой сметы и монтажа. Неясности и физические конфликты не прячем в процессе.'],
+  ['03','Объект без проекта','Определяем минимальные исходные данные, возможный бюджетный ориентир и момент, когда уже нужен проект/расчёт.'],
+  ['04','Большой и повторяемый объём','При необходимости усиливаем постоянное ядро проверенными специалистами под график и масштаб объекта.'],
+  ['05','Смежные проходки','Алмазное бурение при необходимости координируется как смежная/партнёрская работа, а не основной direct-service AEROVENTA.'],
+];
+
+const objectLinks = [
+  ['Производство','Проект, режим работы объекта, доступ, трассы и границы монтажного scope.'],
+  ['Рестораны и кафе','Кухня, зал, оборудование, fit-out и работа с уже начатой отделкой.'],
+  ['Новостройки','Повторяемый объём, логистика, последовательность по корпусам и контроль изменений.'],
+  ['Квартиры и дома','Шум, пространство, отделка, аккуратная прокладка трасс и понятный объём работ.'],
+  ['Склады','Высота, доступ, режим эксплуатации и логистика монтажа.'],
+  ['Офисы и коммерция','Потолки, сроки открытия, смежники и монтаж по проекту.'],
+];
+---
+
+<article class="hub-page">
+  <header class="hub-hero">
+    <div class="home-shell hub-hero__grid">
+      <div>
+        <p class="home-kicker">Capability hub</p>
+        <h1>Что мы делаем по вентиляции</h1>
+      </div>
+      <div>
+        <p class="hub-hero__lede">
+          AEROVENTA занимается монтажом вентиляции — от локальной задачи до большого коммерческого
+          или производственного объекта. Здесь не перечисляем всё, что теоретически бывает в HVAC:
+          показываем только тот scope, который можно честно связать с текущей работой и реальными объектами.
+        </p>
+        <p class="home-geo">Санкт-Петербург · Ленинградская область · Москва · Карелия</p>
+      </div>
+    </div>
+  </header>
+
+  <section class="home-section hub-capabilities" aria-labelledby="capabilities-title">
+    <div class="home-shell">
+      <p class="section-index">01 / Возможности</p>
+      <h2 id="capabilities-title">Основное — монтаж. Остальное не маскируем под «всё под ключ».</h2>
+      <div class="hub-capability-grid">
+        {capabilities.map(([number,title,text]) => (
+          <article>
+            <span>{number}</span>
+            <h3>{title}</h3>
+            <p>{text}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="hub-split" aria-labelledby="hub-split-title">
+    <div class="home-shell">
+      <p class="section-index section-index--orange">02 / Как начать</p>
+      <h2 id="hub-split-title">Есть проект и нет проекта — это два разных сценария.</h2>
+      <div class="service-router">
+        <article>
+          <p class="service-router__tag">Есть проект</p>
+          <h3>Проект → монтажный scope → смета.</h3>
+          <p>Пришлите проект/спецификацию и коротко укажите, что нужно оценить. Мы не заставляем горячий лид проходить длинный квиз.</p>
+          <a class="button button--light" href="/contact/?intent=project">Есть проект — запросить смету →</a>
+        </article>
+        <article>
+          <p class="service-router__tag">Проекта нет</p>
+          <h3>Объект → исходные данные → следующий инженерный шаг.</h3>
+          <p>Тип объекта, план/фото, стадия и задача. Если для цифры данных недостаточно — так и говорим, а не выдаём псевдоточную смету.</p>
+          <a class="button button--light" href="/contact/?intent=budget">Получить ориентир →</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section hub-objects" aria-labelledby="hub-objects-title">
+    <div class="home-shell">
+      <div class="section-heading">
+        <div>
+          <p class="section-index">03 / По типу объекта</p>
+          <h2 id="hub-objects-title">Один монтажный подрядчик — разные ограничения объекта.</h2>
+        </div>
+        <a href="/portfolio/">Смотреть доказательства →</a>
+      </div>
+      <div class="object-grid">
+        {objectLinks.map(([title,text],index) => (
+          <article>
+            <span>{String(index+1).padStart(2,'0')}</span>
+            <h3>{title}</h3>
+            <p>{text}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="hub-limits" aria-labelledby="hub-limits-title">
+    <div class="home-shell hub-limits__grid">
+      <div>
+        <p class="section-index section-index--orange">04 / Границы</p>
+        <h2 id="hub-limits-title">Не добавляем услугу в список только потому, что её ищут.</h2>
+      </div>
+      <div class="hub-limits__body">
+        <p><strong>Проектирование, ПНР, балансировка, автоматика и смежные дисциплины</strong> не считаются автоматически включёнными в любой объект. Если конкретная задача требует отдельного проектного/инженерного scope — это должно быть явно определено до договора.</p>
+        <p><strong>Алмазное бурение</strong> остаётся полезным legacy acquisition и может быть связано с вентиляционным объектом, но текущая модель исполнения — партнёрская/смежная, а не основная бригада AEROVENTA.</p>
+        <a href="/faq/">Что важно решить до монтажа →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="conversion-close" aria-labelledby="services-close-title">
+    <div class="home-shell">
+      <p class="section-index section-index--orange">05 / Следующий шаг</p>
+      <h2 id="services-close-title">Покажите задачу — мы определим границы работы до того, как появится лишнее.</h2>
+      <div class="home-actions">
+        <a class="button button--light" href="/montazh-ventiliacii/">Монтаж вентиляции →</a>
+        <a class="button button--light" href="/contact/?intent=project">Есть проект — запросить смету</a>
+      </div>
+    </div>
+  </section>
+</article>

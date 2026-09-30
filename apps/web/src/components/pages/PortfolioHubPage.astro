@@ -1,0 +1,109 @@
+---
+import type { ContentRecord } from '@/lib/types';
+interface Props { content: ContentRecord; fixture: boolean; }
+const { content } = Astro.props;
+
+const cases = [
+  { index:'01', title:'7 PARK', location:'Павловск, Ленинградская область', scope:'7 домов · монтаж приточно-вытяжной вентиляции', detail:'18.11.2020 — 10.12.2020', href:'/blog/detail/kak-my-sdali-7-domov/', kind:'Новостройки' },
+  { index:'02', title:'ЖК «Леонтьевский Мыс»', location:'Санкт-Петербург', scope:'Ресторан · приточно-вытяжная вентиляция + оборудование', detail:'Исторический срок: 2 недели', href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/', kind:'Рестораны' },
+  { index:'03', title:'НТФФ «Полисан»', location:'Санкт-Петербург, ул. Салова, 72', scope:'Фармацевтический объект · вентиляция + оборудование', detail:'Исторический период: 06.2017 — 06.2018', href:'/blog/detail/ntff-polisan/', kind:'Производство' },
+  { index:'04', title:'Маршала Жукова', location:'Санкт-Петербург', scope:'Квартира · приточно-вытяжная вентиляция', detail:'Исторический источник: ~100 м.п., 5 дней', href:'/blog/detail/kvartira-na-zhukova/', kind:'Квартиры' },
+  { index:'05', title:'Питкяранта / Карелия', location:'Республика Карелия', scope:'Сервисно-образовательный центр · вентиляция + оборудование', detail:'Исторический срок: 2 недели', href:'/blog/detail/montazh-ventilyatsii-v-karelii/', kind:'География' },
+  { index:'06', title:'Римского-Корсакова, 3', location:'Санкт-Петербург', scope:'Кафе · приточно-вытяжная вентиляция + оборудование', detail:'Исторический источник: 200 м², 5 дней', href:'/blog/detail/kafe-rimskogo-korsakova-3/', kind:'Рестораны' }
+];
+---
+
+<article class="portfolio-hub">
+  <header class="portfolio-hero">
+    <div class="home-shell portfolio-hero__grid">
+      <div>
+        <p class="home-kicker">Evidence hub</p>
+        <h1>Реальные объекты и выполненные работы</h1>
+      </div>
+      <div>
+        <p class="portfolio-hero__lede">
+          Кейсы здесь нужны не для декора. Они показывают тип объекта, нашу роль, масштаб,
+          исторические сроки там, где они подтверждены, и то, какую задачу можно сравнить со своей.
+        </p>
+        <p class="portfolio-hero__note">Без выдуманных логотипов клиентов, неподтверждённых объёмов и AI-картинок вместо доказательств.</p>
+      </div>
+    </div>
+  </header>
+
+  <section class="portfolio-feature" aria-labelledby="featured-case-title">
+    <div class="home-shell portfolio-feature__grid">
+      <div>
+        <p class="section-index section-index--orange">01 / Крупный повторяемый объём</p>
+        <h2 id="featured-case-title">7 PARK</h2>
+        <p class="portfolio-feature__sub">Павловск · 7 домов · приточно-вытяжная вентиляция</p>
+        <a class="button button--case" href="/blog/detail/kak-my-sdali-7-domov/">Открыть кейс →</a>
+      </div>
+      <div class="portfolio-feature__visual" aria-hidden="true">
+        <div class="portfolio-buildings">
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+        <div class="portfolio-air portfolio-air--orange">Приток</div>
+        <div class="portfolio-air portfolio-air--blue">Вытяжка</div>
+      </div>
+      <dl class="case-facts">
+        <div><dt>Объём</dt><dd>7 домов</dd></div>
+        <div><dt>Период</dt><dd>18.11.2020 — 10.12.2020</dd></div>
+        <div><dt>Локация</dt><dd>Павловск, Ленинградская область</dd></div>
+        <div><dt>Роль</dt><dd>Монтаж приточно-вытяжной вентиляции</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="home-section portfolio-list" aria-labelledby="cases-title">
+    <div class="home-shell">
+      <div class="section-heading">
+        <div>
+          <p class="section-index">02 / Сравнить по объекту</p>
+          <h2 id="cases-title">Ищите не «похожую картинку», а похожие ограничения.</h2>
+        </div>
+      </div>
+      <div class="portfolio-grid">
+        {cases.map((item) => (
+          <a href={item.href} class="portfolio-card">
+            <div class="portfolio-card__top"><span>{item.index}</span><b>{item.kind}</b></div>
+            <div>
+              <p>{item.location}</p>
+              <h3>{item.title}</h3>
+              <strong>{item.scope}</strong>
+            </div>
+            <div class="portfolio-card__bottom">
+              <span>{item.detail}</span><b>Открыть →</b>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="portfolio-method" aria-labelledby="portfolio-method-title">
+    <div class="home-shell portfolio-method__grid">
+      <div>
+        <p class="section-index section-index--orange">03 / Как читаем кейс</p>
+        <h2 id="portfolio-method-title">Задача → ограничения → наша роль → результат.</h2>
+      </div>
+      <div class="portfolio-method__list">
+        <div><span>01</span><p>Что было за объект и на какой стадии.</p></div>
+        <div><span>02</span><p>Что реально входило в работу AEROVENTA.</p></div>
+        <div><span>03</span><p>Какие факты подтверждены старым источником или Owner.</p></div>
+        <div><span>04</span><p>Чего кейс не доказывает и что не надо переносить на другой объект автоматически.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="conversion-close" aria-labelledby="portfolio-close-title">
+    <div class="home-shell">
+      <p class="section-index section-index--orange">04 / Ваш объект</p>
+      <h2 id="portfolio-close-title">Не нашли точного аналога — это нормально.</h2>
+      <p class="portfolio-close-copy">Пришлите проект или опишите задачу: сравнивать надо не по названию объекта, а по монтажному scope и ограничениям.</p>
+      <div class="home-actions">
+        <a class="button button--light" href="/contact/?intent=project">Есть проект →</a>
+        <a class="button button--light" href="/contact/?intent=budget">Описать объект →</a>
+      </div>
+    </div>
+  </section>
+</article>
