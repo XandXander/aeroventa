@@ -6,7 +6,7 @@ export const EXPECTED = Object.freeze({
   repoHead: '346a16560719a83b6e3e1fbbadd63a16c60a9612',
   planFormat: 'aeroventa-directus-import-plan-v1',
   planSafety: 'DRAFT_ONLY_NO_PUBLISH',
-  sourceFingerprint: '4a33c77aa5578bf6272a2f2763c9a16e6a7dc678ff88596c11da1c233cd23c78',
+  sourceFingerprint: '805b4e335f8b3c259670270a5456275ced80e3ca3119188f46f178bf81e7da10',
   v11ApplyHash: 'b3ed8151ee5f641550d4893369a1f46894f804cb',
   targetDirectus: '12.1.1',
   targetVendor: 'postgres',
