@@ -1,6 +1,7 @@
 ---
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
+import AirflowTracePulse from '@/components/AirflowTracePulse.astro';
 import { canonicalUrl, jsonLd, robotsValue, serializeJsonLd } from '@/lib/seo';
 import type { ContentRecord } from '@/lib/types';
 import '@/styles/global.css';
@@ -46,6 +47,7 @@ const ogImage = content.og_image ? new URL(content.og_image, 'https://aeroventa.
       </div>
     )}
     <Header />
+    <AirflowTracePulse />
     <main>
       <slot />
     </main>

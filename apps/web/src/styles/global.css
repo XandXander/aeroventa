@@ -803,3 +803,260 @@ main { min-height: 60vh; }
   .covid-current__source-grid a { min-height:210px; }
   .covid-current__facts article { min-height:210px; }
 }
+
+
+/* V27 AIRFLOW TRACE / DUCT PULSE + persistent premium contact */
+.site-header { transition: background .22s ease, box-shadow .22s ease, border-color .22s ease; }
+.site-header__inner { transition: min-height .22s ease; }
+.site-header.is-compact {
+  background: rgba(255,255,255,.92);
+  border-bottom-color: rgba(126,139,151,.42);
+  box-shadow: 0 8px 26px rgba(8,23,40,.055);
+}
+.site-header.is-compact .site-header__inner { min-height: 54px; }
+
+.airflow-trace-ui { pointer-events:none; }
+.airflow-entry-trace {
+  position:fixed;
+  z-index:44;
+  top:64px;
+  left:0;
+  right:0;
+  height:58px;
+  opacity:0;
+  transform:translateY(-5px);
+  pointer-events:none;
+}
+.airflow-entry-trace__inner {
+  width:min(1380px,calc(100% - 48px));
+  height:100%;
+  margin-inline:auto;
+  position:relative;
+}
+.airflow-entry-trace svg { width:100%; height:36px; overflow:visible; }
+.airflow-entry-trace__duct {
+  fill:none;
+  stroke:rgba(8,23,40,.18);
+  stroke-width:1.5;
+  vector-effect:non-scaling-stroke;
+  stroke-dasharray:100;
+  stroke-dashoffset:100;
+}
+.airflow-entry-trace__pulse {
+  fill:none;
+  stroke:var(--orange);
+  stroke-width:3;
+  vector-effect:non-scaling-stroke;
+  stroke-linecap:round;
+  stroke-dasharray:6 94;
+  stroke-dashoffset:100;
+}
+.airflow-entry-trace__steps {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+  font-size:.68rem;
+  text-transform:uppercase;
+  letter-spacing:.055em;
+  font-weight:850;
+  color:#667482;
+}
+.airflow-entry-trace.is-running {
+  animation: airflow-entry-fade .95s ease both;
+}
+.airflow-entry-trace.is-running .airflow-entry-trace__duct {
+  animation: airflow-route-assemble .42s cubic-bezier(.22,.61,.36,1) both;
+}
+.airflow-entry-trace.is-running .airflow-entry-trace__pulse {
+  animation: airflow-route-pulse .58s .18s cubic-bezier(.22,.61,.36,1) both;
+}
+
+.airflow-header-trace {
+  position:fixed;
+  z-index:45;
+  left:0;
+  right:0;
+  top:63px;
+  height:2px;
+  pointer-events:none;
+  opacity:.92;
+}
+.airflow-header-trace__route {
+  position:absolute;
+  top:0;
+  height:1px;
+  overflow:hidden;
+}
+.airflow-header-trace__route::before {
+  content:"";
+  position:absolute;
+  inset:0;
+  opacity:.16;
+  background:currentColor;
+}
+.airflow-header-trace__route i {
+  position:absolute;
+  top:-1px;
+  width:52px;
+  height:3px;
+  border-radius:99px;
+  background:currentColor;
+  box-shadow:0 0 8px currentColor;
+}
+.airflow-header-trace__route--supply {
+  left:0;
+  width:46%;
+  color:var(--orange);
+}
+.airflow-header-trace__route--supply i {
+  left:calc((100% - 52px) * var(--airflow-scroll, 0));
+}
+.airflow-header-trace__route--exhaust {
+  right:0;
+  width:46%;
+  color:var(--blue);
+}
+.airflow-header-trace__route--exhaust i {
+  right:calc((100% - 52px) * var(--airflow-scroll, 0));
+}
+
+.airflow-trace-section { position:relative; }
+.airflow-trace-section::before,
+.airflow-trace-section::after {
+  content:"";
+  position:absolute;
+  z-index:3;
+  top:14px;
+  left:max(14px,calc((100vw - min(1380px, calc(100vw - 48px))) / 2));
+  pointer-events:none;
+}
+.airflow-trace-section::before {
+  width:0;
+  height:1px;
+  background:rgba(8,23,40,.24);
+  transition:width .55s cubic-bezier(.22,.61,.36,1);
+}
+.airflow-trace-section::after {
+  width:7px;
+  height:7px;
+  margin-top:-3px;
+  border-radius:50%;
+  background:var(--orange);
+  opacity:0;
+  transform:translateX(0);
+  box-shadow:0 0 0 4px rgba(255,77,0,.10);
+}
+.airflow-trace-section.is-airflow-active::before { width:76px; }
+.airflow-trace-section.is-airflow-active::after {
+  animation: airflow-section-pulse .62s .08s cubic-bezier(.22,.61,.36,1) both;
+}
+.case-feature.airflow-trace-section::before,
+.object-method.airflow-trace-section::before,
+.object-evidence.airflow-trace-section::before,
+.conversion-close.airflow-trace-section::before,
+.p0-verdict.airflow-trace-section::before,
+.practice-entry.airflow-trace-section::before,
+.practical-rules.airflow-trace-section::before,
+.case-detail-evidence.airflow-trace-section::before,
+.covid-current__now.airflow-trace-section::before {
+  background:rgba(255,255,255,.28);
+}
+
+.hero-airflow-path {
+  stroke-dasharray:18 12;
+  animation: hero-airflow-move 3.4s linear infinite;
+}
+.hero-airflow-path--exhaust { animation-direction:reverse; }
+
+.mobile-contact-dock {
+  display:none;
+}
+
+@keyframes airflow-entry-fade {
+  0% { opacity:0; transform:translateY(-5px); }
+  12%,72% { opacity:1; transform:translateY(0); }
+  100% { opacity:0; transform:translateY(-2px); }
+}
+@keyframes airflow-route-assemble {
+  from { stroke-dashoffset:100; }
+  to { stroke-dashoffset:0; }
+}
+@keyframes airflow-route-pulse {
+  from { stroke-dashoffset:100; }
+  to { stroke-dashoffset:0; }
+}
+@keyframes airflow-section-pulse {
+  0% { opacity:0; transform:translateX(0); }
+  15% { opacity:1; }
+  86% { opacity:1; }
+  100% { opacity:0; transform:translateX(70px); }
+}
+@keyframes hero-airflow-move {
+  to { stroke-dashoffset:-60; }
+}
+
+@media (max-width:1050px) {
+  .airflow-entry-trace { top:64px; }
+}
+@media (max-width:760px) {
+  .site-header.is-compact .site-header__inner { min-height:52px; }
+  .airflow-entry-trace { top:56px; height:48px; }
+  .airflow-entry-trace__inner { width:calc(100% - 28px); }
+  .airflow-entry-trace__steps { font-size:.56rem; gap:5px; }
+  .airflow-header-trace { top:55px; }
+  .airflow-header-trace__route { width:44%; }
+  .airflow-trace-section::before,
+  .airflow-trace-section::after { left:14px; top:10px; }
+
+  .mobile-contact-dock {
+    position:fixed;
+    z-index:46;
+    left:12px;
+    right:12px;
+    bottom:calc(10px + env(safe-area-inset-bottom, 0px));
+    min-height:52px;
+    display:grid;
+    grid-template-columns:.82fr 1.18fr;
+    border:1px solid rgba(123,136,147,.55);
+    background:rgba(255,255,255,.94);
+    backdrop-filter:blur(16px);
+    box-shadow:0 14px 38px rgba(8,23,40,.14);
+    opacity:0;
+    transform:translateY(18px);
+    pointer-events:none;
+    transition:opacity .2s ease,transform .2s ease;
+  }
+  .mobile-contact-dock.is-visible {
+    opacity:1;
+    transform:translateY(0);
+    pointer-events:auto;
+  }
+  .mobile-contact-dock a {
+    min-height:50px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    text-decoration:none;
+    font-weight:850;
+    font-size:.9rem;
+  }
+  .mobile-contact-dock__call { border-right:1px solid var(--line); }
+  .mobile-contact-dock__project { background:var(--navy); color:#fff; }
+  body { padding-bottom:72px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior:auto; }
+  .site-header,
+  .site-header__inner,
+  .mobile-contact-dock,
+  .airflow-trace-section::before { transition:none !important; }
+  .airflow-entry-trace { display:none !important; }
+  .airflow-header-trace__route i {
+    box-shadow:none;
+  }
+  .airflow-trace-section::before { width:76px; }
+  .airflow-trace-section::after { display:none; }
+  .hero-airflow-path { animation:none !important; stroke-dasharray:none; }
+}
