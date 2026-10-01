@@ -42,7 +42,7 @@ const isStories = content.path === '/blog/istorii-proektov/';
         <div class="practice-entry__routes">
           <a href="/faq/"><span>01</span><div><h3>Решение до монтажа</h3><p>Что прислать, как сравнить сметы, что согласовать и что проверить до закрытия.</p></div><b>→</b></a>
           <a href="/blog/poleznye-stati/"><span>02</span><div><h3>Практическая проблема</h3><p>Конкретный вопрос, реальный опыт и полезная последовательность решений.</p></div><b>→</b></a>
-          <a href="/blog/istorii-proektov/"><span>03</span><div><h3>Реальный объект</h3><p>Задача, scope и подтверждённые исторические факты без рекламной надстройки.</p></div><b>→</b></a>
+          <a href="/blog/istorii-proektov/"><span>03</span><div><h3>Реальный объект</h3><p>Задача, состав работ и подтверждённые исторические факты без рекламной надстройки.</p></div><b>→</b></a>
         </div>
       </div>
     </section>
@@ -74,12 +74,12 @@ const isStories = content.path === '/blog/istorii-proektov/';
     <header class="practice-hero">
       <div class="home-shell practice-hero__grid">
         <div><p class="home-kicker">Практика / база знаний</p><h1>Практические материалы</h1></div>
-        <div><p class="practice-hero__lede">Материалы, в которых есть конкретная задача, first-hand опыт или понятная инженерная логика. Старые сильные статьи сохраняем на их URL, но не переносим устаревшие цены и коммерческие заявления.</p><a class="practice-back" href="/blog/">← Практика</a></div>
+        <div><p class="practice-hero__lede">Материалы, в которых есть конкретная задача, непосредственный опыт или понятная инженерная логика. Старые сильные статьи сохраняем на их URL, но не переносим устаревшие цены и коммерческие заявления.</p><a class="practice-back" href="/blog/">← Практика</a></div>
       </div>
     </header>
 
     <section class="home-section practical-index">
-      <div class="home-shell"><p class="section-index">01 / Сильные legacy-материалы</p><h2>Не архив ради архива. Четыре страницы, которые решали реальные вопросы.</h2>
+      <div class="home-shell"><p class="section-index">01 / Сильные архивные материалы</p><h2>Не архив ради архива. Четыре страницы, которые решали реальные вопросы.</h2>
         <div class="practical-index__grid">
           {p0.map((item,index) => <a href={item.href}><div class="practical-index__top"><span>{String(index+1).padStart(2,'0')}</span><b>{item.tag}</b></div><h3>{item.title}</h3><p>{item.text}</p><strong>Читать материал →</strong></a>)}
         </div>
@@ -110,7 +110,7 @@ const isStories = content.path === '/blog/istorii-proektov/';
     <header class="practice-hero">
       <div class="home-shell practice-hero__grid">
         <div><p class="home-kicker">Практика / объекты</p><h1>Истории объектов</h1></div>
-        <div><p class="practice-hero__lede">Хронологический и редакционный вход в реальные кейсы AEROVENTA. Каноническая страница каждого объекта остаётся одна — этот раздел только помогает её найти.</p><div class="home-actions"><a class="button button--primary" href="/portfolio/">Портфолио / evidence hub →</a><a class="button button--ghost" href="/blog/">Практика</a></div></div>
+        <div><p class="practice-hero__lede">Хронологический и редакционный вход в реальные кейсы AEROVENTA. Каноническая страница каждого объекта остаётся одна — этот раздел только помогает её найти.</p><div class="home-actions"><a class="button button--primary" href="/portfolio/">Портфолио / раздел доказательств →</a><a class="button button--ghost" href="/blog/">Практика</a></div></div>
       </div>
     </header>
 
@@ -125,7 +125,7 @@ const isStories = content.path === '/blog/istorii-proektov/';
     <section class="story-rule">
       <div class="home-shell story-rule__grid">
         <div><p class="section-index section-index--orange">02 / Без дублей</p><h2>Один объект — одна текущая страница с фактами.</h2></div>
-        <div><p>Этот индекс не создаёт вторые версии кейсов. Портфолио остаётся основным evidence hub, а исторические URL объектов — каноническими страницами деталей.</p><p>Если появляется новое доказательство — фотография, чертёж или уточнение scope — оно усиливает существующий кейс, а не порождает ещё одну SEO-страницу.</p></div>
+        <div><p>Этот индекс не создаёт вторые версии кейсов. Портфолио остаётся основным разделом доказательств, а исторические URL объектов — основными страницами с подробностями.</p><p>Если появляется новое доказательство — фотография, чертёж или уточнение состава работ — оно усиливает существующий кейс, а не создаёт ещё одну страницу про тот же объект.</p></div>
       </div>
     </section>
 

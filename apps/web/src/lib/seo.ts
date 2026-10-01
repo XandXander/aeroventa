@@ -25,8 +25,9 @@ const schemaTypeFromContent = (content: ContentRecord) => {
 };
 
 const breadcrumbParent = (path: string) => {
-  if (path.startsWith('/blog/detail/')) return { name: 'Блог', path: '/blog/' };
-  if (path.startsWith('/blog/') && path !== '/blog/') return { name: 'Блог', path: '/blog/' };
+  if (path.startsWith('/blog/detail/')) return { name: 'Практика', path: '/blog/' };
+  if (path.startsWith('/blog/') && path !== '/blog/') return { name: 'Практика', path: '/blog/' };
+  if (path.startsWith('/obekty/') && path !== '/obekty/') return { name: 'Объекты', path: '/obekty/' };
   if (path.startsWith('/news/') && path !== '/news/') return { name: 'Новости', path: '/news/' };
   return null;
 };
@@ -51,7 +52,14 @@ export function jsonLd(content: ContentRecord) {
     if (content.published_at) page.datePublished = content.published_at;
     if (content.updated_at_public) page.dateModified = content.updated_at_public;
   }
-  if (type === 'Service') page.areaServed = SITE.serviceArea;
+  const organizationId = `${SITE.origin}/#organization`;
+  if (type === 'Service') {
+    page.areaServed = SITE.schemaServiceAreas;
+    page.provider = { '@id': organizationId };
+  }
+  if (['Article', 'BlogPosting', 'NewsArticle'].includes(type)) {
+    page.publisher = { '@id': organizationId };
+  }
 
   const items: Record<string, unknown>[] = [
     { '@type': 'ListItem', position: 1, name: 'Главная', item: SITE.origin },
@@ -63,6 +71,15 @@ export function jsonLd(content: ContentRecord) {
   return {
     '@context': 'https://schema.org',
     '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': `${SITE.origin}/#organization`,
+        name: SITE.name,
+        url: SITE.origin,
+        telephone: SITE.phone,
+        email: SITE.email,
+        areaServed: SITE.schemaServiceAreas,
+      },
       page,
       {
         '@type': 'BreadcrumbList',

@@ -1,15 +1,45 @@
 ---
 import { SITE } from '@/lib/site';
+const year = new Date().getFullYear();
+const tel = SITE.phone.replace(/[^+\d]/g, '');
 ---
 <footer class="site-footer">
-  <div class="container footer-grid">
-    <div>
-      <strong>AEROVENTA</strong><br />
-      {SITE.primaryBusiness} · {SITE.serviceArea}
+  <div class="home-shell footer-grid">
+    <div class="footer-brand">
+      <a href="/" class="footer-brand__name">AEROVENTA</a>
+      <p>{SITE.primaryBusiness} для частных, коммерческих и производственных объектов.</p>
+      <p class="footer-geo"><strong>Основная зона:</strong> {SITE.primaryServiceArea}<br /><strong>Также берём объекты:</strong> {SITE.additionalServiceAreas.join(' · ')}</p>
     </div>
-    <div>
-      <a href={`tel:${SITE.phone.replace(/[^+\d]/g, '')}`}>{SITE.phone}</a><br />
+
+    <nav class="footer-nav" aria-label="Навигация в подвале">
+      <div>
+        <strong>Работы</strong>
+        <a href="/montazh-ventiliacii/">Монтаж вентиляции</a>
+        <a href="/services/">Услуги</a>
+        <a href="/obekty/">Объекты</a>
+      </div>
+      <div>
+        <strong>Доказательства</strong>
+        <a href="/portfolio/">Реальные объекты</a>
+        <a href="/blog/">Практика</a>
+        <a href="/faq/">Вопросы до монтажа</a>
+      </div>
+      <div>
+        <strong>Компания</strong>
+        <a href="/about/">О AEROVENTA</a>
+        <a href="/contact/">Контакты</a>
+      </div>
+    </nav>
+
+    <div class="footer-contact">
+      <span>Связаться по объекту</span>
+      <a class="footer-phone" href={`tel:${tel}`}>{SITE.phone}</a>
       <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+      <a class="footer-project" href="/contact/?intent=project">Есть проект →</a>
     </div>
+  </div>
+  <div class="home-shell footer-bottom">
+    <span>© {year} AEROVENTA</span>
+    <span>Санкт-Петербург · Ленинградская область · Москва · Республика Карелия</span>
   </div>
 </footer>
