@@ -33,8 +33,8 @@ const { content, eyebrow, lede, constraints, drivers, evidence, questions, proof
         <p class="object-detail__lede">{lede}</p>
         <p class="home-geo">Санкт-Петербург · Ленинградская область · Москва · Карелия</p>
         <div class="home-actions">
-          <a class="button button--primary" href="/contact/?intent=project">Есть проект — запросить смету →</a>
-          <a class="button button--ghost" href="/contact/?intent=budget">Проекта нет — описать объект</a>
+          <a class="button button--primary" href="/montazh-po-proektu/">Монтаж по готовому проекту →</a>
+          <a class="button button--ghost" href="/obekt-bez-gotovogo-proekta/">Подготовка исходных данных</a>
         </div>
       </div>
     </div>
@@ -101,19 +101,17 @@ const { content, eyebrow, lede, constraints, drivers, evidence, questions, proof
     <div class="home-shell">
       <p class="section-index section-index--orange">05 / Следующий шаг</p>
       <h2 id="object-close-title">Пришлите то, что уже есть. Не нужно сначала собирать идеальный пакет.</h2>
-      <div class="conversion-grid">
-        <article>
-          <p class="conversion-grid__tag">Есть проект</p>
-          <h3>Проект / спецификация → состав монтажных работ → смета.</h3>
-          <p>Добавьте локацию, стадию объекта и коротко укажите, что именно нужно оценить.</p>
-          <a class="button button--light" href="/contact/?intent=project">Запросить смету →</a>
-        </article>
-        <article>
-          <p class="conversion-grid__tag">Проекта нет</p>
-          <h3>План / фото / задача → следующий инженерный шаг.</h3>
-          <p>Сначала определим, что можно оценить сейчас и каких исходных данных действительно не хватает.</p>
-          <a class="button button--light" href="/contact/?intent=budget">Описать объект →</a>
-        </article>
+      <div class="engagement-index engagement-index--dark engagement-index--close">
+        <a href="/montazh-po-proektu/">
+          <span>01</span>
+          <div><strong>Готовая проектная документация</strong><p>Перейти к монтажному объёму, вопросам исполнения и коммерческому предложению.</p></div>
+          <b aria-hidden="true">→</b>
+        </a>
+        <a href="/obekt-bez-gotovogo-proekta/">
+          <span>02</span>
+          <div><strong>Исходные данные ещё формируются</strong><p>Определить, что требуется до технически корректной оценки монтажа.</p></div>
+          <b aria-hidden="true">→</b>
+        </a>
       </div>
     </div>
   </section>

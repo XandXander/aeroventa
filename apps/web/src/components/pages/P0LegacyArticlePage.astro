@@ -224,7 +224,7 @@ const specs: Record<string, ArticleSpec> = {
       ['Алмазное бурение','/almaznoe-burenie/','Текущая партнёрская модель исполнения.']
     ],
     ctaTitle:'Нужно отверстие под конкретную вентиляционную трассу?',
-    ctaText:'Есть проект — пришлите лист или узел. Проекта нет — покажите помещение, стену и задачу. Сначала определим исходные данные и место проходки в общей схеме.'
+    ctaText:'По готовой документации пришлите лист или узел. На ранней стадии покажите помещение, стену и задачу. Сначала определим исходные данные и место проходки в общей схеме.'
   }
 };
 
@@ -307,7 +307,7 @@ if (!spec) throw new Error(`P0 article spec is missing for ${content.path}`);
       <h2 id="p0-close-title">{spec.ctaTitle}</h2>
       <p class="p0-close-copy">{spec.ctaText}</p>
       <div class="home-actions">
-        <a class="button button--light" href="/contact/?intent=project">Есть проект →</a>
+        <a class="button button--light" href="/montazh-po-proektu/">Передать проект →</a>
         <a class="button button--light" href="/contact/?intent=budget">Описать задачу →</a>
         <a class="button button--light" href="/almaznoe-burenie/">Отдельное бурение →</a>
       </div>

@@ -4,8 +4,6 @@ import type { ContentRecord } from '@/lib/types';
 interface Props { content: ContentRecord; fixture: boolean; }
 const { content } = Astro.props;
 const tel = SITE.phone.replace(/[^+\d]/g, '');
-const projectMail = `mailto:${SITE.email}?subject=${encodeURIComponent('Проект вентиляции — запрос сметы')}`;
-const taskMail = `mailto:${SITE.email}?subject=${encodeURIComponent('Вентиляция — описать объект и задачу')}`;
 ---
 
 <article class="contact-premium">
@@ -17,8 +15,9 @@ const taskMail = `mailto:${SITE.email}?subject=${encodeURIComponent('Венти�
       </div>
       <div>
         <p class="contact-hero__lede">
-          Если есть проект — присылайте его сразу. Если проекта нет — достаточно коротко описать объект и задачу.
-          Не заставляем сначала собирать идеальный пакет исходных данных.
+          Начните с текущего состояния задачи. Для готовой документации и для объекта,
+          который ещё требует подготовки исходных данных, на сайте теперь предусмотрены
+          отдельные рабочие маршруты.
         </p>
         <div class="contact-direct">
           <a href={`tel:${tel}`}><span>Телефон</span><strong>{SITE.phone}</strong></a>
@@ -30,33 +29,19 @@ const taskMail = `mailto:${SITE.email}?subject=${encodeURIComponent('Венти�
 
   <section class="contact-routes" aria-labelledby="contact-routes-title">
     <div class="home-shell">
-      <p class="section-index">01 / Выберите сценарий</p>
-      <h2 id="contact-routes-title">Есть проект и нет проекта — два разных входа.</h2>
-      <div class="contact-routes__grid">
-        <article>
-          <p class="contact-routes__tag">Есть проект</p>
-          <h3>Проект / спецификация → первичная оценка состава монтажных работ.</h3>
-          <p>Приложите PDF/чертежи/спецификацию к письму и коротко укажите объект, локацию, стадию и что именно нужно оценить.</p>
-          <ul>
-            <li>проект или спецификация;</li>
-            <li>локация объекта;</li>
-            <li>текущая стадия;</li>
-            <li>какой состав работ нужен в смете.</li>
-          </ul>
-          <a class="button button--primary" href={projectMail}>Отправить проект по e-mail →</a>
-        </article>
-        <article>
-          <p class="contact-routes__tag">Проекта нет</p>
-          <h3>Объект / фото / задача → понятный следующий шаг.</h3>
-          <p>Достаточно сообщить то, что уже известно. План и фотографии полезны, но отсутствие полного комплекта не блокирует первое обращение.</p>
-          <ul>
-            <li>тип объекта;</li>
-            <li>локация;</li>
-            <li>что нужно получить;</li>
-            <li>план или фото — если есть.</li>
-          </ul>
-          <a class="button button--primary" href={taskMail}>Описать объект по e-mail →</a>
-        </article>
+      <p class="section-index">01 / Рабочий маршрут</p>
+      <h2 id="contact-routes-title">Выберите исходную ситуацию.</h2>
+      <div class="engagement-index">
+        <a href="/montazh-po-proektu/">
+          <span>01</span>
+          <div><strong>Готовая проектная документация</strong><p>Монтажный объём, вопросы к исполнению, смета и границы работ.</p></div>
+          <b aria-hidden="true">→</b>
+        </a>
+        <a href="/obekt-bez-gotovogo-proekta/">
+          <span>02</span>
+          <div><strong>Исходные данные ещё формируются</strong><p>Объект, задача, ограничения и перечень того, что нужно определить до оценки.</p></div>
+          <b aria-hidden="true">→</b>
+        </a>
       </div>
     </div>
   </section>
@@ -77,13 +62,13 @@ const taskMail = `mailto:${SITE.email}?subject=${encodeURIComponent('Венти�
 
   <section class="home-section contact-what" aria-labelledby="contact-what-title">
     <div class="home-shell">
-      <p class="section-index">03 / Что отправить</p>
-      <h2 id="contact-what-title">Чем меньше догадок — тем полезнее первый ответ.</h2>
+      <p class="section-index">03 / Для первого контакта</p>
+      <h2 id="contact-what-title">Передайте то, что уже есть. Недостающие данные определим отдельно.</h2>
       <div class="contact-what__grid">
         <article><span>01</span><h3>План / проект</h3><p>Любой актуальный материал, который показывает объект и предполагаемую систему.</p></article>
-        <article><span>02</span><h3>Фото</h3><p>Трассы, потолки, стены, технические зоны и то место, где возникает вопрос.</p></article>
-        <article><span>03</span><h3>Стадия</h3><p>Строительство, отделочные работы, готовая отделка, действующий объект — это существенно меняет монтаж.</p></article>
-        <article><span>04</span><h3>Задача</h3><p>Что нужно от AEROVENTA: оценить монтаж, выполнить по проекту, разобраться с исходными данными.</p></article>
+        <article><span>02</span><h3>Фото</h3><p>Трассы, потолки, стены, технические зоны и место, где возникает вопрос.</p></article>
+        <article><span>03</span><h3>Стадия</h3><p>Строительство, отделочные работы, готовая отделка или действующий объект.</p></article>
+        <article><span>04</span><h3>Задача</h3><p>Что требуется от AEROVENTA и какой результат нужен на следующем этапе.</p></article>
       </div>
     </div>
   </section>
@@ -91,12 +76,11 @@ const taskMail = `mailto:${SITE.email}?subject=${encodeURIComponent('Венти�
   <section class="contact-data" aria-labelledby="contact-data-title">
     <div class="home-shell contact-data__grid">
       <div>
-        <p class="section-index section-index--orange">04 / Данные и AI</p>
-        <h2 id="contact-data-title">Прямой контакт работает независимо от будущего бота и калькулятора.</h2>
+        <p class="section-index section-index--orange">04 / Прямой контакт</p>
+        <h2 id="contact-data-title">Телефон и e-mail остаются основными каналами связи.</h2>
       </div>
       <div>
-        <p>Телефон и e-mail остаются обычными каналами связи. AI-консультант и защищённая загрузка проекта будут дополнительными способами обращения; прямой контакт останется доступен всегда.</p>
-        <p>Загрузка проекта не запускает автоматический полный расчёт сама по себе. Для AI-функций действует отдельная граница данных: контактные данные и исходные файлы не должны автоматически передаваться внешней модели.</p>
+        <p>Будущие цифровые инструменты не заменяют обычный коммерческий контакт и не должны автоматически превращать загруженные материалы в неподтверждённый расчёт.</p>
         <div class="home-actions">
           <a class="button button--ghost" href={`tel:${tel}`}>Позвонить: {SITE.phone}</a>
           <a class="button button--ghost" href={`mailto:${SITE.email}`}>Написать на e-mail</a>

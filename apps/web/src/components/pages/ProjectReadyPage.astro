@@ -1,0 +1,98 @@
+---
+import { SITE } from '@/lib/site';
+const projectMail = `mailto:${SITE.email}?subject=${encodeURIComponent('Монтаж вентиляции по готовому проекту')}`;
+---
+
+<article class="engagement engagement--project">
+  <header class="engagement-hero">
+    <div class="home-shell engagement-hero__grid">
+      <div class="engagement-hero__copy">
+        <p class="home-kicker">Монтаж по проектной документации</p>
+        <h1>Проект готов. Следующий этап — точное исполнение.</h1>
+        <p class="engagement-hero__lede">
+          Проект и спецификация становятся рабочей основой. Мы уточняем состав монтажных работ,
+          фиксируем вопросы, которые влияют на исполнение и смету, и не заставляем заказчика
+          проходить повторный «бриф с нуля».
+        </p>
+        <div class="home-actions">
+          <a class="button button--primary" href={projectMail}>Передать проект на рассмотрение →</a>
+          <a class="button button--ghost" href="/portfolio/">Посмотреть выполненные объекты</a>
+        </div>
+      </div>
+      <figure class="engagement-hero__media">
+        <img src="/evidence/7park/duct-route.jpg" alt="Смонтированные воздуховоды на объекте AEROVENTA" loading="eager" />
+        <figcaption>Реальный объект AEROVENTA · монтаж вентиляции</figcaption>
+      </figure>
+    </div>
+  </header>
+
+  <section class="engagement-section engagement-section--paper" aria-labelledby="project-input-title">
+    <div class="home-shell engagement-section__grid">
+      <div>
+        <p class="section-index">01 / Исходные данные</p>
+        <h2 id="project-input-title">Для начала нужен рабочий комплект документации.</h2>
+      </div>
+      <div class="engagement-ledger">
+        <div><span>01</span><strong>Проект / рабочие чертежи</strong><p>То, по чему предполагается выполнять монтаж.</p></div>
+        <div><span>02</span><strong>Спецификация</strong><p>Если она уже подготовлена и входит в комплект.</p></div>
+        <div><span>03</span><strong>Объект и стадия</strong><p>Локация, готовность площадки, действующий объект или стройка.</p></div>
+        <div><span>04</span><strong>Границы запроса</strong><p>Какой именно состав работ требуется оценить.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="engagement-section engagement-section--ink" aria-labelledby="project-process-title">
+    <div class="home-shell engagement-section__grid">
+      <div>
+        <p class="section-index section-index--orange">02 / До коммерческого предложения</p>
+        <h2 id="project-process-title">Проект становится точным основанием для монтажа.</h2>
+      </div>
+      <ol class="engagement-steps">
+        <li><span>01</span><div><strong>Состав работ</strong><p>Определяем, что относится к монтажу AEROVENTA и что остаётся за пределами нашей роли.</p></div></li>
+        <li><span>02</span><div><strong>Неоднозначности</strong><p>Выносим вопросы, которые могут изменить объём, сроки или технологию монтажа.</p></div></li>
+        <li><span>03</span><div><strong>Площадка</strong><p>Учитываем доступ, высоту, готовность помещения, логистику и смежные работы.</p></div></li>
+        <li><span>04</span><div><strong>Следующий коммерческий шаг</strong><p>Смета или перечень данных, без которых точная оценка была бы фиктивной.</p></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="engagement-section" aria-labelledby="project-conflict-title">
+    <div class="home-shell engagement-section__grid">
+      <div>
+        <p class="section-index">03 / Проект и фактический объект</p>
+        <h2 id="project-conflict-title">Фактическое расхождение фиксируется до изменения на площадке.</h2>
+      </div>
+      <div class="engagement-rule">
+        <p><strong>Фиксируем факт.</strong> Что именно на объекте отличается от документации.</p>
+        <p><strong>Определяем влияние.</strong> На трассу, оборудование, доступ, объём или последовательность работ.</p>
+        <p><strong>Предлагаем варианты в границах своей роли.</strong> Без подмены проектировщика.</p>
+        <p><strong>Согласуем материальное изменение.</strong> До того, как оно станет выполненной работой.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="engagement-evidence" aria-labelledby="project-evidence-title">
+    <div class="home-shell">
+      <div class="section-heading">
+        <div>
+          <p class="section-index">04 / Доказательства</p>
+          <h2 id="project-evidence-title">Смотреть нужно на реальные объекты.</h2>
+        </div>
+        <a href="/portfolio/">Все объекты →</a>
+      </div>
+      <div class="engagement-evidence__grid">
+        <a href="/blog/detail/kak-my-sdali-7-domov/"><span>Павловск</span><h3>7 PARK</h3><p>Монтаж приточно-вытяжной вентиляции в семи домах.</p><b>Открыть кейс →</b></a>
+        <a href="/blog/detail/ntff-polisan/"><span>Санкт-Петербург</span><h3>НТФФ «Полисан»</h3><p>Монтаж вентиляции и оборудования на производственном объекте.</p><b>Открыть кейс →</b></a>
+        <a href="/blog/detail/restoran-v-zhk-leontevskiy-mys/"><span>Санкт-Петербург</span><h3>Леонтьевский Мыс</h3><p>Приточно-вытяжная вентиляция ресторана.</p><b>Открыть кейс →</b></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="engagement-close">
+    <div class="home-shell engagement-close__grid">
+      <p class="section-index section-index--orange">05 / Передача проекта</p>
+      <h2>Передайте рабочий комплект. Вернёмся с конкретикой по монтажу.</h2>
+      <a class="button button--light" href={projectMail}>Передать проект →</a>
+    </div>
+  </section>
+</article>

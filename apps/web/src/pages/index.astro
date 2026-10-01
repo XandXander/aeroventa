@@ -42,8 +42,8 @@ const questions = [
         </p>
         <p class="home-geo">Санкт-Петербург · Ленинградская область · Москва · Карелия</p>
         <div class="home-actions" aria-label="Основные действия">
-          <a class="button button--primary" href="/contact/?intent=budget">Получить ориентир стоимости <span aria-hidden="true">→</span></a>
-          <a class="button button--ghost" href="/contact/?intent=project">Есть проект — запросить смету</a>
+          <a class="button button--primary" href="/montazh-po-proektu/">Монтаж по готовому проекту <span aria-hidden="true">→</span></a>
+          <a class="button button--ghost" href="/obekt-bez-gotovogo-proekta/">Подготовка исходных данных</a>
         </div>
       </div>
 
@@ -128,19 +128,17 @@ const questions = [
           Состав монтажа определяем по задаче и условиям объекта. Учитываем реальные трассы,
           сечения, оборудование, доступ и требования — без избыточных решений и скрытого усложнения.
         </p>
-        <div class="decision-split">
-          <article>
-            <span class="decision-split__number">01</span>
-            <h3>Есть проект</h3>
-            <p>Смотрим проект и спецификацию, уточняем состав монтажных работ и вопросы, которые влияют на смету.</p>
-            <a href="/contact/?intent=project">Запросить смету →</a>
-          </article>
-          <article>
-            <span class="decision-split__number">02</span>
-            <h3>Проекта нет</h3>
-            <p>Определяем минимум исходных данных и даём понятный следующий шаг без имитации «точной сметы за минуту».</p>
-            <a href="/contact/?intent=budget">Получить ориентир →</a>
-          </article>
+        <div class="engagement-index engagement-index--compact">
+          <a href="/montazh-po-proektu/">
+            <span>01</span>
+            <div><strong>Готовая проектная документация</strong><p>Монтажный объём, вопросы к исполнению и коммерческий шаг.</p></div>
+            <b aria-hidden="true">→</b>
+          </a>
+          <a href="/obekt-bez-gotovogo-proekta/">
+            <span>02</span>
+            <div><strong>Исходные данные ещё формируются</strong><p>Что требуется определить до корректной оценки монтажа.</p></div>
+            <b aria-hidden="true">→</b>
+          </a>
         </div>
       </div>
 
@@ -234,20 +232,18 @@ const questions = [
   <section class="conversion-close" aria-labelledby="close-title">
     <div class="home-shell">
       <p class="section-index section-index--orange">05 / Следующий шаг</p>
-      <h2 id="close-title">Не заставляем проходить один и тот же сценарий всех.</h2>
-      <div class="conversion-grid">
-        <article>
-          <p class="conversion-grid__tag">Есть проект</p>
-          <h3>Пришлите проект или спецификацию.</h3>
-          <p>Посмотрим исходные данные, состав монтажных работ и вернёмся с конкретными вопросами по смете.</p>
-          <a class="button button--light" href="/contact/?intent=project">Запросить смету →</a>
-        </article>
-        <article>
-          <p class="conversion-grid__tag">Проекта нет</p>
-          <h3>Опишите объект и задачу.</h3>
-          <p>Определим, что можно оценить сейчас, какие данные нужны и какой следующий шаг имеет смысл.</p>
-          <a class="button button--light" href="/contact/?intent=budget">Получить ориентир →</a>
-        </article>
+      <h2 id="close-title">Продолжите с той стадии, на которой находится объект сейчас.</h2>
+      <div class="engagement-index engagement-index--dark engagement-index--close">
+        <a href="/montazh-po-proektu/">
+          <span>01</span>
+          <div><strong>Монтаж по готовой проектной документации</strong><p>Перейти к рабочему комплекту и монтажному объёму.</p></div>
+          <b aria-hidden="true">→</b>
+        </a>
+        <a href="/obekt-bez-gotovogo-proekta/">
+          <span>02</span>
+          <div><strong>Подготовка исходных данных</strong><p>Определить технически корректный следующий шаг до сметы.</p></div>
+          <b aria-hidden="true">→</b>
+        </a>
       </div>
     </div>
   </section>

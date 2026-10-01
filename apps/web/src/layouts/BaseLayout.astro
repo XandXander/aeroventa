@@ -4,7 +4,7 @@ import Footer from '@/components/Footer.astro';
 import AirflowTracePulse from '@/components/AirflowTracePulse.astro';
 import { canonicalUrl, jsonLd, robotsValue, serializeJsonLd } from '@/lib/seo';
 import type { ContentRecord } from '@/lib/types';
-import '@/styles/global.css';
+import globalCssUrl from '@/styles/global.css?url';
 
 interface Props { content: ContentRecord; }
 const { content } = Astro.props;
@@ -24,6 +24,7 @@ const ogImage = content.og_image ? new URL(content.og_image, 'https://aeroventa.
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="preload" href="/fonts/onest-variable.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href={globalCssUrl} />
     <title>{content.seo_title || content.title}</title>
     {content.seo_description && <meta name="description" content={content.seo_description} />}
     <meta name="robots" content={robots} />

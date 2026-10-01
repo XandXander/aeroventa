@@ -42,8 +42,8 @@ const cases = [
         </p>
         <p class="home-geo">Санкт-Петербург · Ленинградская область · Москва · Карелия</p>
         <div class="home-actions">
-          <a class="button button--primary" href="/contact/?intent=project">Есть проект — запросить смету →</a>
-          <a class="button button--ghost" href="/contact/?intent=budget">Проекта нет — получить ориентир</a>
+          <a class="button button--primary" href="/montazh-po-proektu/">Монтаж по готовому проекту →</a>
+          <a class="button button--ghost" href="/obekt-bez-gotovogo-proekta/">Подготовка исходных данных</a>
         </div>
       </div>
       <div class="service-premium__hero-proof" aria-label="Как устроена работа">
@@ -65,29 +65,19 @@ const cases = [
 
   <section class="service-band" aria-labelledby="service-router-title">
     <div class="home-shell">
-      <p class="section-index">01 / Два разных сценария</p>
-      <h2 id="service-router-title">Проект есть — не заставляем заполнять длинную анкету. Проекта нет — не притворяемся, что уже знаем точную цену.</h2>
-      <div class="service-router">
-        <article>
-          <p class="service-router__tag">Есть проект</p>
-          <h3>Отправьте проект или спецификацию.</h3>
-          <ol>
-            <li>Смотрим состав проекта и монтажный объём.</li>
-            <li>Фиксируем неоднозначности и недостающие исходные данные.</li>
-            <li>Готовим следующий коммерческий шаг и перечень технических вопросов.</li>
-          </ol>
-          <a class="button button--primary" href="/contact/?intent=project">Запросить смету →</a>
-        </article>
-        <article>
-          <p class="service-router__tag">Проекта нет</p>
-          <h3>Начинаем с объекта и задачи.</h3>
-          <ol>
-            <li>Тип объекта, локация и текущая стадия.</li>
-            <li>План/фото, если они уже есть.</li>
-            <li>Ориентир бюджета — только по заранее подтверждённым сценариям, без выдуманной точности.</li>
-          </ol>
-          <a class="button button--ghost" href="/contact/?intent=budget">Понять следующий шаг →</a>
-        </article>
+      <p class="section-index">01 / Маршрут подготовки</p>
+      <h2 id="service-router-title">Исходная ситуация определяет следующий технический шаг.</h2>
+      <div class="engagement-index engagement-index--dark">
+        <a href="/montazh-po-proektu/">
+          <span>01</span>
+          <div><strong>Готовая проектная документация</strong><p>Перейти к монтажному объёму, вопросам исполнения и коммерческому предложению.</p></div>
+          <b aria-hidden="true">→</b>
+        </a>
+        <a href="/obekt-bez-gotovogo-proekta/">
+          <span>02</span>
+          <div><strong>Исходные данные ещё формируются</strong><p>Определить, чего не хватает до корректной оценки монтажа.</p></div>
+          <b aria-hidden="true">→</b>
+        </a>
       </div>
     </div>
   </section>
@@ -186,20 +176,18 @@ const cases = [
   <section class="conversion-close" aria-labelledby="service-close-title">
     <div class="home-shell">
       <p class="section-index section-index--orange">07 / Следующий шаг</p>
-      <h2 id="service-close-title">Покажите объект в том виде, в каком он есть сейчас.</h2>
-      <div class="conversion-grid">
-        <article>
-          <p class="conversion-grid__tag">Есть проект</p>
-          <h3>Проект → первичная оценка → вопросы по монтажу и смете.</h3>
-          <p>PDF, спецификация, локация и короткое описание требуемого состава работ.</p>
-          <a class="button button--light" href="/contact/?intent=project">Отправить проект →</a>
-        </article>
-        <article>
-          <p class="conversion-grid__tag">Проекта нет</p>
-          <h3>Объект → исходные данные → понятный следующий шаг.</h3>
-          <p>Тип объекта, план/фото, стадия работ и задача — без длинной анкеты до первого полезного ответа.</p>
-          <a class="button button--light" href="/contact/?intent=budget">Описать объект →</a>
-        </article>
+      <h2 id="service-close-title">Перейдите к странице, которая соответствует текущей стадии объекта.</h2>
+      <div class="engagement-index engagement-index--dark engagement-index--close">
+        <a href="/montazh-po-proektu/">
+          <span>01</span>
+          <div><strong>Монтаж по готовой проектной документации</strong><p>Рабочий комплект уже сформирован.</p></div>
+          <b aria-hidden="true">→</b>
+        </a>
+        <a href="/obekt-bez-gotovogo-proekta/">
+          <span>02</span>
+          <div><strong>Подготовка исходных данных</strong><p>Документация и границы задачи ещё требуют уточнения.</p></div>
+          <b aria-hidden="true">→</b>
+        </a>
       </div>
     </div>
   </section>

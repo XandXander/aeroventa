@@ -1,0 +1,99 @@
+---
+import { SITE } from '@/lib/site';
+const taskMail = `mailto:${SITE.email}?subject=${encodeURIComponent('Вентиляция — объект без готового проекта')}`;
+---
+
+<article class="engagement engagement--discovery">
+  <header class="engagement-hero engagement-hero--discovery">
+    <div class="home-shell engagement-hero__grid">
+      <div class="engagement-hero__copy">
+        <p class="home-kicker">До готовой проектной документации</p>
+        <h1>Сначала исходные данные. Затем — обоснованная оценка.</h1>
+        <p class="engagement-hero__lede">
+          Когда готового проекта ещё нет, первый профессиональный шаг — не выдать случайную цифру,
+          а понять объект, задачу и ограничения. Только после этого становится ясно,
+          каких данных не хватает для осмысленной оценки монтажа.
+        </p>
+        <div class="home-actions">
+          <a class="button button--primary" href={taskMail}>Описать объект и задачу →</a>
+          <a class="button button--ghost" href="/faq/">Что важно решить до монтажа</a>
+        </div>
+      </div>
+      <figure class="engagement-hero__media engagement-hero__media--dark">
+        <img src="/evidence/leont/duct-installation-01.jpg" alt="Монтаж вентиляции на реальном объекте AEROVENTA" loading="eager" />
+        <figcaption>Реальный объект AEROVENTA · монтажные работы</figcaption>
+      </figure>
+    </div>
+  </header>
+
+  <section class="engagement-section" aria-labelledby="discovery-input-title">
+    <div class="home-shell engagement-section__grid">
+      <div>
+        <p class="section-index">01 / На старте</p>
+        <h2 id="discovery-input-title">Начинаем с того, что уже известно об объекте.</h2>
+      </div>
+      <div class="engagement-ledger engagement-ledger--soft">
+        <div><span>01</span><strong>Тип и назначение объекта</strong><p>Квартира, дом, ресторан, производство, коммерческое помещение или другой объект.</p></div>
+        <div><span>02</span><strong>Локация и стадия</strong><p>Где находится объект и что уже выполнено на площадке.</p></div>
+        <div><span>03</span><strong>План и фотографии</strong><p>Если они есть. Идеальный пакет для первого контакта не требуется.</p></div>
+        <div><span>04</span><strong>Задача и ограничения</strong><p>Что требуется получить и какие условия уже известны.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="engagement-section engagement-section--paper" aria-labelledby="discovery-output-title">
+    <div class="home-shell engagement-section__grid">
+      <div>
+        <p class="section-index section-index--orange">02 / Результат первого разбора</p>
+        <h2 id="discovery-output-title">Первый этап определяет границы следующего решения.</h2>
+      </div>
+      <div class="engagement-outcomes">
+        <article><span>01</span><h3>Достаточность данных</h3><p>Понятно, можно ли уже переходить к оценке или нужны дополнительные исходные данные.</p></article>
+        <article><span>02</span><h3>Границы монтажной задачи</h3><p>Что относится к монтажу и какие смежные вопросы нужно отделить заранее.</p></article>
+        <article><span>03</span><h3>Следующие технические вопросы</h3><p>Что требуется уточнить до сметы, чтобы не закладывать выдуманную точность.</p></article>
+        <article><span>04</span><h3>Необходимость отдельного проектного этапа</h3><p>Если без него корректно двигаться дальше нельзя, это должно быть обозначено до договора на монтаж.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="engagement-section engagement-section--ink" aria-labelledby="discovery-boundary-title">
+    <div class="home-shell engagement-section__grid">
+      <div>
+        <p class="section-index section-index--orange">03 / Границы</p>
+        <h2 id="discovery-boundary-title">Проектные решения и монтажная ответственность разделяются заранее.</h2>
+      </div>
+      <div class="engagement-rule engagement-rule--dark">
+        <p><strong>Не обещаем точную смету без достаточных исходных данных.</strong></p>
+        <p><strong>Не подменяем проектную документацию устной договорённостью.</strong></p>
+        <p><strong>Не включаем проектирование, ПНР, автоматику и смежные дисциплины «по умолчанию».</strong></p>
+        <p><strong>Сначала фиксируем, что требуется для следующего корректного шага.</strong></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="engagement-evidence" aria-labelledby="discovery-evidence-title">
+    <div class="home-shell">
+      <div class="section-heading">
+        <div>
+          <p class="section-index">04 / Практика</p>
+          <h2 id="discovery-evidence-title">Ориентир дают выполненные объекты и фактические условия.</h2>
+        </div>
+        <a href="/portfolio/">Все объекты →</a>
+      </div>
+      <div class="engagement-evidence__grid">
+        <a href="/blog/detail/kvartira-na-zhukova/"><span>Санкт-Петербург</span><h3>Маршала Жукова</h3><p>Приточно-вытяжная вентиляция квартиры.</p><b>Открыть кейс →</b></a>
+        <a href="/blog/detail/kafe-rimskogo-korsakova-3/"><span>Санкт-Петербург</span><h3>Кафе на Римского-Корсакова</h3><p>Монтаж приточно-вытяжной вентиляции и оборудования.</p><b>Открыть кейс →</b></a>
+        <a href="/blog/detail/montazh-ventilyatsii-v-karelii/"><span>Карелия</span><h3>PONSSE, Питкяранта</h3><p>Монтаж вентиляции и оборудования на объекте.</p><b>Открыть кейс →</b></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="engagement-close engagement-close--light">
+    <div class="home-shell engagement-close__grid">
+      <p class="section-index">05 / Первый контакт</p>
+      <h2>Покажите объект таким, какой он есть сейчас.</h2>
+      <p>Тип объекта, локация, стадия, план или фотографии — этого достаточно, чтобы начать предметный разговор.</p>
+      <a class="button button--primary" href={taskMail}>Описать объект →</a>
+    </div>
+  </section>
+</article>
