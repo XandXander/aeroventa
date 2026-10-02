@@ -42,8 +42,8 @@ const questions = [
         </p>
         <p class="home-geo">Санкт-Петербург · Ленинградская область · Москва · Карелия</p>
         <div class="home-actions" aria-label="Основные действия">
-          <a class="button button--primary" href="/montazh-po-proektu/">Есть проект — запросить смету <span aria-hidden="true">→</span></a>
-          <a class="button button--ghost" href="/obekt-bez-gotovogo-proekta/">Проекта нет — следующий шаг</a>
+          <a class="button button--primary" href="/montazh-po-proektu/">Передать готовый проект <span aria-hidden="true">→</span></a>
+          <a class="button button--ghost" href="/obekt-bez-gotovogo-proekta/">Определить исходные данные</a>
         </div>
       </div>
 
@@ -53,33 +53,17 @@ const questions = [
           src="/evidence/leont/duct-installation-02.jpg"
           width="734"
           height="551"
-          alt="Смонтированные воздуховоды и вентиляционное оборудование на реальном объекте AEROVENTA"
+          alt="Смонтированные воздуховоды на реальном объекте AEROVENTA"
           fetchpriority="high"
           decoding="async"
         />
         <div class="hero-engineering__veil" aria-hidden="true"></div>
-        <div class="hero-engineering__label hero-engineering__label--supply">Приточная магистраль</div>
-        <div class="hero-engineering__label hero-engineering__label--exhaust">Вытяжная магистраль</div>
-        <svg class="hero-engineering__overlay" viewBox="0 0 760 535" aria-hidden="true">
-          <defs>
-            <marker id="hero-arrow-orange" markerWidth="7" markerHeight="7" refX="5.2" refY="3.5" orient="auto">
-              <path d="M0,0 L7,3.5 L0,7 z" fill="#ff4d00"/>
-            </marker>
-            <marker id="hero-arrow-blue" markerWidth="7" markerHeight="7" refX="5.2" refY="3.5" orient="auto">
-              <path d="M0,0 L7,3.5 L0,7 z" fill="#148cff"/>
-            </marker>
-          </defs>
-          <path class="hero-airflow-path hero-airflow-path--supply" d="M88 118 C185 123 258 158 302 223 C325 257 332 305 332 382" />
-          <path class="hero-airflow-path hero-airflow-path--exhaust" d="M626 404 C626 321 641 260 674 210 C697 175 714 146 720 112" />
-          <path class="hero-airflow-arrow" d="M228 151 C270 171 297 197 313 227" marker-end="url(#hero-arrow-orange)" />
-          <path class="hero-airflow-arrow hero-airflow-arrow--exhaust" d="M628 341 C631 296 642 258 662 225" marker-end="url(#hero-arrow-blue)" />
-        </svg>
+        <div class="hero-engineering__frame" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </div>
         <figcaption class="hero-engineering__evidence">
           <strong>Реальный монтаж AEROVENTA</strong>
-          <span class="sr-only">
-            Оранжевая линия показывает направление притока от магистрали к помещению,
-            синяя — направление вытяжки от помещения к вытяжной магистрали. Системы физически не соединены.
-          </span>
+          <span class="sr-only">Реальная фотография смонтированных воздуховодов на объекте AEROVENTA.</span>
         </figcaption>
       </figure>
     </div>
@@ -106,12 +90,12 @@ const questions = [
         <div class="engagement-index engagement-index--compact">
           <a href="/montazh-po-proektu/">
             <span>01</span>
-            <div><strong>Есть готовый проект</strong><p>Проверим комплект, уточним объём работ и подготовим смету на монтаж.</p></div>
+            <div><strong>Готовая проектная документация</strong><p>Проверим комплект, уточним объём работ и подготовим смету на монтаж.</p></div>
             <b aria-hidden="true">→</b>
           </a>
           <a href="/obekt-bez-gotovogo-proekta/">
             <span>02</span>
-            <div><strong>Проекта пока нет</strong><p>Определим, какие данные нужны, чтобы корректно оценить монтаж.</p></div>
+            <div><strong>Исходные данные ещё формируются</strong><p>Определим, какие данные нужны, чтобы корректно оценить монтаж.</p></div>
             <b aria-hidden="true">→</b>
           </a>
         </div>

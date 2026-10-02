@@ -1349,3 +1349,74 @@ main { min-height: 60vh; }
     overflow-wrap:anywhere;
   }
 }
+
+/* Final HI-END pass: identity, evidence truth, accessible accent text */
+:root { --orange-text:#d63f00; }
+
+.brand,
+.footer-brand__name {
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+}
+.brand-mark {
+  width:30px;
+  height:30px;
+  flex:0 0 30px;
+  overflow:visible;
+}
+.brand-mark path {
+  fill:none;
+  stroke-width:7.5;
+  stroke-linecap:square;
+  stroke-linejoin:round;
+}
+.brand-mark__supply { stroke:var(--orange); }
+.brand-mark__return { stroke:var(--ink); }
+.footer-brand__name .brand-mark { width:34px; height:34px; flex-basis:34px; }
+
+.hero-engineering__frame {
+  position:absolute;
+  z-index:2;
+  inset:16px;
+  pointer-events:none;
+}
+.hero-engineering__frame span { position:absolute; width:34px; height:34px; }
+.hero-engineering__frame span:nth-child(1) { left:0; top:0; border-left:2px solid rgba(255,255,255,.9); border-top:2px solid rgba(255,255,255,.9); }
+.hero-engineering__frame span:nth-child(2) { right:0; top:0; border-right:2px solid rgba(255,255,255,.9); border-top:2px solid rgba(255,255,255,.9); }
+.hero-engineering__frame span:nth-child(3) { left:0; bottom:0; border-left:2px solid rgba(255,255,255,.9); border-bottom:2px solid rgba(255,255,255,.9); }
+.hero-engineering__frame span:nth-child(4) { right:0; bottom:0; border-right:2px solid rgba(255,255,255,.9); border-bottom:2px solid rgba(255,255,255,.9); }
+
+.home-kicker,
+.section-index,
+.service-router__tag,
+.service-case-card > span,
+.portfolio-card__top span,
+.faq-question__next,
+.object-context-card__top span,
+.objects-proof__grid a > span,
+.about-timeline a > span,
+.contact-routes__grid article > span,
+.p0-hero__eyebrow,
+.practice-card-grid a > span,
+.practical-index__grid a > span,
+.story-index__grid a > span,
+.case-detail-hero__eyebrow,
+.support-state > span,
+.support-cards__grid a > span,
+.engagement-outcomes span,
+.engagement-evidence__grid span { color:var(--orange-text); }
+.section-index--orange { color:#ff6b2c; }
+
+@media (max-width:760px) {
+  .brand { gap:8px; }
+  .brand-mark { width:26px; height:26px; flex-basis:26px; }
+  .hero-engineering__frame { inset:10px; }
+}
+
+
+/* V34 final narrow-mobile text overflow correction */
+@media (max-width:360px) {
+  .about-model h2,
+  .hub-split h2 { overflow-wrap:anywhere; }
+}

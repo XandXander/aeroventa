@@ -180,6 +180,7 @@ if(!spec) throw new Error('Support spec missing: '+content.path);
     <section class="home-section support-cards">
       <div class="home-shell">
         <p class="section-index">Материалы и факты</p>
+        <h2 class="sr-only">Материалы и факты</h2>
         <div class="support-cards__grid">
           {spec.cards.map((item,index) => <a href={item.href}><span>{String(index+1).padStart(2,'0')} / {item.tag}</span><h3>{item.title}</h3><p>{item.text}</p><b>Открыть →</b></a>)}
         </div>
