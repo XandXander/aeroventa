@@ -1328,3 +1328,24 @@ main { min-height: 60vh; }
   .case-facts div { grid-template-columns:100px 1fr; gap:14px; padding:9px 0; }
   .case-facts dt,.case-facts dd { font-size:.9rem; }
 }
+
+
+/* V34 — bounded narrow-mobile overflow correction */
+.mobile-menu:not([open]) nav { display:none; }
+
+@media (max-width:360px) {
+  .footer-grid,
+  .footer-brand,
+  .footer-nav,
+  .footer-contact,
+  .footer-bottom {
+    min-width:0;
+    width:100%;
+  }
+  .footer-nav { grid-template-columns:1fr; }
+  .footer-nav a,
+  .footer-contact a {
+    width:auto;
+    overflow-wrap:anywhere;
+  }
+}
