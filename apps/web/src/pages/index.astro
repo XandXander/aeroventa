@@ -74,9 +74,12 @@ const questions = [
           <path class="hero-airflow-arrow" d="M228 151 C270 171 297 197 313 227" marker-end="url(#hero-arrow-orange)" />
           <path class="hero-airflow-arrow hero-airflow-arrow--exhaust" d="M628 341 C631 296 642 258 662 225" marker-end="url(#hero-arrow-blue)" />
         </svg>
-        <figcaption class="sr-only">
-          Реальный монтаж AEROVENTA. Оранжевая линия показывает направление притока от магистрали к помещению,
-          синяя — направление вытяжки от помещения к вытяжной магистрали. Системы физически не соединены.
+        <figcaption class="hero-engineering__evidence">
+          <strong>Реальный монтаж AEROVENTA</strong>
+          <span class="sr-only">
+            Оранжевая линия показывает направление притока от магистрали к помещению,
+            синяя — направление вытяжки от помещения к вытяжной магистрали. Системы физически не соединены.
+          </span>
         </figcaption>
       </figure>
     </div>
@@ -103,12 +106,12 @@ const questions = [
         <div class="engagement-index engagement-index--compact">
           <a href="/montazh-po-proektu/">
             <span>01</span>
-            <div><strong>Готовая проектная документация</strong><p>Монтажный объём, вопросы к исполнению и коммерческий шаг.</p></div>
+            <div><strong>Есть готовый проект</strong><p>Проверим комплект, уточним объём работ и подготовим смету на монтаж.</p></div>
             <b aria-hidden="true">→</b>
           </a>
           <a href="/obekt-bez-gotovogo-proekta/">
             <span>02</span>
-            <div><strong>Исходные данные ещё формируются</strong><p>Что требуется определить до корректной оценки монтажа.</p></div>
+            <div><strong>Проекта пока нет</strong><p>Определим, какие данные нужны, чтобы корректно оценить монтаж.</p></div>
             <b aria-hidden="true">→</b>
           </a>
         </div>
@@ -137,6 +140,7 @@ const questions = [
           </g>
 
           <g class="solution-system solution-system--supply">
+            <path class="solution-duct-outline" d="M82 92 H316 V198 H250"/>
             <path class="solution-duct" d="M82 92 H316 V198 H250"/>
             <path class="solution-flow" d="M82 92 H316 V198 H250"/>
             <path class="solution-flow-arrow" d="M178 92 H270" marker-end="url(#solution-arrow-orange)"/>
@@ -145,6 +149,7 @@ const questions = [
           </g>
 
           <g class="solution-system solution-system--exhaust">
+            <path class="solution-duct-outline" d="M430 138 H600 V254 H532"/>
             <path class="solution-duct" d="M430 138 H600 V254 H532"/>
             <path class="solution-flow" d="M430 138 H600 V254 H532"/>
             <path class="solution-flow-arrow" d="M552 254 H584 V184" marker-end="url(#solution-arrow-blue)"/>
@@ -183,14 +188,16 @@ const questions = [
         <p class="section-index section-index--orange">02 / Объекты</p>
         <h2 id="case-title">7 PARK</h2>
         <p class="case-feature__subtitle">Павловск · Жилой квартал</p>
+        <p class="case-feature__proof-note">Реальные фотографии объекта и монтажа</p>
         <figure class="case-project-photo">
           <img src="/evidence/7park/object-exterior.jpg" width="734" height="551" loading="lazy" decoding="async" alt="Жилой квартал 7 PARK в Павловске — объект работ AEROVENTA" />
+          <figcaption>Объект · Павловск</figcaption>
         </figure>
       </div>
 
       <figure class="case-flow" aria-label="Фрагмент смонтированной трассы вентиляции на объекте 7 PARK">
         <img src="/evidence/7park/duct-route.jpg" width="734" height="551" loading="lazy" decoding="async" alt="Фрагмент смонтированной трассы воздуховода на объекте 7 PARK" />
-        <div class="case-flow__caption"><span>Фрагмент трассы</span><strong>Реальное фото с объекта</strong></div>
+        <div class="case-flow__caption"><span>Монтаж · 7 PARK</span><strong>Реальное фото с объекта</strong></div>
       </figure>
 
       <dl class="case-facts">
@@ -231,8 +238,8 @@ const questions = [
         <p class="section-index">04 / До монтажа</p>
         <h2 id="decisions-title">Что важно решить до монтажа вентиляции</h2>
         <p>
-          Не FAQ ради поисковика, а инженерный раздел решений: что можно посчитать сейчас,
-          какие данные действительно нужны и где обычно появляются риски по смете и монтажу.
+          Здесь собраны вопросы, которые влияют на смету, подготовку и монтаж:
+          что можно оценить сейчас, какие данные действительно нужны и где обычно возникают риски.
         </p>
         <a class="button button--ghost" href="/faq/">Разобрать вопросы по объекту →</a>
       </div>
@@ -251,12 +258,12 @@ const questions = [
       <div class="engagement-index engagement-index--dark engagement-index--close">
         <a href="/montazh-po-proektu/">
           <span>01</span>
-          <div><strong>Монтаж по готовой проектной документации</strong><p>Перейти к рабочему комплекту и монтажному объёму.</p></div>
+          <div><strong>Есть готовый проект</strong><p>Передать комплект и запросить смету на монтаж.</p></div>
           <b aria-hidden="true">→</b>
         </a>
         <a href="/obekt-bez-gotovogo-proekta/">
           <span>02</span>
-          <div><strong>Подготовка исходных данных</strong><p>Определить технически корректный следующий шаг до сметы.</p></div>
+          <div><strong>Проекта пока нет</strong><p>Понять, какие данные нужны до корректной сметы.</p></div>
           <b aria-hidden="true">→</b>
         </a>
       </div>
