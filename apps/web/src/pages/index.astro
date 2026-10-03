@@ -50,43 +50,41 @@ const questions = [
       <figure class="hero-engineering">
         <img
           class="hero-engineering__photo"
-          src="/evidence/leont/duct-installation-02.jpg"
+          src="/evidence/7park/duct-route.jpg"
           width="734"
           height="551"
-          alt="Смонтированные воздуховоды на реальном объекте AEROVENTA"
+          alt="Фрагмент монтажа вентиляции AEROVENTA на объекте 7 PARK"
           fetchpriority="high"
           decoding="async"
         />
         <div class="hero-engineering__veil" aria-hidden="true"></div>
         <svg class="hero-engineering__overlay" viewBox="0 0 734 551" aria-hidden="true" focusable="false">
           <defs>
-            <marker id="hero-arrow-orange" markerWidth="5.5" markerHeight="5.5" refX="4.2" refY="2.75" orient="auto">
-              <path d="M0,0 L5.5,2.75 L0,5.5 z" fill="#ff4d00" />
+            <marker id="hero-arrow-supply" markerWidth="4" markerHeight="4" refX="3.2" refY="2" orient="auto">
+              <path d="M0,0 L4,2 L0,4 z" fill="#b55a3a" />
             </marker>
-            <marker id="hero-arrow-blue" markerWidth="5.5" markerHeight="5.5" refX="4.2" refY="2.75" orient="auto">
-              <path d="M0,0 L5.5,2.75 L0,5.5 z" fill="#148cff" />
+            <marker id="hero-arrow-exhaust" markerWidth="4" markerHeight="4" refX="3.2" refY="2" orient="auto">
+              <path d="M0,0 L4,2 L0,4 z" fill="#55778d" />
             </marker>
           </defs>
-          <path class="hero-airflow-path hero-airflow-path--supply" d="M336 18 C305 82 277 150 244 225 C211 299 176 360 126 416" />
-          <path class="hero-airflow-arrow hero-airflow-arrow--supply" d="M294 108 C280 138 268 166 255 194" marker-end="url(#hero-arrow-orange)" />
-          <path class="hero-airflow-arrow hero-airflow-arrow--supply" d="M202 318 C186 346 168 372 148 394" marker-end="url(#hero-arrow-orange)" />
-          <path class="hero-airflow-path hero-airflow-path--exhaust" d="M480 438 C528 391 570 337 610 279 C648 224 681 178 724 135" />
-          <path class="hero-airflow-arrow hero-airflow-arrow--exhaust" d="M524 394 C545 369 563 344 580 319" marker-end="url(#hero-arrow-blue)" />
-          <path class="hero-airflow-arrow hero-airflow-arrow--exhaust" d="M632 247 C650 221 665 200 682 180" marker-end="url(#hero-arrow-blue)" />
-          <circle class="hero-airflow-node hero-airflow-node--supply" cx="126" cy="416" r="5" />
-          <circle class="hero-airflow-node hero-airflow-node--exhaust" cx="480" cy="438" r="5" />
+          <path class="hero-airflow-path hero-airflow-path--supply" d="M382 72 C350 142 315 211 272 276 C226 345 176 404 118 458" />
+          <path class="hero-airflow-arrow hero-airflow-arrow--supply" d="M313 213 C296 242 281 266 263 291" marker-end="url(#hero-arrow-supply)" />
+          <path class="hero-airflow-path hero-airflow-path--exhaust" d="M492 468 C546 421 584 365 618 309 C653 250 680 193 704 135" />
+          <path class="hero-airflow-arrow hero-airflow-arrow--exhaust" d="M590 356 C607 329 621 304 634 279" marker-end="url(#hero-arrow-exhaust)" />
+          <circle class="hero-airflow-node hero-airflow-node--supply" cx="118" cy="458" r="3.2" />
+          <circle class="hero-airflow-node hero-airflow-node--exhaust" cx="704" cy="135" r="3.2" />
         </svg>
         <div class="hero-engineering__label hero-engineering__label--supply">
-          <strong>Схема · Приточная магистраль</strong>
+          <span>ПРИТОК</span><small>SUPPLY · схема потока</small>
         </div>
         <div class="hero-engineering__label hero-engineering__label--exhaust">
-          <strong>Схема · Вытяжная магистраль</strong>
+          <span>ВЫТЯЖКА</span><small>EXHAUST · схема потока</small>
         </div>
         <div class="hero-engineering__frame" aria-hidden="true">
           <span></span><span></span><span></span><span></span>
         </div>
         <figcaption class="hero-engineering__evidence">
-          <strong>Реальный монтаж AEROVENTA · поверх фото — схема направления потока</strong>
+          <strong>7 PARK · реальный монтаж AEROVENTA · поверх фото — схематическая визуализация потока</strong>
           <span class="sr-only">Реальная фотография смонтированных воздуховодов на объекте AEROVENTA. Цветные линии — схематическая визуализация приточного и вытяжного направления, а не исполнительная схема объекта.</span>
         </figcaption>
       </figure>
@@ -191,31 +189,38 @@ const questions = [
   </section>
 
   <section class="case-feature" aria-labelledby="case-title">
-    <div class="home-shell case-feature__grid">
-      <div>
-        <p class="section-index section-index--orange">02 / Объекты</p>
+    <div class="home-shell case-dossier">
+      <header class="case-dossier__intro">
+        <p class="section-index section-index--orange">02 / Реализованный объект</p>
         <h2 id="case-title">7 PARK</h2>
-        <p class="case-feature__subtitle">Павловск · Жилой квартал</p>
-        <p class="case-feature__proof-note">Реальные фотографии объекта и монтажа</p>
-        <figure class="case-project-photo">
-          <img src="/evidence/7park/object-exterior.jpg" width="734" height="551" loading="lazy" decoding="async" alt="Жилой квартал 7 PARK в Павловске — объект работ AEROVENTA" />
-          <figcaption>Объект · Павловск</figcaption>
-        </figure>
-      </div>
+        <p class="case-feature__subtitle">Павловск · жилой квартал</p>
+        <p class="case-dossier__statement">
+          Монтаж приточно-вытяжной вентиляции в семи домах. Показываем объект как доказательство выполненной работы — без неподтверждённых характеристик и декоративной «техничности».
+        </p>
+      </header>
 
-      <figure class="case-flow" aria-label="Фрагмент смонтированной трассы вентиляции на объекте 7 PARK">
-        <img src="/evidence/7park/duct-route.jpg" width="734" height="551" loading="lazy" decoding="async" alt="Фрагмент смонтированной трассы воздуховода на объекте 7 PARK" />
-        <div class="case-flow__caption"><span>Монтаж · 7 PARK</span><strong>Реальное фото с объекта</strong></div>
+      <figure class="case-dossier__primary">
+        <img src="/evidence/7park/duct-route.jpg" width="734" height="551" loading="lazy" decoding="async" alt="Фрагмент смонтированной трассы вентиляции на объекте 7 PARK" />
+        <figcaption><span>Монтаж</span><strong>Фрагмент трассы на объекте</strong></figcaption>
       </figure>
 
-      <dl class="case-facts">
-        <div><dt>Тип системы</dt><dd>Приточно-вытяжная вентиляция</dd></div>
-        <div><dt>Объём</dt><dd>7 домов</dd></div>
+      <dl class="case-dossier__facts case-dossier__facts--primary">
+        <div><dt>Система</dt><dd>Приточно-вытяжная вентиляция</dd></div>
         <div><dt>Период</dt><dd>18.11.2020 — 10.12.2020</dd></div>
-        <div><dt>Локация</dt><dd>Павловск, Ленинградская область</dd></div>
-        <div><dt>Наша роль</dt><dd>Монтаж приточно-вытяжной вентиляции</dd></div>
-        <a class="button button--case" href="/blog/detail/kak-my-sdali-7-domov/">Посмотреть объект и ход работ →</a>
+        <div><dt>Роль AEROVENTA</dt><dd>Монтаж</dd></div>
       </dl>
+
+      <figure class="case-dossier__secondary">
+        <img src="/evidence/7park/object-exterior.jpg" width="734" height="551" loading="lazy" decoding="async" alt="Жилой квартал 7 PARK в Павловске" />
+        <figcaption><span>Объект</span><strong>7 PARK · Павловск</strong></figcaption>
+      </figure>
+
+      <dl class="case-dossier__facts case-dossier__facts--secondary">
+        <div><dt>Объём</dt><dd>7 домов</dd></div>
+        <div><dt>Локация</dt><dd>Павловск, Ленинградская область</dd></div>
+      </dl>
+
+      <a class="case-dossier__cta" href="/blog/detail/kak-my-sdali-7-domov/">Смотреть объект <span aria-hidden="true">→</span></a>
     </div>
   </section>
 
