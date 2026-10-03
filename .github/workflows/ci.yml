@@ -54,3 +54,29 @@ jobs:
             apps/web/dist
           if-no-files-found: error
           retention-days: 7
+
+      - name: Run V38 affected browser QA
+        run: |
+          set -euo pipefail
+          npm install --no-save --package-lock=false playwright@1.55.0
+          npx playwright install chromium
+          python3 -m http.server 4173 --directory apps/web/dist >/tmp/aeroventa-v38-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4173/ >/dev/null; then break; fi
+            sleep 0.2
+          done
+          node scripts/v38-fidelity-qa.mjs
+
+      - name: Upload V38 fidelity QA evidence
+        uses: actions/upload-artifact@v6
+        with:
+          name: aeroventa-v38-fidelity-qa
+          path: |
+            V38_FIDELITY_QA.json
+            V38_HOME_DESKTOP.png
+            V38_HOME_MOBILE.png
+          if-no-files-found: error
+          retention-days: 7
+
