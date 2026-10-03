@@ -134,18 +134,19 @@ check(files.home.includes('Получить ориентир стоимости'
 check(files.home.includes('hero-engineering__overlay'), 'Hero airflow authorship remains present');
 check(files.home.includes('src="/evidence/hero/engineering-ductwork.jpg"'), 'Hero uses Owner-supplied engineering media');
 check(files.home.includes('ПРИТОК') && files.home.includes('SUPPLY · схема потока') && files.home.includes('ВЫТЯЖКА') && files.home.includes('EXHAUST · схема потока'), 'Hero uses restrained Russian-first supply/exhaust technical annotations');
-check(files.home.includes('схематическая визуализация потока') && files.home.includes('не исполнительная схема объекта'), 'Hero schematic provenance/disclaimer remains explicit');
+check(files.home.includes('РЕАЛЬНЫЙ МОНТАЖ · СХЕМА ПОТОКА') && files.home.includes('схематическая визуализация приточного и вытяжного направления') && files.home.includes('не исполнительная схема объекта'), 'Hero keeps concise visible evidence annotation plus explicit accessible schematic disclaimer');
 const heroFigure = files.home.match(/<figure class="hero-engineering">([\s\S]*?)<\/figure>/)?.[1] ?? '';
 const caseSection = files.home.match(/<section class="case-feature"[\s\S]*?<\/section>/)?.[0] ?? '';
 const caseImageCount = (caseSection.match(/<img\s/gu) ?? []).length;
 check(caseImageCount === 2, '7 PARK dossier uses exactly two evidence images');
 check(caseSection.includes('18.11.2020 — 10.12.2020') && caseSection.includes('7 домов') && caseSection.includes('Павловск, Ленинградская область'), '7 PARK dossier preserves verified fact boundary');
-check(caseSection.includes('/evidence/7park/object-exterior-day.jpg') && caseSection.includes('/evidence/7park/object-courtyard-night.jpg'), '7 PARK dossier uses the two Owner-selected object images');
+check(caseSection.includes('/evidence/7park/object-exterior-day.jpg') && caseSection.includes('/evidence/7park/duct-route.jpg'), '7 PARK dossier pairs object/building evidence with attributable real installation work');
 check(!caseSection.includes('196') && !caseSection.includes('Вистбалт'), '7 PARK dossier does not leak disputed or unproved claims');
 check(!heroFigure.includes('hero-engineering__terminal'), 'Hero has no unproven physical terminal mapping labels');
 check(!/Ø\s*\d+/u.test(heroFigure), 'Hero has no unproven diameter callouts');
 check(!/(диффузор|переход|врезка|отвод)/iu.test(heroFigure), 'Hero has no unproven local HVAC component callouts');
 check(files.globalCss.includes('V40 — final HI-END evidence-first refinement'), 'V40 HI-END evidence-first refinement layer is present');
+check(files.globalCss.includes('V41 — final bounded optical correction pass'), 'V41 bounded optical correction layer is present');
 check(files.globalCss.includes('.airflow-entry-trace__steps { display:none; }'), 'Mobile AIRFLOW ENTRY labels are suppressed without removing route animation');
 
 check(files.css.includes('@media (max-width:760px)'), 'Premium experience has mobile adaptation');
