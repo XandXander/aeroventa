@@ -54,3 +54,56 @@ jobs:
             apps/web/dist
           if-no-files-found: error
           retention-days: 7
+
+      - name: Build V37 staging preview
+        env:
+          DIRECTUS_URL: https://cms.aeroventa.ru
+          DIRECTUS_STATIC_TOKEN: ${{ secrets.DIRECTUS_STATIC_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${DIRECTUS_STATIC_TOKEN:-}" ]; then
+            echo "::error::DIRECTUS_STATIC_TOKEN is not configured for GitHub Actions"
+            exit 1
+          fi
+          npm run directus:v13:preview:build
+          AEROVENTA_RELEASE_MODE=preview npm run validate:dist
+
+      - name: Run V37 responsive browser QA
+        run: |
+          set -euo pipefail
+          npm install --no-save --package-lock=false playwright@1.55.0
+          npx playwright install chromium
+          python3 -m http.server 4173 --directory apps/web/dist >/tmp/aeroventa-v37-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4173/ >/dev/null; then break; fi
+            sleep 0.2
+          done
+          node scripts/v37-browser-qa.mjs
+
+      - name: Build single staging carrier
+        run: |
+          set -euo pipefail
+          rm -f AEROVENTA_V37_STAGING_CARRIER.zip
+          (
+            cd apps/web/dist
+            zip -qr ../../../AEROVENTA_V37_STAGING_CARRIER.zip . -x ".htaccess"
+          )
+          test -s AEROVENTA_V37_STAGING_CARRIER.zip
+
+      - name: Upload V37 QA evidence
+        uses: actions/upload-artifact@v6
+        with:
+          name: aeroventa-v37-qa
+          path: V37_BROWSER_QA.json
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload single V37 staging carrier
+        uses: actions/upload-artifact@v6
+        with:
+          name: aeroventa-v37-staging-carrier
+          path: AEROVENTA_V37_STAGING_CARRIER.zip
+          if-no-files-found: error
+          retention-days: 7
