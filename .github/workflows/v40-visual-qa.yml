@@ -56,6 +56,7 @@ jobs:
 
           const targets = [
             { name: 'desktop-1440', width: 1440, height: 1000, fullPage: false },
+            { name: 'desktop-1440-full', width: 1440, height: 1000, fullPage: true },
             { name: 'tablet-834', width: 834, height: 1112, fullPage: false },
             { name: 'mobile-390', width: 390, height: 844, fullPage: false },
             { name: 'mobile-320', width: 320, height: 720, fullPage: false },
@@ -79,12 +80,27 @@ jobs:
             page.on('pageerror', err => pageErrors.push(String(err)));
 
             const response = await page.goto('http://127.0.0.1:4321/', { waitUntil: 'networkidle' });
+
+            // Deliberately traverse the page before capture so below-fold lazy evidence
+            // is part of the visual-acceptance artifact, not a blank placeholder.
+            const scrollHeight = await page.evaluate(() => document.documentElement.scrollHeight);
+            const step = Math.max(240, Math.floor(target.height * 0.7));
+            for (let y = 0; y < scrollHeight; y += step) {
+              await page.evaluate((scrollY) => window.scrollTo(0, scrollY), y);
+              await page.waitForTimeout(70);
+            }
+            await page.evaluate(() => window.scrollTo(0, 0));
+            await page.waitForTimeout(120);
+
             const checks = await page.evaluate(() => ({
               overflow: document.documentElement.scrollWidth - window.innerWidth,
               caseImages: document.querySelectorAll('.case-feature img').length,
               heroSupply: Boolean(document.querySelector('.hero-airflow-path--supply')),
               heroExhaust: Boolean(document.querySelector('.hero-airflow-path--exhaust')),
               brandLoaded: Boolean(document.querySelector('.brand-mark-locked')?.complete),
+              brokenImages: [...document.images]
+                .filter((img) => !img.complete || img.naturalWidth === 0)
+                .map((img) => img.currentSrc || img.src),
               title: document.title,
               h1: document.querySelector('h1')?.textContent?.trim() || '',
             }));
@@ -96,6 +112,7 @@ jobs:
               checks.heroSupply &&
               checks.heroExhaust &&
               checks.brandLoaded &&
+              checks.brokenImages.length === 0 &&
               consoleErrors.length === 0 &&
               pageErrors.length === 0;
 
