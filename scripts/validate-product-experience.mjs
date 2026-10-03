@@ -126,8 +126,8 @@ check(files.brandMark.includes(ownerShortlistHash), 'Owner shortlist provenance 
 check(files.favicon.includes(ownerShortlistHash), 'Owner shortlist provenance retained in AEROVENTA 01 candidate favicon asset');
 check(files.brandWordmark.includes('data:image/png;base64,'), 'Candidate wordmark asset still embeds the extracted Owner reference crop');
 check(files.brandMark.includes('data:image/png;base64,'), 'Candidate compact-mark asset still embeds the extracted Owner reference crop');
-check(files.header.includes('/brand/aeroventa-mark.svg') && files.header.includes('brand-mark-locked') && files.header.includes('AEROVENTA.RU'), 'Header uses locked AEROVENTA 01 compact mark with canonical text treatment');
-check(files.footer.includes('/brand/aeroventa-mark.svg') && files.footer.includes('brand-mark-locked--footer') && files.footer.includes('AEROVENTA</span>'), 'Footer uses locked AEROVENTA 01 compact mark with canonical text treatment');
+check(files.header.includes('/brand/aeroventa-mark.svg') && files.header.includes('brand-mark-locked') && files.header.includes('brand-wordmark-tail">EROVENTA') && files.header.includes('brand-domain">.RU'), 'Header uses locked AEROVENTA 01 A-symbol integrated into the wordmark');
+check(files.footer.includes('/brand/aeroventa-mark.svg') && files.footer.includes('brand-mark-locked--footer') && files.footer.includes('brand-wordmark-tail">EROVENTA'), 'Footer uses locked AEROVENTA 01 A-symbol integrated into the wordmark');
 check(!files.header.includes('/brand/aeroventa-wordmark.svg') && !files.footer.includes('/brand/aeroventa-wordmark.svg'), 'Corrupt shortlist-heading crop is not exposed as the visible wordmark');
 check(files.header.includes('Есть проект <span aria-hidden="true">→</span>'), 'Header project CTA matches canonical visual baseline wording');
 check(files.home.includes('Получить ориентир стоимости') && files.home.includes('Есть проект — запросить смету'), 'Homepage CTA hierarchy matches canonical visual baseline');

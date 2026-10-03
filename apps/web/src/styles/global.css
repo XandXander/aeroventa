@@ -2333,3 +2333,40 @@ main { min-height: 60vh; }
   .brand-mark-locked { width:27px; flex-basis:27px; }
   .brand { gap:8px; }
 }
+
+
+/* V40 residual — locked AEROVENTA 01 integrated wordmark */
+.brand,
+.footer-brand__name {
+  gap:0;
+}
+.brand-mark-locked {
+  width:30px;
+  flex-basis:30px;
+  margin-right:-2px;
+}
+.brand-mark-locked--footer {
+  width:33px;
+  flex-basis:33px;
+  margin-right:-3px;
+}
+.brand .baseline-wordmark,
+.footer-brand__name .baseline-wordmark {
+  display:inline-flex;
+  align-items:baseline;
+  white-space:nowrap;
+}
+.brand-wordmark-tail {
+  letter-spacing:-.065em;
+}
+.brand-domain {
+  margin-left:.035em;
+  letter-spacing:-.055em;
+}
+@media (max-width:760px) {
+  .brand-mark-locked {
+    width:27px;
+    flex-basis:27px;
+    margin-right:-2px;
+  }
+}
