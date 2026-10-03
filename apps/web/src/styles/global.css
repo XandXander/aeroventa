@@ -2487,10 +2487,14 @@ main { min-height: 60vh; }
 /* Tablet crop is authored independently */
 @media (max-width:1050px) and (min-width:761px) {
   .hero-engineering__photo { object-position:51% 50%; }
-  .footer-grid { grid-template-columns:1fr 1fr; }
-  .footer-brand { grid-column:1 / -1; }
-  .footer-contact { grid-column:1; }
-  .footer-nav { grid-column:2; }
+  .footer-grid { grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:34px 46px; }
+  .footer-brand { grid-column:1; }
+  .footer-contact { grid-column:2; }
+  .footer-nav {
+    grid-column:1 / -1;
+    grid-row:2;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
 }
 
 /* Mobile is a separate photo module: the transition shows photography first, annotations later */
