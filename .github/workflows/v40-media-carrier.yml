@@ -1,4 +1,5 @@
 name: v40-media-carrier
+# one-shot trigger
 
 on:
   push:
