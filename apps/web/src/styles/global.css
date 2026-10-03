@@ -1714,3 +1714,622 @@ main { min-height: 60vh; }
     overflow-wrap:anywhere;
   }
 }
+
+
+/* V40 — final HI-END evidence-first refinement */
+:root {
+  --flow-supply:#b55a3a;
+  --flow-exhaust:#55778d;
+}
+
+.brand,
+.footer-brand__name {
+  line-height:0;
+}
+.brand-wordmark {
+  display:block;
+  width:clamp(178px,14vw,208px);
+  height:auto;
+  max-width:100%;
+}
+.footer-brand-wordmark {
+  display:block;
+  width:min(224px,100%);
+  height:auto;
+}
+
+/* HERO — real engineering image + restrained schematic trace */
+.hero-engineering__photo {
+  object-position:52% 50%;
+  filter:saturate(.86) contrast(1.055) brightness(.98);
+}
+.hero-engineering__veil {
+  background:
+    linear-gradient(90deg,rgba(7,28,43,.12) 0,transparent 25%,transparent 100%),
+    linear-gradient(180deg,rgba(7,28,43,.01),rgba(7,28,43,.08));
+}
+.hero-airflow-path,
+.hero-airflow-arrow {
+  fill:none;
+  vector-effect:non-scaling-stroke;
+  filter:none;
+  opacity:.92;
+}
+.hero-airflow-path {
+  stroke-width:1.4px;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.hero-airflow-arrow {
+  stroke-width:1.35px;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.hero-airflow-path--supply,
+.hero-airflow-arrow--supply { stroke:var(--flow-supply); }
+.hero-airflow-path--exhaust,
+.hero-airflow-arrow--exhaust { stroke:var(--flow-exhaust); }
+.hero-airflow-node {
+  fill:rgba(255,255,255,.14);
+  stroke-width:1.35px;
+  vector-effect:non-scaling-stroke;
+  filter:none;
+}
+.hero-airflow-node--supply { stroke:var(--flow-supply); }
+.hero-airflow-node--exhaust { stroke:var(--flow-exhaust); }
+
+.hero-engineering__label {
+  z-index:3;
+  display:flex;
+  align-items:baseline;
+  gap:7px;
+  width:max-content;
+  max-width:calc(100% - 32px);
+  padding:6px 8px 6px 9px;
+  border:1px solid rgba(255,255,255,.24);
+  border-radius:0;
+  background:rgba(7,28,43,.76);
+  color:#fff;
+  box-shadow:none;
+  backdrop-filter:blur(8px);
+}
+.hero-engineering__label span {
+  font-size:.68rem;
+  line-height:1;
+  font-weight:900;
+  letter-spacing:.075em;
+}
+.hero-engineering__label small {
+  color:rgba(255,255,255,.7);
+  font-size:.57rem;
+  line-height:1;
+  font-weight:700;
+  letter-spacing:.045em;
+}
+.hero-engineering__label--supply {
+  left:20px;
+  top:22px;
+  border-left:2px solid var(--flow-supply);
+}
+.hero-engineering__label--exhaust {
+  right:20px;
+  top:70px;
+  border-left:2px solid var(--flow-exhaust);
+}
+.hero-engineering__frame {
+  inset:16px;
+  opacity:.7;
+}
+.hero-engineering__frame span:nth-child(n) {
+  width:26px;
+  height:26px;
+}
+.hero-engineering__frame span:nth-child(1),
+.hero-engineering__frame span:nth-child(2),
+.hero-engineering__frame span:nth-child(3),
+.hero-engineering__frame span:nth-child(4) {
+  border-width:1px;
+}
+.hero-engineering__evidence {
+  max-width:min(520px,calc(100% - 44px));
+  padding:7px 9px;
+  background:rgba(7,28,43,.76);
+  box-shadow:none;
+  font-size:.68rem;
+  line-height:1.25;
+}
+
+/* SYSTEM DIAGRAM — technical publication, not faux-BIM */
+.solution-diagram {
+  border-color:#cfd8dd;
+  background:
+    linear-gradient(rgba(8,23,40,.028) 1px,transparent 1px) 0 0/40px 40px,
+    linear-gradient(90deg,rgba(8,23,40,.028) 1px,transparent 1px) 0 0/40px 40px,
+    #f7f9fa;
+  box-shadow:none;
+}
+.solution-floor {
+  stroke:#b9c4ca;
+  stroke-width:.8;
+  opacity:.48;
+}
+.solution-duct-outline {
+  stroke:#a8b3b9;
+  stroke-width:22;
+  opacity:.52;
+}
+.solution-duct {
+  stroke:#d9e0e3;
+  stroke-width:16;
+  filter:none;
+}
+.solution-system--supply { color:var(--flow-supply); }
+.solution-system--exhaust { color:var(--flow-exhaust); }
+.solution-flow,
+.solution-flow-arrow {
+  stroke-width:1.5;
+  vector-effect:non-scaling-stroke;
+}
+#solution-arrow-orange path { fill:var(--flow-supply); }
+#solution-arrow-blue path { fill:var(--flow-exhaust); }
+.solution-terminal rect {
+  stroke:#87959d;
+  stroke-width:1;
+}
+.solution-terminal path {
+  stroke:#76848c;
+  stroke-width:1;
+}
+.solution-label {
+  font-size:15px;
+  letter-spacing:.03em;
+}
+.solution-room-label {
+  font-size:13px;
+  fill:#5d6a74;
+}
+
+/* 7 PARK — evidence dossier, exactly two images */
+.case-feature {
+  padding:clamp(62px,6.5vw,94px) 0;
+  background:#071c2b;
+}
+.case-dossier {
+  display:grid;
+  grid-template-columns:minmax(270px,.68fr) minmax(0,1.32fr);
+  grid-template-areas:
+    "intro primary"
+    "secondary primary"
+    "secondary facts-primary"
+    "facts-secondary cta";
+  gap:24px 34px;
+  align-items:stretch;
+}
+.case-dossier__intro { grid-area:intro; align-self:start; }
+.case-dossier__intro h2 {
+  margin:0;
+  font-size:clamp(4rem,7vw,7rem);
+  line-height:.82;
+  letter-spacing:-.075em;
+}
+.case-feature__subtitle {
+  margin:16px 0 0;
+  color:#d4dde3;
+  font-size:1.05rem;
+}
+.case-dossier__statement {
+  max-width:440px;
+  margin:20px 0 0;
+  color:#aebdc7;
+  font-size:.98rem;
+  line-height:1.55;
+}
+.case-dossier__primary,
+.case-dossier__secondary {
+  position:relative;
+  overflow:hidden;
+  margin:0;
+  border:1px solid #405766;
+  background:#0c2436;
+}
+.case-dossier__primary {
+  grid-area:primary;
+  min-height:500px;
+}
+.case-dossier__secondary {
+  grid-area:secondary;
+  min-height:245px;
+}
+.case-dossier__primary img,
+.case-dossier__secondary img {
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.case-dossier__primary img {
+  object-position:center 50%;
+  filter:saturate(.86) contrast(1.06) brightness(.88);
+}
+.case-dossier__secondary img {
+  object-position:center 50%;
+  filter:saturate(.92) contrast(1.03) brightness(.92);
+}
+.case-dossier__primary::after,
+.case-dossier__secondary::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,transparent 52%,rgba(7,28,43,.72) 100%);
+  pointer-events:none;
+}
+.case-dossier__primary figcaption,
+.case-dossier__secondary figcaption {
+  position:absolute;
+  z-index:2;
+  left:16px;
+  right:16px;
+  bottom:14px;
+  display:flex;
+  justify-content:space-between;
+  gap:18px;
+  align-items:end;
+}
+.case-dossier__primary figcaption span,
+.case-dossier__secondary figcaption span {
+  color:#bdcbd3;
+  font-size:.68rem;
+  font-weight:850;
+  letter-spacing:.07em;
+  text-transform:uppercase;
+}
+.case-dossier__primary figcaption strong,
+.case-dossier__secondary figcaption strong {
+  max-width:280px;
+  color:#fff;
+  font-size:.88rem;
+  line-height:1.2;
+  text-align:right;
+}
+.case-dossier__facts {
+  margin:0;
+  border-top:1px solid #526876;
+}
+.case-dossier__facts--primary {
+  grid-area:facts-primary;
+  display:grid;
+  grid-template-columns:1.2fr 1fr .7fr;
+  gap:0;
+}
+.case-dossier__facts--secondary {
+  grid-area:facts-secondary;
+  display:grid;
+  grid-template-columns:1fr;
+}
+.case-dossier__facts div {
+  min-width:0;
+  padding:13px 14px 12px 0;
+  border-bottom:1px solid #405766;
+}
+.case-dossier__facts--primary div + div {
+  padding-left:16px;
+  border-left:1px solid #405766;
+}
+.case-dossier__facts dt {
+  margin:0 0 6px;
+  color:#8fa2ae;
+  font-size:.66rem;
+  font-weight:800;
+  letter-spacing:.065em;
+  text-transform:uppercase;
+}
+.case-dossier__facts dd {
+  margin:0;
+  color:#fff;
+  font-size:.9rem;
+  line-height:1.32;
+  font-weight:750;
+}
+.case-dossier__cta {
+  grid-area:cta;
+  min-height:54px;
+  align-self:end;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  padding:0 18px;
+  border:1px solid #637886;
+  color:#fff;
+  text-decoration:none;
+  font-weight:850;
+  transition:background .16s ease,border-color .16s ease;
+}
+.case-dossier__cta:hover {
+  background:#0c2a3e;
+  border-color:#8ba0ad;
+}
+
+/* Object types — editorial index rather than card directory */
+.object-grid {
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:0 58px;
+  margin-top:46px;
+  border:0;
+  background:transparent;
+}
+.object-link {
+  min-height:0;
+  padding:24px 0 28px;
+  border-top:1px solid #b9c4cb;
+  background:transparent;
+}
+.object-link:hover { background:transparent; }
+.object-link > span {
+  color:#7f8c96;
+  font-size:.73rem;
+  letter-spacing:.07em;
+}
+.object-link h3 {
+  margin:28px 0 9px;
+  font-size:clamp(1.55rem,2vw,2rem);
+  line-height:1;
+}
+.object-link p {
+  max-width:520px;
+  font-size:.94rem;
+  line-height:1.5;
+}
+
+/* FAQ / decision list — editorial rules, no default-accordion feel */
+.decision-preview {
+  background:#f4f6f7;
+}
+.question-list {
+  border-top:1px solid #8f9da7;
+}
+.question-list a {
+  min-height:76px;
+  grid-template-columns:42px minmax(0,1fr) 24px;
+  border-bottom:1px solid #b8c2c9;
+  font-size:1rem;
+}
+.question-list a span {
+  color:#788793;
+  font-size:.72rem;
+  letter-spacing:.06em;
+}
+.question-list a b {
+  color:#7b8993;
+  font-size:1rem;
+  font-weight:700;
+}
+
+/* Close — preserve two commercial routes but remove card-heavy treatment */
+.conversion-close {
+  padding:clamp(74px,7vw,104px) 0;
+}
+.conversion-close .engagement-index--dark {
+  border-top:1px solid #516775;
+  border-bottom:1px solid #516775;
+  background:transparent;
+}
+.conversion-close .engagement-index--dark a {
+  background:transparent;
+  border-color:#405867;
+}
+.conversion-close .engagement-index--dark a:hover {
+  background:#0b2537;
+}
+.conversion-close__assist {
+  margin-top:34px;
+  padding-top:0;
+  border-top:0;
+}
+
+/* Footer — same discipline as the top of the page */
+.site-footer {
+  padding:70px 0 28px;
+  border-top:1px solid #aeb9c1;
+}
+.footer-grid {
+  grid-template-columns:minmax(260px,.9fr) minmax(430px,1.35fr) minmax(230px,.75fr);
+  gap:56px;
+}
+.footer-brand p {
+  max-width:390px;
+  margin-top:18px;
+  color:#4e5c68;
+  line-height:1.55;
+}
+.footer-geo {
+  font-size:.84rem;
+  line-height:1.65;
+}
+.footer-nav {
+  gap:34px;
+}
+.footer-nav strong,
+.footer-contact > span {
+  color:#6e7d88;
+  font-size:.68rem;
+  letter-spacing:.075em;
+}
+.footer-nav a,
+.footer-contact a,
+.footer-consultant {
+  line-height:1.35;
+}
+.footer-contact {
+  gap:12px;
+}
+.footer-phone {
+  margin-top:7px;
+  font-size:1.42rem;
+  letter-spacing:-.03em;
+}
+.footer-bottom {
+  margin-top:52px;
+  padding-top:19px;
+  border-top-color:#cbd3d8;
+}
+
+@media (max-width:1050px) {
+  .case-dossier {
+    grid-template-columns:minmax(250px,.8fr) minmax(0,1.2fr);
+    gap:22px 26px;
+  }
+  .case-dossier__primary { min-height:440px; }
+  .footer-grid { grid-template-columns:1fr; gap:38px; }
+}
+
+@media (max-width:760px) {
+  .brand-wordmark { width:158px; }
+  .footer-brand-wordmark { width:200px; }
+
+  .hero-engineering {
+    min-height:370px;
+  }
+  .hero-engineering__photo {
+    object-position:50% 50%;
+  }
+  .hero-airflow-path { stroke-width:1px; }
+  .hero-airflow-arrow { stroke-width:1px; }
+  .hero-airflow-node { stroke-width:1px; }
+  .hero-engineering__label {
+    gap:5px;
+    padding:5px 7px 5px 8px;
+    max-width:calc(100% - 20px);
+  }
+  .hero-engineering__label span { font-size:.61rem; }
+  .hero-engineering__label small { font-size:.51rem; }
+  .hero-engineering__label--supply { left:10px; top:12px; }
+  .hero-engineering__label--exhaust { right:10px; top:48px; }
+  .hero-engineering__frame { inset:10px; }
+  .hero-engineering__evidence {
+    left:10px;
+    bottom:10px;
+    max-width:calc(100% - 20px);
+    font-size:.62rem;
+  }
+
+  .solution-duct-outline { stroke-width:19; }
+  .solution-duct { stroke-width:14; }
+  .solution-flow,
+  .solution-flow-arrow { stroke-width:1.2; }
+
+  .case-feature {
+    padding:46px 0 54px;
+  }
+  .case-dossier {
+    grid-template-columns:1fr;
+    grid-template-areas:
+      "intro"
+      "primary"
+      "facts-primary"
+      "secondary"
+      "facts-secondary"
+      "cta";
+    gap:18px;
+  }
+  .case-dossier__intro h2 {
+    font-size:clamp(3.8rem,21vw,5.5rem);
+  }
+  .case-dossier__statement {
+    margin-top:16px;
+    font-size:.92rem;
+  }
+  .case-dossier__primary {
+    min-height:320px;
+  }
+  .case-dossier__secondary {
+    min-height:230px;
+  }
+  .case-dossier__facts--primary {
+    grid-template-columns:1fr;
+  }
+  .case-dossier__facts--primary div + div {
+    padding-left:0;
+    border-left:0;
+  }
+  .case-dossier__facts div {
+    padding:11px 0;
+  }
+  .case-dossier__cta {
+    min-height:52px;
+  }
+
+  .object-grid {
+    grid-template-columns:1fr;
+    gap:0;
+    margin-top:30px;
+  }
+  .object-link {
+    padding:20px 0 23px;
+  }
+  .object-link h3 {
+    margin-top:22px;
+  }
+
+  .question-list a {
+    min-height:72px;
+    grid-template-columns:32px minmax(0,1fr) 18px;
+    gap:12px;
+    font-size:.94rem;
+  }
+
+  .footer-grid { gap:32px; }
+  .footer-nav { grid-template-columns:1fr 1fr; gap:28px 24px; }
+  .footer-bottom { margin-top:38px; }
+}
+
+@media (max-width:360px) {
+  .brand-wordmark { width:148px; }
+  .hero-engineering__label small { display:none; }
+  .hero-engineering__label--exhaust { top:43px; }
+  .case-dossier__primary { min-height:286px; }
+  .case-dossier__secondary { min-height:205px; }
+  .footer-nav { grid-template-columns:1fr; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .case-dossier__cta,
+  .object-link,
+  .hero-airflow-path,
+  .hero-airflow-arrow {
+    transition:none;
+    animation:none;
+  }
+}
+
+
+/* V40 residual — exact locked compact mark + text treatment */
+.brand-mark-locked {
+  display:block;
+  width:31px;
+  height:auto;
+  flex:0 0 31px;
+}
+.brand-mark-locked--footer {
+  width:35px;
+  flex-basis:35px;
+}
+.brand .baseline-wordmark,
+.footer-brand__name .baseline-wordmark {
+  display:inline-block;
+  color:var(--ink);
+  font-weight:900;
+  letter-spacing:-.055em;
+  line-height:1;
+}
+.brand .baseline-wordmark {
+  font-size:clamp(1.15rem,1.8vw,1.55rem);
+}
+.footer-brand__name .baseline-wordmark {
+  font-size:1.22rem;
+}
+@media (max-width:760px) {
+  .brand-mark-locked { width:27px; flex-basis:27px; }
+  .brand { gap:8px; }
+}
