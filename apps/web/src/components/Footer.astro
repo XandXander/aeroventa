@@ -14,6 +14,14 @@ const tel = SITE.phone.replace(/[^+\d]/g, '');
       <p class="footer-geo"><strong>Основная зона:</strong> {SITE.primaryServiceArea}<br /><strong>Также берём объекты:</strong> {SITE.additionalServiceAreas.join(' · ')}</p>
     </div>
 
+    <div class="footer-contact">
+      <span>Связаться по объекту</span>
+      <a class="footer-phone" href={`tel:${tel}`}>{SITE.phone}</a>
+      <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+      <button class="footer-consultant" type="button" data-contact-open data-source="footer">Обсудить объект</button>
+      <a class="footer-project" href="/montazh-po-proektu/">Передать проект →</a>
+    </div>
+
     <nav class="footer-nav" aria-label="Навигация в подвале">
       <div>
         <strong>Работы</strong>
@@ -34,14 +42,6 @@ const tel = SITE.phone.replace(/[^+\d]/g, '');
         <button class="footer-consultant" type="button" data-consultant-open data-source="footer">Инженерный консультант</button>
       </div>
     </nav>
-
-    <div class="footer-contact">
-      <span>Связаться по объекту</span>
-      <a class="footer-phone" href={`tel:${tel}`}>{SITE.phone}</a>
-      <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
-      <button class="footer-consultant" type="button" data-contact-open data-source="footer">Обсудить объект</button>
-      <a class="footer-project" href="/montazh-po-proektu/">Передать проект →</a>
-    </div>
   </div>
   <div class="home-shell footer-bottom">
     <span>© {year} AEROVENTA</span>

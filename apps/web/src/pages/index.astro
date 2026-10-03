@@ -59,20 +59,13 @@ const questions = [
         />
         <div class="hero-engineering__veil" aria-hidden="true"></div>
         <svg class="hero-engineering__overlay" viewBox="0 0 734 551" aria-hidden="true" focusable="false">
-          <defs>
-            <marker id="hero-arrow-supply" markerWidth="4" markerHeight="4" refX="3.2" refY="2" orient="auto">
-              <path d="M0,0 L4,2 L0,4 z" fill="#b55a3a" />
-            </marker>
-            <marker id="hero-arrow-exhaust" markerWidth="4" markerHeight="4" refX="3.2" refY="2" orient="auto">
-              <path d="M0,0 L4,2 L0,4 z" fill="#55778d" />
-            </marker>
-          </defs>
-          <path class="hero-airflow-path hero-airflow-path--supply" d="M382 72 C350 142 315 211 272 276 C226 345 176 404 118 458" />
-          <path class="hero-airflow-arrow hero-airflow-arrow--supply" d="M313 213 C296 242 281 266 263 291" marker-end="url(#hero-arrow-supply)" />
-          <path class="hero-airflow-path hero-airflow-path--exhaust" d="M492 468 C546 421 584 365 618 309 C653 250 680 193 704 135" />
-          <path class="hero-airflow-arrow hero-airflow-arrow--exhaust" d="M590 356 C607 329 621 304 634 279" marker-end="url(#hero-arrow-exhaust)" />
-          <circle class="hero-airflow-node hero-airflow-node--supply" cx="118" cy="458" r="3.2" />
-          <circle class="hero-airflow-node hero-airflow-node--exhaust" cx="704" cy="135" r="3.2" />
+          <path class="hero-airflow-path hero-airflow-path--supply" d="M212 334 C184 360 157 391 126 426" />
+          <path class="hero-airflow-tick hero-airflow-tick--supply" d="M171 376 l-9 2 3-8 M148 402 l-9 2 3-8" />
+          <circle class="hero-airflow-node hero-airflow-node--supply" cx="212" cy="334" r="3" />
+
+          <path class="hero-airflow-path hero-airflow-path--exhaust" d="M526 414 C551 388 570 357 589 323" />
+          <path class="hero-airflow-tick hero-airflow-tick--exhaust" d="M552 382 l9-1 -3 8 M570 353 l9-1 -3 8" />
+          <circle class="hero-airflow-node hero-airflow-node--exhaust" cx="526" cy="414" r="3" />
         </svg>
         <div class="hero-engineering__label hero-engineering__label--supply">
           <span>ПРИТОК</span><small>SUPPLY · схема потока</small>
@@ -84,7 +77,7 @@ const questions = [
           <span></span><span></span><span></span><span></span>
         </div>
         <figcaption class="hero-engineering__evidence">
-          <strong>Инженерный монтаж · поверх фото — схематическая визуализация потока</strong>
+          <strong>РЕАЛЬНЫЙ МОНТАЖ · СХЕМА ПОТОКА</strong>
           <span class="sr-only">Реальная фотография смонтированных воздуховодов на объекте AEROVENTA. Цветные линии — схематическая визуализация приточного и вытяжного направления, а не исполнительная схема объекта.</span>
         </figcaption>
       </figure>
@@ -131,12 +124,6 @@ const questions = [
               <stop offset=".48" stop-color="#eef1f3"/>
               <stop offset="1" stop-color="#a8b3bb"/>
             </linearGradient>
-            <marker id="solution-arrow-orange" markerWidth="7" markerHeight="7" refX="5.2" refY="3.5" orient="auto">
-              <path d="M0,0 L7,3.5 L0,7 z" fill="#ff4d00"/>
-            </marker>
-            <marker id="solution-arrow-blue" markerWidth="7" markerHeight="7" refX="5.2" refY="3.5" orient="auto">
-              <path d="M0,0 L7,3.5 L0,7 z" fill="#148cff"/>
-            </marker>
           </defs>
 
           <g class="solution-floor">
@@ -149,18 +136,16 @@ const questions = [
             <path class="solution-duct-outline" d="M82 92 H316 V198 H250"/>
             <path class="solution-duct" d="M82 92 H316 V198 H250"/>
             <path class="solution-flow" d="M82 92 H316 V198 H250"/>
-            <path class="solution-flow-arrow" d="M178 92 H270" marker-end="url(#solution-arrow-orange)"/>
-            <path class="solution-flow-arrow" d="M316 120 V176" marker-end="url(#solution-arrow-orange)"/>
-            <circle cx="82" cy="92" r="6"/>
+            <path class="solution-tick" d="M192 86 l8 6 -8 6 M310 146 l6 8 6-8"/>
+            <circle class="solution-anchor" cx="82" cy="92" r="5"/>
           </g>
 
           <g class="solution-system solution-system--exhaust">
             <path class="solution-duct-outline" d="M430 138 H600 V254 H532"/>
             <path class="solution-duct" d="M430 138 H600 V254 H532"/>
             <path class="solution-flow" d="M430 138 H600 V254 H532"/>
-            <path class="solution-flow-arrow" d="M552 254 H584 V184" marker-end="url(#solution-arrow-blue)"/>
-            <path class="solution-flow-arrow" d="M576 138 H476" marker-end="url(#solution-arrow-blue)"/>
-            <circle cx="430" cy="138" r="6"/>
+            <path class="solution-tick" d="M540 132 l-8 6 8 6 M594 207 l6-8 6 8"/>
+            <circle class="solution-anchor" cx="430" cy="138" r="5"/>
           </g>
 
           <g class="solution-terminal">
@@ -211,8 +196,8 @@ const questions = [
       </dl>
 
       <figure class="case-dossier__secondary">
-        <img src="/evidence/7park/object-courtyard-night.jpg" width="800" height="450" loading="lazy" decoding="async" alt="Жилой квартал 7 PARK в Павловске, вечерний вид" />
-        <figcaption><span>Локация</span><strong>Жилой квартал 7 PARK</strong></figcaption>
+        <img src="/evidence/7park/duct-route.jpg" width="735" height="487" loading="lazy" decoding="async" alt="Смонтированный воздуховод на объекте 7 PARK" />
+        <figcaption><span>Монтаж</span><strong>Фрагмент работ на объекте 7 PARK</strong></figcaption>
       </figure>
 
       <dl class="case-dossier__facts case-dossier__facts--secondary">
