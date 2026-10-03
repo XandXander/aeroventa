@@ -1,6 +1,4 @@
 ---
-import { SITE } from '@/lib/site';
-const taskMail = `mailto:${SITE.email}?subject=${encodeURIComponent('Вентиляция — объект без готового проекта')}`;
 ---
 
 <article class="engagement engagement--discovery">
@@ -15,7 +13,8 @@ const taskMail = `mailto:${SITE.email}?subject=${encodeURIComponent('Венти�
           каких данных не хватает для осмысленной оценки монтажа.
         </p>
         <div class="home-actions">
-          <a class="button button--primary" href={taskMail}>Описать объект и задачу →</a>
+          <button class="button button--primary" type="button" data-contact-open data-project-status="not_ready" data-source="project_not_ready">Описать объект и задачу →</button>
+          <button class="button button--ghost" type="button" data-consultant-open data-source="project_not_ready">Разобрать с консультантом</button>
           <a class="button button--ghost" href="/faq/">Что важно решить до монтажа</a>
         </div>
       </div>
@@ -93,7 +92,7 @@ const taskMail = `mailto:${SITE.email}?subject=${encodeURIComponent('Венти�
       <p class="section-index">05 / Первый контакт</p>
       <h2>Покажите объект таким, какой он есть сейчас.</h2>
       <p>Тип объекта, локация, стадия, план или фотографии — этого достаточно, чтобы начать предметный разговор.</p>
-      <a class="button button--primary" href={taskMail}>Описать объект →</a>
+      <button class="button button--primary" type="button" data-contact-open data-project-status="not_ready" data-source="project_not_ready_close">Описать объект →</button>
     </div>
   </section>
 </article>
