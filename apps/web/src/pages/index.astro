@@ -42,8 +42,8 @@ const questions = [
         </p>
         <p class="home-geo">Санкт-Петербург · Ленинградская область · Москва · Карелия</p>
         <div class="home-actions" aria-label="Основные действия">
-          <a class="button button--primary" href="/montazh-po-proektu/" data-aeroventa-event="primary_cta">Передать готовый проект <span aria-hidden="true">→</span></a>
-          <a class="button button--ghost" href="/obekt-bez-gotovogo-proekta/">Определить исходные данные</a>
+          <a class="button button--primary" href="/obekt-bez-gotovogo-proekta/" data-aeroventa-event="primary_cta">Получить ориентир стоимости <span aria-hidden="true">→</span></a>
+          <a class="button button--ghost" href="/montazh-po-proektu/">Есть проект — запросить смету</a>
         </div>
       </div>
 
@@ -58,12 +58,38 @@ const questions = [
           decoding="async"
         />
         <div class="hero-engineering__veil" aria-hidden="true"></div>
+        <svg class="hero-engineering__overlay" viewBox="0 0 734 551" aria-hidden="true" focusable="false">
+          <defs>
+            <marker id="hero-arrow-orange" markerWidth="8" markerHeight="8" refX="5.6" refY="4" orient="auto">
+              <path d="M0,0 L8,4 L0,8 z" fill="#ff4d00" />
+            </marker>
+            <marker id="hero-arrow-blue" markerWidth="8" markerHeight="8" refX="5.6" refY="4" orient="auto">
+              <path d="M0,0 L8,4 L0,8 z" fill="#148cff" />
+            </marker>
+          </defs>
+          <path class="hero-airflow-path hero-airflow-path--supply" d="M118 95 H305 V255 H238" />
+          <path class="hero-airflow-arrow hero-airflow-arrow--supply" d="M252 95 H176" marker-end="url(#hero-arrow-orange)" />
+          <path class="hero-airflow-arrow hero-airflow-arrow--supply" d="M305 151 V226" marker-end="url(#hero-arrow-orange)" />
+          <path class="hero-airflow-path hero-airflow-path--exhaust" d="M500 160 H650 V367 H574" />
+          <path class="hero-airflow-arrow hero-airflow-arrow--exhaust" d="M650 318 V228" marker-end="url(#hero-arrow-blue)" />
+          <path class="hero-airflow-arrow hero-airflow-arrow--exhaust" d="M622 160 H548" marker-end="url(#hero-arrow-blue)" />
+          <circle class="hero-airflow-node hero-airflow-node--supply" cx="238" cy="255" r="7" />
+          <circle class="hero-airflow-node hero-airflow-node--exhaust" cx="574" cy="367" r="7" />
+        </svg>
+        <div class="hero-engineering__label hero-engineering__label--supply">
+          <span>Схема</span><strong>Приточная магистраль</strong>
+        </div>
+        <div class="hero-engineering__label hero-engineering__label--exhaust">
+          <span>Схема</span><strong>Вытяжная магистраль</strong>
+        </div>
+        <div class="hero-engineering__terminal hero-engineering__terminal--supply">Подача</div>
+        <div class="hero-engineering__terminal hero-engineering__terminal--exhaust">Вытяжка</div>
         <div class="hero-engineering__frame" aria-hidden="true">
           <span></span><span></span><span></span><span></span>
         </div>
         <figcaption class="hero-engineering__evidence">
-          <strong>Реальный монтаж AEROVENTA</strong>
-          <span class="sr-only">Реальная фотография смонтированных воздуховодов на объекте AEROVENTA.</span>
+          <strong>Реальный монтаж AEROVENTA · поверх фото — схема направления потока</strong>
+          <span class="sr-only">Реальная фотография смонтированных воздуховодов на объекте AEROVENTA. Цветные линии — схематическая визуализация приточного и вытяжного направления, а не исполнительная схема объекта.</span>
         </figcaption>
       </figure>
     </div>
