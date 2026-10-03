@@ -132,7 +132,7 @@ check(!files.header.includes('/brand/aeroventa-wordmark.svg') && !files.footer.i
 check(files.header.includes('Есть проект <span aria-hidden="true">→</span>'), 'Header project CTA matches canonical visual baseline wording');
 check(files.home.includes('Получить ориентир стоимости') && files.home.includes('Есть проект — запросить смету'), 'Homepage CTA hierarchy matches canonical visual baseline');
 check(files.home.includes('hero-engineering__overlay'), 'Hero airflow authorship remains present');
-check(files.home.includes('src="/evidence/7park/duct-route.jpg"'), 'Hero uses verified 7 PARK engineering evidence media');
+check(files.home.includes('src="/evidence/hero/engineering-ductwork.jpg"'), 'Hero uses Owner-supplied engineering media');
 check(files.home.includes('ПРИТОК') && files.home.includes('SUPPLY · схема потока') && files.home.includes('ВЫТЯЖКА') && files.home.includes('EXHAUST · схема потока'), 'Hero uses restrained Russian-first supply/exhaust technical annotations');
 check(files.home.includes('схематическая визуализация потока') && files.home.includes('не исполнительная схема объекта'), 'Hero schematic provenance/disclaimer remains explicit');
 const heroFigure = files.home.match(/<figure class="hero-engineering">([\s\S]*?)<\/figure>/)?.[1] ?? '';
@@ -140,6 +140,7 @@ const caseSection = files.home.match(/<section class="case-feature"[\s\S]*?<\/se
 const caseImageCount = (caseSection.match(/<img\s/gu) ?? []).length;
 check(caseImageCount === 2, '7 PARK dossier uses exactly two evidence images');
 check(caseSection.includes('18.11.2020 — 10.12.2020') && caseSection.includes('7 домов') && caseSection.includes('Павловск, Ленинградская область'), '7 PARK dossier preserves verified fact boundary');
+check(caseSection.includes('/evidence/7park/object-exterior-day.jpg') && caseSection.includes('/evidence/7park/object-courtyard-night.jpg'), '7 PARK dossier uses the two Owner-selected object images');
 check(!caseSection.includes('196') && !caseSection.includes('Вистбалт'), '7 PARK dossier does not leak disputed or unproved claims');
 check(!heroFigure.includes('hero-engineering__terminal'), 'Hero has no unproven physical terminal mapping labels');
 check(!/Ø\s*\d+/u.test(heroFigure), 'Hero has no unproven diameter callouts');
