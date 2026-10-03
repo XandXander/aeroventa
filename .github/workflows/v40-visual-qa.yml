@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   render:
@@ -17,25 +17,6 @@ jobs:
         with:
           ref: v40-hi-end-evidence-pass-2026-10-03
           fetch-depth: 0
-
-      - name: Bind Owner-supplied media once
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p apps/web/public/evidence/hero apps/web/public/evidence/7park
-          curl -fsSL 'https://sdmntprwestcentralus.oaiusercontent.com/files/00000000-3470-81fb-a594-2a4ce0176f72/raw?se=2026-10-03T19%3A35%3A30Z&sp=r&sv=2026-02-06&sr=b&scid=ab6ab70c-9f63-590a-b286-6fd60c252c66&skoid=18c14e53-ea0c-429b-8d09-d22d66ca7169&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-03T16%3A27%3A26Z&ske=2026-10-04T16%3A27%3A26Z&sks=b&skv=2026-02-06&sig=ILQGJ0Le8NTOR3pOEL7JyGHGBRTHTpMOo/jjQ%2B5%2BsxM%3D' -o apps/web/public/evidence/hero/engineering-ductwork.jpg
-          curl -fsSL 'https://sdmntprwestcentralus.oaiusercontent.com/files/00000000-b1d0-81fb-b4b0-36b1e2c854a9/raw?se=2026-10-03T19%3A35%3A31Z&sp=r&sv=2026-02-06&sr=b&scid=bb08e7f5-b5c9-5cec-8f9a-d09337d5fb6c&skoid=18c14e53-ea0c-429b-8d09-d22d66ca7169&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-03T16%3A28%3A24Z&ske=2026-10-04T16%3A28%3A24Z&sks=b&skv=2026-02-06&sig=tCRQ0q0P94gmV76/rAXI%2Bhf25D/sPwDAgXyZSUF71x0%3D' -o apps/web/public/evidence/7park/object-exterior-day.jpg
-          curl -fsSL 'https://sdmntprwestcentralus.oaiusercontent.com/files/00000000-7ccc-81fb-a501-2b6729ae18d2/raw?se=2026-10-03T19%3A35%3A32Z&sp=r&sv=2026-02-06&sr=b&scid=135aee1c-eb6b-55b7-be28-b2dfd2e7581b&skoid=18c14e53-ea0c-429b-8d09-d22d66ca7169&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-03T16%3A28%3A24Z&ske=2026-10-04T16%3A28%3A24Z&sks=b&skv=2026-02-06&sig=zi79nuf0qKrpVGc5ZNXiDSec/NzHJ4g8Gcf1LQMqLMg%3D' -o apps/web/public/evidence/7park/object-courtyard-night.jpg
-          echo '1a5a2ee0a5601d48149f0482b7722062a66764ec4106cd8b7447ca6ec20826e2  apps/web/public/evidence/hero/engineering-ductwork.jpg' | sha256sum -c -
-          echo '80ddcce67a4c2e97965b48daa324baacce6284aaaee9f53312af4e8fbbd53ac1  apps/web/public/evidence/7park/object-exterior-day.jpg' | sha256sum -c -
-          echo 'a6e21990d709a8cb08bf14ce94d5a04e5e81856b8ef0298673e841b6041a4147  apps/web/public/evidence/7park/object-courtyard-night.jpg' | sha256sum -c -
-          git add apps/web/public/evidence/hero/engineering-ductwork.jpg apps/web/public/evidence/7park/object-exterior-day.jpg apps/web/public/evidence/7park/object-courtyard-night.jpg
-          if ! git diff --cached --quiet; then
-            git config user.name 'github-actions[bot]'
-            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            git commit -m 'V40: bind Owner-supplied evidence media'
-            git push origin HEAD:v40-hi-end-evidence-pass-2026-10-03
-          fi
 
       - name: Setup Node
         uses: actions/setup-node@v6
@@ -103,7 +84,7 @@ jobs:
               caseImages: document.querySelectorAll('.case-feature img').length,
               heroSupply: Boolean(document.querySelector('.hero-airflow-path--supply')),
               heroExhaust: Boolean(document.querySelector('.hero-airflow-path--exhaust')),
-              brandLoaded: Boolean(document.querySelector('.brand-wordmark')?.complete),
+              brandLoaded: Boolean(document.querySelector('.brand-mark-locked')?.complete),
               title: document.title,
               h1: document.querySelector('h1')?.textContent?.trim() || '',
             }));
