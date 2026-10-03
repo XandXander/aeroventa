@@ -1642,3 +1642,46 @@ main { min-height: 60vh; }
   }
 }
 
+
+
+/* V39 — bounded pre-lock visual-fidelity correction */
+.brand {
+  line-height:1;
+}
+.baseline-wordmark {
+  display:inline-block;
+  font-weight:900;
+  letter-spacing:-.055em;
+  line-height:1;
+  font-size:clamp(1.15rem,1.8vw,1.55rem);
+}
+.footer-brand__name {
+  line-height:1;
+}
+.footer-brand__name .baseline-wordmark {
+  font-size:1.22rem;
+}
+.hero-airflow-path {
+  stroke-width:8;
+  opacity:.86;
+  filter:drop-shadow(0 0 2px rgba(255,255,255,.95)) drop-shadow(0 0 8px currentColor);
+}
+.hero-airflow-arrow {
+  stroke-width:4.5;
+  opacity:.98;
+  filter:drop-shadow(0 0 2px rgba(255,255,255,.9));
+}
+.hero-engineering__label {
+  padding:9px 12px;
+  background:rgba(255,255,255,.95);
+}
+.hero-engineering__label strong {
+  font-size:.92rem;
+}
+@media (max-width:760px) {
+  .airflow-entry-trace { height:34px; }
+  .airflow-entry-trace__steps { display:none; }
+  .airflow-entry-trace svg { height:28px; }
+  .hero-engineering__label--supply { left:10px; top:12px; }
+  .hero-engineering__label--exhaust { right:10px; top:52px; }
+}
