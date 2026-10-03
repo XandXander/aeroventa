@@ -134,7 +134,7 @@ check(files.home.includes('Получить ориентир стоимости'
 check(files.home.includes('hero-engineering__overlay'), 'Hero airflow authorship remains present');
 check(files.home.includes('src="/evidence/7park/duct-route.jpg"'), 'Hero uses verified 7 PARK engineering evidence media');
 check(files.home.includes('ПРИТОК') && files.home.includes('SUPPLY · схема потока') && files.home.includes('ВЫТЯЖКА') && files.home.includes('EXHAUST · схема потока'), 'Hero uses restrained Russian-first supply/exhaust technical annotations');
-check(files.home.includes('схема направления потока') && files.home.includes('не исполнительная схема объекта'), 'Hero schematic provenance/disclaimer remains explicit');
+check(files.home.includes('схематическая визуализация потока') && files.home.includes('не исполнительная схема объекта'), 'Hero schematic provenance/disclaimer remains explicit');
 const heroFigure = files.home.match(/<figure class="hero-engineering">([\s\S]*?)<\/figure>/)?.[1] ?? '';
 const caseSection = files.home.match(/<section class="case-feature"[\s\S]*?<\/section>/)?.[0] ?? '';
 const caseImageCount = (caseSection.match(/<img\s/gu) ?? []).length;
