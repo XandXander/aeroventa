@@ -1,0 +1,185 @@
+---
+const metricaId = (import.meta.env.PUBLIC_YANDEX_METRICA_ID || '').trim();
+const traceEndpoint = (import.meta.env.PUBLIC_TRACE_ENDPOINT || '').trim();
+---
+
+<div
+  class="telemetry-config"
+  data-telemetry-config
+  data-metrica-id={metricaId}
+  data-trace-endpoint={traceEndpoint}
+  hidden
+></div>
+
+<div class="analytics-consent" data-analytics-consent hidden role="region" aria-label="Настройки аналитики">
+  <div>
+    <strong>Аналитика сайта</strong>
+    <p>Необязательная аналитика помогает понять, какие страницы и действия полезны. Контакты, текст запроса и материалы проекта в аналитику не передаются.</p>
+  </div>
+  <div class="analytics-consent__actions">
+    <button type="button" class="button button--primary" data-analytics-allow>Разрешить</button>
+    <button type="button" class="button button--ghost" data-analytics-deny>Только необходимое</button>
+  </div>
+</div>
+
+<script>
+(() => {
+  const config = document.querySelector('[data-telemetry-config]');
+  if (!config) return;
+
+  const metricaId = config.dataset.metricaId || '';
+  const traceEndpoint = config.dataset.traceEndpoint || '';
+  const consentKey = 'aeroventa-analytics-consent';
+  const traceKey = 'aeroventa-trace-id';
+  const safeEvents = new Set([
+    'consultant_open',
+    'consultant_useful_answer',
+    'consultant_relevant_link',
+    'consultant_qualification',
+    'consultant_handoff',
+    'contact_form_open',
+    'contact_form_submit',
+    'contact_form_success',
+    'contact_form_error',
+    'phone_click',
+    'email_click',
+    'project_route',
+    'case_view',
+    'primary_cta',
+    'lead_success',
+  ]);
+  const safeKeys = new Set([
+    'page',
+    'target',
+    'source',
+    'object_type',
+    'region',
+    'project_status',
+    'stage',
+    'outcome',
+    'intent',
+  ]);
+
+  const safePayload = (input = {}) => Object.fromEntries(
+    Object.entries(input).filter(([key, value]) =>
+      safeKeys.has(key) && ['string', 'number', 'boolean'].includes(typeof value)
+    )
+  );
+
+  const getTraceId = () => {
+    try {
+      let id = sessionStorage.getItem(traceKey);
+      if (!id) {
+        id = crypto.randomUUID ? crypto.randomUUID() : `av-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+        sessionStorage.setItem(traceKey, id);
+      }
+      return id;
+    } catch {
+      return '';
+    }
+  };
+
+  const emitTrace = (name, payload) => {
+    if (!traceEndpoint) return;
+    const body = JSON.stringify({
+      event: name,
+      trace_id: getTraceId(),
+      at: new Date().toISOString(),
+      page: location.pathname,
+      ...payload,
+    });
+    fetch(traceEndpoint, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body,
+      keepalive: true,
+      credentials: 'omit',
+    }).catch(() => {});
+  };
+
+  let metricaReady = false;
+  const loadMetrica = () => {
+    if (!metricaId || metricaReady) return;
+    const id = Number(metricaId);
+    if (!Number.isFinite(id)) return;
+
+    window.ym = window.ym || function(...args) {
+      (window.ym.a = window.ym.a || []).push(args);
+    };
+    window.ym.l = Date.now();
+
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = 'https://mc.yandex.ru/metrika/tag.js';
+    script.addEventListener('load', () => {
+      window.ym(id, 'init', {
+        clickmap: true,
+        trackLinks: true,
+        accurateTrackBounce: true,
+        webvisor: false,
+      });
+    }, { once: true });
+    document.head.appendChild(script);
+    metricaReady = true;
+  };
+
+  const consent = (() => {
+    try { return localStorage.getItem(consentKey) || ''; } catch { return ''; }
+  })();
+
+  const panel = document.querySelector('[data-analytics-consent]');
+  if (metricaId && !consent && panel) panel.hidden = false;
+  if (consent === 'allow') loadMetrica();
+
+  panel?.querySelector('[data-analytics-allow]')?.addEventListener('click', () => {
+    try { localStorage.setItem(consentKey, 'allow'); } catch {}
+    panel.hidden = true;
+    loadMetrica();
+  });
+
+  panel?.querySelector('[data-analytics-deny]')?.addEventListener('click', () => {
+    try { localStorage.setItem(consentKey, 'deny'); } catch {}
+    panel.hidden = true;
+  });
+
+  window.aeroventaTrack = (name, input = {}) => {
+    if (!safeEvents.has(name)) return;
+    const payload = safePayload({
+      page: location.pathname,
+      ...input,
+    });
+
+    emitTrace(name, payload);
+
+    let state = '';
+    try { state = localStorage.getItem(consentKey) || ''; } catch {}
+    if (metricaId && state === 'allow') {
+      loadMetrica();
+      const id = Number(metricaId);
+      if (Number.isFinite(id) && typeof window.ym === 'function') {
+        window.ym(id, 'reachGoal', name, payload);
+      }
+    }
+  };
+
+  document.addEventListener('click', (event) => {
+    const link = event.target.closest('a[href]');
+    if (!link) return;
+    const href = link.getAttribute('href') || '';
+    const target = href.startsWith('http') ? href : href.split('?')[0];
+
+    if (href.startsWith('tel:')) window.aeroventaTrack('phone_click', { target: 'phone' });
+    else if (href.startsWith('mailto:')) window.aeroventaTrack('email_click', { target: 'email' });
+    else if (target.startsWith('/blog/detail/')) window.aeroventaTrack('case_view', { target });
+    else if (['/montazh-po-proektu/', '/obekt-bez-gotovogo-proekta/'].includes(target)) {
+      window.aeroventaTrack('project_route', {
+        target,
+        project_status: target.includes('montazh-po-proektu') ? 'ready' : 'not_ready',
+      });
+    }
+
+    const explicit = link.dataset.aeroventaEvent;
+    if (explicit) window.aeroventaTrack(explicit, { target });
+  });
+})();
+</script>

@@ -42,7 +42,7 @@ const questions = [
         </p>
         <p class="home-geo">Санкт-Петербург · Ленинградская область · Москва · Карелия</p>
         <div class="home-actions" aria-label="Основные действия">
-          <a class="button button--primary" href="/montazh-po-proektu/">Передать готовый проект <span aria-hidden="true">→</span></a>
+          <a class="button button--primary" href="/montazh-po-proektu/" data-aeroventa-event="primary_cta">Передать готовый проект <span aria-hidden="true">→</span></a>
           <a class="button button--ghost" href="/obekt-bez-gotovogo-proekta/">Определить исходные данные</a>
         </div>
       </div>
@@ -250,6 +250,10 @@ const questions = [
           <div><strong>Проекта пока нет</strong><p>Понять, какие данные нужны до корректной сметы.</p></div>
           <b aria-hidden="true">→</b>
         </a>
+      </div>
+      <div class="conversion-close__assist" aria-label="Помощь с выбором следующего шага">
+        <button class="button button--ghost" type="button" data-consultant-open data-source="home_close">Разобрать задачу с консультантом</button>
+        <button class="button button--ghost" type="button" data-contact-open data-source="home_close">Обсудить объект</button>
       </div>
     </div>
   </section>

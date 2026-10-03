@@ -34,6 +34,7 @@ const tel = SITE.phone.replace(/[^+\d]/g, '');
         <strong>Компания</strong>
         <a href="/about/">О AEROVENTA</a>
         <a href="/contact/">Контакты</a>
+        <button class="footer-consultant" type="button" data-consultant-open data-source="footer">Инженерный консультант</button>
       </div>
     </nav>
 
@@ -41,6 +42,7 @@ const tel = SITE.phone.replace(/[^+\d]/g, '');
       <span>Связаться по объекту</span>
       <a class="footer-phone" href={`tel:${tel}`}>{SITE.phone}</a>
       <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+      <button class="footer-consultant" type="button" data-contact-open data-source="footer">Обсудить объект</button>
       <a class="footer-project" href="/montazh-po-proektu/">Передать проект →</a>
     </div>
   </div>

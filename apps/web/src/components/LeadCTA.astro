@@ -9,15 +9,22 @@ const tel = SITE.phone.replace(/[^+\d]/g, '');
 const isDrilling = intent === 'DRILLING_PARTNER';
 const heading = title || (isDrilling ? 'Нужны работы по алмазному бурению?' : 'Обсудить объект');
 const copy = isDrilling
-  ? 'Оставьте контакт и кратко опишите задачу. Заявку на алмазное бурение можем передать профильному исполнителю.'
-  : 'Опишите задачу по вентиляции. На этапе интеграции здесь будет защищённая форма заявки; до этого доступны прямые контакты.';
+  ? 'Кратко опишите задачу. Запрос на алмазное бурение можем передать профильному исполнителю; AEROVENTA не выдаёт эту работу за собственное основное направление.'
+  : 'Передайте минимум: контакт и текущую задачу. Тип объекта, стадия и контекст страницы добавятся к запросу автоматически.';
 ---
 <section aria-labelledby="lead-cta-title" class:list={['lead-cta', { 'lead-cta--partner': isDrilling }]}>
   <h2 id="lead-cta-title">{heading}</h2>
   <p>{copy}</p>
   <p class="lead-cta__actions">
+    <button
+      class="cta"
+      type="button"
+      data-contact-open
+      data-contact-intent={intent || 'VENTILATION_PROJECT'}
+      data-source="lead_cta"
+    >Описать задачу</button>
     <a class="cta" href={`tel:${tel}`}>{SITE.phone}</a>
-    <a class="cta" href={`mailto:${SITE.email}`}>Написать на e-mail</a>
+    <a class="cta" href={`mailto:${SITE.email}`}>E-mail</a>
   </p>
-  {isDrilling && <p class="lead-cta__note">Алмазное бурение не является основным направлением AEROVENTA и в текущей модели выполняется через профильных исполнителей.</p>}
+  {isDrilling && <p class="lead-cta__note">Алмазное бурение в текущей модели выполняется через профильных исполнителей. Это будет явно сохранено при передаче запроса.</p>}
 </section>

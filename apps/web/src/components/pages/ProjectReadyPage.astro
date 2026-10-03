@@ -15,7 +15,8 @@ const projectMail = `mailto:${SITE.email}?subject=${encodeURIComponent('Монт
           проходить повторный «бриф с нуля».
         </p>
         <div class="home-actions">
-          <a class="button button--primary" href={projectMail}>Передать проект на рассмотрение →</a>
+          <a class="button button--primary" href={projectMail} data-aeroventa-event="primary_cta">Передать проект на рассмотрение →</a>
+          <button class="button button--ghost" type="button" data-contact-open data-project-status="ready" data-source="project_ready">Обсудить перед передачей</button>
           <a class="button button--ghost" href="/portfolio/">Посмотреть выполненные объекты</a>
         </div>
       </div>

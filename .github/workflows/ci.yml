@@ -50,6 +50,7 @@ jobs:
             package-lock.json
             IMPLEMENTATION_STATUS_T2.json
             BUILD_VALIDATION_T2.json
+            PRODUCT_EXPERIENCE_VALIDATION.json
             apps/web/dist
           if-no-files-found: error
           retention-days: 7

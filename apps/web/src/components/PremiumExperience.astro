@@ -1,0 +1,459 @@
+---
+import ContactForm from '@/components/ContactForm.astro';
+
+interface Props {
+  pagePath?: string;
+}
+
+const { pagePath = '' } = Astro.props;
+---
+
+<dialog class="experience-dialog experience-dialog--consultant" data-consultant-dialog aria-labelledby="consultant-title">
+  <div class="experience-dialog__shell">
+    <div class="experience-dialog__head">
+      <div>
+        <p class="section-index">Инженерный консультант</p>
+        <h2 id="consultant-title">Определим разумный следующий шаг.</h2>
+      </div>
+      <button type="button" class="dialog-close" data-dialog-close aria-label="Закрыть консультанта">×</button>
+    </div>
+
+    <p class="experience-dialog__lede">
+      Короткий разбор без выдуманной цены и без подмены проектирования. Ответ строится только из публичных правил AEROVENTA.
+    </p>
+
+    <form class="consultant-form" data-consultant-form>
+      <div class="consultant-form__grid">
+        <div class="field">
+          <label for="consultant-object">Тип объекта</label>
+          <select id="consultant-object" name="object_type" required>
+            <option value="">Выберите</option>
+            <option value="private">Квартира / дом</option>
+            <option value="restaurant">Ресторан / кафе</option>
+            <option value="commercial">Офис / торговля</option>
+            <option value="warehouse">Склад</option>
+            <option value="production">Производство</option>
+            <option value="newbuild">Новостройка / ЖК</option>
+            <option value="other">Другой объект</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="consultant-region">Регион</label>
+          <select id="consultant-region" name="region" required>
+            <option value="">Выберите</option>
+            <option value="spb">Санкт-Петербург</option>
+            <option value="lo">Ленинградская область</option>
+            <option value="moscow">Москва</option>
+            <option value="karelia">Республика Карелия</option>
+            <option value="other">Другой регион</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="consultant-stage">Стадия объекта</label>
+          <select id="consultant-stage" name="stage" required>
+            <option value="">Выберите</option>
+            <option value="construction">Строительство</option>
+            <option value="fitout">Отделочные работы</option>
+            <option value="operating">Действующий объект</option>
+            <option value="unknown">Пока не определена</option>
+          </select>
+        </div>
+
+        <fieldset class="field consultant-project-status">
+          <legend>Готовый проект вентиляции</legend>
+          <label><input type="radio" name="project_status" value="ready" required /> Есть</label>
+          <label><input type="radio" name="project_status" value="not_ready" /> Нет</label>
+          <label><input type="radio" name="project_status" value="unclear" /> Не уверен</label>
+        </fieldset>
+
+        <div class="field field--wide">
+          <label for="consultant-task">Что требуется решить</label>
+          <textarea id="consultant-task" name="task" rows="4" placeholder="Например: монтаж по готовому проекту, вентиляция ресторана перед отделкой, оценка исходных данных"></textarea>
+        </div>
+      </div>
+
+      <div class="consultant-form__actions">
+        <button class="button button--primary" type="submit">Показать следующий шаг →</button>
+        <span>Не является сметой, проектом или гарантией соответствия нормам.</span>
+      </div>
+    </form>
+
+    <section class="consultant-result" data-consultant-result hidden aria-live="polite" aria-labelledby="consultant-result-title">
+      <p class="section-index">Результат разбора</p>
+      <h3 id="consultant-result-title" data-consultant-next></h3>
+      <p data-consultant-explanation></p>
+
+      <div class="consultant-result__grid">
+        <div>
+          <strong>Что подготовить</strong>
+          <ul data-consultant-missing></ul>
+        </div>
+        <div>
+          <strong>Полезный материал</strong>
+          <a data-consultant-link href="/portfolio/">Посмотреть релевантный объект →</a>
+        </div>
+      </div>
+
+      <div class="consultant-result__actions">
+        <a class="button button--ghost" data-consultant-route href="/contact/">Открыть подходящий маршрут</a>
+        <button class="button button--primary" type="button" data-consultant-handoff>Передать контекст человеку →</button>
+      </div>
+    </section>
+  </div>
+</dialog>
+
+<dialog class="experience-dialog experience-dialog--contact" data-contact-dialog aria-labelledby="contact-dialog-title">
+  <div class="experience-dialog__shell">
+    <div class="experience-dialog__head">
+      <div>
+        <p class="section-index">Связаться по объекту</p>
+        <h2 id="contact-dialog-title">Передайте минимум — остальное уточним.</h2>
+      </div>
+      <button type="button" class="dialog-close" data-dialog-close aria-label="Закрыть форму">×</button>
+    </div>
+    <ContactForm idPrefix="contact-drawer" sourcePath={pagePath} compact={true} />
+  </div>
+</dialog>
+
+<script>
+(() => {
+  const consultantDialog = document.querySelector('[data-consultant-dialog]');
+  const contactDialog = document.querySelector('[data-contact-dialog]');
+  const consultantForm = document.querySelector('[data-consultant-form]');
+  const consultantResult = document.querySelector('[data-consultant-result]');
+  let consultantSummary = '';
+
+  const track = (name, payload = {}) => window.aeroventaTrack?.(name, payload);
+
+  const openDialog = (dialog) => {
+    if (!dialog) return;
+    if (typeof dialog.showModal === 'function') {
+      if (!dialog.open) dialog.showModal();
+    } else {
+      dialog.setAttribute('open', '');
+    }
+  };
+
+  const closeDialog = (dialog) => {
+    if (!dialog) return;
+    if (typeof dialog.close === 'function') dialog.close();
+    else dialog.removeAttribute('open');
+  };
+
+  document.addEventListener('click', (event) => {
+    const close = event.target.closest('[data-dialog-close]');
+    if (close) {
+      closeDialog(close.closest('dialog'));
+      return;
+    }
+
+    const consultantOpen = event.target.closest('[data-consultant-open]');
+    if (consultantOpen) {
+      event.preventDefault();
+      openDialog(consultantDialog);
+      track('consultant_open', { source: consultantOpen.dataset.source || 'site_navigation' });
+      return;
+    }
+
+    const contactOpen = event.target.closest('[data-contact-open]');
+    if (contactOpen) {
+      event.preventDefault();
+      hydrateContactContext(contactDialog, {
+        intent: contactOpen.dataset.contactIntent || '',
+        projectStatus: contactOpen.dataset.projectStatus || '',
+      });
+      openDialog(contactDialog);
+      track('contact_form_open', {
+        source: contactOpen.dataset.source || 'site_cta',
+        intent: contactOpen.dataset.contactIntent || 'VENTILATION_PROJECT',
+      });
+    }
+  });
+
+  for (const dialog of [consultantDialog, contactDialog]) {
+    dialog?.addEventListener('click', (event) => {
+      if (event.target === dialog) closeDialog(dialog);
+    });
+  }
+
+  const routeMap = {
+    ready: {
+      href: '/montazh-po-proektu/',
+      title: 'Передать рабочий комплект и перейти к разбору монтажного объёма.',
+      copy: 'Готовый проект позволяет обсуждать состав работ, вопросы к исполнению и смету без повторного брифа с нуля.',
+    },
+    not_ready: {
+      href: '/obekt-bez-gotovogo-proekta/',
+      title: 'Сначала определить достаточные исходные данные.',
+      copy: 'Без готового проекта разумно зафиксировать объект, задачу и ограничения, а затем определить, чего не хватает для корректной оценки.',
+    },
+    unclear: {
+      href: '/faq/',
+      title: 'Сначала проверить, достаточно ли текущих материалов.',
+      copy: 'Не нужно заранее решать, считается ли имеющийся комплект «проектом». Покажите то, что есть, и отделим рабочие данные от недостающих.',
+    },
+  };
+
+  const caseMap = {
+    private: ['/blog/detail/kvartira-na-zhukova/', 'Квартира на Маршала Жукова'],
+    restaurant: ['/blog/detail/restoran-v-zhk-leontevskiy-mys/', 'Ресторан в ЖК «Леонтьевский Мыс»'],
+    commercial: ['/portfolio/', 'Реальные объекты AEROVENTA'],
+    warehouse: ['/portfolio/', 'Реальные объекты AEROVENTA'],
+    production: ['/blog/detail/ntff-polisan/', 'НТФФ «Полисан»'],
+    newbuild: ['/blog/detail/kak-my-sdali-7-domov/', '7 PARK'],
+    other: ['/portfolio/', 'Реальные объекты AEROVENTA'],
+  };
+
+  const labels = (form) => {
+    const valueLabel = (name) => {
+      const field = form.elements[name];
+      if (!field) return '';
+      if (field instanceof RadioNodeList) {
+        const selected = form.querySelector(`input[name="${name}"]:checked`);
+        return selected?.closest('label')?.textContent?.trim() || '';
+      }
+      if (field instanceof HTMLSelectElement) return field.selectedOptions[0]?.textContent?.trim() || '';
+      return field.value || '';
+    };
+    return {
+      object: valueLabel('object_type'),
+      region: valueLabel('region'),
+      stage: valueLabel('stage'),
+      project: valueLabel('project_status'),
+    };
+  };
+
+  consultantForm?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (!consultantForm.reportValidity()) return;
+
+    const data = new FormData(consultantForm);
+    const objectType = String(data.get('object_type') || '');
+    const region = String(data.get('region') || '');
+    const stage = String(data.get('stage') || '');
+    const projectStatus = String(data.get('project_status') || 'unclear');
+    const task = String(data.get('task') || '').trim();
+    const route = routeMap[projectStatus] || routeMap.unclear;
+    const caseItem = caseMap[objectType] || caseMap.other;
+    const pretty = labels(consultantForm);
+
+    const missing = [];
+    if (projectStatus === 'ready') {
+      missing.push('Проект / рабочие чертежи и спецификация, если она есть.');
+      missing.push('Локация, стадия и границы требуемых монтажных работ.');
+    } else {
+      missing.push('План или схема объекта, если уже есть.');
+      missing.push('Фотографии трасс, потолков, технических зон или места работ.');
+      missing.push('Что должно измениться после выполнения вентиляции.');
+    }
+    if (region === 'other') missing.push('Точный адрес/регион — сначала подтвердим возможность выезда и логистику.');
+    if (stage === 'unknown') missing.push('Текущая стадия объекта — она влияет на доступ и последовательность монтажа.');
+
+    consultantResult.querySelector('[data-consultant-next]').textContent = route.title;
+    consultantResult.querySelector('[data-consultant-explanation]').textContent =
+      region === 'other'
+        ? `${route.copy} Географию за пределами текущих регионов AEROVENTA нужно подтвердить отдельно.`
+        : route.copy;
+
+    const missingList = consultantResult.querySelector('[data-consultant-missing]');
+    missingList.replaceChildren(...missing.map((item) => {
+      const li = document.createElement('li');
+      li.textContent = item;
+      return li;
+    }));
+
+    const caseLink = consultantResult.querySelector('[data-consultant-link]');
+    caseLink.href = caseItem[0];
+    caseLink.textContent = `${caseItem[1]} →`;
+
+    const routeLink = consultantResult.querySelector('[data-consultant-route]');
+    routeLink.href = route.href;
+
+    consultantSummary = [
+      `Тип объекта: ${pretty.object || 'не указан'}`,
+      `Регион: ${pretty.region || 'не указан'}`,
+      `Стадия: ${pretty.stage || 'не указана'}`,
+      `Проект: ${pretty.project || 'не указано'}`,
+      task ? `Задача: ${task}` : '',
+      `Рекомендуемый маршрут: ${route.href}`,
+    ].filter(Boolean).join('\n');
+
+    consultantResult.hidden = false;
+    consultantResult.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+
+    track('consultant_qualification', {
+      object_type: objectType,
+      region,
+      project_status: projectStatus,
+      stage,
+    });
+    track('consultant_useful_answer', {
+      object_type: objectType,
+      project_status: projectStatus,
+      outcome: route.href,
+    });
+  });
+
+  consultantResult?.querySelector('[data-consultant-link]')?.addEventListener('click', () => {
+    track('consultant_relevant_link', { target: consultantResult.querySelector('[data-consultant-link]').getAttribute('href') || '' });
+  });
+
+  consultantResult?.querySelector('[data-consultant-handoff]')?.addEventListener('click', () => {
+    const data = new FormData(consultantForm);
+    const projectStatus = String(data.get('project_status') || '');
+    const task = String(data.get('task') || '').trim();
+
+    hydrateContactContext(contactDialog, {
+      projectStatus,
+      consultantSummary,
+      task,
+    });
+
+    closeDialog(consultantDialog);
+    openDialog(contactDialog);
+    track('consultant_handoff', { project_status: projectStatus });
+    track('contact_form_open', { source: 'consultant', project_status: projectStatus });
+  });
+
+  function inferContext(pathname) {
+    if (pathname.includes('/obekty/restorany-i-kafe/')) return 'restaurants';
+    if (pathname.includes('/obekty/novostroyki-i-zhilye-kompleksy/')) return 'newbuild';
+    if (pathname.includes('/montazh-ventiliacii/')) return 'ventilation';
+    if (pathname.startsWith('/blog/detail/')) return 'case';
+    if (pathname.startsWith('/obekty/')) return 'object';
+    if (pathname.startsWith('/services/')) return 'service';
+    return '';
+  }
+
+  function campaignContext() {
+    const params = new URLSearchParams(location.search);
+    const safe = ['utm_source', 'utm_medium', 'utm_campaign']
+      .map((key) => [key, params.get(key)])
+      .filter(([, value]) => value)
+      .map(([key, value]) => `${key}=${String(value).slice(0, 120)}`)
+      .join('&');
+
+    if (safe) {
+      try { sessionStorage.setItem('aeroventa-campaign-context', safe); } catch {}
+      return safe;
+    }
+    try { return sessionStorage.getItem('aeroventa-campaign-context') || ''; } catch { return ''; }
+  }
+
+  function hydrateContactContext(root, overrides = {}) {
+    if (!root) return;
+    for (const form of root.querySelectorAll('[data-contact-form]')) {
+      const set = (name, value) => {
+        const field = form.elements[name];
+        if (field && value !== undefined && value !== null && value !== '') field.value = value;
+      };
+
+      set('source_page', location.pathname);
+      set('object_service', inferContext(location.pathname));
+      set('case_context', location.pathname.startsWith('/blog/detail/') ? location.pathname : '');
+      set('campaign_context', campaignContext());
+      set('project_status', overrides.projectStatus || (
+        location.pathname === '/montazh-po-proektu/' ? 'ready' :
+        location.pathname === '/obekt-bez-gotovogo-proekta/' ? 'not_ready' : ''
+      ));
+      set('consultant_summary', overrides.consultantSummary || consultantSummary);
+      set('lead_intent', overrides.intent || form.dataset.contactIntent || 'VENTILATION_PROJECT');
+
+      if (overrides.task) {
+        const taskField = form.elements.task;
+        if (taskField && !taskField.value.trim()) taskField.value = overrides.task;
+      }
+    }
+  }
+
+  document.querySelectorAll('[data-contact-form]').forEach((form) => {
+    hydrateContactContext(form.closest('dialog') || document);
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const contact = form.elements.contact;
+      const contactValue = String(contact?.value || '').trim();
+      const digits = contactValue.replace(/\D/g, '');
+      const emailLike = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactValue);
+      const phoneLike = digits.length >= 10;
+
+      contact?.setCustomValidity(emailLike || phoneLike ? '' : 'Укажите корректный телефон или e-mail.');
+      if (!form.reportValidity()) return;
+
+      hydrateContactContext(form.closest('dialog') || document);
+
+      const formData = new FormData(form);
+      const payload = Object.fromEntries(formData.entries());
+      const status = form.querySelector('[data-form-status]');
+      const submit = form.querySelector('button[type="submit"]');
+      const endpoint = form.dataset.leadEndpoint || '';
+
+      track('contact_form_submit', {
+        source: location.pathname,
+        intent: String(payload.lead_intent || 'VENTILATION_PROJECT'),
+        project_status: String(payload.project_status || ''),
+      });
+
+      if (!endpoint) {
+        const direct = form.querySelector('.premium-contact-form__direct')?.getAttribute('href') || 'mailto:aeroventaspb@yandex.ru';
+        const email = direct.replace(/^mailto:/, '').split('?')[0];
+        const subject = encodeURIComponent('Запрос с сайта AEROVENTA');
+        const body = encodeURIComponent([
+          `Имя: ${payload.name}`,
+          `Контакт: ${payload.contact}`,
+          payload.company ? `Компания: ${payload.company}` : '',
+          '',
+          `Задача: ${payload.task}`,
+          payload.consultant_summary ? `\nКонтекст консультанта:\n${payload.consultant_summary}` : '',
+          '',
+          `Страница: ${payload.source_page || location.pathname}`,
+        ].filter(Boolean).join('\n'));
+
+        status.replaceChildren();
+        const message = document.createElement('span');
+        message.textContent = 'Защищённый серверный приём заявки ещё не включён. Откроем ваше почтовое приложение — данные останутся под вашим контролем до отправки.';
+        const link = document.createElement('a');
+        link.href = `mailto:${email}?subject=${subject}&body=${body}`;
+        link.textContent = 'Открыть письмо →';
+        status.append(message, link);
+        link.click();
+        return;
+      }
+
+      submit.disabled = true;
+      submit.setAttribute('aria-busy', 'true');
+      status.textContent = 'Передаём запрос…';
+
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          credentials: 'omit',
+          body: JSON.stringify(payload),
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        status.textContent = 'Запрос передан. Контакт сохранён только для ответа по этой задаче.';
+        form.reset();
+        hydrateContactContext(form.closest('dialog') || document);
+        track('contact_form_success', { source: location.pathname });
+        track('lead_success', { source: location.pathname });
+      } catch {
+        status.replaceChildren();
+        const message = document.createElement('span');
+        message.textContent = 'Не удалось передать запрос через форму. Можно написать напрямую: ';
+        const fallback = form.querySelector('.premium-contact-form__direct')?.cloneNode(true);
+        if (fallback) status.append(message, fallback);
+        else status.append(message);
+        track('contact_form_error', { source: location.pathname, outcome: 'network_or_server' });
+      } finally {
+        submit.disabled = false;
+        submit.removeAttribute('aria-busy');
+      }
+    });
+  });
+})();
+</script>

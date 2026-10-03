@@ -1,0 +1,80 @@
+---
+import { SITE } from '@/lib/site';
+
+interface Props {
+  idPrefix?: string;
+  sourcePath?: string;
+  projectStatus?: 'ready' | 'not_ready' | 'unclear' | '';
+  intent?: string;
+  compact?: boolean;
+}
+
+const {
+  idPrefix = 'contact',
+  sourcePath = '',
+  projectStatus = '',
+  intent = 'VENTILATION_PROJECT',
+  compact = false,
+} = Astro.props;
+const endpoint = (import.meta.env.PUBLIC_LEAD_ENDPOINT || '').trim();
+---
+
+<form
+  class:list={['premium-contact-form', { 'premium-contact-form--compact': compact }]}
+  data-contact-form
+  data-lead-endpoint={endpoint}
+  data-contact-intent={intent}
+  novalidate
+>
+  <div class="premium-contact-form__intro">
+    <p class="section-index">Запрос по объекту</p>
+    <h3>Коротко опишите задачу.</h3>
+    <p>Нужны только данные для первого содержательного ответа. Недостающее уточним отдельно.</p>
+  </div>
+
+  <div class="premium-contact-form__grid">
+    <div class="field">
+      <label for={`${idPrefix}-name`}>Имя</label>
+      <input id={`${idPrefix}-name`} name="name" autocomplete="name" required />
+      <span class="field__error" data-error-for="name"></span>
+    </div>
+
+    <div class="field">
+      <label for={`${idPrefix}-contact`}>Телефон или e-mail</label>
+      <input id={`${idPrefix}-contact`} name="contact" autocomplete="email" required />
+      <span class="field__error" data-error-for="contact"></span>
+    </div>
+
+    <div class="field field--wide">
+      <label for={`${idPrefix}-task`}>Кратко задача</label>
+      <textarea id={`${idPrefix}-task`} name="task" rows="4" required></textarea>
+      <span class="field__hint">Без технического «идеального брифа». Достаточно текущей ситуации и ожидаемого результата.</span>
+      <span class="field__error" data-error-for="task"></span>
+    </div>
+
+    <div class="field field--wide">
+      <label for={`${idPrefix}-company`}>Компания <span>необязательно</span></label>
+      <input id={`${idPrefix}-company`} name="company" autocomplete="organization" />
+    </div>
+  </div>
+
+  <label class="consent-check" for={`${idPrefix}-consent`}>
+    <input id={`${idPrefix}-consent`} name="consent" type="checkbox" required />
+    <span>Разрешаю использовать переданные данные только для ответа на этот запрос и дальнейшей связи по нему.</span>
+  </label>
+
+  <input type="hidden" name="source_page" value={sourcePath} />
+  <input type="hidden" name="object_service" value="" />
+  <input type="hidden" name="project_status" value={projectStatus} />
+  <input type="hidden" name="case_context" value="" />
+  <input type="hidden" name="consultant_summary" value="" />
+  <input type="hidden" name="campaign_context" value="" />
+  <input type="hidden" name="lead_intent" value={intent} />
+
+  <div class="premium-contact-form__actions">
+    <button class="button button--primary" type="submit">Передать запрос →</button>
+    <a class="premium-contact-form__direct" href={`mailto:${SITE.email}`}>или написать напрямую на {SITE.email}</a>
+  </div>
+
+  <div class="form-status" data-form-status aria-live="polite"></div>
+</form>
