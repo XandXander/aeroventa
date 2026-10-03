@@ -7,11 +7,7 @@ const tel = SITE.phone.replace(/[^+\d]/g, '');
   <div class="home-shell footer-grid">
     <div class="footer-brand">
       <a href="/" class="footer-brand__name" aria-label="AEROVENTA — главная">
-        <svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
-          <path class="brand-mark__supply" d="M7 12h17c8 0 13 5 13 13v16" />
-          <path class="brand-mark__return" d="M7 36h12c6 0 10-4 10-10v-7" />
-        </svg>
-        <span>AEROVENTA</span>
+        <img class="footer-brand-wordmark" src="/brand/aeroventa-wordmark.svg" width="395" height="31" alt="AEROVENTA" />
       </a>
       <p>{SITE.primaryBusiness} для частных, коммерческих и производственных объектов.</p>
       <p class="footer-geo"><strong>Основная зона:</strong> {SITE.primaryServiceArea}<br /><strong>Также берём объекты:</strong> {SITE.additionalServiceAreas.join(' · ')}</p>

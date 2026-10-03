@@ -21,7 +21,10 @@ const files = {
   home: await read('apps/web/src/pages/index.astro'),
   airflow: await read('apps/web/src/components/AirflowTracePulse.astro'),
   css: await read('apps/web/src/styles/experience.css'),
+  globalCss: await read('apps/web/src/styles/global.css'),
   favicon: await read('apps/web/public/favicon.svg'),
+  brandWordmark: await read('apps/web/public/brand/aeroventa-wordmark.svg'),
+  brandMark: await read('apps/web/public/brand/aeroventa-mark.svg'),
 };
 
 const failures = [];
@@ -117,10 +120,20 @@ check(files.airflow.includes('airflow-header-trace__route--exhaust'), 'AIRFLOW T
 check(files.airflow.includes("matchMedia('(prefers-reduced-motion: reduce)')"), 'AIRFLOW TRACE reduced-motion behavior preserved');
 check(files.airflow.includes('mobile-contact-dock'), 'Persistent mobile contact dock preserved');
 
-check(files.favicon.includes('#ff4d00') && files.favicon.includes('#081728'), 'Route-cut favicon keeps orange/navy identity');
-check(!/fan|blade|propeller/i.test(files.favicon), 'Favicon has no literal fan/blade identity');
-check(files.header.includes('brand-mark__supply') && files.header.includes('brand-mark__return'), 'Header route-cut mark preserved');
-check(files.footer.includes('brand-mark__supply') && files.footer.includes('brand-mark__return'), 'Footer route-cut mark preserved');
+const canonicalIdentityHash = '07B137BF2405D6A863194C254EED12EFBB6557033281DE2427FF279773B3A427';
+check(files.brandWordmark.includes(canonicalIdentityHash), 'Canonical AEROVENTA 01 wordmark provenance recorded');
+check(files.brandMark.includes(canonicalIdentityHash), 'Canonical AEROVENTA 01 compact-mark provenance recorded');
+check(files.favicon.includes(canonicalIdentityHash), 'Canonical AEROVENTA 01 favicon provenance recorded');
+check(files.brandWordmark.includes('data:image/png;base64,'), 'Canonical wordmark embeds the extracted Owner reference crop');
+check(files.brandMark.includes('data:image/png;base64,'), 'Canonical compact mark embeds the extracted Owner reference crop');
+check(files.header.includes('/brand/aeroventa-wordmark.svg'), 'Header uses canonical AEROVENTA 01 wordmark');
+check(files.footer.includes('/brand/aeroventa-wordmark.svg'), 'Footer uses canonical AEROVENTA 01 wordmark');
+check(!files.header.includes('brand-mark__supply') && !files.footer.includes('brand-mark__supply'), 'Superseded route-cut logo mark removed from visible identity');
+check(files.home.includes('Получить ориентир стоимости') && files.home.includes('Есть проект — запросить смету'), 'Homepage CTA hierarchy matches canonical visual baseline');
+check(files.home.includes('hero-engineering__overlay'), 'Canonical hero airflow authorship restored');
+check(files.home.includes('Приточная магистраль') && files.home.includes('Вытяжная магистраль'), 'Hero preserves supply/exhaust distinction');
+check(files.home.includes('схема направления потока'), 'Hero makes schematic overlay provenance explicit');
+check(files.globalCss.includes('V38 — canonical identity + exact visual-baseline fidelity correction'), 'V38 fidelity layer is present');
 
 check(files.css.includes('@media (max-width:760px)'), 'Premium experience has mobile adaptation');
 check(files.css.includes('@media (prefers-reduced-motion: reduce)'), 'Premium experience respects reduced motion');
