@@ -2302,3 +2302,34 @@ main { min-height: 60vh; }
     animation:none;
   }
 }
+
+
+/* V40 residual — exact locked compact mark + text treatment */
+.brand-mark-locked {
+  display:block;
+  width:31px;
+  height:auto;
+  flex:0 0 31px;
+}
+.brand-mark-locked--footer {
+  width:35px;
+  flex-basis:35px;
+}
+.brand .baseline-wordmark,
+.footer-brand__name .baseline-wordmark {
+  display:inline-block;
+  color:var(--ink);
+  font-weight:900;
+  letter-spacing:-.055em;
+  line-height:1;
+}
+.brand .baseline-wordmark {
+  font-size:clamp(1.15rem,1.8vw,1.55rem);
+}
+.footer-brand__name .baseline-wordmark {
+  font-size:1.22rem;
+}
+@media (max-width:760px) {
+  .brand-mark-locked { width:27px; flex-basis:27px; }
+  .brand { gap:8px; }
+}
