@@ -1685,3 +1685,32 @@ main { min-height: 60vh; }
   .hero-engineering__label--supply { left:10px; top:12px; }
   .hero-engineering__label--exhaust { right:10px; top:52px; }
 }
+
+
+/* V39 mobile resilience completion */
+@media (max-width:760px) {
+  .case-feature__grid { grid-template-columns:1fr; gap:18px; }
+  .case-facts,
+  .case-facts div,
+  .case-facts dt,
+  .case-facts dd,
+  .button--case {
+    min-width:0;
+    max-width:100%;
+    overflow-wrap:anywhere;
+  }
+  .footer-grid,
+  .footer-brand,
+  .footer-nav,
+  .footer-contact,
+  .footer-bottom {
+    min-width:0;
+    width:100%;
+  }
+  .footer-nav { grid-template-columns:1fr; }
+  .footer-nav a,
+  .footer-contact a {
+    width:auto;
+    overflow-wrap:anywhere;
+  }
+}
