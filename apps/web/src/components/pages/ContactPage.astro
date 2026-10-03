@@ -1,5 +1,6 @@
 ---
 import { SITE } from '@/lib/site';
+import ContactForm from '@/components/ContactForm.astro';
 import type { ContentRecord } from '@/lib/types';
 interface Props { content: ContentRecord; fixture: boolean; }
 const { content } = Astro.props;
@@ -16,8 +17,7 @@ const tel = SITE.phone.replace(/[^+\d]/g, '');
       <div>
         <p class="contact-hero__lede">
           Начните с текущего состояния задачи. Для готовой документации и для объекта,
-          который ещё требует подготовки исходных данных, на сайте теперь предусмотрены
-          отдельные рабочие маршруты.
+          который ещё требует подготовки исходных данных, предусмотрены отдельные рабочие маршруты.
         </p>
         <div class="contact-direct">
           <a href={`tel:${tel}`}><span>Телефон</span><strong>{SITE.phone}</strong></a>
@@ -76,15 +76,18 @@ const tel = SITE.phone.replace(/[^+\d]/g, '');
   <section class="contact-data" aria-labelledby="contact-data-title">
     <div class="home-shell contact-data__grid">
       <div>
-        <p class="section-index section-index--orange">04 / Прямой контакт</p>
-        <h2 id="contact-data-title">Телефон и e-mail остаются основными каналами связи.</h2>
-      </div>
-      <div>
-        <p>Будущие цифровые инструменты не заменяют обычный коммерческий контакт и не должны автоматически превращать загруженные материалы в неподтверждённый расчёт.</p>
-        <div class="home-actions">
-          <a class="button button--ghost" href={`tel:${tel}`}>Позвонить: {SITE.phone}</a>
-          <a class="button button--ghost" href={`mailto:${SITE.email}`}>Написать на e-mail</a>
+        <p class="section-index section-index--orange">04 / Начать разговор</p>
+        <h2 id="contact-data-title">Короткая форма — без повторного брифа.</h2>
+        <div class="contact-data__direct">
+          <p>Если удобнее напрямую:</p>
+          <div class="home-actions">
+            <a class="button button--ghost" href={`tel:${tel}`}>Позвонить: {SITE.phone}</a>
+            <a class="button button--ghost" href={`mailto:${SITE.email}`}>Написать на e-mail</a>
+          </div>
         </div>
+      </div>
+      <div class="contact-data__form">
+        <ContactForm idPrefix="contact-page" sourcePath={content.path} />
       </div>
     </div>
   </section>
