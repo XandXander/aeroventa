@@ -2564,3 +2564,201 @@ main { min-height: 60vh; }
   }
   .footer-nav { grid-template-columns:1fr; }
 }
+
+
+/* V43 — Owner-accepted engineering editorial concept (homepage only).
+   Photo is illustrative: never attribute it to a specific AEROVENTA project.
+   Preserve the V42 route/case/interaction contracts. */
+
+@media (min-width: 1061px) {
+  body:has(.home-hero--v43) .site-header {
+    background: linear-gradient(90deg, rgba(255,255,255,.98) 0%, rgba(248,250,251,.94) 34%, rgba(30,46,57,.92) 66%, rgba(12,28,41,.98) 100%);
+    border-bottom-color:rgba(135,154,169,.27);
+  }
+  body:has(.home-hero--v43) .site-header .nav--desktop a { color:#f2f5f6; }
+  body:has(.home-hero--v43) .site-header .nav--desktop a:hover { color:#fff; text-decoration:underline; text-underline-offset:5px; }
+  body:has(.home-hero--v43) .site-header .header-project { border-color:#d4dde2; }
+}
+
+.home-hero.home-hero--v43 { background:#fff; }
+.home-hero--v43 .home-hero__grid {
+  position:relative;
+  display:block;
+  isolation:isolate;
+  min-height:552px;
+}
+.home-hero--v43 .home-hero__copy {
+  position:relative;
+  z-index:4;
+  width:min(60%,720px);
+  min-height:552px;
+  padding:44px 26px 40px 0;
+  justify-content:center;
+}
+.home-hero--v43 .home-kicker { color:#c66b45; font-weight:800; font-size:.85rem; letter-spacing:.038em; }
+.home-hero--v43 h1 {
+  max-width:680px;
+  font-size:clamp(3.7rem,5.7vw,5.7rem);
+  font-weight:850;
+  line-height:.94;
+  letter-spacing:-.069em;
+  color:#0e2234;
+}
+.home-hero--v43 .home-lede {
+  max-width:570px;
+  margin-top:20px;
+  color:#475a6a;
+  font-size:clamp(1.02rem,1.48vw,1.31rem);
+  line-height:1.37;
+}
+.home-hero--v43 .home-geo { margin-top:18px; font-size:.92rem; color:#344558; }
+.home-hero--v43 .home-actions { gap:12px; margin-top:20px; }
+.home-hero--v43 .button--primary { box-shadow:0 7px 18px rgba(17,37,48,.11); }
+.home-hero--v43 .hero-engineering {
+  position:absolute;
+  z-index:1;
+  top:0; right:0; bottom:0; left:33%;
+  min-height:0;
+  border:none;
+  background:#cad0d3;
+  overflow:hidden;
+  pointer-events:none;
+}
+.home-hero--v43 .hero-engineering__photo {
+  object-position:53% 46%;
+  filter:saturate(.7) contrast(.94) brightness(1.09);
+}
+.home-hero--v43 .hero-engineering__veil {
+  z-index:1;
+  background:
+    linear-gradient(90deg, #fff 0%,rgba(255,255,255,.95) 5%,rgba(255,255,255,.77) 17%,rgba(255,255,255,.34) 34%,rgba(255,255,255,.02) 57%),
+    linear-gradient(0deg, rgba(234,239,242,.59) 0%, transparent 25%, transparent 85%,rgba(11,31,46,.1) 100%);
+}
+.home-hero--v43 .hero-engineering__overlay { z-index:2; }
+.home-hero--v43 .hero-airflow-path {
+  stroke-width:1.25px;
+  filter:none;
+  opacity:.83;
+  stroke-dasharray:none;
+}
+.home-hero--v43 .hero-airflow-tick { stroke-width:1.25px; opacity:.76; }
+.home-hero--v43 .hero-airflow-node { r:2px; stroke-width:1; filter:none; }
+.home-hero--v43 .hero-airflow-path--supply,
+.home-hero--v43 .hero-airflow-tick--supply { stroke:#bd7551; }
+.home-hero--v43 .hero-airflow-path--exhaust,
+.home-hero--v43 .hero-airflow-tick--exhaust { stroke:#81a7bc; }
+.home-hero--v43 .hero-engineering__label {
+  border:0;
+  border-left:1px solid rgba(255,255,255,.75);
+  border-radius:0;
+  box-shadow:none;
+  padding:4px 0 4px 10px;
+  background:transparent;
+  color:#f5f8fa;
+  text-shadow:0 1px 5px rgba(0,0,0,.38);
+  gap:2px;
+}
+.home-hero--v43 .hero-engineering__label span { color:inherit; font-size:.77rem; letter-spacing:.055em; }
+.home-hero--v43 .hero-engineering__label small { color:inherit; opacity:.75; font-size:.62rem; font-weight:550; }
+.home-hero--v43 .hero-engineering__label--supply { left:33%; top:61px; }
+.home-hero--v43 .hero-engineering__label--exhaust { right:28px; top:116px; }
+.home-hero--v43 .hero-engineering__evidence {
+  left:auto; right:20px; bottom:24px; max-width:280px;
+  background:transparent; padding:0; box-shadow:none;
+  color:#f8fafb; font-size:.66rem; font-weight:600;
+  text-shadow:0 1px 5px rgba(0,0,0,.7);
+  letter-spacing:.04em;
+}
+.home-hero--v43 .hero-engineering__frame { opacity:.38; }
+.home-hero--v43 .object-ribbon { position:relative; z-index:5; background:rgba(255,255,255,.97); }
+.home-hero--v43 .object-ribbon__item { min-height:76px; }
+.home-hero--v43 .object-ribbon__number { color:#344a5b; }
+
+.home-hero--v43 ~ .home-solution {
+  background:linear-gradient(108deg, #fafcfd 0%,#f5f8f9 47%,#e6eef2 100%);
+}
+.home-hero--v43 ~ .home-solution .solution-grid { gap:clamp(22px,4vw,64px); }
+.home-hero--v43 ~ .home-solution .section-index { color:#b96948; }
+.home-hero--v43 ~ .home-solution .section-copy h2 { color:#122838; }
+.home-hero--v43 ~ .home-solution .section-copy > p:not(.section-index) { color:#536675; }
+.home-hero--v43 ~ .home-solution .solution-diagram {
+  min-height:420px;
+  border:0;
+  background:transparent;
+  box-shadow:none;
+  position:relative;
+}
+.home-hero--v43 ~ .home-solution .solution-diagram svg { display:block; min-height:420px; }
+.home-hero--v43 ~ .home-solution .diagram-architecture { fill:none; stroke:#849ca9; stroke-width:1; opacity:.31; }
+.home-hero--v43 ~ .home-solution .diagram-room { fill:rgba(234,241,244,.28); stroke:#9cb2be; stroke-width:1; opacity:.65; }
+.home-hero--v43 ~ .home-solution .diagram-trace--supply { fill:none; stroke:#c77a53; stroke-width:3.2; stroke-linejoin:round; stroke-linecap:round; }
+.home-hero--v43 ~ .home-solution .diagram-trace--exhaust { fill:none; stroke:#6b9bb6; stroke-width:3.2; stroke-linejoin:round; stroke-linecap:round; }
+.home-hero--v43 ~ .home-solution .diagram-supply-node { fill:#c77a53; stroke:#f2f7f8; stroke-width:2; }
+.home-hero--v43 ~ .home-solution .diagram-exhaust-node { fill:#6b9bb6; stroke:#f2f7f8; stroke-width:2; }
+.home-hero--v43 ~ .home-solution .diagram-annotation { font-size:14px; font-family:Onest,system-ui,sans-serif; font-weight:800; letter-spacing:.03em; }
+.home-hero--v43 ~ .home-solution .diagram-annotation--supply { fill:#a75d3b; }
+.home-hero--v43 ~ .home-solution .diagram-annotation--exhaust { fill:#407993; }
+.home-hero--v43 ~ .home-solution .diagram-detail { font-size:10px; fill:#596d78; font-family:Onest,system-ui,sans-serif; }
+.home-hero--v43 ~ .home-solution .process-strip { border-top-color:#c9d5da; }
+
+.home-hero--v43 ~ .case-feature,
+.home-hero--v43 ~ .conversion-close { background-color:#243640; color:#f6f8fa; }
+.home-hero--v43 ~ .case-feature .section-index--orange,
+.home-hero--v43 ~ .conversion-close .section-index--orange { color:#e4a487; }
+.home-hero--v43 ~ .case-feature .case-dossier__intro h2 { color:#f7f8f9; }
+.home-hero--v43 ~ .case-feature .case-dossier__facts dt { color:#c0d0d7; }
+.home-hero--v43 ~ .case-feature .case-dossier__facts dd { color:#f1f5f6; }
+.home-hero--v43 ~ .case-feature .case-dossier__cta { border-color:#9caeb8; }
+
+@media (max-width:1100px) and (min-width:761px) {
+  .home-hero--v43 .home-hero__grid { min-height:575px; }
+  .home-hero--v43 .home-hero__copy { min-height:575px; width:63%; padding-right:12px; }
+  .home-hero--v43 h1 { font-size:clamp(3rem,6.2vw,4.6rem); }
+  .home-hero--v43 .hero-engineering { left:29%; }
+  .home-hero--v43 .hero-engineering__label--supply { left:44%; }
+  .home-hero--v43 .hero-engineering__veil { background:linear-gradient(90deg,#fff 0%,rgba(255,255,255,.97) 8%,rgba(255,255,255,.75) 27%,rgba(255,255,255,.13) 66%); }
+  .home-hero--v43 .hero-engineering__label--exhaust { top:100px; }
+}
+
+@media (max-width:760px) {
+  .home-hero--v43 .home-hero__grid { display:flex; flex-direction:column; min-height:0; }
+  .home-hero--v43 .home-hero__copy { width:100%; min-height:0; padding:30px 0 22px; }
+  .home-hero--v43 h1 { font-size:clamp(2.7rem,11.6vw,4.6rem); max-width:12ch; }
+  .home-hero--v43 .home-lede { max-width:60ch; line-height:1.42; font-size:1.015rem; }
+  .home-hero--v43 .home-geo { font-size:.86rem; }
+  .home-hero--v43 .hero-engineering {
+    position:relative;
+    inset:auto;
+    width:100%;
+    min-height:315px;
+    margin:0 0 14px;
+    border:0;
+  }
+  .home-hero--v43 .hero-engineering__photo { object-position:50% 43%; }
+  .home-hero--v43 .hero-engineering__veil {
+    background:linear-gradient(0deg,rgba(17,37,48,.52),rgba(13,35,50,.05) 34%,rgba(17,39,54,.12) 100%);
+  }
+  .home-hero--v43 .hero-engineering__label { top:auto; bottom:62px; max-width:44%; }
+  .home-hero--v43 .hero-engineering__label--supply { left:12px; }
+  .home-hero--v43 .hero-engineering__label--exhaust { right:12px; }
+  .home-hero--v43 .hero-engineering__label span { font-size:.65rem; }
+  .home-hero--v43 .hero-engineering__label small { font-size:.53rem; }
+  .home-hero--v43 .hero-engineering__evidence { right:12px; bottom:12px; text-align:right; font-size:.59rem; }
+  .home-hero--v43 .object-ribbon { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .home-hero--v43 .object-ribbon__item { min-height:60px; }
+  .home-hero--v43 ~ .home-solution .solution-grid { gap:24px; }
+  .home-hero--v43 ~ .home-solution .solution-diagram { min-height:290px; }
+  .home-hero--v43 ~ .home-solution .solution-diagram svg { min-height:290px; }
+}
+@media (max-width:360px) {
+  .home-hero--v43 h1 { font-size:clamp(2.45rem,11vw,3.1rem); }
+  .home-hero--v43 .hero-engineering { min-height:286px; }
+  .home-hero--v43 .hero-engineering__label small { display:block; }
+  .home-hero--v43 .hero-engineering__label { bottom:52px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .home-hero--v43 .hero-airflow-path,
+  .home-hero--v43 .hero-airflow-tick,
+  .home-hero--v43 ~ .home-solution .diagram-trace--supply,
+  .home-hero--v43 ~ .home-solution .diagram-trace--exhaust { animation:none!important; transition:none!important; }
+}
