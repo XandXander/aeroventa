@@ -458,3 +458,61 @@
     scroll-behavior:auto;
   }
 }
+
+
+/* V43 approved rounded dialogue-first consultant. Deterministic public navigation only. */
+.experience-dialog--consultant {
+  width:min(560px,calc(100vw - 36px));
+  max-height:min(90dvh,860px);
+  border:1px solid #d6e0e8;
+  border-radius:24px;
+  background:#f9fcff;
+  box-shadow:0 24px 80px rgba(1,27,50,.25);
+}
+.experience-dialog--consultant .experience-dialog__shell { padding:clamp(18px,3vw,31px); }
+.experience-dialog--consultant .experience-dialog__head h2 {
+  font-size:clamp(1.45rem,2.6vw,2.2rem);line-height:1.08;letter-spacing:-.045em;
+}
+.experience-dialog--consultant .experience-dialog__head .section-index { color:#e56a30; }
+.experience-dialog--consultant .dialog-close { border-radius:50%;border-color:#cbdde9; }
+.experience-dialog--consultant .experience-dialog__lede {font-size:.88rem;line-height:1.45;margin:13px 0 17px;max-width:470px;}
+.consultant-conversation {border:1px solid #d9e7ef;border-radius:20px;background:#fff;overflow:hidden;}
+.consultant-conversation__history {
+ list-style:none;margin:0;padding:17px;min-height:155px;max-height:290px;overflow-y:auto;
+ display:flex;flex-direction:column;gap:13px;scroll-behavior:smooth;
+}
+.consultant-message {max-width:91%;padding:13px 15px;border-radius:17px;background:#eef5fa;color:#18374e;}
+.consultant-message__author {display:block;color:#5c7889;font-size:.67rem;font-weight:850;letter-spacing:.05em;text-transform:uppercase;margin-bottom:7px;}
+.consultant-message p {margin:0;font-size:.91rem;line-height:1.48;white-space:pre-wrap;overflow-wrap:anywhere;}
+.consultant-message a {display:inline-block;color:#073d66;text-decoration:underline;text-underline-offset:3px;font-size:.86rem;font-weight:750;margin-top:10px;}
+.consultant-message--visitor {align-self:flex-end;background:#133b58;color:#fff;border-bottom-right-radius:6px;}
+.consultant-message--visitor .consultant-message__author {color:#b6d4e9;}
+.consultant-message--guide {align-self:flex-start;border-bottom-left-radius:6px;}
+.consultant-conversation__composer {padding:13px 14px 8px;border-top:1px solid #e4ebf2;}
+.consultant-conversation__composer>label {display:block;font-size:.76rem;color:#3c5367;font-weight:800;margin-bottom:7px;}
+.consultant-conversation__input {display:flex;align-items:flex-end;border:1px solid #b6ccd8;border-radius:15px;background:#fff;padding:6px;gap:6px;}
+.consultant-conversation__input:focus-within {outline:2px solid #3585b1;outline-offset:1px;}
+.consultant-conversation__input textarea {display:block;resize:vertical;flex:1;min-width:0;max-height:130px;min-height:43px;line-height:1.45;padding:9px 7px;font:inherit;font-size:.89rem;border:0;outline:none;background:transparent;color:#173146;}
+.consultant-conversation__input button {border:0;flex:0 0 44px;width:44px;height:44px;border-radius:11px;color:#fff;background:#0c3855;font-weight:800;font-size:1.5rem;cursor:pointer;}
+.consultant-conversation__input button:focus-visible,.consultant-conversation__foot button:focus-visible,.consultant-structured summary:focus-visible {outline:2px solid #eb8246;outline-offset:2px;}
+.consultant-conversation__foot {display:flex;justify-content:space-between;gap:12px;align-items:center;padding:9px 15px 16px;}
+.consultant-conversation__foot span {font-size:.69rem;line-height:1.4;color:#6c8190;}
+.consultant-conversation__foot button {border:0;background:none;color:#063953;font-size:.78rem;font-weight:800;text-align:right;white-space:nowrap;cursor:pointer;}
+.consultant-structured {margin-top:16px;border:1px solid #d5e2eb;border-radius:15px;background:#fff;overflow:hidden;}
+.consultant-structured summary {cursor:pointer;padding:15px 17px;font-weight:800;font-size:.83rem;color:#204561;}
+.consultant-structured summary span {font-weight:450;color:#708393;}
+.consultant-structured .consultant-form {padding:0 17px 16px;}
+.consultant-structured .consultant-result {padding:19px 17px;margin-top:0;border-top:1px solid #d5e2eb;}
+@media (max-width:760px) {
+ .experience-dialog--consultant {width:calc(100% - 16px);max-width:none;max-height:calc(100dvh - 16px);margin:auto 8px 8px;border:1px solid #d6e0e8;border-radius:23px;}
+ .experience-dialog--consultant .experience-dialog__shell {padding:17px 14px max(18px,env(safe-area-inset-bottom,18px));}
+ .experience-dialog--consultant .experience-dialog__head {gap:10px;grid-template-columns:minmax(0,1fr) 44px;}
+ .experience-dialog--consultant .experience-dialog__head h2 {font-size:clamp(1.45rem,6vw,2rem);}
+ .experience-dialog--consultant .experience-dialog__lede {margin:10px 0 15px;}
+ .consultant-conversation__history {max-height:35dvh;min-height:110px;padding:12px;}
+ .consultant-conversation__foot {align-items:flex-start;flex-direction:column;}
+ .consultant-conversation__foot button {text-align:left;white-space:normal;}
+}
+@media (prefers-reduced-motion:reduce) {
+ .consultant-conversation__history {scroll-behavior:auto;}
+}

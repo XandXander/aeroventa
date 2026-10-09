@@ -22,6 +22,28 @@ const { pagePath = '' } = Astro.props;
       Короткий разбор без выдуманной цены и без подмены проектирования. Ответ строится только из публичных правил AEROVENTA.
     </p>
 
+    <section class="consultant-conversation" aria-label="Диалог с навигатором AEROVENTA">
+      <ol class="consultant-conversation__history" data-consultant-chat-messages aria-live="polite" aria-relevant="additions">
+        <li class="consultant-message consultant-message--guide">
+          <span class="consultant-message__author">AEROVENTA / Навигатор</span>
+          <p>Опишите объект и вопрос. Подскажу подходящую страницу и какие исходные данные нужны. Без выдуманной сметы и инженерных обещаний.</p>
+        </li>
+      </ol>
+      <form class="consultant-conversation__composer" data-consultant-chat-form>
+        <label for="consultant-chat-question">Ваш вопрос</label>
+        <div class="consultant-conversation__input">
+          <textarea id="consultant-chat-question" name="question" maxlength="800" rows="2" placeholder="Например: есть проект вентиляции ресторана, нужен монтаж" required></textarea>
+          <button type="submit" aria-label="Отправить вопрос">→</button>
+        </div>
+      </form>
+      <div class="consultant-conversation__foot">
+        <span>Навигация по опубликованным материалам, без вызова AI-модели.</span>
+        <button type="button" data-consultant-chat-handoff>Передать вопрос специалисту →</button>
+      </div>
+    </section>
+
+    <details class="consultant-structured">
+      <summary>Уточнить параметры объекта <span>необязательно</span></summary>
     <form class="consultant-form" data-consultant-form>
       <div class="consultant-form__grid">
         <div class="field">
@@ -101,6 +123,7 @@ const { pagePath = '' } = Astro.props;
         <button class="button button--primary" type="button" data-consultant-handoff>Передать контекст человеку →</button>
       </div>
     </section>
+    </details>
   </div>
 </dialog>
 
@@ -367,6 +390,87 @@ const { pagePath = '' } = Astro.props;
       }
     }
   }
+
+  // Dialogue-first public-content routing. No external inference or simulated model wait state.
+  const chatForm = consultantDialog?.querySelector('[data-consultant-chat-form]');
+  const chatHistory = consultantDialog?.querySelector('[data-consultant-chat-messages]');
+  const chatInput = chatForm?.elements?.question;
+  let lastChatQuestion = '';
+  const safeChatRoute = (input) => {
+    if (/нет проекта|без проекта|проект(а)? нет|не готов(ый|а)|нет чертеж/i.test(input)) {
+      return ['/obekt-bez-gotovogo-proekta/', 'Какие исходные данные нужны до оценки монтажа',
+        'Начните с имеющихся планов, фото и описания объекта.'];
+    }
+    if (/есть проект|готов(ый|ая|ого) проект|по проекту|рабоч(ая|ий) документац|спецификац/i.test(input)) {
+      return ['/montazh-po-proektu/', 'Монтаж по готовому проекту',
+        'Пришлите рабочую документацию и сформулируйте границы монтажных работ.'];
+    }
+    if (/ресторан|кафе|кухн|вытяжк.*общепит/i.test(input)) {
+      return ['/obekty/restorany-i-kafe/', 'Вентиляция ресторанов и кафе',
+        'Состав монтажа зависит от помещений, трасс, оборудования и стадии отделки.'];
+    }
+    if (/новострой|жил(ой|ого) комплекс|многоквартир|7 park|7 парк/i.test(input)) {
+      return ['/obekty/novostroyki-i-zhilye-kompleksy/', 'Монтаж в новостройках и жилых комплексах',
+        'Посмотрите подтверждённый кейс 7 PARK и особенности повторяемых объёмов.'];
+    }
+    if (/стоимост|сколько стоит|смет|цен|расцен/i.test(input)) {
+      return ['/faq/', 'Что влияет на расчёт стоимости',
+        'Точную цену без проекта и исходных данных не обещаем. Сначала определим состав работ.'];
+    }
+    return ['/montazh-ventiliacii/', 'Монтаж вентиляции — состав работ и примеры',
+      'Если вопрос требует инженерного решения, передайте описание напрямую специалисту.'];
+  };
+  const addChatMessage = (role, title, body, route) => {
+    if (!chatHistory) return;
+    const item = document.createElement('li');
+    item.className = 'consultant-message consultant-message--' + role;
+    const author = document.createElement('span');
+    author.className = 'consultant-message__author';
+    author.textContent = title;
+    const text = document.createElement('p');
+    text.textContent = body;
+    item.append(author, text);
+    if (route) {
+      const link = document.createElement('a');
+      link.href = route;
+      link.textContent = 'Открыть раздел →';
+      item.append(link);
+    }
+    chatHistory.append(item);
+    // Keep bounded recent history without losing the opening explanation.
+    while (chatHistory.children.length > 11) chatHistory.children[1]?.remove();
+    chatHistory.scrollTop = chatHistory.scrollHeight;
+  };
+  chatForm?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (!chatForm.reportValidity()) return;
+    const question = String(chatInput?.value || '').trim().slice(0, 800);
+    if (!question) return;
+    lastChatQuestion = question;
+    addChatMessage('visitor', 'Ваш вопрос', question);
+    const [route, title, explanation] = safeChatRoute(question);
+    addChatMessage('guide', 'AEROVENTA / Навигатор', title + '. ' + explanation, route);
+    consultantSummary = 'Вопрос посетителя: ' + question + '\nРекомендованный раздел: ' + route;
+    chatInput.value = '';
+    chatInput.focus();
+    track('consultant_relevant_link', { target: route, source: 'public_content_guide' });
+  });
+  chatInput?.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) {
+      event.preventDefault();
+      chatForm?.requestSubmit();
+    }
+  });
+  consultantDialog?.querySelector('[data-consultant-chat-handoff]')?.addEventListener('click', () => {
+    hydrateContactContext(contactDialog, {
+      consultantSummary: consultantSummary || 'Переход из публичного навигатора AEROVENTA',
+      task: lastChatQuestion,
+    });
+    closeDialog(consultantDialog);
+    openDialog(contactDialog);
+    track('consultant_handoff', { source: 'public_content_guide' });
+    track('contact_form_open', { source: 'consultant' });
+  });
 
   document.querySelectorAll('[data-contact-form]').forEach((form) => {
     hydrateContactContext(form.closest('dialog') || document);
