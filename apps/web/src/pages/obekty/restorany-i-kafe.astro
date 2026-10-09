@@ -42,8 +42,8 @@ const drivers = [
 ];
 
 const evidence = [
-  {title:'Ресторан в ЖК «Леонтьевский Мыс»',meta:'Санкт-Петербург',detail:'Приточно-вытяжная вентиляция + оборудование. Исторический источник: 2 недели.',href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/'},
-  {title:'Кафе на Римского-Корсакова, 3',meta:'Санкт-Петербург',detail:'Приточно-вытяжная вентиляция + оборудование. Исторический источник: 200 м², 5 дней.',href:'/blog/detail/kafe-rimskogo-korsakova-3/'},
+  {title:'Ресторан в ЖК «Леонтьевский Мыс»',meta:'Санкт-Петербург',detail:'Приточно-вытяжная вентиляция + оборудование. Исторический источник: 2 недели.',href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/',image:'/evidence/leont/duct-installation-01.jpg',imageAlt:'Ресторан Леонтьевский Мыс — фрагмент монтажа вентиляции'},
+  {title:'Кафе на Римского-Корсакова, 3',meta:'Санкт-Петербург',detail:'Приточно-вытяжная вентиляция + оборудование. Исторический источник: 200 м², 5 дней.',href:'/blog/detail/kafe-rimskogo-korsakova-3/',image:'/evidence/cafe/duct-installation-01.jpg',imageAlt:'Кафе на Римского-Корсакова — фрагмент вентиляционной трассы'},
 ];
 
 const questions = [
@@ -65,5 +65,7 @@ const questions = [
     evidence={evidence}
     questions={questions}
     proofTitle="Два реальных ресторанных объекта — вместо типовой картинки."
+    visualVariant="restaurants"
+    heroMedia={{ src:'/evidence/leont/duct-installation-02.jpg', alt:'Реальная монтажная фотография — ресторан в ЖК «Леонтьевский Мыс»', caption:'Ресторан в ЖК «Леонтьевский Мыс» / Монтажная фотография' }}
   />
 </BaseLayout>

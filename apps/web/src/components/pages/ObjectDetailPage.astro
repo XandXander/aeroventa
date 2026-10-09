@@ -6,6 +6,8 @@ interface EvidenceItem {
   meta: string;
   detail: string;
   href: string;
+  image?: string;
+  imageAlt?: string;
 }
 
 interface Props {
@@ -17,12 +19,15 @@ interface Props {
   evidence: EvidenceItem[];
   questions: string[];
   proofTitle: string;
+  visualVariant?: 'residential' | 'restaurants';
+  heroMedia?: { src: string; alt: string; caption: string };
+  secondaryMedia?: { src: string; alt: string; caption: string };
 }
 
-const { content, eyebrow, lede, constraints, drivers, evidence, questions, proofTitle } = Astro.props;
+const { content, eyebrow, lede, constraints, drivers, evidence, questions, proofTitle, visualVariant, heroMedia, secondaryMedia } = Astro.props;
 ---
 
-<article class="object-detail">
+<article class:list={['object-detail', visualVariant && `object-detail--${visualVariant}`]}>
   <header class="object-detail__hero">
     <div class="home-shell object-detail__hero-grid">
       <div>
@@ -37,6 +42,12 @@ const { content, eyebrow, lede, constraints, drivers, evidence, questions, proof
           <a class="button button--ghost" href="/obekt-bez-gotovogo-proekta/">Подготовка исходных данных</a>
         </div>
       </div>
+      {heroMedia && (
+        <figure class="object-detail__hero-media">
+          <img src={heroMedia.src} alt={heroMedia.alt} width="800" height="450" fetchpriority="high" />
+          <figcaption>{heroMedia.caption}</figcaption>
+        </figure>
+      )}
     </div>
   </header>
 
@@ -47,6 +58,7 @@ const { content, eyebrow, lede, constraints, drivers, evidence, questions, proof
       <div class="object-evidence__grid">
         {evidence.map((item) => (
           <a href={item.href}>
+            {item.image && <img class="object-evidence__photo" src={item.image} alt={item.imageAlt || item.title} width="800" height="450" loading="lazy" />}
             <span>{item.meta}</span>
             <h3>{item.title}</h3>
             <p>{item.detail}</p>
@@ -54,6 +66,12 @@ const { content, eyebrow, lede, constraints, drivers, evidence, questions, proof
           </a>
         ))}
       </div>
+      {secondaryMedia && (
+        <figure class="object-evidence__installation">
+          <img src={secondaryMedia.src} alt={secondaryMedia.alt} width="600" height="600" loading="lazy" />
+          <figcaption>{secondaryMedia.caption}</figcaption>
+        </figure>
+      )}
     </div>
   </section>
 

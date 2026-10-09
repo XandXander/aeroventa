@@ -23,10 +23,10 @@ const drivers = [
 ];
 
 const cases = [
-  ['7 PARK','Павловск','7 домов · приточно-вытяжная вентиляция','/blog/detail/kak-my-sdali-7-domov/'],
-  ['Леонтьевский Мыс','Санкт-Петербург','Ресторан · приточно-вытяжная вентиляция + оборудование','/blog/detail/restoran-v-zhk-leontevskiy-mys/'],
-  ['НТФФ «Полисан»','Санкт-Петербург','Фармацевтический объект · монтаж вентиляции и оборудования','/blog/detail/ntff-polisan/'],
-  ['Маршала Жукова','Санкт-Петербург','Квартира · приточно-вытяжная вентиляция','/blog/detail/kvartira-na-zhukova/'],
+  ['7 PARK','Павловск','7 домов · приточно-вытяжная вентиляция','/blog/detail/kak-my-sdali-7-domov/','/evidence/7park/duct-route.jpg'],
+  ['Леонтьевский Мыс','Санкт-Петербург','Ресторан · приточно-вытяжная вентиляция + оборудование','/blog/detail/restoran-v-zhk-leontevskiy-mys/','/evidence/leont/duct-installation-01.jpg'],
+  ['НТФФ «Полисан»','Санкт-Петербург','Фармацевтический объект · монтаж вентиляции и оборудования','/blog/detail/ntff-polisan/','/evidence/polisan/duct-installation-01.jpg'],
+  ['Маршала Жукова','Санкт-Петербург','Квартира · приточно-вытяжная вентиляция','/blog/detail/kvartira-na-zhukova/','/evidence/zhukov/duct-installation-01.jpg'],
 ];
 ---
 
@@ -46,7 +46,16 @@ const cases = [
           <a class="button button--ghost" href="/obekt-bez-gotovogo-proekta/">Подготовка исходных данных</a>
         </div>
       </div>
-      <div class="service-premium__hero-proof" aria-label="Как устроена работа">
+      <figure class="service-premium__visual">
+        <div class="service-premium__visual-frame">
+          <img src="/evidence/hero/engineering-ductwork.jpg" alt="Иллюстрация инженерных воздуховодов; реальные выполненные объекты представлены в кейсах ниже" width="1280" height="533" fetchpriority="high" />
+          <span class="service-premium__visual-index">01 / Монтаж инженерных систем</span>
+        </div>
+        <figcaption>Иллюстративное инженерное изображение. Фотографии конкретных работ — в кейсах ниже.</figcaption>
+      </figure>
+    </div>
+    <div class="home-shell service-premium__proof-strip" aria-label="Как устроена работа">
+      <div class="service-premium__hero-proof">
         <div class="service-proof-card">
           <span>01</span><strong>Исходные данные</strong><p>Проект, план, фото, стадия объекта и задача.</p>
         </div>
@@ -128,8 +137,9 @@ const cases = [
       <p class="section-index">04 / Доказательства</p>
       <h2 id="service-cases-title">Не «успешные проекты», а конкретные выполненные объекты.</h2>
       <div class="service-cases__grid">
-        {cases.map(([title,location,scope,href]) => (
+        {cases.map(([title,location,scope,href,photo]) => (
           <a href={href} class="service-case-card">
+            <img class="service-case-card__media" src={photo} alt={`Фрагмент монтажа вентиляции на объекте «${title}»`} loading="lazy" width="734" height="551" />
             <span>{location}</span>
             <h3>{title}</h3>
             <p>{scope}</p>
