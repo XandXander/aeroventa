@@ -45,13 +45,13 @@ const { content, eyebrow, lede, constraints, drivers, evidence, questions, proof
       {heroMedia && (
         <figure class="object-detail__hero-media">
           <img src={heroMedia.src} alt={heroMedia.alt} width="800" height="450" fetchpriority="high" />
-          <figcaption>{heroMedia.caption}</figcaption>
+          {heroMedia.caption && <figcaption>{heroMedia.caption}</figcaption>}
         </figure>
       )}
     </div>
   </header>
 
-  {evidence.length > 0 && <section class="object-evidence" aria-labelledby="object-evidence-title">
+  <section class="object-evidence" aria-labelledby="object-evidence-title">
     <div class="home-shell">
       <p class="section-index section-index--orange">01 / Реальные объекты</p>
       <h2 id="object-evidence-title">{proofTitle}</h2>
@@ -73,11 +73,11 @@ const { content, eyebrow, lede, constraints, drivers, evidence, questions, proof
         </figure>
       )}
     </div>
-  </section>}
+  </section>
 
   <section class="home-section object-constraints" aria-labelledby="object-constraints-title">
     <div class="home-shell">
-      <p class="section-index">{evidence.length > 0 ? '02' : '01'} / Что меняет монтаж</p>
+      <p class="section-index">02 / Что меняет монтаж</p>
       <h2 id="object-constraints-title">Ограничения объекта важнее типового названия системы.</h2>
       <div class="object-constraints__grid">
         {constraints.map(([number,title,text]) => (
@@ -90,7 +90,7 @@ const { content, eyebrow, lede, constraints, drivers, evidence, questions, proof
   <section class="object-drivers" aria-labelledby="object-drivers-title">
     <div class="home-shell object-drivers__grid">
       <div>
-        <p class="section-index section-index--orange">{evidence.length > 0 ? '03' : '02'} / Стоимость и срок</p>
+        <p class="section-index section-index--orange">03 / Стоимость и срок</p>
         <h2 id="object-drivers-title">Что реально двигает монтажный объём.</h2>
         <p>Не публикуем универсальную ставку «за м²»: одинаковая площадь не означает одинаковые трассы, оборудование и условия работ.</p>
       </div>
@@ -103,7 +103,7 @@ const { content, eyebrow, lede, constraints, drivers, evidence, questions, proof
   <section class="home-section object-questions" aria-labelledby="object-questions-title">
     <div class="home-shell object-questions__grid">
       <div>
-        <p class="section-index">{evidence.length > 0 ? '04' : '03'} / До монтажа</p>
+        <p class="section-index">04 / До монтажа</p>
         <h2 id="object-questions-title">Вопросы, которые лучше закрыть до выхода бригады.</h2>
         <a href="/faq/">Все инженерные вопросы →</a>
       </div>
@@ -117,7 +117,7 @@ const { content, eyebrow, lede, constraints, drivers, evidence, questions, proof
 
   <section class="conversion-close" aria-labelledby="object-close-title">
     <div class="home-shell">
-      <p class="section-index section-index--orange">{evidence.length > 0 ? '05' : '04'} / Следующий шаг</p>
+      <p class="section-index section-index--orange">05 / Следующий шаг</p>
       <h2 id="object-close-title">Пришлите то, что уже есть. Не нужно сначала собирать идеальный пакет.</h2>
       <div class="engagement-index engagement-index--dark engagement-index--close">
         <a href="/montazh-po-proektu/">
