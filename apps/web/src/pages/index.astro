@@ -13,12 +13,12 @@ const page = {
 };
 
 const objects = [
-  ['01', 'Квартиры / дома', '/obekty/#private'],
-  ['02', 'Коттеджи / бани', '/obekty/#private'],
-  ['03', 'Рестораны / кафе', '/obekty/restorany-i-kafe/'],
-  ['04', 'Магазины / склады', '/obekty/#warehouses'],
-  ['05', 'Производства', '/obekty/#production'],
-  ['06', 'Новостройки', '/obekty/novostroyki-i-zhilye-kompleksy/'],
+  ['Квартиры и дома', '/obekty/#private'],
+  ['Коттеджи и бани', '/obekty/#private'],
+  ['Рестораны и кафе', '/obekty/restorany-i-kafe/'],
+  ['Магазины и склады', '/obekty/#warehouses'],
+  ['Производства', '/obekty/#production'],
+  ['Новостройки', '/obekty/novostroyki-i-zhilye-kompleksy/'],
 ];
 
 const questions = [
@@ -31,14 +31,14 @@ const questions = [
 ---
 
 <BaseLayout content={page}>
-  <section class="home-hero" aria-labelledby="home-title">
+  <section class="home-hero home-hero--v43" aria-labelledby="home-title">
     <div class="home-shell home-hero__grid">
       <div class="home-hero__copy">
         <p class="home-kicker">Монтаж вентиляции под ключ</p>
         <h1 id="home-title">Инженерная вентиляция без лишнего.</h1>
         <p class="home-lede">
           От квартиры и дома до ресторана, склада и производства. Работаем по готовому проекту.
-          Если проекта нет — определяем, какие исходные данные нужны для корректной сметы и монтажа.
+          Если проекта нет — определим, какие исходные данные нужны для корректной сметы и монтажа.
         </p>
         <p class="home-geo">Санкт-Петербург · Ленинградская область · Москва · Карелия</p>
         <div class="home-actions" aria-label="Основные действия">
@@ -50,10 +50,10 @@ const questions = [
       <figure class="hero-engineering">
         <img
           class="hero-engineering__photo"
-          src="/evidence/hero/engineering-ductwork.jpg"
-          width="1280"
-          height="533"
-          alt="Металлические воздуховоды в инженерном пространстве"
+          src="/evidence/hero/ductwork-editorial-v43.webp"
+          width="800"
+          height="600"
+          alt="Реальный монтаж вентиляционных воздуховодов на объекте 7 PARK в Павловске"
           fetchpriority="high"
           decoding="async"
         />
@@ -77,16 +77,15 @@ const questions = [
           <span></span><span></span><span></span><span></span>
         </div>
         <figcaption class="hero-engineering__evidence">
-          <strong>РЕАЛЬНЫЙ МОНТАЖ · СХЕМА ПОТОКА</strong>
-          <span class="sr-only">Реальная фотография смонтированных воздуховодов на объекте AEROVENTA. Цветные линии — схематическая визуализация приточного и вытяжного направления, а не исполнительная схема объекта.</span>
+          <strong>РЕАЛЬНЫЙ МОНТАЖ · 7 PARK · ПАВЛОВСК</strong>
+          <span class="sr-only">Фото монтажных работ AEROVENTA на объекте 7 PARK в Павловске, подтверждено владельцем. Цветные линии условно обозначают независимые направления притока и вытяжки; это не исполнительная схема объекта.</span>
         </figcaption>
       </figure>
     </div>
 
     <nav class="object-ribbon home-shell" aria-label="Типы объектов">
-      {objects.map(([number, label, href]) => (
+      {objects.map(([label, href]) => (
         <a href={href} class="object-ribbon__item">
-          <span class="object-ribbon__number">{number}</span>
           <span>{label}</span>
         </a>
       ))}
@@ -96,72 +95,22 @@ const questions = [
   <section class="home-section home-solution" id="process" aria-labelledby="solution-title">
     <div class="home-shell solution-grid">
       <div class="section-copy">
-        <p class="section-index">01 / Продуманное решение</p>
-        <h2 id="solution-title">Система под объект, а не «по шаблону».</h2>
+        <p class="section-index">Как это работает</p>
+        <h2 id="solution-title">Комплексный подход к вентиляции</h2>
         <p>
-          Состав монтажа определяем по задаче и условиям объекта. Учитываем реальные трассы,
-          сечения, оборудование, доступ и требования — без избыточных решений и скрытого усложнения.
+          Уточняем исходные данные, подбираем оборудование, монтируем и запускаем вентиляцию.
+          Учитываем особенности объекта и ваши задачи.
         </p>
-        <div class="engagement-index engagement-index--compact">
-          <a href="/montazh-po-proektu/">
-            <span>01</span>
-            <div><strong>Готовая проектная документация</strong><p>Проверим комплект, уточним объём работ и подготовим смету на монтаж.</p></div>
-            <b aria-hidden="true">→</b>
-          </a>
-          <a href="/obekt-bez-gotovogo-proekta/">
-            <span>02</span>
-            <div><strong>Исходные данные ещё формируются</strong><p>Определим, какие данные нужны, чтобы корректно оценить монтаж.</p></div>
-            <b aria-hidden="true">→</b>
-          </a>
-        </div>
+        <a class="button button--ghost solution-cta" href="/montazh-ventiliacii/">Подробнее о процессе <span aria-hidden="true">→</span></a>
       </div>
 
-      <div class="solution-diagram" aria-hidden="true">
-        <svg viewBox="0 0 680 420">
-          <defs>
-            <linearGradient id="solution-metal" x1="0" x2="1">
-              <stop offset="0" stop-color="#bfc8ce"/>
-              <stop offset=".48" stop-color="#eef1f3"/>
-              <stop offset="1" stop-color="#a8b3bb"/>
-            </linearGradient>
-          </defs>
-
-          <g class="solution-floor">
-            <path d="M54 330 L232 212 H622 L468 330 Z"/>
-            <path d="M104 330 L268 212 M168 330 L308 212 M238 330 L352 212 M310 330 L396 212 M385 330 L444 212 M460 330 L492 212 M536 330 L544 212"/>
-            <path d="M92 305 H500 M128 278 H536 M166 251 H574 M205 225 H611"/>
-          </g>
-
-          <g class="solution-system solution-system--supply">
-            <path class="solution-duct-outline" d="M82 92 H316 V198 H250"/>
-            <path class="solution-duct" d="M82 92 H316 V198 H250"/>
-            <path class="solution-flow" d="M82 92 H316 V198 H250"/>
-            <path class="solution-tick" d="M192 86 l8 6 -8 6 M310 146 l6 8 6-8"/>
-            <circle class="solution-anchor" cx="82" cy="92" r="5"/>
-          </g>
-
-          <g class="solution-system solution-system--exhaust">
-            <path class="solution-duct-outline" d="M430 138 H600 V254 H532"/>
-            <path class="solution-duct" d="M430 138 H600 V254 H532"/>
-            <path class="solution-flow" d="M430 138 H600 V254 H532"/>
-            <path class="solution-tick" d="M540 132 l-8 6 8 6 M594 207 l6-8 6 8"/>
-            <circle class="solution-anchor" cx="430" cy="138" r="5"/>
-          </g>
-
-          <g class="solution-terminal">
-            <rect x="204" y="201" width="92" height="38" rx="2"/>
-            <path d="M216 213 H284 M216 221 H284 M216 229 H284"/>
-          </g>
-          <g class="solution-terminal">
-            <rect x="486" y="257" width="92" height="38" rx="2"/>
-            <path d="M498 269 H566 M498 277 H566 M498 285 H566"/>
-          </g>
-
-          <text class="solution-label solution-label--supply" x="82" y="68">Подача</text>
-          <text class="solution-label solution-label--exhaust" x="430" y="114">Вытяжка</text>
-          <text class="solution-room-label" x="222" y="372">Помещение</text>
-          <text class="solution-room-label" x="474" y="372">Помещение</text>
-        </svg>
+      <div class="solution-mobile-legend" aria-label="Два независимых потока">
+        <span>Приток · воздух в помещение</span>
+        <span>Вытяжка · удаление воздуха</span>
+      </div>
+      <div class="solution-diagram" role="img" aria-label="Архитектурная визуализация двух независимых потоков вентиляции: приток направлен к помещению; вытяжка выводит отработанный воздух. Иллюстрация, не исполнительная схема.">
+        <img src="/evidence/hero/engineering-scene-accepted-v43.webp" alt="" width="1036" height="338" loading="lazy" decoding="async" />
+        <span class="solution-visual-note">Принципиальная иллюстрация · не исполнительная схема</span>
       </div>
     </div>
 
@@ -214,18 +163,18 @@ const questions = [
       <div class="section-heading">
         <div>
           <p class="section-index">03 / Под конкретный объект</p>
-          <h2 id="objects-title">Разные объекты — разные ограничения.</h2>
+          <h2 id="objects-title">Разные объекты — разные инженерные задачи.</h2>
         </div>
         <a href="/obekty/">Смотреть все типы объектов →</a>
       </div>
 
       <div class="object-grid">
-        <a class="object-link" href="/obekty/#production"><span>01</span><h3>Производство</h3><p>Проект, действующий режим, трассы, доступ и границы состава монтажных работ.</p></a>
-        <a class="object-link" href="/obekty/restorany-i-kafe/"><span>02</span><h3>Рестораны и кафе</h3><p>Кухня, зал, оборудование, потолки и координация с отделкой.</p></a>
-        <a class="object-link" href="/obekty/novostroyki-i-zhilye-kompleksy/"><span>03</span><h3>Новостройки</h3><p>Повторяемый объём, график по корпусам и управляемое усиление команды.</p></a>
-        <a class="object-link" href="/obekty/#private"><span>04</span><h3>Квартиры и дома</h3><p>Шум, пространство, отделка и аккуратная прокладка трасс.</p></a>
-        <a class="object-link" href="/obekty/#warehouses"><span>05</span><h3>Склады</h3><p>Высота, доступ, эксплуатационный режим и логистика монтажа.</p></a>
-        <a class="object-link" href="/obekty/#commercial"><span>06</span><h3>Офисы и коммерция</h3><p>Стадия отделки, потолки, сроки открытия и смежные подрядчики.</p></a>
+        <a class="object-link" href="/obekty/#production"><h3>Производство</h3><p>Проект, действующий режим, трассы, доступ и границы состава монтажных работ.</p></a>
+        <a class="object-link" href="/obekty/restorany-i-kafe/"><h3>Рестораны и кафе</h3><p>Кухня, зал, оборудование, потолки и координация с отделкой.</p></a>
+        <a class="object-link" href="/obekty/novostroyki-i-zhilye-kompleksy/"><h3>Новостройки</h3><p>Повторяемый объём, график по корпусам и управляемое усиление команды.</p></a>
+        <a class="object-link" href="/obekty/#private"><h3>Квартиры и дома</h3><p>Шум, пространство, отделка и аккуратная прокладка трасс.</p></a>
+        <a class="object-link" href="/obekty/#warehouses"><h3>Склады</h3><p>Высота, доступ, эксплуатационный режим и логистика монтажа.</p></a>
+        <a class="object-link" href="/obekty/#commercial"><h3>Офисы и коммерция</h3><p>Стадия отделки, потолки, сроки открытия и смежные подрядчики.</p></a>
       </div>
     </div>
   </section>

@@ -132,9 +132,11 @@ check(!files.header.includes('/brand/aeroventa-wordmark.svg') && !files.footer.i
 check(files.header.includes('Есть проект <span aria-hidden="true">→</span>'), 'Header project CTA matches canonical visual baseline wording');
 check(files.home.includes('Получить ориентир стоимости') && files.home.includes('Есть проект — запросить смету'), 'Homepage CTA hierarchy matches canonical visual baseline');
 check(files.home.includes('hero-engineering__overlay'), 'Hero airflow authorship remains present');
-check(files.home.includes('src="/evidence/hero/engineering-ductwork.jpg"'), 'Hero uses Owner-supplied engineering media');
+check(files.home.includes('/evidence/hero/engineering-scene-accepted-v43.webp') && files.home.includes('Комплексный подход к вентиляции'), 'Owner-approved architectural engineering illustration preserved');
+check(!files.home.includes('object-ribbon__number') && (files.home.match(/\['(?:Квартиры|Коттеджи|Рестораны|Магазины|Производства|Новостройки)/g) ?? []).length === 6, 'Object navigation has six named destinations without catalogue counters');
+check(files.home.includes('src="/evidence/hero/ductwork-editorial-v43.webp"'), 'Hero retains the selected Owner-supplied 7 PARK installation photo');
 check(files.home.includes('ПРИТОК') && files.home.includes('SUPPLY · схема потока') && files.home.includes('ВЫТЯЖКА') && files.home.includes('EXHAUST · схема потока'), 'Hero uses restrained Russian-first supply/exhaust technical annotations');
-check(files.home.includes('РЕАЛЬНЫЙ МОНТАЖ · СХЕМА ПОТОКА') && files.home.includes('схематическая визуализация приточного и вытяжного направления') && files.home.includes('не исполнительная схема объекта'), 'Hero keeps concise visible evidence annotation plus explicit accessible schematic disclaimer');
+check(files.home.includes('РЕАЛЬНЫЙ МОНТАЖ · 7 PARK · ПАВЛОВСК') && files.home.includes('подтверждено владельцем') && files.home.includes('не исполнительная схема объекта'), 'Hero uses Owner-confirmed 7 PARK attribution and keeps accessible schematic disclaimer');
 const heroFigure = files.home.match(/<figure class="hero-engineering">([\s\S]*?)<\/figure>/)?.[1] ?? '';
 const caseSection = files.home.match(/<section class="case-feature"[\s\S]*?<\/section>/)?.[0] ?? '';
 const caseImageCount = (caseSection.match(/<img\s/gu) ?? []).length;
