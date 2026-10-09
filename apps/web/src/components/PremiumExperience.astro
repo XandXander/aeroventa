@@ -370,15 +370,20 @@ const { pagePath = '' } = Astro.props;
 
   document.querySelectorAll('[data-contact-form]').forEach((form) => {
     hydrateContactContext(form.closest('dialog') || document);
+    form.addEventListener('focusin', () => {
+      const started = form.elements.started_at;
+      if (started && !started.value) started.value = String(Date.now());
+    }, { once: true });
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
+      if (form.dataset.submitting === 'true') return;
 
       const contact = form.elements.contact;
       const contactValue = String(contact?.value || '').trim();
       const digits = contactValue.replace(/\D/g, '');
       const emailLike = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactValue);
-      const phoneLike = digits.length >= 10;
+      const phoneLike = digits.length >= 10 && digits.length <= 15 && /^\+?[0-9 ()\t.\-]+$/.test(contactValue);
 
       contact?.setCustomValidity(emailLike || phoneLike ? '' : 'Укажите корректный телефон или e-mail.');
       if (!form.reportValidity()) return;
@@ -386,10 +391,14 @@ const { pagePath = '' } = Astro.props;
       hydrateContactContext(form.closest('dialog') || document);
 
       const formData = new FormData(form);
-      const payload = Object.fromEntries(formData.entries());
+      const payload = {
+        ...Object.fromEntries(formData.entries()),
+        consent: formData.has('consent'),
+        started_at: Number(formData.get('started_at') || 0),
+      };
       const status = form.querySelector('[data-form-status]');
       const submit = form.querySelector('button[type="submit"]');
-      const endpoint = form.dataset.leadEndpoint || '';
+      const endpoint = form.dataset.leadEndpoint || '/api/lead.php';
 
       track('contact_form_submit', {
         source: location.pathname,
@@ -423,6 +432,7 @@ const { pagePath = '' } = Astro.props;
         return;
       }
 
+      form.dataset.submitting = 'true';
       submit.disabled = true;
       submit.setAttribute('aria-busy', 'true');
       status.textContent = 'Передаём запрос…';
@@ -430,14 +440,17 @@ const { pagePath = '' } = Astro.props;
       try {
         const response = await fetch(endpoint, {
           method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          credentials: 'omit',
+          headers: { 'content-type': 'application/json', 'accept': 'application/json' },
+          credentials: 'same-origin',
+          cache: 'no-store',
           body: JSON.stringify(payload),
         });
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const result = await response.json().catch(() => null);
+        if (!response.ok || result?.ok !== true) throw new Error('server_rejected');
 
-        status.textContent = 'Запрос передан. Контакт сохранён только для ответа по этой задаче.';
+        status.textContent = 'Запрос принят к отправке. Доставка письма ещё не подтверждена.';
         form.reset();
+        if (form.elements.started_at) form.elements.started_at.value = String(Date.now());
         hydrateContactContext(form.closest('dialog') || document);
         track('contact_form_success', { source: location.pathname });
         track('lead_success', { source: location.pathname });
@@ -450,6 +463,7 @@ const { pagePath = '' } = Astro.props;
         else status.append(message);
         track('contact_form_error', { source: location.pathname, outcome: 'network_or_server' });
       } finally {
+        form.dataset.submitting = 'false';
         submit.disabled = false;
         submit.removeAttribute('aria-busy');
       }

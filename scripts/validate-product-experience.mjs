@@ -141,7 +141,7 @@ const heroFigure = files.home.match(/<figure class="hero-engineering">([\s\S]*?)
 const caseSection = files.home.match(/<section class="case-feature"[\s\S]*?<\/section>/)?.[0] ?? '';
 const caseImageCount = (caseSection.match(/<img\s/gu) ?? []).length;
 check(caseImageCount === 2, '7 PARK dossier uses exactly two evidence images');
-check(caseSection.includes('18.11.2020 — 10.12.2020') && caseSection.includes('7 домов') && caseSection.includes('Павловск, Ленинградская область'), '7 PARK dossier preserves verified fact boundary');
+check(caseSection.includes('18.11.2020 — 10.12.2020') && caseSection.includes('7 домов') && caseSection.includes('Павловск, Санкт-Петербург'), '7 PARK dossier preserves verified fact boundary');
 check(caseSection.includes('/evidence/7park/object-exterior-day.jpg') && caseSection.includes('/evidence/7park/duct-route.jpg'), '7 PARK dossier pairs object/building evidence with attributable real installation work');
 check(!caseSection.includes('196') && !caseSection.includes('Вистбалт'), '7 PARK dossier does not leak disputed or unproved claims');
 check(!heroFigure.includes('hero-engineering__terminal'), 'Hero has no unproven physical terminal mapping labels');
@@ -151,6 +151,10 @@ check(files.globalCss.includes('V40 — final HI-END evidence-first refinement')
 check(files.globalCss.includes('V41 — final bounded optical correction pass'), 'V41 bounded optical correction layer is present');
 check(files.globalCss.includes('.airflow-entry-trace__steps { display:none; }'), 'Mobile AIRFLOW ENTRY labels are suppressed without removing route animation');
 
+check(files.contactForm.includes('href="/privacy/"'), 'Consent includes privacy policy link');
+check(files.contactForm.includes('name="started_at"') && files.contactForm.includes('name="website"'), 'Form bot trap and start-time fields exist');
+check(files.premium.includes("result?.ok !== true") && files.premium.includes("form.dataset.submitting === 'true'"), 'Form accepts only server success and prevents duplicate submit');
+check(files.globalCss.includes('.lead-honeypot') && files.globalCss.includes('overflow-wrap:anywhere'), 'Narrow mobile and bot mitigations exist');
 check(files.css.includes('@media (max-width:760px)'), 'Premium experience has mobile adaptation');
 check(files.css.includes('@media (prefers-reduced-motion: reduce)'), 'Premium experience respects reduced motion');
 check(files.css.includes(':focus-visible'), 'Premium experience includes visible focus treatment');
