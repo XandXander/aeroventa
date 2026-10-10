@@ -56,6 +56,17 @@ try {
           }));
         });
         entry.overflow_px = await page.evaluate(() => Math.max(0, document.documentElement.scrollWidth - innerWidth));
+        if (entry.overflow_px > 1) entry.overflow_debug = await page.evaluate(() => ({
+          viewport: innerWidth,
+          html: { scroll: document.documentElement.scrollWidth, client: document.documentElement.clientWidth },
+          body: { scroll: document.body.scrollWidth, client: document.body.clientWidth },
+          candidates: [...document.querySelectorAll('body *')].map(el => {
+            const style = getComputedStyle(el), rect = el.getBoundingClientRect();
+            return { tag:el.tagName.toLowerCase(), cls:typeof el.className === 'string' ? el.className.slice(0,90):'',
+             scroll:el.scrollWidth,client:el.clientWidth,left:Math.round(rect.left),right:Math.round(rect.right),
+             after:getComputedStyle(el,'::after').content.slice(0,80),before:getComputedStyle(el,'::before').content.slice(0,80)};
+          }).filter(x => x.scroll > x.client + 3 && x.client > 0).sort((a,b) => (b.scroll-b.client)-(a.scroll-a.client)).slice(0,24),
+        }));
         if (entry.overflow_px > 1) entry.offenders = await page.evaluate(() => [...document.querySelectorAll('body *')].filter(el => {
           const box = el.getBoundingClientRect();
           const style = getComputedStyle(el);
