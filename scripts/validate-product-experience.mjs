@@ -134,7 +134,7 @@ check(files.home.includes('Получить ориентир стоимости'
 check(!files.home.includes('<svg class="hero-engineering__overlay"') && files.home.includes('solution-mobile-legend'), 'Displaced hero arrows absent; supply/exhaust still explained');
 check(files.home.includes('/evidence/hero/engineering-scene-accepted-v43.webp') && files.home.includes('Комплексный подход к вентиляции'), 'Owner-approved architectural engineering illustration preserved');
 check(!files.home.includes('object-ribbon__number') && (files.home.match(/\['(?:Квартиры|Коттеджи|Рестораны|Магазины|Производства|Новостройки)/g) ?? []).length === 6, 'Object navigation has six named destinations without catalogue counters');
-check(files.home.includes('src="/evidence/hero/ductwork-editorial-v43.webp"'), 'Hero retains the selected Owner-supplied 7 PARK installation photo');
+check(files.home.includes('owner-luxury-airflow-20261010.png') && files.home.includes("'/evidence/hero/ductwork-editorial-v43.webp'") && files.home.includes('hasOwnerHeroMedia'), 'Owner architectural HERO bound to exact asset with safe legacy fallback until binary is installed');
 check(files.home.includes('Приток · воздух в помещение') && files.home.includes('Вытяжка · удаление воздуха'), 'Supply/exhaust remain independent in accepted diagram');
 check(!files.home.includes('РЕАЛЬНЫЙ МОНТАЖ · 7 PARK · ПАВЛОВСК') && files.home.includes('Реальный монтаж AEROVENTA на объекте 7 PARK'), 'Rejected visual caption gone, accessible attribution preserved');
 const heroFigure = files.home.match(/<figure class="hero-engineering">([\s\S]*?)<\/figure>/)?.[1] ?? '';
