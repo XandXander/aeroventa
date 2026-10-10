@@ -3058,3 +3058,14 @@ main { min-height: 60vh; }
  .services-editorial__copy h2 {font-size:clamp(2.1rem,8vw,3rem);}
  .ponsse-recognition__citation {padding:24px;}
 }
+
+/* Case editorial story: project scope, performed work, documented outcome. */
+.case-story {background:#fff;padding-top:clamp(32px,5vw,70px);padding-bottom:clamp(30px,5vw,65px);}
+.case-story__grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(20px,3vw,46px);}
+.case-story__grid>div {border-top:2px solid #b86c49;padding-top:17px;}
+.case-story__grid>div:nth-child(2) {border-top-color:#355f7d;}
+.case-story__grid>div:nth-child(3) {border-top-color:#253d4b;}
+.case-story__grid span {color:#536778;font-size:.78rem;font-weight:750;letter-spacing:.025em;}
+.case-story__grid h2 {font-size:clamp(1.25rem,1.75vw,1.85rem);line-height:1.15;letter-spacing:-.027em;margin:12px 0;}
+.case-story__grid p {color:#495c68;line-height:1.58;margin:0;}
+@media(max-width:760px){.case-story__grid {grid-template-columns:1fr;gap:23px;}.case-story__grid h2{font-size:1.46rem;}}
