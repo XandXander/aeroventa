@@ -3313,3 +3313,12 @@ html::-webkit-scrollbar-thumb:hover {background:#7c93a2;}
       linear-gradient(180deg,#f8fafb 0%,rgba(248,250,251,.98) 13%,rgba(248,250,251,.78) 25%,rgba(248,250,251,.1) 48%,transparent 62%);
   }
 }
+
+/* Suppress faint raster double of the original blue caption without masking the ductwork below. */
+@media (min-width:1101px) {
+  .home-hero--v43 ~ .home-solution .solution-diagram::after {
+    content:"";display:block;position:absolute;z-index:2;pointer-events:none;
+    top:0;right:0;width:35%;height:43%;
+    background:linear-gradient(180deg,#f8fafb 0%,rgba(248,250,251,.985) 36%,rgba(248,250,251,.91) 62%,transparent 100%);
+  }
+}
