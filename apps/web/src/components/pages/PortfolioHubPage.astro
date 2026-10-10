@@ -4,12 +4,12 @@ interface Props { content: ContentRecord; fixture: boolean; }
 const { content } = Astro.props;
 
 const cases = [
-  { index:'01', title:'7 PARK', location:'Павловск, Санкт-Петербург', scope:'7 домов · монтаж приточно-вытяжной вентиляции', detail:'18.11.2020 — 10.12.2020', href:'/blog/detail/kak-my-sdali-7-domov/', kind:'Новостройки' },
-  { index:'02', title:'ЖК «Леонтьевский Мыс»', location:'Санкт-Петербург', scope:'Ресторан · приточно-вытяжная вентиляция + оборудование', detail:'Исторический срок: 2 недели', href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/', kind:'Рестораны' },
-  { index:'03', title:'НТФФ «Полисан»', location:'Санкт-Петербург, ул. Салова, 72', scope:'Фармацевтический объект · вентиляция + оборудование', detail:'Исторический период: 06.2017 — 06.2018', href:'/blog/detail/ntff-polisan/', kind:'Производство' },
-  { index:'04', title:'Маршала Жукова', location:'Санкт-Петербург', scope:'Квартира · приточно-вытяжная вентиляция', detail:'Исторический источник: ~100 м.п., 5 дней', href:'/blog/detail/kvartira-na-zhukova/', kind:'Квартиры' },
-  { index:'05', title:'Питкяранта / Карелия', location:'Республика Карелия', scope:'Сервисно-образовательный центр · вентиляция + оборудование', detail:'Исторический срок: 2 недели', href:'/blog/detail/montazh-ventilyatsii-v-karelii/', kind:'География' },
-  { index:'06', title:'Римского-Корсакова, 3', location:'Санкт-Петербург', scope:'Кафе · приточно-вытяжная вентиляция + оборудование', detail:'Исторический источник: 200 м², 5 дней', href:'/blog/detail/kafe-rimskogo-korsakova-3/', kind:'Рестораны' }
+  { index:'01', title:'7 PARK', image:'/evidence/7park/object-exterior-day.jpg', location:'Павловск, Санкт-Петербург', scope:'7 домов · монтаж приточно-вытяжной вентиляции', detail:'18.11.2020 — 10.12.2020', href:'/blog/detail/kak-my-sdali-7-domov/', kind:'Новостройки' },
+  { index:'02', title:'Ресторан в ЖК «Леонтьевский Мыс»', image:'/evidence/leont/duct-installation-01.jpg', location:'Санкт-Петербург', scope:'Ресторан · приточно-вытяжная вентиляция + оборудование', detail:'Исторический срок: 2 недели', href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/', kind:'Рестораны' },
+  { index:'03', title:'НТФФ «Полисан»', image:'/evidence/polisan/duct-installation-01.jpg', location:'Санкт-Петербург, ул. Салова, 72', scope:'Фармацевтический объект · вентиляция + оборудование', detail:'Исторический период: 06.2017 — 06.2018', href:'/blog/detail/ntff-polisan/', kind:'Производство' },
+  { index:'04', title:'Квартира на Маршала Жукова', image:'/evidence/zhukov/duct-installation-01.jpg', location:'Санкт-Петербург', scope:'Квартира · приточно-вытяжная вентиляция', detail:'Исторический источник: ~100 м.п., 5 дней', href:'/blog/detail/kvartira-na-zhukova/', kind:'Квартиры' },
+  { index:'05', title:'PONSSE — Питкяранта', image:'/evidence/karelia/equipment.jpg', location:'Республика Карелия', scope:'Сервисно-образовательный центр · вентиляция + оборудование', detail:'Исторический срок: 2 недели', href:'/blog/detail/montazh-ventilyatsii-v-karelii/', kind:'География' },
+  { index:'06', title:'Кафе на Римского-Корсакова, 3', image:'/evidence/cafe/duct-installation-01.jpg', location:'Санкт-Петербург', scope:'Кафе · приточно-вытяжная вентиляция + оборудование', detail:'Исторический источник: 200 м², 5 дней', href:'/blog/detail/kafe-rimskogo-korsakova-3/', kind:'Рестораны' }
 ];
 ---
 
@@ -17,7 +17,7 @@ const cases = [
   <header class="portfolio-hero">
     <div class="home-shell portfolio-hero__grid">
       <div>
-        <p class="home-kicker">Раздел доказательств</p>
+        <p class="home-kicker">Выполненные работы AEROVENTA</p>
         <h1>Реальные объекты и выполненные работы</h1>
       </div>
       <div>
@@ -61,6 +61,8 @@ const cases = [
       <div class="portfolio-grid">
         {cases.map((item) => (
           <a href={item.href} class="portfolio-card">
+            <div class="portfolio-card__media"><img src={item.image} width="800" height="520" alt={`Реальные фотографии работ: ${item.title}`} loading="lazy" decoding="async" /></div>
+            <div class="portfolio-card__body">
             <div class="portfolio-card__top"><span>{item.index}</span><b>{item.kind}</b></div>
             <div>
               <p>{item.location}</p>
@@ -68,7 +70,8 @@ const cases = [
               <strong>{item.scope}</strong>
             </div>
             <div class="portfolio-card__bottom">
-              <span>{item.detail}</span><b>Открыть →</b>
+              <span>{item.detail}</span><b>Смотреть работы →</b>
+            </div>
             </div>
           </a>
         ))}
