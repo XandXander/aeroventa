@@ -176,6 +176,11 @@ try {
           if (architectural !== 1 || wrong) report.fail.push({ route, view, reason: 'Owner montage hero assignment', architectural, wrong });
         }
         if (['seven_park','karelia_ponsse','polisan','leont','zhukov','cafe'].includes(id)) {
+          const expectedGallery = {karelia_ponsse:18,leont:26,polisan:15,cafe:10,zhukov:5};
+          if (Object.hasOwn(expectedGallery,id)) {
+            const archiveImages = await page.locator('.case-gallery-archive img').count();
+            if (archiveImages !== expectedGallery[id]) report.fail.push({route,view,reason:'Original case archive not fully represented',archiveImages,expected:expectedGallery[id]});
+          }
           const media = await page.locator('.case-gallery__item img').count();
           const story = await page.locator('.case-story__grid > div').count();
           if (media < 2 || story !== 3) report.fail.push({ route, view, reason: 'object evidence/story missing', media, story });
