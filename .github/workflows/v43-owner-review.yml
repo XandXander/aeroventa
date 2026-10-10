@@ -1,0 +1,60 @@
+name: V43 owner review — compiled browser screenshots
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'apps/web/**'
+      - 'scripts/render-v43-owner-review.mjs'
+      - '.github/workflows/v43-owner-review.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  screenshot-review:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.number == 10
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact review commit
+        uses: actions/checkout@v5
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+      - name: Install project dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Validate and compile fixture site
+        env:
+          AEROVENTA_RELEASE_MODE: fixture
+        run: |
+          npm run generate:hosting-rules
+          npm run validate
+          npm run build:web
+          npm run validate:dist
+      - name: Install isolated browser test dependency
+        run: |
+          npm install --no-save --no-package-lock --no-audit --no-fund playwright@1.56.1
+          npx --no-install playwright install --with-deps chromium
+      - name: Launch isolated local HTTP server
+        run: |
+          nohup python3 -m http.server 4178 --bind 127.0.0.1 --directory apps/web/dist > /tmp/v43-render-http.log 2>&1 &
+          echo $! > /tmp/v43-render-http.pid
+          for i in $(seq 1 25); do
+            if curl --fail --silent http://127.0.0.1:4178/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/v43-render-http.log
+          exit 1
+      - name: Render real compiled HTML at four viewports
+        run: node scripts/render-v43-owner-review.mjs
+      - name: Upload browser screenshots and machine report
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: v43-final-compiled-browser-owner-review
+          path: V43_OWNER_BROWSER_REVIEW
+          if-no-files-found: warn
+          retention-days: 7
