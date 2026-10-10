@@ -115,7 +115,7 @@ const isStories = content.path === '/blog/istorii-proektov/';
     </header>
 
     <section class="home-section story-index">
-      <div class="home-shell"><p class="section-index">01 / Подтверждённые истории</p><h2>От квартиры до семи домов и производственного объекта.</h2>
+      <div class="home-shell"><p class="section-index">01 / Подтверждённые истории</p><h2>Квартиры, жилые дома, кафе и производство.</h2>
         <div class="story-index__grid">
           {cases.map((item,index) => <a href={item.href}><div><span>{String(index+1).padStart(2,'0')}</span><b>{item.tag}</b></div><h3>{item.title}</h3><p>{item.meta}</p><strong>Открыть канонический кейс →</strong></a>)}
         </div>
