@@ -17,7 +17,20 @@ const robots = preview ? 'noindex,nofollow,noarchive,nosnippet' : robotsValue(co
 const schema = preview ? null : jsonLd(content);
 const ogTitle = content.og_title || content.seo_title || content.title;
 const ogDescription = content.og_description || content.seo_description;
-const ogImage = content.og_image ? new URL(content.og_image, 'https://aeroventa.ru').toString() : null;
+const editorialOgFallback: Record<string, string> = {
+  '/': '/evidence/hero/owner-luxury-airflow-20261010.png',
+  '/services/': '/evidence/hero/engineering-ductwork.jpg',
+  '/montazh-ventiliacii/': '/evidence/hero/hiend-engineering-visual-owner-v43.webp',
+  '/portfolio/': '/evidence/7park/object-exterior-day.jpg',
+  '/blog/detail/kak-my-sdali-7-domov/': '/evidence/7park/object-exterior-day.jpg',
+  '/blog/detail/restoran-v-zhk-leontevskiy-mys/': '/evidence/leont/duct-installation-01.jpg',
+  '/blog/detail/ntff-polisan/': '/evidence/polisan/duct-installation-01.jpg',
+  '/blog/detail/kvartira-na-zhukova/': '/evidence/zhukov/duct-installation-01.jpg',
+  '/blog/detail/montazh-ventilyatsii-v-karelii/': '/evidence/karelia/object-exterior.jpg',
+  '/blog/detail/kafe-rimskogo-korsakova-3/': '/evidence/cafe/duct-installation-01.jpg',
+};
+const ogImageSource = content.og_image || editorialOgFallback[content.path];
+const ogImage = ogImageSource ? new URL(ogImageSource, 'https://aeroventa.ru').toString() : null;
 const yandexVerification = (import.meta.env.PUBLIC_YANDEX_WEBMASTER_VERIFICATION || '').trim();
 const googleVerification = (import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION || '').trim();
 ---
