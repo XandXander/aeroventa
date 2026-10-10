@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node ../../scripts/postbuild.mjs",
+    "build": "node ../../scripts/prepare-responsive-hero.mjs && astro build && node ../../scripts/postbuild.mjs",
     "preview": "astro preview",
     "check": "astro check"
   },

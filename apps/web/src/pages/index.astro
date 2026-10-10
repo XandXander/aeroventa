@@ -9,6 +9,10 @@ const hasOwnerHeroMedia = [
   'apps/web/public/evidence/hero/owner-luxury-airflow-20261010.png',
   'public/evidence/hero/owner-luxury-airflow-20261010.png',
 ].some(p => existsSync(resolve(p)));
+const hasOptimizedOwnerHero = hasOwnerHeroMedia && [
+  'apps/web/public/evidence/hero/owner-luxury-airflow-640.webp',
+  'public/evidence/hero/owner-luxury-airflow-640.webp',
+].some(p => existsSync(resolve(p)));
 
 const content = await getByPath('/');
 if (!content) throw new Error('Home content is missing');
@@ -59,6 +63,8 @@ const questions = [
         <img
           class="hero-engineering__photo"
           src={hasOwnerHeroMedia ? ownerHeroMedia : '/evidence/hero/ductwork-editorial-v43.webp'}
+          srcset={hasOptimizedOwnerHero ? '/evidence/hero/owner-luxury-airflow-640.webp 640w, /evidence/hero/owner-luxury-airflow-1100.webp 1100w, /evidence/hero/owner-luxury-airflow-1774.webp 1774w' : undefined}
+          sizes={hasOptimizedOwnerHero ? '100vw' : undefined}
           width={hasOwnerHeroMedia ? 1774 : 800}
           height={hasOwnerHeroMedia ? 887 : 600}
           alt={hasOwnerHeroMedia ? 'Художественная визуализация интерьерной вентиляции с воздушными потоками — не выполненный объект AEROVENTA' : 'Реальный монтаж вентиляционных воздуховодов на объекте 7 PARK в Павловске'}
