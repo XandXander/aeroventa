@@ -3294,3 +3294,22 @@ html::-webkit-scrollbar-thumb:hover {background:#7c93a2;}
 .case-gallery-archive .case-gallery__item img {aspect-ratio:1.42;object-fit:cover;}
 .case-gallery-archive .case-gallery__item figcaption {font-size:.76rem;}
 @media(max-width:760px){.case-gallery-archive .case-gallery__grid {grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}.case-gallery-archive .case-gallery__item figcaption {padding:8px;font-size:.72rem;}}
+
+/* Owner visual readback: keep both engineering labels clear of the floating consultant launcher. */
+@media (min-width:1101px) {
+  .home-hero--v43 ~ .home-solution .solution-overlay-labels {
+    top:clamp(96px,12%,118px);
+    padding-right:clamp(260px,24vw,360px);
+    padding-left:clamp(178px,22%,268px);
+    gap:15px;
+  }
+  .home-hero--v43 ~ .home-solution .solution-overlay-label {
+    flex:1 1 0;max-width:205px;min-width:0;
+    background:rgba(248,250,251,.91);box-shadow:0 2px 20px rgba(23,52,71,.02);
+  }
+  .home-hero--v43 ~ .home-solution .solution-diagram::before {
+    background:
+      linear-gradient(90deg,#f8fafb 0%,rgba(248,250,251,.97) 11%,rgba(248,250,251,.69) 24%,rgba(248,250,251,.12) 46%,transparent 61%),
+      linear-gradient(180deg,#f8fafb 0%,rgba(248,250,251,.98) 13%,rgba(248,250,251,.78) 25%,rgba(248,250,251,.1) 48%,transparent 62%);
+  }
+}
