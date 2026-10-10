@@ -93,7 +93,7 @@ for (const r of html200) {
   check(await exists(file), `Retained HTTP-200 route missing built HTML: ${r.path}`);
   if (await exists(file)) {
     const html = await fs.readFile(file, 'utf8');
-    const title = html.match(/<title(?:\\s[^>]*)?>([^<]+)<\\/title>/i)?.[1]?.trim() || '';
+    const title = html.match(/<title(?:\s[^>]*)?>([^<]+)<\/title>/i)?.[1]?.trim() || '';
     check(Boolean(title), `SEO title missing for ${r.path}`);
     if (title) {
       const previous = retainedSeoTitles.get(title);
@@ -101,7 +101,7 @@ for (const r of html200) {
       retainedSeoTitles.set(title, r.path);
     }
     if (targetedMetaDescriptions.has(r.path)) {
-      const description = html.match(/<meta\\s+name=["']description["']\\s+content=["']([^"']+)["']/i)?.[1]?.trim() || '';
+      const description = html.match(/<meta\s+name=["']description["']\s+content=["']([^"']+)["']/i)?.[1]?.trim() || '';
       check(description.length >= 60 && description.length <= 220, `Missing/invalid migrated meta description for ${r.path}`);
     }
     const expectedCanonical = new URL(r.path, 'https://aeroventa.ru').toString();
