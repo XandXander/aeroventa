@@ -16,7 +16,7 @@ const {
   intent = 'VENTILATION_PROJECT',
   compact = false,
 } = Astro.props;
-const endpoint = (import.meta.env.PUBLIC_LEAD_ENDPOINT || '').trim();
+const endpoint = (import.meta.env.PUBLIC_LEAD_ENDPOINT || '/api/lead.php').trim();
 ---
 
 <form
@@ -35,34 +35,38 @@ const endpoint = (import.meta.env.PUBLIC_LEAD_ENDPOINT || '').trim();
   <div class="premium-contact-form__grid">
     <div class="field">
       <label for={`${idPrefix}-name`}>Имя</label>
-      <input id={`${idPrefix}-name`} name="name" autocomplete="name" required />
+      <input id={`${idPrefix}-name`} name="name" autocomplete="name" maxlength="80" required />
       <span class="field__error" data-error-for="name"></span>
     </div>
 
     <div class="field">
       <label for={`${idPrefix}-contact`}>Телефон или e-mail</label>
-      <input id={`${idPrefix}-contact`} name="contact" autocomplete="email" required />
+      <input id={`${idPrefix}-contact`} name="contact" autocomplete="off" inputmode="text" maxlength="160" required />
       <span class="field__error" data-error-for="contact"></span>
     </div>
 
     <div class="field field--wide">
       <label for={`${idPrefix}-task`}>Кратко задача</label>
-      <textarea id={`${idPrefix}-task`} name="task" rows="4" required></textarea>
+      <textarea id={`${idPrefix}-task`} name="task" rows={compact ? 3 : 4} maxlength="4000" required></textarea>
       <span class="field__hint">Без технического «идеального брифа». Достаточно текущей ситуации и ожидаемого результата.</span>
       <span class="field__error" data-error-for="task"></span>
     </div>
 
-    <div class="field field--wide">
+    <div class:list={['field', 'field--wide', {'field--optional': compact}]}>
       <label for={`${idPrefix}-company`}>Компания <span>необязательно</span></label>
-      <input id={`${idPrefix}-company`} name="company" autocomplete="organization" />
+      <input id={`${idPrefix}-company`} name="company" autocomplete="organization" maxlength="160" />
     </div>
   </div>
 
   <label class="consent-check" for={`${idPrefix}-consent`}>
     <input id={`${idPrefix}-consent`} name="consent" type="checkbox" required />
-    <span>Разрешаю использовать переданные данные только для ответа на этот запрос и дальнейшей связи по нему.</span>
+    <span>Согласен на обработку указанных данных исключительно для ответа на обращение. <a href="/privacy/">Политика обработки данных</a>.</span>
   </label>
 
+  <div class="lead-honeypot" aria-hidden="true">
+    <label>Сайт <input name="website" type="text" tabindex="-1" autocomplete="off" /></label>
+  </div>
+  <input type="hidden" name="started_at" value="" />
   <input type="hidden" name="source_page" value={sourcePath} />
   <input type="hidden" name="object_service" value="" />
   <input type="hidden" name="project_status" value={projectStatus} />

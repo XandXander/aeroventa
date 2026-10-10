@@ -1,5 +1,12 @@
 ---
 import type { ContentRecord } from '@/lib/types';
+import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+
+const letterSrc = '/evidence/karelia/ponsse-letter-20220405.png';
+const portraitSrc = '/evidence/karelia/p-teittinen-original.jpg';
+const hasLetter = ['apps/web/public/evidence/karelia/ponsse-letter-20220405.png','public/evidence/karelia/ponsse-letter-20220405.png'].some(p => existsSync(resolve(p)));
+const hasPortrait = import.meta.env.PUBLIC_PONSSE_PORTRAIT_PUBLICATION_APPROVED === 'true' && ['apps/web/public/evidence/karelia/p-teittinen-original.jpg','public/evidence/karelia/p-teittinen-original.jpg'].some(p => existsSync(resolve(p)));
 interface Props { content: ContentRecord; fixture: boolean; }
 const { content } = Astro.props;
 
@@ -7,9 +14,13 @@ type CaseSpec = {
   eyebrow: string;
   location: string;
   lede: string;
+  task: string;
+  works: string;
+  result: string;
   facts: Array<[string,string]>;
   evidence: string[];
   media: Array<[string,string,string]>;
+  archiveMedia?: Array<[string,string,string]>;
   proves: string[];
   limits: string[];
   related: Array<[string,string,string]>;
@@ -18,8 +29,11 @@ type CaseSpec = {
 const specs: Record<string, CaseSpec> = {
   '/blog/detail/kak-my-sdali-7-domov/': {
     eyebrow:'Новостройки / жилой квартал',
-    location:'Павловск, Ленинградская область',
+    location:'Павловск, Санкт-Петербург',
     lede:'Исторический объект AEROVENTA: монтаж приточно-вытяжной вентиляции в семи домах жилого квартала. Основная ценность кейса — повторяемый объём и интенсивная фаза работ на нескольких зданиях.',
+    task:"Организовать монтаж вентиляции в семи домах жилого квартала.",
+    works:"Монтаж приточно-вытяжной вентиляции на объектах квартала 7 PARK в Павловске.",
+    result:"В исторической публикации AEROVENTA указан период работ с 18 ноября по 10 декабря 2020 года.",
     facts:[
       ['Объект','Жилой квартал'],
       ['Объём','7 домов'],
@@ -56,7 +70,10 @@ const specs: Record<string, CaseSpec> = {
   '/blog/detail/restoran-v-zhk-leontevskiy-mys/': {
     eyebrow:'Ресторан / коммерческий объект',
     location:'Ждановская ул., 45 · Санкт-Петербург',
-    lede:'Ресторан в ЖК «Леонтьевский Мыс»: монтаж приточно-вытяжной вентиляции и вентиляционного оборудования. В актуальной базе объект классифицирован именно как ресторан, не офис.',
+    lede:'Ресторан в ЖК «Леонтьевский Мыс»: монтаж приточно-вытяжной вентиляции и вентиляционного оборудования. ',
+    task:"Смонтировать вентиляцию ресторанного помещения в жилом комплексе.",
+    works:"Монтаж приточно-вытяжной вентиляции и вентиляционного оборудования.",
+    result:"Архивная публикация указывает срок монтажа две недели составом пяти человек.",
     facts:[
       ['Объект','Ресторан в ЖК «Леонтьевский Мыс»'],
       ['Локация','Ждановская ул., 45 · Санкт-Петербург'],
@@ -72,8 +89,37 @@ const specs: Record<string, CaseSpec> = {
       'Фотографии ниже взяты из галереи этой же страницы объекта.'
     ],
     media:[
+      ['/evidence/leont/owner-cover-v43.webp','ЖК «Леонтьевский Мыс» · внешний вид здания','Архитектура жилого комплекса · контекст ресторана'],
       ['/evidence/leont/duct-installation-01.jpg','Монтаж воздуховодов на объекте ЖК «Леонтьевский Мыс»','Монтаж воздуховодов'],
       ['/evidence/leont/duct-installation-02.jpg','Вентиляционные трассы на объекте ЖК «Леонтьевский Мыс»','Фрагмент смонтированной системы']
+    ],
+    archiveMedia:[
+      ['/evidence/leont/archive/img-5236.webp','Монтаж вентиляции в ресторане на Ждановской, 45, архивный кадр 1','Архив монтажа · кадр 01'],
+      ['/evidence/leont/archive/img-5237.webp','Монтаж вентиляции в ресторане на Ждановской, 45, архивный кадр 2','Архив монтажа · кадр 02'],
+      ['/evidence/leont/archive/img-5238.webp','Монтаж вентиляции в ресторане на Ждановской, 45, архивный кадр 3','Архив монтажа · кадр 03'],
+      ['/evidence/leont/archive/img-5239.webp','Монтаж вентиляции в ресторане на Ждановской, 45, архивный кадр 4','Архив монтажа · кадр 04'],
+      ['/evidence/leont/archive/img-5240.webp','Монтаж вентиляции в ресторане на Ждановской, 45, архивный кадр 5','Архив монтажа · кадр 05'],
+      ['/evidence/leont/archive/img-5241.webp','Монтаж вентиляции в ресторане на Ждановской, 45, архивный кадр 6','Архив монтажа · кадр 06'],
+      ['/evidence/leont/archive/img-5242.webp','Монтаж вентиляции в ресторане на Ждановской, 45, архивный кадр 7','Архив монтажа · кадр 07'],
+      ['/evidence/leont/archive/img-5243.webp','Монтаж вентиляции в ресторане на Ждановской, 45, архивный кадр 8','Архив монтажа · кадр 08'],
+      ['/evidence/leont/archive/img-5244.webp','Монтаж вентиляции в ресторане на Ждановской, 45, архивный кадр 9','Архив монтажа · кадр 09'],
+      ['/evidence/leont/archive/img-5245.webp','Монтаж вентиляции в ресторане на Ждановской, 45, архивный кадр 10','Архив монтажа · кадр 10'],
+      ['/evidence/leont/archive/img-5250.webp','Монтаж вентиляции в ресторане на Ждановской, 45, архивный кадр 11','Архив монтажа · кадр 11'],
+      ['/evidence/leont/archive/img-5251.webp','Монтаж вентиляции в ресторане на Ждановской, 45, архивный кадр 12','Архив монтажа · кадр 12'],
+      ['/evidence/leont/archive/img-5253.webp','Монтаж вентиляции в ресторане на Ждановской, 45, архивный кадр 13','Архив монтажа · кадр 13'],
+      ['/evidence/leont/archive/img-5256.webp','Монтаж вентиляции в ресторане на Ждановской, 45, архивный кадр 14','Архив монтажа · кадр 14'],
+      ['/evidence/leont/archive/img-4998.webp','Монтаж вентиляции в ресторане на Ждановской, 45, архивный кадр 15','Архив монтажа · кадр 15'],
+      ['/evidence/leont/archive/img-4999.webp','Монтаж вентиляции в ресторане на Ждановской, 45, архивный кадр 16','Архив монтажа · кадр 16'],
+      ['/evidence/leont/archive/img-5001.webp','Монтаж вентиляции в ресторане на Ждановской, 45, архивный кадр 17','Архив монтажа · кадр 17'],
+      ['/evidence/leont/archive/img-5003.webp','Монтаж вентиляции в ресторане на Ждановской, 45, архивный кадр 18','Архив монтажа · кадр 18'],
+      ['/evidence/leont/archive/img-5004.webp','Монтаж вентиляции в ресторане на Ждановской, 45, архивный кадр 19','Архив монтажа · кадр 19'],
+      ['/evidence/leont/archive/img-5005.webp','Монтаж вентиляции в ресторане на Ждановской, 45, архивный кадр 20','Архив монтажа · кадр 20'],
+      ['/evidence/leont/archive/img-5006.webp','Монтаж вентиляции в ресторане на Ждановской, 45, архивный кадр 21','Архив монтажа · кадр 21'],
+      ['/evidence/leont/archive/img-5007.webp','Монтаж вентиляции в ресторане на Ждановской, 45, архивный кадр 22','Архив монтажа · кадр 22'],
+      ['/evidence/leont/archive/img-5008.webp','Монтаж вентиляции в ресторане на Ждановской, 45, архивный кадр 23','Архив монтажа · кадр 23'],
+      ['/evidence/leont/archive/img-5009.webp','Монтаж вентиляции в ресторане на Ждановской, 45, архивный кадр 24','Архив монтажа · кадр 24'],
+      ['/evidence/leont/archive/img-5010.webp','Монтаж вентиляции в ресторане на Ждановской, 45, архивный кадр 25','Архив монтажа · кадр 25'],
+      ['/evidence/leont/archive/img-5029.webp','Монтаж вентиляции в ресторане на Ждановской, 45, архивный кадр 26','Архив монтажа · кадр 26']
     ],
     proves:[
       'Реальный опыт монтажа вентиляции в ресторанном объекте.',
@@ -86,7 +132,7 @@ const specs: Record<string, CaseSpec> = {
       'Назначение объекта фиксируем как ресторан и не расширяем его за пределы исходного источника.'
     ],
     related:[
-      ['Рестораны и кафе','/obekty/restorany-i-kafe/','Объектная страница с ограничениями и факторами стоимости.'],
+      ['Рестораны и кафе','/obekty/restorany-i-kafe/','Объектная страница с особенностями и факторами стоимости.'],
       ['Кафе на Римского-Корсакова','/blog/detail/kafe-rimskogo-korsakova-3/','Второй подтверждённый ресторанный кейс.'],
       ['Все объекты','/portfolio/','Раздел реальных объектов AEROVENTA.']
     ]
@@ -95,6 +141,9 @@ const specs: Record<string, CaseSpec> = {
     eyebrow:'Производство / фармацевтический объект',
     location:'Санкт-Петербург · ул. Салова, 72',
     lede:'Исторический промышленный объект AEROVENTA: монтаж приточно-вытяжной вентиляции и вентиляционного оборудования на площадке НТФФ «Полисан».',
+    task:"Выполнить монтаж вентиляции на площадке фармацевтического производства.",
+    works:"Монтаж приточно-вытяжной вентиляции и вентиляционного оборудования по адресу ул. Салова, 72.",
+    result:"Исторически подтверждён период выполнения монтажных работ: июнь 2017 — июнь 2018.",
     facts:[
       ['Объект','НТФФ «Полисан»'],
       ['Тип','Фармацевтическое предприятие'],
@@ -109,8 +158,26 @@ const specs: Record<string, CaseSpec> = {
       'Фотографии ниже взяты из галереи исходной страницы «Полисан».'
     ],
     media:[
+      ['/evidence/polisan/owner-cover-v43.webp','Фасад производственной площадки «Полисан»','НТФФ «Полисан» · фасад предприятия'],
       ['/evidence/polisan/duct-installation-01.jpg','Монтаж вентиляции на объекте НТФФ «Полисан»','Воздуховоды и теплоизоляция'],
       ['/evidence/polisan/duct-installation-02.jpg','Вентиляционные трассы на объекте НТФФ «Полисан»','Фрагмент инженерных трасс']
+    ],
+    archiveMedia:[
+      ['/evidence/polisan/archive/20180508-113510-1.webp','Монтаж воздуховодов и оборудования на площадке НТФФ «Полисан», архивный кадр 1','Архив монтажа · кадр 01'],
+      ['/evidence/polisan/archive/20180508-113558.webp','Монтаж воздуховодов и оборудования на площадке НТФФ «Полисан», архивный кадр 2','Архив монтажа · кадр 02'],
+      ['/evidence/polisan/archive/20180508-113610.webp','Монтаж воздуховодов и оборудования на площадке НТФФ «Полисан», архивный кадр 3','Архив монтажа · кадр 03'],
+      ['/evidence/polisan/archive/20180508-113620.webp','Монтаж воздуховодов и оборудования на площадке НТФФ «Полисан», архивный кадр 4','Архив монтажа · кадр 04'],
+      ['/evidence/polisan/archive/20180508-113631.webp','Монтаж воздуховодов и оборудования на площадке НТФФ «Полисан», архивный кадр 5','Архив монтажа · кадр 05'],
+      ['/evidence/polisan/archive/20180508-144933.webp','Монтаж воздуховодов и оборудования на площадке НТФФ «Полисан», архивный кадр 6','Архив монтажа · кадр 06'],
+      ['/evidence/polisan/archive/20180508-145055.webp','Монтаж воздуховодов и оборудования на площадке НТФФ «Полисан», архивный кадр 7','Архив монтажа · кадр 07'],
+      ['/evidence/polisan/archive/20180510-173851.webp','Монтаж воздуховодов и оборудования на площадке НТФФ «Полисан», архивный кадр 8','Архив монтажа · кадр 08'],
+      ['/evidence/polisan/archive/20180510-173901.webp','Монтаж воздуховодов и оборудования на площадке НТФФ «Полисан», архивный кадр 9','Архив монтажа · кадр 09'],
+      ['/evidence/polisan/archive/20180510-173909.webp','Монтаж воздуховодов и оборудования на площадке НТФФ «Полисан», архивный кадр 10','Архив монтажа · кадр 10'],
+      ['/evidence/polisan/archive/20180601-114227.webp','Монтаж воздуховодов и оборудования на площадке НТФФ «Полисан», архивный кадр 11','Архив монтажа · кадр 11'],
+      ['/evidence/polisan/archive/20180601-114505.webp','Монтаж воздуховодов и оборудования на площадке НТФФ «Полисан», архивный кадр 12','Архив монтажа · кадр 12'],
+      ['/evidence/polisan/archive/20180601-133711.webp','Монтаж воздуховодов и оборудования на площадке НТФФ «Полисан», архивный кадр 13','Архив монтажа · кадр 13'],
+      ['/evidence/polisan/archive/20180601-133720.webp','Монтаж воздуховодов и оборудования на площадке НТФФ «Полисан», архивный кадр 14','Архив монтажа · кадр 14'],
+      ['/evidence/polisan/archive/20180601-164403.webp','Монтаж воздуховодов и оборудования на площадке НТФФ «Полисан», архивный кадр 15','Архив монтажа · кадр 15']
     ],
     proves:[
       'Длительный монтажный опыт на производственном / фармацевтическом объекте.',
@@ -131,6 +198,9 @@ const specs: Record<string, CaseSpec> = {
     eyebrow:'Квартира / жилой объект',
     location:'Санкт-Петербург · Маршала Жукова',
     lede:'Исторический квартирный объект AEROVENTA: приточно-вытяжная вентиляция с оборудованием. Этот кейс важен тем, что подтверждает реальный частный/жилой опыт, а не только крупный B2B.',
+    task:"Реализовать вентиляцию квартиры в Санкт-Петербурге.",
+    works:"Монтаж приточно-вытяжной вентиляции с оборудованием; указанный в первоисточнике объём — около 100 погонных метров.",
+    result:"В архивной публикации указан срок пять дней и два специалиста; эти данные относятся только к конкретному объекту.",
     facts:[
       ['Объект','Квартира на Маршала Жукова'],
       ['Система','Приточно-вытяжная вентиляция'],
@@ -145,8 +215,16 @@ const specs: Record<string, CaseSpec> = {
       'Фотографии ниже взяты из галереи этой же страницы квартиры.'
     ],
     media:[
+      ['/evidence/zhukov/owner-cover-v43.webp','Фасад жилого здания на Маршала Жукова','Квартира на Маршала Жукова · внешний вид здания'],
       ['/evidence/zhukov/duct-installation-01.jpg','Монтаж вентиляции в квартире на Маршала Жукова','Воздуховоды в жилом объекте'],
       ['/evidence/zhukov/duct-installation-02.jpg','Фрагмент вентиляционной системы в квартире на Маршала Жукова','Смонтированный участок системы']
+    ],
+    archiveMedia:[
+      ['/evidence/zhukov/archive/img-20200422-165107.webp','Монтаж вентиляции в квартире на Маршала Жукова, архивный кадр 1','Архив монтажа · кадр 01'],
+      ['/evidence/zhukov/archive/img-20200422-165118.webp','Монтаж вентиляции в квартире на Маршала Жукова, архивный кадр 2','Архив монтажа · кадр 02'],
+      ['/evidence/zhukov/archive/img-20200422-165138.webp','Монтаж вентиляции в квартире на Маршала Жукова, архивный кадр 3','Архив монтажа · кадр 03'],
+      ['/evidence/zhukov/archive/img-20200504-113239.webp','Монтаж вентиляции в квартире на Маршала Жукова, архивный кадр 4','Архив монтажа · кадр 04'],
+      ['/evidence/zhukov/archive/img-20200504-113302.webp','Монтаж вентиляции в квартире на Маршала Жукова, архивный кадр 5','Архив монтажа · кадр 05']
     ],
     proves:[
       'Реальный опыт AEROVENTA в квартире.',
@@ -167,6 +245,9 @@ const specs: Record<string, CaseSpec> = {
     eyebrow:'Карелия / сервисно-образовательный центр',
     location:'Питкяранта · Республика Карелия',
     lede:'Исторический объект AEROVENTA в Питкяранте: монтаж приточно-вытяжной вентиляции и оборудования в контексте сервисно-образовательного центра PONSSE.',
+    task:"Выполнить вентиляционные работы в сервисно-образовательном центре в Питкяранте.",
+    works:"Монтаж приточно-вытяжной вентиляции и оборудования.",
+    result:"Первоначальная публикация сообщает о двух неделях монтажа составом трёх специалистов; благодарственное письмо от апреля 2022 года отдельно отмечает соблюдение сроков сотрудничества.",
     facts:[
       ['Локация','Питкяранта · Республика Карелия'],
       ['Объект','Сервисно-образовательный центр'],
@@ -182,8 +263,31 @@ const specs: Record<string, CaseSpec> = {
       'Фотографии ниже взяты из галереи исходной страницы PONSSE / Питкяранта.'
     ],
     media:[
+      ['/evidence/karelia/owner-cover-v43.webp','Фасад сервисного центра PONSSE в Питкяранте с вывеской','PONSSE · сервисный центр'],
       ['/evidence/karelia/object-exterior.jpg','Объект PONSSE в Питкяранте, Республика Карелия','Питкяранта · объект PONSSE'],
-      ['/evidence/karelia/equipment.jpg','Вентиляционное оборудование на объекте в Питкяранте','Вентиляционное оборудование на объекте']
+      ['/evidence/karelia/equipment.jpg','Вентиляционное оборудование на объекте в Питкяранте','Вентиляционное оборудование на объекте'],
+      ['/evidence/karelia/archive/img-8306.webp','Установленные воздуховоды и вентиляционные агрегаты PONSSE','Смонтированная вентиляционная система'],
+      ['/evidence/karelia/archive/img-8307.webp','Воздуховоды и оборудование на объекте PONSSE','Монтаж вентиляции · Питкяранта']
+    ],
+    archiveMedia:[
+      ['/evidence/karelia/archive/img-8007.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8007','Монтаж вентиляции · архив, кадр 01'],
+      ['/evidence/karelia/archive/img-8008.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8008','Монтаж вентиляции · архив, кадр 02'],
+      ['/evidence/karelia/archive/img-8009.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8009','Монтаж вентиляции · архив, кадр 03'],
+      ['/evidence/karelia/archive/img-8010.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8010','Монтаж вентиляции · архив, кадр 04'],
+      ['/evidence/karelia/archive/img-8087.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8087','Монтаж вентиляции · архив, кадр 05'],
+      ['/evidence/karelia/archive/img-8088.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8088','Монтаж вентиляции · архив, кадр 06'],
+      ['/evidence/karelia/archive/img-8090.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8090','Монтаж вентиляции · архив, кадр 07'],
+      ['/evidence/karelia/archive/img-8096.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8096','Монтаж вентиляции · архив, кадр 08'],
+      ['/evidence/karelia/archive/img-8099.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8099','Монтаж вентиляции · архив, кадр 09'],
+      ['/evidence/karelia/archive/img-8100.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8100','Монтаж вентиляции · архив, кадр 10'],
+      ['/evidence/karelia/archive/img-8110.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8110','Монтаж вентиляции · архив, кадр 11'],
+      ['/evidence/karelia/archive/img-8111.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8111','Монтаж вентиляции · архив, кадр 12'],
+      ['/evidence/karelia/archive/img-8179.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8179','Монтаж вентиляции · архив, кадр 13'],
+      ['/evidence/karelia/archive/img-8181.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8181','Монтаж вентиляции · архив, кадр 14'],
+      ['/evidence/karelia/archive/img-8193.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8193','Монтаж вентиляции · архив, кадр 15'],
+      ['/evidence/karelia/archive/img-8194.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8194','Монтаж вентиляции · архив, кадр 16'],
+      ['/evidence/karelia/archive/img-8196.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8196','Монтаж вентиляции · архив, кадр 17'],
+      ['/evidence/karelia/archive/img-8199.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8199','Монтаж вентиляции · архив, кадр 18']
     ],
     proves:[
       'Реальный опыт выполнения объекта за пределами Санкт-Петербурга и Ленинградской области.',
@@ -204,6 +308,9 @@ const specs: Record<string, CaseSpec> = {
     eyebrow:'Кафе / коммерческий объект',
     location:'пр. Римского-Корсакова, 3 · Санкт-Петербург',
     lede:'Исторический кейс AEROVENTA: монтаж приточно-вытяжной вентиляции и вентиляционного оборудования в кафе на проспекте Римского-Корсакова, 3.',
+    task:"Оборудовать вентиляцией кафе на проспекте Римского-Корсакова, 3.",
+    works:"Монтаж приточно-вытяжной вентиляции и вентиляционного оборудования.",
+    result:"Историческая публикация указывает площадь кафе 200 м² и срок работ пять дней; это сведения конкретного проекта, не типовые сроки.",
     facts:[
       ['Объект','Кафе'],
       ['Локация','пр. Римского-Корсакова, 3 · Санкт-Петербург'],
@@ -219,8 +326,22 @@ const specs: Record<string, CaseSpec> = {
       'Фотографии ниже взяты из галереи этой же страницы кафе.'
     ],
     media:[
+      ['/evidence/cafe/owner-cover-v43.webp','Интерьер кафе на Римского-Корсакова, 3','Кафе · общий вид интерьера'],
+      ['/evidence/cafe/owner-interior-v43.webp','Зона у окна в кафе на Римского-Корсакова, 3','Кафе · интерьер у окна'],
       ['/evidence/cafe/duct-installation-01.jpg','Монтаж вентиляции в кафе на проспекте Римского-Корсакова','Фрагмент вентиляционной трассы'],
       ['/evidence/cafe/duct-installation-02.jpg','Воздуховоды в кафе на проспекте Римского-Корсакова','Смонтированный участок воздуховодов']
+    ],
+    archiveMedia:[
+      ['/evidence/cafe/archive/img-20200925-173755.webp','Монтаж вентиляции в кафе на Римского-Корсакова, 3, архивный кадр 1','Архив монтажа · кадр 01'],
+      ['/evidence/cafe/archive/img-20201008-165514.webp','Монтаж вентиляции в кафе на Римского-Корсакова, 3, архивный кадр 2','Архив монтажа · кадр 02'],
+      ['/evidence/cafe/archive/img-20201008-165522.webp','Монтаж вентиляции в кафе на Римского-Корсакова, 3, архивный кадр 3','Архив монтажа · кадр 03'],
+      ['/evidence/cafe/archive/img-20201008-165533.webp','Монтаж вентиляции в кафе на Римского-Корсакова, 3, архивный кадр 4','Архив монтажа · кадр 04'],
+      ['/evidence/cafe/archive/img-20201008-165543.webp','Монтаж вентиляции в кафе на Римского-Корсакова, 3, архивный кадр 5','Архив монтажа · кадр 05'],
+      ['/evidence/cafe/archive/img-20201008-165554.webp','Монтаж вентиляции в кафе на Римского-Корсакова, 3, архивный кадр 6','Архив монтажа · кадр 06'],
+      ['/evidence/cafe/archive/img-20201008-165609.webp','Монтаж вентиляции в кафе на Римского-Корсакова, 3, архивный кадр 7','Архив монтажа · кадр 07'],
+      ['/evidence/cafe/archive/img-20201008-165614.webp','Монтаж вентиляции в кафе на Римского-Корсакова, 3, архивный кадр 8','Архив монтажа · кадр 08'],
+      ['/evidence/cafe/archive/img-20201008-165628.webp','Монтаж вентиляции в кафе на Римского-Корсакова, 3, архивный кадр 9','Архив монтажа · кадр 09'],
+      ['/evidence/cafe/archive/img-20201008-165637.webp','Монтаж вентиляции в кафе на Римского-Корсакова, 3, архивный кадр 10','Архив монтажа · кадр 10']
     ],
     proves:[
       'Реальный опыт монтажа вентиляции в кафе.',
@@ -232,7 +353,7 @@ const specs: Record<string, CaseSpec> = {
       'Фотографии подтверждают монтаж на объекте, но не доказывают невидимые параметры системы.'
     ],
     related:[
-      ['Рестораны и кафе','/obekty/restorany-i-kafe/','Объектная страница с ограничениями и факторами стоимости.'],
+      ['Рестораны и кафе','/obekty/restorany-i-kafe/','Объектная страница с особенностями и факторами стоимости.'],
       ['Ресторан в Леонтьевском Мысе','/blog/detail/restoran-v-zhk-leontevskiy-mys/','Второй подтверждённый ресторанный кейс.'],
       ['Все объекты','/portfolio/','Раздел реальных объектов AEROVENTA.']
     ]
@@ -264,52 +385,94 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
   <section class="case-detail-facts" aria-labelledby="case-facts-title">
     <div class="home-shell">
       <p class="section-index">01 / Факты объекта</p>
-      <h2 id="case-facts-title">Что подтверждено исходной публикацией.</h2>
+      <h2 id="case-facts-title">Объект и выполненные работы.</h2>
       <dl class="case-detail-facts__grid">
         {spec.facts.map(([label,value]) => <div><dt>{label}</dt><dd>{value}</dd></div>)}
       </dl>
     </div>
   </section>
 
-  <section class="case-detail-evidence" aria-labelledby="case-evidence-title">
-    <div class="home-shell case-detail-evidence__grid">
-      <div>
-        <p class="section-index section-index--orange">02 / Доказательства</p>
-        <h2 id="case-evidence-title">Не достраиваем историю догадками.</h2>
+  {content.path === '/blog/detail/montazh-ventilyatsii-v-karelii/' && (
+    <section class="ponsse-recognition" aria-labelledby="ponsse-recognition-title">
+      <div class="home-shell ponsse-recognition__grid">
+        <div>
+          <p class="section-index section-index--orange">02 / Отзыв о сотрудничестве</p>
+          <h2 id="ponsse-recognition-title">Два года профессиональной и деликатной работы.</h2>
+          <p>Международная компания PONSSE поблагодарила AEROVENTA за работу на протяжении двух лет сотрудничества. Аккуратный, эстетически выверенный монтаж — часть нашего профессионального подхода.</p>
+          <p>В подлинном письме от 5 апреля 2022 года отмечены профессиональная этика, высокое качество работы и выполнение задач без задержек.</p>
+        </div>
+        <aside class="ponsse-recognition__citation">
+          <span>Благодарственное письмо · 2022</span>
+          <strong>05.04.2022</strong>
+          <p>За два года сотрудничества — профессионализм, внимательное исполнение и соблюдение сроков.</p>
+          {hasLetter && (
+            <button type="button" class="ponsse-letter-preview" data-ponsse-open aria-haspopup="dialog" aria-controls="ponsse-letter-dialog" aria-label="Увеличить подлинное благодарственное письмо PONSSE">
+              <img src={letterSrc} alt="Письмо PONSSE с датой 5 апреля 2022 года и подписью" width="1481" height="2048" loading="lazy" decoding="async" />
+              <span>Посмотреть оригинал письма ↗</span>
+            </button>
+          )}
+          <div class="ponsse-recognition__person">
+            {hasPortrait && (
+              <figure class="ponsse-recognition__portrait">
+                <img src={portraitSrc} alt="Портрет подписанта письма, предоставленный владельцем сайта" width="533" height="800" loading="lazy" decoding="async" />
+              </figure>
+            )}
+            <p class="ponsse-recognition__signer">Petteri Teittinen<br/>Service support and development manager<br/>PONSSE service centre · Питкяранта</p>
+          </div>
+        </aside>
       </div>
-      <ol>
-        {spec.evidence.map((item,index) => <li><span>{String(index+1).padStart(2,'0')}</span><p>{item}</p></li>)}
-      </ol>
+    </section>
+  )}
+  {content.path === '/blog/detail/montazh-ventilyatsii-v-karelii/' && hasLetter && (
+    <dialog class="ponsse-letter-dialog" id="ponsse-letter-dialog" aria-label="Благодарственное письмо PONSSE">
+      <form method="dialog" class="ponsse-letter-dialog__actions">
+        <button type="submit" class="ponsse-letter-dialog__close" aria-label="Закрыть письмо">Закрыть ×</button>
+      </form>
+      <div class="ponsse-letter-dialog__sheet"><img src={letterSrc} width="1481" height="2048" alt="Полноразмерное благодарственное письмо PONSSE от 5 апреля 2022 года" decoding="async" /></div>
+      <a href={letterSrc} class="ponsse-letter-dialog__link" target="_blank" rel="noopener noreferrer">Открыть изображение в полном размере ↗</a>
+    </dialog>
+  )}
+  <section class="home-section case-story" aria-label="Задача, выполненные работы и результат">
+    <div class="home-shell case-story__grid">
+      <div><span>01 / Задача</span><h2>Что требовалось на объекте</h2><p>{spec.task}</p></div>
+      <div><span>02 / Выполненные работы</span><h2>Что смонтировано</h2><p>{spec.works}</p></div>
+      <div><span>03 / Результат</span><h2>Результат в документах</h2><p>{spec.result}</p></div>
     </div>
   </section>
-
-  <section class="home-section case-detail-meaning" aria-labelledby="case-meaning-title">
-    <div class="home-shell case-detail-meaning__grid">
-      <div>
-        <p class="section-index">03 / Что показывает кейс</p>
-        <h2 id="case-meaning-title">Вывод только в пределах доказательств.</h2>
+  <section class="home-section case-gallery" aria-labelledby="case-gallery-title">
+    <div class="home-shell">
+      <p class="section-index section-index--orange">Реальные фотографии</p>
+      <h2 id="case-gallery-title">Объект и выполненные работы</h2>
+      <div class="case-gallery__grid">
+        {spec.media.map(([src,alt,caption]) => (
+          <figure class="case-gallery__item">
+            <a href={src} target="_blank" rel="noopener noreferrer" aria-label={`Открыть фотографию в полном размере: ${caption}`}>
+              <img src={src} alt={alt} width="800" height="520" loading="lazy" decoding="async" />
+            </a>
+            <figcaption>{caption}</figcaption>
+          </figure>
+        ))}
       </div>
-      <div class="case-detail-meaning__list">
-        {spec.proves.map((item,index) => <div><span>{String(index+1).padStart(2,'0')}</span><p>{item}</p></div>)}
-      </div>
+      {spec.archiveMedia?.length && (
+        <details class="case-gallery-archive">
+          <summary>Ещё фотографии с объекта <span>({spec.archiveMedia.length})</span></summary>
+          <div class="case-gallery__grid">
+            {spec.archiveMedia.map(([src, alt, caption]) => (
+              <figure class="case-gallery__item">
+                <a href={src} target="_blank" rel="noopener noreferrer" aria-label={`Открыть архивное фото: ${caption}`}>
+                  <img src={src} alt={alt} width="800" height="520" loading="lazy" decoding="async" />
+                </a>
+                <figcaption>{caption}</figcaption>
+              </figure>
+            ))}
+          </div>
+        </details>
+      )}
     </div>
   </section>
-
-  <section class="case-detail-limits" aria-labelledby="case-limits-title">
-    <div class="home-shell case-detail-limits__grid">
-      <div>
-        <p class="section-index section-index--orange">04 / Граница доказательств</p>
-        <h2 id="case-limits-title">Чего на этой странице намеренно нет.</h2>
-      </div>
-      <div class="case-detail-limits__list">
-        {spec.limits.map((item) => <div>{item}</div>)}
-      </div>
-    </div>
-  </section>
-
   <section class="home-section case-detail-related" aria-labelledby="case-related-title">
     <div class="home-shell">
-      <p class="section-index">05 / Продолжить</p>
+      <p class="section-index">04 / Продолжить</p>
       <h2 id="case-related-title">Перейти от доказательства к своей задаче.</h2>
       <div class="case-detail-related__grid">
         {spec.related.map(([title,href,text],index) => <a href={href}><span>{String(index+1).padStart(2,'0')}</span><h3>{title}</h3><p>{text}</p><b>Открыть →</b></a>)}
@@ -319,7 +482,7 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
 
   <section class="conversion-close">
     <div class="home-shell">
-      <p class="section-index section-index--orange">06 / Ваш объект</p>
+      <p class="section-index section-index--orange">05 / Ваш объект</p>
       <h2>Есть похожая задача — начните с исходных данных.</h2>
       <div class="home-actions">
         <a class="button button--light" href="/montazh-po-proektu/">Монтаж по готовому проекту →</a>
@@ -328,3 +491,18 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
     </div>
   </section>
 </article>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-ponsse-open]').forEach(button => {
+    button.addEventListener('click', () => {
+      const dialog = document.getElementById('ponsse-letter-dialog');
+      if (dialog instanceof HTMLDialogElement && !dialog.open) dialog.showModal();
+    });
+  });
+  const documentDialog = document.getElementById('ponsse-letter-dialog');
+  if (documentDialog instanceof HTMLDialogElement) {
+    documentDialog.addEventListener('click', event => {
+      if (event.target === documentDialog) documentDialog.close();
+    });
+  }
+</script>

@@ -25,8 +25,8 @@ const schemaTypeFromContent = (content: ContentRecord) => {
 };
 
 const breadcrumbParent = (path: string) => {
-  if (path.startsWith('/blog/detail/')) return { name: 'Практика', path: '/blog/' };
-  if (path.startsWith('/blog/') && path !== '/blog/') return { name: 'Практика', path: '/blog/' };
+  if (path.startsWith('/blog/detail/')) return { name: 'Статьи', path: '/blog/' };
+  if (path.startsWith('/blog/') && path !== '/blog/') return { name: 'Статьи', path: '/blog/' };
   if (path.startsWith('/obekty/') && path !== '/obekty/') return { name: 'Объекты', path: '/obekty/' };
   if (path.startsWith('/news/') && path !== '/news/') return { name: 'Новости', path: '/news/' };
   return null;

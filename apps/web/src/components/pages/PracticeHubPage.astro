@@ -13,7 +13,7 @@ const p0 = [
 const cases = [
   {tag:'Новостройки',title:'7 PARK',meta:'Павловск · 7 домов',href:'/blog/detail/kak-my-sdali-7-domov/'},
   {tag:'Ресторан',title:'ЖК «Леонтьевский Мыс»',meta:'Санкт-Петербург · приточно-вытяжная вентиляция + оборудование',href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/'},
-  {tag:'Производство',title:'НТФФ «Полисан»',meta:'Санкт-Петербург · исторический производственный кейс',href:'/blog/detail/ntff-polisan/'},
+  {tag:'Производство',title:'НТФФ «Полисан»',meta:'Санкт-Петербург · монтаж на фармацевтическом объекте',href:'/blog/detail/ntff-polisan/'},
   {tag:'Квартира',title:'Маршала Жукова',meta:'Санкт-Петербург · приточно-вытяжная вентиляция',href:'/blog/detail/kvartira-na-zhukova/'},
   {tag:'Карелия',title:'Питкяранта / PONSSE',meta:'Сервисно-образовательный центр · вентиляция + оборудование',href:'/blog/detail/montazh-ventilyatsii-v-karelii/'},
   {tag:'Кафе',title:'Римского-Корсакова, 3',meta:'Санкт-Петербург · приточно-вытяжная вентиляция + оборудование',href:'/blog/detail/kafe-rimskogo-korsakova-3/'},
@@ -28,9 +28,9 @@ const isStories = content.path === '/blog/istorii-proektov/';
   <article class="practice-hub">
     <header class="practice-hero">
       <div class="home-shell practice-hero__grid">
-        <div><p class="home-kicker">Практика AEROVENTA</p><h1>Практика</h1></div>
+        <div><p class="home-kicker">Статьи и опыт AEROVENTA</p><h1>Статьи</h1></div>
         <div>
-          <p class="practice-hero__lede">Разборы объектов, инженерные вопросы и опыт с площадки. Материал должен либо помочь принять решение, либо показать реальный выполненный объект.</p>
+          <p class="practice-hero__lede">Разборы инженерных вопросов, монтажных ситуаций и реализованных объектов. Эти материалы помогут подготовить свою задачу.</p>
           <div class="home-actions"><a class="button button--primary" href="/blog/poleznye-stati/">Практические материалы →</a><a class="button button--ghost" href="/portfolio/">Реальные объекты</a></div>
         </div>
       </div>
@@ -38,18 +38,18 @@ const isStories = content.path === '/blog/istorii-proektov/';
 
     <section class="practice-entry" aria-labelledby="practice-entry-title">
       <div class="home-shell practice-entry__grid">
-        <div><p class="section-index section-index--orange">01 / С чего начать</p><h2 id="practice-entry-title">Не рубрики. Три типа полезного контента.</h2></div>
+        <div><p class="section-index section-index--orange">01 / С чего начать</p><h2 id="practice-entry-title">Вопросы, решения и реальные объекты.</h2></div>
         <div class="practice-entry__routes">
           <a href="/faq/"><span>01</span><div><h3>Решение до монтажа</h3><p>Что прислать, как сравнить сметы, что согласовать и что проверить до закрытия.</p></div><b>→</b></a>
           <a href="/blog/poleznye-stati/"><span>02</span><div><h3>Практическая проблема</h3><p>Конкретный вопрос, реальный опыт и полезная последовательность решений.</p></div><b>→</b></a>
-          <a href="/blog/istorii-proektov/"><span>03</span><div><h3>Реальный объект</h3><p>Задача, состав работ и подтверждённые исторические факты без рекламной надстройки.</p></div><b>→</b></a>
+          <a href="/blog/istorii-proektov/"><span>03</span><div><h3>Реальный объект</h3><p>Задача, объём работ и реальные фотографии выполненных объектов.</p></div><b>→</b></a>
         </div>
       </div>
     </section>
 
     <section class="home-section practice-featured" aria-labelledby="practice-featured-title">
       <div class="home-shell">
-        <div class="section-heading"><div><p class="section-index">02 / Практические материалы</p><h2 id="practice-featured-title">Конкретная проблема + реальный опыт.</h2></div><a href="/blog/poleznye-stati/">Все материалы →</a></div>
+        <div class="section-heading"><div><p class="section-index">02 / Практические материалы</p><h2 id="practice-featured-title">Практические ответы на монтажные вопросы.</h2></div><a href="/blog/poleznye-stati/">Все материалы →</a></div>
         <div class="practice-card-grid">
           {p0.map((item,index) => <a href={item.href}><span>{String(index+1).padStart(2,'0')} / {item.tag}</span><h3>{item.title}</h3><p>{item.text}</p><b>Читать →</b></a>)}
         </div>
@@ -66,20 +66,20 @@ const isStories = content.path === '/blog/istorii-proektov/';
     </section>
 
     <section class="conversion-close">
-      <div class="home-shell"><p class="section-index section-index--orange">04 / Ваш вопрос</p><h2>Не нашли похожую статью — не нужно ждать, пока она появится.</h2><div class="home-actions"><a class="button button--light" href="/faq/">Что важно решить до монтажа →</a><a class="button button--light" href="/contact/">Задать вопрос по объекту</a></div></div>
+      <div class="home-shell"><p class="section-index section-index--orange">04 / Ваш вопрос</p><h2>Не нашли ответ на свой вопрос?</h2><div class="home-actions"><a class="button button--light" href="/faq/">Что важно решить до монтажа →</a><a class="button button--light" href="/contact/">Задать вопрос по объекту</a></div></div>
     </section>
   </article>
 ) : isPractical ? (
   <article class="practice-hub">
     <header class="practice-hero">
       <div class="home-shell practice-hero__grid">
-        <div><p class="home-kicker">Практика / база знаний</p><h1>Практические материалы</h1></div>
-        <div><p class="practice-hero__lede">Материалы, в которых есть конкретная задача, непосредственный опыт или понятная инженерная логика. Старые сильные статьи сохраняем на их URL, но не переносим устаревшие цены и коммерческие заявления.</p><a class="practice-back" href="/blog/">← Практика</a></div>
+        <div><p class="home-kicker">Статьи / полезные материалы</p><h1>Практические материалы</h1></div>
+        <div><p class="practice-hero__lede">Материалы, в которых есть конкретная задача, непосредственный опыт или понятная инженерная логика. Старые сильные статьи сохраняем на их URL, но не переносим устаревшие цены и коммерческие заявления.</p><a class="practice-back" href="/blog/">← Статьи</a></div>
       </div>
     </header>
 
     <section class="home-section practical-index">
-      <div class="home-shell"><p class="section-index">01 / Сильные архивные материалы</p><h2>Не архив ради архива. Четыре страницы, которые решали реальные вопросы.</h2>
+      <div class="home-shell"><p class="section-index">01 / Сильные архивные материалы</p><h2>Четыре материала о реальных технических задачах.</h2>
         <div class="practical-index__grid">
           {p0.map((item,index) => <a href={item.href}><div class="practical-index__top"><span>{String(index+1).padStart(2,'0')}</span><b>{item.tag}</b></div><h3>{item.title}</h3><p>{item.text}</p><strong>Читать материал →</strong></a>)}
         </div>
@@ -88,12 +88,12 @@ const isStories = content.path === '/blog/istorii-proektov/';
 
     <section class="practical-rules">
       <div class="home-shell practical-rules__grid">
-        <div><p class="section-index section-index--orange">02 / Редакционный принцип</p><h2>Новая статья появляется только если ей есть что добавить.</h2></div>
+        <div><p class="section-index section-index--orange">02 / Подготовка к монтажу</p><h2>Какие вопросы стоит решить до начала работ.</h2></div>
         <div class="practical-rules__list">
-          <div><span>01</span><p>Есть отдельный вопрос или search intent, а не просто новый набор ключевых слов.</p></div>
-          <div><span>02</span><p>Есть собственный факт, опыт, кейс или источник, который делает материал полезнее шаблонного ответа.</p></div>
-          <div><span>03</span><p>Ответ не дублирует service/object/FAQ-страницу и не создаёт каннибализацию.</p></div>
-          <div><span>04</span><p>Если достаточно добавить один хороший ответ в FAQ — новая URL не создаётся.</p></div>
+          <div><span>01</span><p>Что известно о назначении помещений, режиме работы и требуемой системе.</p></div>
+          <div><span>02</span><p>Какие планы, чертежи и фотографии объекта уже доступны.</p></div>
+          <div><span>03</span><p>Где могут возникнуть сложности с трассами, доступом или существующей отделкой.</p></div>
+          <div><span>04</span><p>Какие вопросы необходимо согласовать до выхода монтажников.</p></div>
         </div>
       </div>
     </section>
@@ -101,7 +101,7 @@ const isStories = content.path === '/blog/istorii-proektov/';
     <section class="home-section practical-next">
       <div class="home-shell practical-next__grid">
         <a href="/faq/"><span>До монтажа</span><h3>30 инженерных вопросов заказчика</h3><p>Короткий вывод → зависимость → исходные данные → следующий шаг.</p><b>Открыть FAQ →</b></a>
-        <a href="/blog/istorii-proektov/"><span>Доказательства</span><h3>Истории реальных объектов</h3><p>Кейсы AEROVENTA без второй копии тех же страниц.</p><b>Смотреть объекты →</b></a>
+        <a href="/blog/istorii-proektov/"><span>Доказательства</span><h3>Истории реальных объектов</h3><p>Выполненные работы, инженерные задачи и фотографии объектов.</p><b>Смотреть объекты →</b></a>
       </div>
     </section>
   </article>
@@ -109,23 +109,23 @@ const isStories = content.path === '/blog/istorii-proektov/';
   <article class="practice-hub">
     <header class="practice-hero">
       <div class="home-shell practice-hero__grid">
-        <div><p class="home-kicker">Практика / объекты</p><h1>Истории объектов</h1></div>
-        <div><p class="practice-hero__lede">Хронологический и редакционный вход в реальные кейсы AEROVENTA. Каноническая страница каждого объекта остаётся одна — этот раздел только помогает её найти.</p><div class="home-actions"><a class="button button--primary" href="/portfolio/">Портфолио / раздел доказательств →</a><a class="button button--ghost" href="/blog/">Практика</a></div></div>
+        <div><p class="home-kicker">Статьи / истории объектов</p><h1>Истории объектов</h1></div>
+        <div><p class="practice-hero__lede">Здесь собраны истории наших объектов: что требовалось выполнить, какие работы проводились и как выглядел результат на площадке.</p><div class="home-actions"><a class="button button--primary" href="/portfolio/">Все выполненные объекты →</a><a class="button button--ghost" href="/blog/">Статьи</a></div></div>
       </div>
     </header>
 
     <section class="home-section story-index">
-      <div class="home-shell"><p class="section-index">01 / Подтверждённые истории</p><h2>От квартиры до семи домов и производственного объекта.</h2>
+      <div class="home-shell"><p class="section-index">01 / Подтверждённые истории</p><h2>Квартиры, жилые дома, кафе и производство.</h2>
         <div class="story-index__grid">
-          {cases.map((item,index) => <a href={item.href}><div><span>{String(index+1).padStart(2,'0')}</span><b>{item.tag}</b></div><h3>{item.title}</h3><p>{item.meta}</p><strong>Открыть канонический кейс →</strong></a>)}
+          {cases.map((item,index) => <a href={item.href}><div><span>{String(index+1).padStart(2,'0')}</span><b>{item.tag}</b></div><h3>{item.title}</h3><p>{item.meta}</p><strong>Смотреть объект →</strong></a>)}
         </div>
       </div>
     </section>
 
     <section class="story-rule">
       <div class="home-shell story-rule__grid">
-        <div><p class="section-index section-index--orange">02 / Без дублей</p><h2>Один объект — одна текущая страница с фактами.</h2></div>
-        <div><p>Этот индекс не создаёт вторые версии кейсов. Портфолио остаётся основным разделом доказательств, а исторические URL объектов — основными страницами с подробностями.</p><p>Если появляется новое доказательство — фотография, чертёж или уточнение состава работ — оно усиливает существующий кейс, а не создаёт ещё одну страницу про тот же объект.</p></div>
+        <div><p class="section-index section-index--orange">02 / Каждый объект</p><h2>Что можно узнать из истории работы.</h2></div>
+        <div><p>Открывайте конкретный объект, чтобы увидеть его назначение, состав выполненных работ, реальные фотографии и известные сроки.</p><p>Для похожей задачи мы учитываем исходные данные именно вашего объекта — даже если пример из портфолио близок по типу помещений.</p></div>
       </div>
     </section>
 

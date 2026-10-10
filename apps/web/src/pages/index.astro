@@ -1,6 +1,18 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getByPath } from '@/lib/content-source';
+import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+
+const ownerHeroMedia = '/evidence/hero/owner-luxury-airflow-20261010.png';
+const hasOwnerHeroMedia = [
+  'apps/web/public/evidence/hero/owner-luxury-airflow-20261010.png',
+  'public/evidence/hero/owner-luxury-airflow-20261010.png',
+].some(p => existsSync(resolve(p)));
+const hasOptimizedOwnerHero = hasOwnerHeroMedia && [
+  'apps/web/public/evidence/hero/owner-luxury-airflow-640.webp',
+  'public/evidence/hero/owner-luxury-airflow-640.webp',
+].some(p => existsSync(resolve(p)));
 
 const content = await getByPath('/');
 if (!content) throw new Error('Home content is missing');
@@ -8,7 +20,7 @@ if (!content) throw new Error('Home content is missing');
 const page = {
   ...content,
   h1: 'Инженерная вентиляция без лишнего.',
-  seo_title: 'Монтаж вентиляции в СПб и Ленобласти — AEROVENTA',
+  seo_title: 'AEROVENTA — инженерные системы вентиляции в СПб и Ленобласти',
   seo_description: 'AEROVENTA — монтаж вентиляции для квартир, домов, ресторанов, коммерческих, производственных и крупных объектов. Санкт-Петербург и Ленинградская область; берём объекты в Москве и Карелии.',
 };
 
@@ -31,7 +43,7 @@ const questions = [
 ---
 
 <BaseLayout content={page}>
-  <section class="home-hero home-hero--v43" aria-labelledby="home-title">
+  <section class:list={['home-hero', 'home-hero--v43', hasOwnerHeroMedia && 'home-hero--owner-interior']} aria-labelledby="home-title">
     <div class="home-shell home-hero__grid">
       <div class="home-hero__copy">
         <p class="home-kicker">Монтаж вентиляции под ключ</p>
@@ -50,36 +62,20 @@ const questions = [
       <figure class="hero-engineering">
         <img
           class="hero-engineering__photo"
-          src="/evidence/hero/ductwork-editorial-v43.webp"
-          width="800"
-          height="600"
-          alt="Реальный монтаж вентиляционных воздуховодов на объекте 7 PARK в Павловске"
+          src={hasOwnerHeroMedia ? ownerHeroMedia : '/evidence/hero/ductwork-editorial-v43.webp'}
+          srcset={hasOptimizedOwnerHero ? '/evidence/hero/owner-luxury-airflow-640.webp 640w, /evidence/hero/owner-luxury-airflow-1100.webp 1100w, /evidence/hero/owner-luxury-airflow-1774.webp 1774w' : undefined}
+          sizes={hasOptimizedOwnerHero ? '100vw' : undefined}
+          width={hasOwnerHeroMedia ? 1774 : 800}
+          height={hasOwnerHeroMedia ? 887 : 600}
+          alt={hasOwnerHeroMedia ? 'Художественная визуализация интерьерной вентиляции с воздушными потоками — не выполненный объект AEROVENTA' : 'Реальный монтаж вентиляционных воздуховодов на объекте 7 PARK в Павловске'}
           fetchpriority="high"
           decoding="async"
         />
         <div class="hero-engineering__veil" aria-hidden="true"></div>
-        <svg class="hero-engineering__overlay" viewBox="0 0 734 551" aria-hidden="true" focusable="false">
-          <path class="hero-airflow-path hero-airflow-path--supply" d="M212 334 C184 360 157 391 126 426" />
-          <path class="hero-airflow-tick hero-airflow-tick--supply" d="M171 376 l-9 2 3-8 M148 402 l-9 2 3-8" />
-          <circle class="hero-airflow-node hero-airflow-node--supply" cx="212" cy="334" r="3" />
-
-          <path class="hero-airflow-path hero-airflow-path--exhaust" d="M526 414 C551 388 570 357 589 323" />
-          <path class="hero-airflow-tick hero-airflow-tick--exhaust" d="M552 382 l9-1 -3 8 M570 353 l9-1 -3 8" />
-          <circle class="hero-airflow-node hero-airflow-node--exhaust" cx="526" cy="414" r="3" />
-        </svg>
-        <div class="hero-engineering__label hero-engineering__label--supply">
-          <span>ПРИТОК</span><small>SUPPLY · схема потока</small>
-        </div>
-        <div class="hero-engineering__label hero-engineering__label--exhaust">
-          <span>ВЫТЯЖКА</span><small>EXHAUST · схема потока</small>
-        </div>
         <div class="hero-engineering__frame" aria-hidden="true">
           <span></span><span></span><span></span><span></span>
         </div>
-        <figcaption class="hero-engineering__evidence">
-          <strong>РЕАЛЬНЫЙ МОНТАЖ · 7 PARK · ПАВЛОВСК</strong>
-          <span class="sr-only">Фото монтажных работ AEROVENTA на объекте 7 PARK в Павловске, подтверждено владельцем. Цветные линии условно обозначают независимые направления притока и вытяжки; это не исполнительная схема объекта.</span>
-        </figcaption>
+        <figcaption class="sr-only">{hasOwnerHeroMedia ? 'Архитектурная концепция вентиляции. Реальные фотографии выполненных работ на 7 PARK показаны ниже.' : 'Реальный монтаж AEROVENTA на объекте 7 PARK в Павловске. Сведения о работах — в кейсе.'}</figcaption>
       </figure>
     </div>
 
@@ -104,13 +100,27 @@ const questions = [
         <a class="button button--ghost solution-cta" href="/montazh-ventiliacii/">Подробнее о процессе <span aria-hidden="true">→</span></a>
       </div>
 
-      <div class="solution-mobile-legend" aria-label="Два независимых потока">
+      <div class="solution-mobile-legend" aria-hidden="true">
         <span>Приток · воздух в помещение</span>
         <span>Вытяжка · удаление воздуха</span>
       </div>
-      <div class="solution-diagram" role="img" aria-label="Архитектурная визуализация двух независимых потоков вентиляции: приток направлен к помещению; вытяжка выводит отработанный воздух. Иллюстрация, не исполнительная схема.">
+      <div class="solution-diagram" role="img" aria-label="Иллюстрация двух независимых направлений вентиляции: подача свежего воздуха в помещение и удаление отработанного воздуха. Условная схема, не исполнительный чертёж.">
         <img src="/evidence/hero/engineering-scene-accepted-v43.webp" alt="" width="1036" height="338" loading="lazy" decoding="async" />
-        <span class="solution-visual-note">Принципиальная иллюстрация · не исполнительная схема</span>
+        <div class="solution-overlay-labels" aria-hidden="true">
+          <p class="solution-overlay-label solution-overlay-label--supply"><strong>Приток</strong><span>Подача свежего воздуха</span></p>
+          <p class="solution-overlay-label solution-overlay-label--exhaust"><strong>Вытяжка</strong><span>Удаление отработанного воздуха</span></p>
+        </div>
+        
+      </div>
+      <div class="solution-mobile-pair" aria-label="Две независимые инженерные линии вентиляции">
+        <figure class="solution-mobile-pair__panel">
+          <div class="solution-mobile-pair__crop"><img src="/evidence/hero/engineering-scene-accepted-v43.webp" width="1036" height="338" alt="" loading="lazy" decoding="async" /></div>
+          <figcaption>Подача свежего воздуха · условная схема притока</figcaption>
+        </figure>
+        <figure class="solution-mobile-pair__panel solution-mobile-pair__panel--exhaust">
+          <div class="solution-mobile-pair__crop"><img src="/evidence/hero/engineering-scene-accepted-v43.webp" width="1036" height="338" alt="" loading="lazy" decoding="async" /></div>
+          <figcaption>Удаление отработанного воздуха · условная схема вытяжки</figcaption>
+        </figure>
       </div>
     </div>
 
@@ -129,7 +139,7 @@ const questions = [
         <h2 id="case-title">7 PARK</h2>
         <p class="case-feature__subtitle">Павловск · жилой квартал</p>
         <p class="case-dossier__statement">
-          Монтаж приточно-вытяжной вентиляции в семи домах. Ниже — подтверждённые границы работ, период и локация; без неподтверждённых характеристик.
+          Монтаж приточно-вытяжной вентиляции в семи домах жилого квартала. Посмотрите фотографии работ и сведения об объекте.
         </p>
       </header>
 
@@ -151,7 +161,7 @@ const questions = [
 
       <dl class="case-dossier__facts case-dossier__facts--secondary">
         <div><dt>Объём</dt><dd>7 домов</dd></div>
-        <div><dt>Локация</dt><dd>Павловск, Ленинградская область</dd></div>
+        <div><dt>Локация</dt><dd>Павловск, Санкт-Петербург</dd></div>
       </dl>
 
       <a class="case-dossier__cta" href="/blog/detail/kak-my-sdali-7-domov/">Смотреть объект <span aria-hidden="true">→</span></a>
@@ -176,6 +186,28 @@ const questions = [
         <a class="object-link" href="/obekty/#warehouses"><h3>Склады</h3><p>Высота, доступ, эксплуатационный режим и логистика монтажа.</p></a>
         <a class="object-link" href="/obekty/#commercial"><h3>Офисы и коммерция</h3><p>Стадия отделки, потолки, сроки открытия и смежные подрядчики.</p></a>
       </div>
+    </div>
+  </section>
+
+
+  <!-- Historic recognition from original letter dated 05.04.2022. -->
+  <section class="home-ponsse" aria-labelledby="home-ponsse-title">
+    <div class="home-shell home-ponsse__grid">
+      <div class="home-ponsse__copy">
+        <p class="section-index section-index--orange">PONSSE · Питкяранта · 2022</p>
+        <h2 id="home-ponsse-title">Благодарственное письмо PONSSE</h2>
+        <p>Международная компания PONSSE выразила благодарность команде AEROVENTA за деликатную, эстетически аккуратную работу и высокий профессионализм в течение двух лет сотрудничества. В оригинальном письме от 5 апреля 2022 года особо отмечены профессиональная этика и соблюдение сроков.</p>
+        <div class="home-ponsse__actions">
+          <a class="home-ponsse__case" href="/blog/detail/montazh-ventilyatsii-v-karelii/">Посмотреть объект PONSSE <span aria-hidden="true">↗</span></a>
+          <a class="home-ponsse__letter-link" href="/evidence/karelia/ponsse-letter-20220405.png" target="_blank" rel="noopener noreferrer">Прочитать оригинал письма <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+      <figure class="home-ponsse__document">
+        <a href="/evidence/karelia/ponsse-letter-20220405.png" target="_blank" rel="noopener noreferrer" aria-label="Открыть подлинное письмо PONSSE от 5 апреля 2022 года в полном разрешении">
+          <img src="/evidence/karelia/ponsse-letter-20220405.png" width="1481" height="2048" loading="lazy" decoding="async" alt="Оригинальное благодарственное письмо PONSSE от 5 апреля 2022 года с подписью" />
+        </a>
+        <figcaption>Оригинал документа · 05.04.2022</figcaption>
+      </figure>
     </div>
   </section>
 

@@ -1,0 +1,49 @@
+---
+// Draft legal route: production build fails closed without reviewed operator data.
+// This file is NOT a substitute for final legal/operator/privacy sign-off.
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import type { ContentRecord } from '@/lib/types';
+const mode = import.meta.env.AEROVENTA_RELEASE_MODE || 'fixture';
+const operator = (import.meta.env.AEROVENTA_PRIVACY_OPERATOR_NAME || '').trim();
+const contact = (import.meta.env.AEROVENTA_PRIVACY_EMAIL || '').trim();
+const approvedAt = (import.meta.env.AEROVENTA_PRIVACY_APPROVED_AT || '').trim();
+const retentionRaw = (import.meta.env.AEROVENTA_PRIVACY_RETENTION_DAYS || '').trim();
+const approved = import.meta.env.AEROVENTA_PRIVACY_OWNER_APPROVED === 'true';
+const days = Number(retentionRaw);
+const complete = Boolean(approved && operator && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact)
+  && /^\d{4}-\d{2}-\d{2}$/.test(approvedAt) && Number.isInteger(days) && days >= 1 && days <= 3650);
+if (mode === 'production' && !complete) {
+  throw new Error('PRIVACY_GATE_BLOCKED: Owner-approved operator, privacy e-mail, retention period and approval date required');
+}
+const data: ContentRecord = {
+  path:'/privacy/',title:'Политика обработки персональных данных',
+  h1:'Политика обработки персональных данных',content_type:'legal',business_role:'SUPPORTING_CONTENT',
+  status: complete ? 'published':'draft',robots_index:false,robots_follow:true,sitemap_include:false,
+  seo_title:'Обработка персональных данных — AEROVENTA',
+  seo_description:'Как обрабатываются данные, добровольно переданные через форму обращения AEROVENTA.',
+  excerpt:'Информация об обработке персональных данных посетителей.',body_html:'',
+  body_html_safety_status:'not_applicable',owner_approved_at:complete ? approvedAt : null,
+};
+---
+<BaseLayout content={data}>
+  <article class="home-section">
+    <div class="home-shell" style="max-width:920px">
+      <p class="section-index">Правовая информация</p>
+      <h1>Политика обработки персональных данных</h1>
+      {!complete && <p role="status"><strong>Предварительный текст для проверки владельцем. Не предназначен для production-публикации.</strong></p>}
+      <h2>Оператор и обращение по вопросам данных</h2>
+      {complete ? <p>Оператор: {operator}. Запросы о персональных данных: <a href={'mailto:' + contact}>{contact}</a>.</p> :
+        <p>Сведения об операторе и ответственном контактном адресе требуют подтверждения до публикации.</p>}
+      <h2>Для чего нужны сведения</h2>
+      <p>Данные, введённые в форму обращения, используются для рассмотрения запроса, подготовки ответа и связи по указанному контакту. Публикация, продажа и использование текста обращения для рекламных рассылок не предусмотрены назначением формы.</p>
+      <h2>Какие данные передаются</h2>
+      <p>Имя, телефон или электронная почта, описание задачи, компания (необязательно), страница сайта и выбранный контекст обращения. Для защиты от автоматических отправок обрабатываются технические сведения о запросе и IP-адрес.</p>
+      <h2>Как происходит обработка</h2>
+      <p>Данные отправляются серверному обработчику сайта и передаются на настроенный владельцем почтовый ящик для ответа на обращение. Обработка с использованием внешних языковых моделей не является частью этой формы.</p>
+      {complete && <p>Установленный владельцем срок хранения входящих обращений — {days} дней, если иное не требуется по применимому законодательству или действующему договору.</p>}
+      <h2>Обращения и отзыв согласия</h2>
+      <p>Посетитель может обратиться за информацией об обработке, исправлением или удалением данных и отозвать согласие по указанному выше адресу. Законодательные основания для сохранения отдельных сведений оцениваются отдельно.</p>
+      {complete && <p>Редакция подтверждена: {approvedAt}.</p>}
+    </div>
+  </article>
+</BaseLayout>

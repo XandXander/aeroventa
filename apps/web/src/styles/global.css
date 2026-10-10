@@ -2877,3 +2877,448 @@ main { min-height: 60vh; }
 @media (prefers-reduced-motion:reduce) {
   .home-hero--v43 .object-ribbon__item {transition:none;}
 }
+
+/* V43 bounded release fixes: hidden bot trap and narrow 320px overflow. */
+.lead-honeypot { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+@media (max-width:360px) {
+  .service-premium__hero-grid, .case-detail-hero__grid, .p0-hero__grid { grid-template-columns:minmax(0,1fr); }
+  .service-premium__hero-grid > *, .case-detail-hero__grid > *, .p0-hero__grid > * { min-width:0; }
+  .service-premium__hero h1, .case-detail-hero h1, .p0-article h2 { overflow-wrap:anywhere; word-break:break-word; }
+}
+
+
+/* V43 Owner visual lock — bounded photographic editorial implementation.
+   V43 homepage, the accepted 7 PARK homepage pairing, and TRACE/PULSE remain unchanged. */
+.service-premium__hero { padding:clamp(52px,6vw,88px) 0 36px; overflow:hidden; }
+.service-premium__hero-grid { grid-template-columns:minmax(0,.91fr) minmax(0,1.09fr);gap:clamp(28px,4.2vw,76px);align-items:center; }
+.service-premium__hero h1 { font-size:clamp(3.35rem,5.4vw,6.4rem); }
+.service-premium__visual { margin:0;min-width:0; }
+.service-premium__visual-frame { position:relative;overflow:hidden;background:#d9e3e9;min-height:360px;aspect-ratio: .98; }
+.service-premium__visual-frame img { display:block;object-fit:cover;object-position:52% center;width:100%;height:100%;position:absolute;inset:0;filter:saturate(.75) contrast(1.08); }
+.service-premium__visual-frame::after { content:"";position:absolute;inset:42% 0 0;background:linear-gradient(transparent,rgba(3,21,33,.6));pointer-events:none; }
+.service-premium__visual-index { position:absolute;z-index:1;bottom:26px;left:28px;color:#fff;letter-spacing:.12em;font-size:.67rem;font-weight:800;text-transform:uppercase; }
+.service-premium__visual figcaption { color:#657482;font-size:.74rem;line-height:1.5;margin-top:12px; }
+.service-premium__proof-strip { margin-top:38px; }
+.service-premium__proof-strip .service-premium__hero-proof { grid-template-columns:repeat(4,minmax(0,1fr));border:0;border-top:1px solid #c9d5dc;background:transparent;gap:0; }
+.service-premium__proof-strip .service-proof-card { min-height:146px;background:transparent;border-right:1px solid #d7e1e7;padding:18px 19px 10px; }
+.service-premium__proof-strip .service-proof-card:first-child { padding-left:0; }
+.service-premium__proof-strip .service-proof-card:last-child { border-right:0; }
+.service-premium__proof-strip .service-proof-card strong { font-size:1.01rem; }
+.service-premium__proof-strip .service-proof-card--accent { background:#082435;color:#fff;padding:18px 19px; }
+.service-premium__proof-strip .service-proof-card--accent p { color:#c3d4db; }
+.service-cases__grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.service-case-card { display:grid;grid-template-columns:41% minmax(0,1fr);grid-template-rows:auto auto 1fr auto;min-height:238px;padding:0;column-gap:clamp(15px,2vw,30px); }
+.service-case-card__media { grid-column:1;grid-row:1 / 5;width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.75);transition:filter .22s ease; }
+.service-case-card:hover .service-case-card__media { filter:saturate(1); }
+.service-case-card > span,.service-case-card h3,.service-case-card p,.service-case-card b { grid-column:2;margin-left:0;margin-right:22px; }
+.service-case-card > span { margin-top:25px; }
+.service-case-card h3 { margin-top:12px;margin-bottom:6px;font-size:clamp(1.24rem,2vw,1.85rem); }
+.service-case-card p { margin-top:0;font-size:.9rem; }
+.service-case-card b { margin-bottom:25px; }
+.object-detail--residential .object-detail__hero,.object-detail--restaurants .object-detail__hero { padding:clamp(42px,5vw,70px) 0 clamp(34px,4vw,50px); }
+.object-detail--residential .object-detail__hero-grid,.object-detail--restaurants .object-detail__hero-grid { grid-template-columns:minmax(0,.84fr) minmax(0,1.16fr);column-gap:clamp(24px,4vw,72px);row-gap:18px;align-items:center; }
+.object-detail--residential .object-detail__hero-grid >div:first-child,.object-detail--restaurants .object-detail__hero-grid >div:first-child { grid-column:1;grid-row:1; }
+.object-detail--residential .object-detail__hero-grid >div:nth-child(2),.object-detail--restaurants .object-detail__hero-grid >div:nth-child(2) { grid-column:1;grid-row:2;align-self:start; }
+.object-detail--residential .object-detail__hero h1,.object-detail--restaurants .object-detail__hero h1 { font-size:clamp(3.2rem,5.1vw,6rem); }
+.object-detail__hero-media { margin:0;grid-column:2;grid-row:1/3;min-width:0; }
+.object-detail__hero-media img { display:block;width:100%;height:auto;aspect-ratio:1.42;object-fit:cover;object-position:center; }
+.object-detail__hero-media figcaption { color:#6d7984;letter-spacing:.075em;text-transform:uppercase;font-size:.67rem;margin-top:12px; }
+.object-detail--residential .object-evidence__grid:has(>a:only-child) { grid-template-columns:minmax(0,1fr); }
+.object-detail--residential .object-evidence__grid a,.object-detail--restaurants .object-evidence__grid a { min-height:335px;display:flex;flex-direction:column;padding:0 0 24px; }
+.object-evidence__photo { display:block;width:100%;height:228px;object-fit:cover;filter:saturate(.78); }
+.object-evidence__grid a >span,.object-evidence__grid a >h3,.object-evidence__grid a >p,.object-evidence__grid a >b { margin-left:25px;margin-right:25px; }
+.object-evidence__grid a >span { margin-top:18px; }
+.object-evidence__grid a >h3 { margin-top:16px;margin-bottom:12px;font-size:clamp(1.8rem,2.8vw,2.75rem); }
+.object-evidence__grid a >b { margin-top:auto;padding-top:17px; }
+.object-evidence__installation { display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);align-items:center;gap:26px;margin:26px 0 0;max-width:770px; }
+.object-evidence__installation img { width:100%;height:155px;object-fit:cover;display:block; }
+.object-evidence__installation figcaption { color:#b7c9d3;font-size:.9rem;line-height:1.5; }
+@media (max-width:1050px) {
+ .service-premium__hero-grid {grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:26px;}
+ .service-premium__hero h1 {font-size:clamp(2.9rem,6.5vw,5rem);}
+ .service-premium__visual-frame {min-height:310px;}
+ .service-premium__proof-strip .service-premium__hero-proof {grid-template-columns:repeat(2,minmax(0,1fr));}
+ .service-premium__proof-strip .service-proof-card {border-bottom:1px solid #d7e1e7;}
+ .object-detail--residential .object-detail__hero-grid,.object-detail--restaurants .object-detail__hero-grid {grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:18px;}
+}
+@media (max-width:760px) {
+ .service-premium__hero {padding:34px 0 28px;}
+ .service-premium__hero-grid {display:flex;flex-direction:column;align-items:stretch;gap:26px;}
+ .service-premium__hero h1 {font-size:clamp(2.65rem,12.5vw,4.35rem);letter-spacing:-.06em;}
+ .service-premium__visual-frame {height:auto;min-height:0;aspect-ratio:1.08;}
+ .service-premium__visual-index {left:16px;bottom:16px;font-size:.6rem;}
+ .service-premium__proof-strip {margin-top:27px;}
+ .service-premium__proof-strip .service-proof-card {min-height:128px;padding:16px 10px;}
+ .service-premium__proof-strip .service-proof-card:first-child {padding-left:0;}
+ .service-premium__proof-strip .service-proof-card:nth-child(2) {border-right:0;}
+ .service-premium__proof-strip .service-proof-card strong {font-size:.91rem;}
+ .service-premium__proof-strip .service-proof-card p {font-size:.82rem;}
+ .service-premium__proof-strip .service-proof-card--accent {padding:16px 10px;}
+ .service-cases__grid {grid-template-columns:1fr;}
+ .service-case-card {grid-template-columns:1fr;grid-template-rows:none;gap:0;min-height:0;}
+ .service-case-card__media {grid-column:1;grid-row:auto;width:100%;height:auto;aspect-ratio:1.65;object-fit:cover;}
+ .service-case-card >span,.service-case-card h3,.service-case-card p,.service-case-card b {grid-column:1;margin-left:18px;margin-right:18px;}
+ .service-case-card >span {margin-top:18px;}
+ .service-case-card h3 {margin-top:8px;}
+ .service-case-card b {margin-top:14px;margin-bottom:22px;}
+ .object-detail--residential .object-detail__hero-grid,.object-detail--restaurants .object-detail__hero-grid {display:flex;flex-direction:column;align-items:stretch;gap:0;}
+ .object-detail--residential .object-detail__hero h1,.object-detail--restaurants .object-detail__hero h1 {font-size:clamp(2.75rem,12.5vw,4.3rem);}
+ .object-detail__hero-media {order:1;margin:24px 0;}
+ .object-detail--residential .object-detail__hero-grid>div:nth-child(2),.object-detail--restaurants .object-detail__hero-grid>div:nth-child(2) {order:2;}
+ .object-detail__hero-media img {aspect-ratio:1.08;}
+ .object-evidence__photo {height:auto;aspect-ratio:1.45;}
+ .object-evidence__installation {grid-template-columns:1fr;gap:12px;}
+ .object-evidence__installation img {max-width:380px;height:auto;aspect-ratio:1.4;}
+}
+
+/* V43 completion: restrained editorial typography, real case imagery and responsive controls. */
+.site-header .nav--desktop {gap:clamp(12px,1.4vw,26px);}
+.site-header .nav--desktop a,.site-header .header-project {white-space:nowrap;}
+.home-hero--v43 h1 {font-size:clamp(3.5rem,5.3vw,5.35rem);font-weight:760;line-height:1.015;letter-spacing:-.046em;}
+.home-hero--v43 .hero-engineering__veil {background:linear-gradient(90deg,#fff 0%,rgba(255,255,255,.93) 7%,rgba(255,255,255,.6) 25%,transparent 64%);}
+.home-hero--v43 ~ .home-solution .solution-diagram::before {background:linear-gradient(90deg,rgba(255,255,255,.76),transparent 18%);}
+.home-hero--v43 ~ .home-solution .solution-diagram img {filter:saturate(.88) contrast(1.06);}
+.section-copy h2,.section-heading h2,.decision-preview h2,.conversion-close h2 {letter-spacing:-.045em;line-height:1.06;}
+.about-honesty__list a {color:inherit;text-decoration:none;display:block;}
+.about-honesty__list a:hover {text-decoration:underline;text-underline-offset:4px;}
+.portfolio-feature__visual--photo {margin:0;position:relative;min-height:320px;overflow:hidden;border:0;}
+.portfolio-feature__visual--photo img {width:100%;height:100%;min-height:320px;object-fit:cover;display:block;filter:saturate(.82);}
+.portfolio-feature__visual--photo figcaption {position:absolute;bottom:12px;left:14px;background:rgba(7,28,43,.86);color:#fff;padding:7px 10px;font-size:.78rem;}
+.case-gallery__grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(14px,2.5vw,32px);margin-top:28px;}
+.case-gallery__item {margin:0;min-width:0;background:#f0f4f6;}
+.case-gallery__item img {display:block;width:100%;height:auto;aspect-ratio:1.54;object-fit:cover;}
+.case-gallery__item figcaption {padding:12px 15px;color:#334657;font-size:.91rem;}
+@media (max-width:1100px) and (min-width:761px) {
+.site-header__inner {gap:14px;} .site-header .nav--desktop {gap:12px;}
+.site-header .nav--desktop a,.site-header .header-project {font-size:.8rem;}
+}
+@media (max-width:760px) {
+.home-hero--v43 h1 {font-size:clamp(2.35rem,10.1vw,3.5rem);font-weight:760;letter-spacing:-.044em;line-height:1.045;}
+.home-hero--v43 .home-hero__copy {padding-top:22px;}
+.home-hero--v43 .hero-engineering {min-height:245px;margin-bottom:8px;}
+.home-hero--v43 .home-hero__copy .home-actions {display:grid;grid-template-columns:minmax(0,1fr);}
+.home-hero--v43 .home-hero__copy .home-actions .button {width:100%;min-width:0;white-space:normal;}
+.case-gallery__grid {grid-template-columns:1fr;}
+.portfolio-feature__visual--photo,.portfolio-feature__visual--photo img {min-height:230px;}
+.site-header .mobile-menu nav {max-height:calc(100dvh - 64px);overflow-y:auto;padding-bottom:max(28px,env(safe-area-inset-bottom,28px));}
+}
+@media (max-width:360px) {
+.home-hero--v43 h1 {font-size:clamp(2.25rem,10vw,2.8rem);}
+.home-hero--v43 .hero-engineering {min-height:215px;}
+}
+
+
+/* V43: restore the image beside copy while keeping both baked-in HVAC labels visible. */
+.home-hero--v43 ~ .home-solution .solution-grid {
+ display:grid;grid-template-columns:minmax(0,36%) minmax(0,64%);gap:0;align-items:center;min-height:440px;
+}
+.home-hero--v43 ~ .home-solution .section-copy {position:relative;z-index:1;max-width:none;padding:24px 20px 24px 0;min-width:0;}
+.home-hero--v43 ~ .home-solution .solution-diagram {
+ display:block;position:relative;inset:auto;grid-column:auto;width:100%;height:auto;min-height:0;
+ aspect-ratio:1036/338;border:0;overflow:visible;background:transparent;box-shadow:none;
+}
+.home-hero--v43 ~ .home-solution .solution-diagram img {
+ display:block;width:100%;height:100%;object-fit:contain;object-position:center;filter:none;
+}
+.home-hero--v43 ~ .home-solution .solution-diagram::before,
+.home-hero--v43 ~ .home-solution .solution-diagram::after {content:none;display:none;}
+.home-hero--v43 ~ .home-solution .process-strip {margin-top:clamp(22px,3vw,40px);}
+@media (max-width:1100px) and (min-width:761px) {
+ .home-hero--v43 ~ .home-solution .solution-grid {grid-template-columns:minmax(0,1fr);gap:12px;min-height:0;}
+ .home-hero--v43 ~ .home-solution .section-copy {max-width:65ch;padding:0;}
+}
+@media (max-width:760px) {
+ .home-hero--v43 ~ .home-solution .solution-grid {display:flex;flex-direction:column;gap:16px;min-height:0;}
+ .home-hero--v43 ~ .home-solution .section-copy {width:100%;padding:0;}
+ .home-hero--v43 ~ .home-solution .solution-diagram {display:none;}
+}
+
+.services-editorial {background:#ecf1f3;padding:clamp(22px,3vw,40px) 0 clamp(30px,5vw,70px);}
+.services-editorial__grid {display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,.8fr);gap:clamp(25px,4vw,70px);align-items:center;}
+.services-editorial__image {margin:0;min-width:0;overflow:hidden;background:#d5dce0;}
+.services-editorial__image img {width:100%;height:auto;aspect-ratio:1.55;object-fit:cover;object-position:53% 50%;display:block;}
+.services-editorial__image figcaption {padding:12px 18px;color:#475a69;background:#f5f8f9;font-size:.85rem;line-height:1.45;}
+.services-editorial__copy h2 {font-size:clamp(2.15rem,3.75vw,4.3rem);font-weight:750;letter-spacing:-.045em;line-height:1.06;margin:0;}
+.services-editorial__copy p:not(.section-index) {font-size:1.08rem;line-height:1.6;color:#415568;}
+.services-editorial__copy a {display:inline-block;margin-top:9px;text-decoration:none;font-weight:800;border-bottom:1px solid currentColor;padding-bottom:5px;}
+.ponsse-recognition {background:#f2f4f5;padding:clamp(44px,6vw,80px) 0;}
+.ponsse-recognition__grid {display:grid;grid-template-columns:minmax(0,1.1fr) minmax(290px,.72fr);gap:clamp(30px,5vw,90px);align-items:center;}
+.ponsse-recognition h2 {font-size:clamp(2rem,4vw,4.4rem);letter-spacing:-.045em;line-height:1.05;margin:0 0 20px;}
+.ponsse-recognition p {max-width:68ch;line-height:1.6;color:#40536a;}
+.ponsse-recognition__citation {background:#fff;padding:clamp(25px,4vw,47px);border-top:6px solid #ecc900;box-shadow:0 20px 40px rgba(7,28,43,.07);}
+.ponsse-recognition__citation span {display:block;letter-spacing:.095em;font-weight:850;color:#4a4f55;font-size:.72rem;margin-bottom:12px;}
+.ponsse-recognition__citation strong {display:block;font-size:clamp(1.8rem,3vw,3rem);font-weight:730;letter-spacing:-.03em;}
+.ponsse-recognition__citation .ponsse-recognition__signer {color:#1e3345;font-size:.84rem;margin-top:24px;border-top:1px solid #d8dfe3;padding-top:14px;}
+@media (max-width:760px) {
+ .home-hero--v43 ~ .home-solution .solution-grid {display:flex;flex-direction:column;gap:14px;}
+ .home-hero--v43 ~ .home-solution .section-copy {padding:0;}
+ .home-hero--v43 ~ .home-solution .solution-mobile-legend {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:6px 0 0;width:100%;}
+ .home-hero--v43 ~ .home-solution .solution-mobile-legend span {background:#fff;padding:13px 10px;border-top:3px solid #b96a47;color:#1d3344;font-size:.82rem;line-height:1.35;}
+ .home-hero--v43 ~ .home-solution .solution-mobile-legend span:last-child {border-top-color:#3b87b0;}
+ .home-hero--v43 ~ .home-solution .solution-diagram {width:100%;aspect-ratio:1.9;overflow:hidden;}
+ .home-hero--v43 ~ .home-solution .solution-diagram img {width:100%;height:100%;object-fit:cover;object-position:center;}
+ .services-editorial__grid,.ponsse-recognition__grid {grid-template-columns:minmax(0,1fr);gap:24px;}
+ .services-editorial__image img {aspect-ratio:1.3;}
+ .services-editorial__copy h2 {font-size:clamp(2.1rem,8vw,3rem);}
+ .ponsse-recognition__citation {padding:24px;}
+}
+
+/* Case editorial story: project scope, performed work, documented outcome. */
+.case-story {background:#fff;padding-top:clamp(32px,5vw,70px);padding-bottom:clamp(30px,5vw,65px);}
+.case-story__grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(20px,3vw,46px);}
+.case-story__grid>div {border-top:2px solid #b86c49;padding-top:17px;}
+.case-story__grid>div:nth-child(2) {border-top-color:#355f7d;}
+.case-story__grid>div:nth-child(3) {border-top-color:#253d4b;}
+.case-story__grid span {color:#536778;font-size:.78rem;font-weight:750;letter-spacing:.025em;}
+.case-story__grid h2 {font-size:clamp(1.25rem,1.75vw,1.85rem);line-height:1.15;letter-spacing:-.027em;margin:12px 0;}
+.case-story__grid p {color:#495c68;line-height:1.58;margin:0;}
+@media(max-width:760px){.case-story__grid {grid-template-columns:1fr;gap:23px;}.case-story__grid h2{font-size:1.46rem;}}
+
+/* Correct exact 320px overflow in Services limits grid, without hiding content. */
+@media (max-width:760px) {
+  .hub-limits__grid {grid-template-columns:minmax(0,1fr);gap:28px;}
+  .hub-limits__grid > * {min-width:0;overflow-wrap:anywhere;}
+}
+
+/* Owner screenshot 1: mobile shows each native-raster airflow annotation at usable scale. */
+.solution-mobile-pair {display:none;}
+@media(max-width:760px) {
+ .home-hero--v43 ~ .home-solution .solution-diagram {display:none;}
+ .home-hero--v43 ~ .home-solution .solution-mobile-pair {display:grid;grid-template-columns:minmax(0,1fr);gap:15px;width:100%;}
+ .solution-mobile-pair__panel {margin:0;min-width:0;background:#eff5f7;border:1px solid #d1dfe6;overflow:hidden;}
+ .solution-mobile-pair__crop {width:100%;height:auto;aspect-ratio:518/338;overflow:hidden;}
+ .solution-mobile-pair__crop img {display:block;max-width:none;width:200%;height:auto;filter:none;}
+ .solution-mobile-pair__panel--exhaust .solution-mobile-pair__crop img {transform:translateX(-50%);}
+ .solution-mobile-pair__panel figcaption {padding:10px 14px;background:#fff;color:#344b5a;font-size:.86rem;line-height:1.45;border-top:3px solid #bb7452;}
+ .solution-mobile-pair__panel--exhaust figcaption {border-top-color:#4689b0;}
+ .story-index__grid {grid-template-columns:minmax(0,1fr);}
+ .story-index__grid a {min-width:0;overflow-wrap:anywhere;}
+ .story-index__grid a>div {min-width:0;flex-wrap:wrap;gap:6px;}
+}
+
+/* V43 browser-verified optical cleanup after independent full-page screenshot review. */
+.service-premium__hero h1 {
+  font-size:clamp(2.75rem,4.25vw,4.7rem);
+  line-height:1.055;letter-spacing:-.047em;font-weight:760;
+}
+@media (max-width:760px) {
+  .service-premium__hero h1 {font-size:clamp(2.25rem,9.2vw,3.5rem);line-height:1.075;letter-spacing:-.043em;}
+  /* The split mobile panels have their own enlarged labels and captions. */
+  .home-hero--v43 ~ .home-solution .solution-mobile-legend {display:none;}
+  .home-hero--v43 ~ .home-solution .process-strip div {
+    display:grid;grid-template-columns:minmax(24px,auto) minmax(0,1fr);
+    gap:8px;align-items:center;padding:12px 10px;
+  }
+  .home-hero--v43 ~ .home-solution .process-strip span {
+    min-width:0;text-align:right;line-height:1.28;font-size:.76rem;
+    overflow-wrap:anywhere;
+  }
+}
+
+/* V43 Owner assignment: REV2 architectural interior for Home once exact original is available. */
+.home-hero--owner-interior .home-hero__grid {min-height:650px;}
+.home-hero--owner-interior .home-hero__copy {min-height:650px;width:min(51%,680px);padding-right:24px;}
+.home-hero--owner-interior .hero-engineering {left:0;right:0;top:0;bottom:0;min-height:0;background:#e9e5dd;}
+.home-hero--owner-interior .hero-engineering__photo {width:100%;height:100%;object-fit:cover;object-position:65% center;filter:none;}
+.home-hero--owner-interior .hero-engineering__veil {background:linear-gradient(90deg,#fff 0%,rgba(255,255,255,.98) 17%,rgba(255,255,255,.79) 35%,rgba(255,255,255,.06) 68%,transparent 78%),linear-gradient(0deg,rgba(255,255,255,.79),transparent 13%);}
+.home-hero--owner-interior .hero-engineering__frame {display:none;}
+@media (min-width:761px) and (max-width:1100px) {
+ .home-hero--owner-interior .home-hero__copy {width:61%;min-height:600px;}
+ .home-hero--owner-interior .home-hero__grid {min-height:600px;}
+ .home-hero--owner-interior .hero-engineering {left:0;}
+ .home-hero--owner-interior .hero-engineering__veil {background:linear-gradient(90deg,#fff 0%,rgba(255,255,255,.97) 21%,rgba(255,255,255,.85) 45%,transparent 88%);}
+}
+@media (max-width:760px) {
+ .home-hero--owner-interior .home-hero__grid {min-height:0;display:flex;flex-direction:column;}
+ .home-hero--owner-interior .home-hero__copy {width:100%;min-height:0;padding:28px 0 17px;}
+ .home-hero--owner-interior .hero-engineering {position:relative;inset:auto;left:auto;right:auto;width:100%;min-height:0;aspect-ratio:1.28;margin:0 0 14px;}
+ .home-hero--owner-interior .hero-engineering__photo {object-position:70% center;}
+ .home-hero--owner-interior .hero-engineering__veil {background:linear-gradient(0deg,rgba(255,255,255,.2),transparent 31%);}
+}
+
+/* PONSSE — native original document and user-supplied signer portrait. */
+.ponsse-recognition__citation {min-width:0;}
+.ponsse-letter-preview {display:block;width:100%;margin:24px 0 4px;padding:10px;background:#f7fafb;border:1px solid #d6e1e6;cursor:zoom-in;text-align:left;color:#123549;font:inherit;}
+.ponsse-letter-preview img {display:block;width:100%;height:auto;max-height:240px;object-fit:contain;object-position:top;background:white;}
+.ponsse-letter-preview>span {display:block;margin-top:10px;font-weight:750;font-size:.82rem;}
+.ponsse-letter-preview:hover {border-color:#2875a0;}
+.ponsse-letter-preview:focus-visible,.ponsse-letter-dialog__close:focus-visible {outline:3px solid #148cff;outline-offset:3px;}
+.ponsse-recognition__person {display:flex;align-items:center;gap:16px;padding-top:16px;margin-top:18px;border-top:1px solid #d8dfe3;}
+.ponsse-recognition__portrait {margin:0;width:80px;flex:0 0 80px;aspect-ratio:2/3;overflow:hidden;background:#f0f1f2;}
+.ponsse-recognition__portrait img {display:block;width:100%;height:100%;object-fit:cover;object-position:center 26%;}
+.ponsse-recognition__citation .ponsse-recognition__signer {margin:0;border:0;padding:0;font-size:.77rem;overflow-wrap:anywhere;}
+.ponsse-letter-dialog {width:min(94vw,1020px);max-width:min(94vw,1020px);max-height:94dvh;border:0;padding:0;background:#fff;color:#143247;box-shadow:0 20px 80px #0005;}
+.ponsse-letter-dialog::backdrop {background:#09131dde;}
+.ponsse-letter-dialog__actions {position:sticky;top:0;z-index:2;background:#fff;padding:10px;display:flex;justify-content:flex-end;}
+.ponsse-letter-dialog__close {cursor:pointer;padding:12px 20px;border:0;background:#0e293b;color:#fff;font:inherit;font-weight:700;min-height:44px;}
+.ponsse-letter-dialog__sheet {overflow:auto;max-height:calc(94dvh - 114px);}
+.ponsse-letter-dialog__sheet img {display:block;width:100%;height:auto;}
+.ponsse-letter-dialog__link {display:block;padding:12px 20px;text-decoration:underline;text-underline-offset:3px;}
+@media(max-width:760px) {.ponsse-recognition__portrait{width:66px;flex-basis:66px;}.ponsse-letter-dialog{width:100vw;max-width:100vw;max-height:98dvh;}.ponsse-letter-dialog__sheet{max-height:calc(98dvh - 120px);}}
+
+/* Owner V43: genuine photographic portfolio and quieter object-type architecture. */
+.portfolio-grid {grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,1.9vw,26px);background:transparent;border:0;}
+.portfolio-card {padding:0;min-height:0;overflow:hidden;border:1px solid #d8e0e5;background:#fff;display:flex;flex-direction:column;}
+.portfolio-card__media {aspect-ratio:1.55;overflow:hidden;background:#e4ebef;}
+.portfolio-card__media img {width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s ease;}
+.portfolio-card:hover .portfolio-card__media img {transform:scale(1.025);}
+.portfolio-card__body {padding:19px 21px 20px;flex:1;display:flex;flex-direction:column;gap:16px;margin:0;}
+.portfolio-card__body > div:nth-child(2) {margin:auto 0 0;}
+.portfolio-card__body h3 {font-size:clamp(1.3rem,1.6vw,1.95rem);line-height:1.18;letter-spacing:-.035em;}
+.portfolio-card__bottom {margin-top:auto;}
+.objects-index__grid {grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,1.9vw,25px);background:transparent;border:0;}
+.object-context-card {min-height:0;padding:23px;border:1px solid #d6e0e6;gap:12px;}
+.object-context-card h3 {font-size:clamp(1.28rem,1.6vw,1.7rem);margin:12px 0 0;line-height:1.15;}
+.object-context-card p {line-height:1.5;flex-grow:1;}
+.object-context-card__proof {margin-top:8px;line-height:1.45;}
+.object-context-card strong {margin:0;font-size:.83rem;}
+.objects-proof__grid a {display:flex;flex-direction:column;overflow:hidden;padding:0;min-height:0;}
+.objects-proof__grid a img {display:block;width:100%;aspect-ratio:1.52;object-fit:cover;margin-bottom:14px;}
+.objects-proof__grid a > span,.objects-proof__grid a > strong,.objects-proof__grid a > small {margin-inline:18px;}
+.objects-proof__grid a > small {margin-bottom:20px;}
+
+/* Historic PONSSE letter: original document is the design anchor, not a fake award. */
+.home-ponsse {padding:clamp(72px,8vw,128px) 0;background:#eaf0f1;border-block:1px solid #d9e3e8;}
+.home-ponsse__grid {display:grid;grid-template-columns:minmax(0,1.04fr) minmax(260px,.82fr);gap:clamp(44px,7vw,118px);align-items:center;}
+.home-ponsse__copy {max-width:680px;}
+.home-ponsse h2 {font-size:clamp(2.45rem,4.8vw,5.15rem);line-height:1.07;letter-spacing:-.045em;font-weight:760;margin:0 0 26px;overflow-wrap:break-word;}
+.home-ponsse__copy>p:not(.section-index) {font-size:clamp(1.04rem,1.35vw,1.3rem);line-height:1.62;color:#445967;max-width:54ch;}
+.home-ponsse__actions {display:flex;align-items:center;gap:22px;flex-wrap:wrap;margin-top:35px;}
+.home-ponsse__case {display:inline-flex;align-items:center;gap:16px;color:#fff;background:#123449;padding:17px 23px;text-decoration:none;font-weight:740;min-height:50px;}
+.home-ponsse__letter-link {color:#24465a;font-size:.92rem;text-decoration:underline;text-underline-offset:5px;font-weight:700;}
+.home-ponsse__document {margin:0;justify-self:center;width:min(100%,360px);}
+.home-ponsse__document>a {display:block;background:#fff;padding:8px;box-shadow:0 18px 54px rgba(7,34,48,.12);transition:transform .2s ease;}
+.home-ponsse__document img {display:block;width:100%;height:auto;aspect-ratio:1481/2048;object-fit:contain;}
+.home-ponsse__document figcaption {margin-top:12px;color:#596b77;font-size:.81rem;letter-spacing:.02em;text-align:center;}
+.home-ponsse__document a:hover {transform:translateY(-3px);}
+.home-ponsse a:focus-visible,.portfolio-card:focus-visible,.object-context-card:focus-visible,.case-gallery__item a:focus-visible {outline:3px solid #1478ba;outline-offset:4px;}
+
+/* Letter viewer opens fitted full page; original-resolution link offers detailed zoom. */
+.ponsse-letter-preview img {max-height:none;aspect-ratio:1481/2048;object-fit:contain;object-position:center;}
+.ponsse-letter-dialog {display:none;flex-direction:column;width:min(95vw,770px);max-width:min(95vw,770px);height:min(95dvh,1100px);max-height:95dvh;overflow:hidden;border-radius:9px;}
+.ponsse-letter-dialog[open] {display:flex;}
+.ponsse-letter-dialog__actions {position:relative;flex:0 0 auto;}
+.ponsse-letter-dialog__sheet {flex:1 1 auto;min-height:0;max-height:none;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#eff2f4;padding:8px;}
+.ponsse-letter-dialog__sheet img {width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain;}
+.ponsse-letter-dialog__link {flex:0 0 auto;text-align:center;font-size:.84rem;background:#fff;}
+.case-gallery__item a {display:block;}
+.case-gallery__item a img {transition:filter .2s ease;}
+.case-gallery__item a:hover img {filter:contrast(1.05);}
+@media (max-width:1100px) and (min-width:761px) {
+ .portfolio-grid,.objects-index__grid {grid-template-columns:repeat(2,minmax(0,1fr));}
+ .home-ponsse__grid {gap:32px;}
+}
+@media (max-width:760px) {
+ .portfolio-grid,.objects-index__grid {grid-template-columns:minmax(0,1fr);}
+ .object-context-card {padding:19px;}
+ .home-ponsse {padding:64px 0;}
+ .home-ponsse__grid {grid-template-columns:minmax(0,1fr);gap:32px;}
+ .home-ponsse h2 {font-size:clamp(2.25rem,10vw,3.9rem);max-width:13ch;}
+ .home-ponsse__document {width:min(100%,290px);}
+ .home-ponsse__actions {align-items:flex-start;flex-direction:column;}
+ .ponsse-letter-dialog {width:100vw;max-width:100vw;height:100dvh;max-height:100dvh;border-radius:0;}
+ .ponsse-letter-dialog__sheet {padding:4px;}
+}
+@media (prefers-reduced-motion:reduce) {
+ .portfolio-card__media img,.home-ponsse__document>a,.case-gallery__item a img {transition:none;}
+ .portfolio-card:hover .portfolio-card__media img,.home-ponsse__document a:hover {transform:none;}
+}
+
+/* Owner 2026-10-10: immersive edge-to-edge HVAC scene without losing annotation text. */
+@media (min-width:1101px) {
+  .home-hero--v43 ~ .home-solution {padding:0;background:#f8fafb;}
+  .home-hero--v43 ~ .home-solution .home-shell.solution-grid {
+    position:relative;isolation:isolate;display:grid;grid-template-columns:minmax(0,37%) minmax(0,63%);
+    width:100%;max-width:none;min-height:520px;padding:0 0 0 max(28px,calc((100vw - 1380px)/2));
+    overflow:hidden;gap:0;align-items:center;
+  }
+  .home-hero--v43 ~ .home-solution .solution-grid>.section-copy {
+    position:relative;z-index:3;width:min(100%,465px);padding:46px 12px 46px 0;
+  }
+  .home-hero--v43 ~ .home-solution .solution-diagram {
+    position:absolute;top:0;right:0;bottom:0;left:33.5%;z-index:1;
+    width:auto;height:100%;min-height:0;aspect-ratio:auto;overflow:hidden;
+    background:#e8f1f6;box-shadow:none;border:0;
+  }
+  .home-hero--v43 ~ .home-solution .solution-diagram img {
+    position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+    object-position:center 52%;filter:none;
+  }
+  .home-hero--v43 ~ .home-solution .solution-diagram::before {
+    content:"";display:block;position:absolute;inset:0;z-index:2;pointer-events:none;
+    background:
+      linear-gradient(90deg,#f8fafb 0%,rgba(248,250,251,.96) 12%,rgba(248,250,251,.68) 25%,rgba(248,250,251,.13) 47%,transparent 61%),
+      linear-gradient(180deg,rgba(247,250,252,.97) 0%,rgba(247,250,252,.87) 10%,rgba(247,250,252,.46) 24%,transparent 48%);
+  }
+  .home-hero--v43 ~ .home-solution .solution-diagram::after {content:none;display:none;}
+  .home-hero--v43 ~ .home-solution .process-strip {position:relative;z-index:2;margin-top:0;}
+}
+.solution-overlay-labels {display:none;}
+@media(min-width:1101px) {
+  .home-hero--v43 ~ .home-solution .solution-overlay-labels {
+    position:absolute;z-index:3;top:clamp(24px,5%,48px);left:0;right:0;
+    display:flex;justify-content:space-between;gap:20px;align-items:flex-start;
+    padding:0 clamp(23px,4vw,72px) 0 clamp(200px,24%,300px);pointer-events:none;
+  }
+  .solution-overlay-label {display:flex;flex-direction:column;gap:4px;min-width:0;max-width:200px;
+    padding:8px 12px;background:rgba(247,250,252,.76);
+    border-left:2px solid #bc7551;backdrop-filter:blur(6px);margin:0;line-height:1.25;
+    box-shadow:0 2px 18px rgba(23,52,71,.035);}
+  .solution-overlay-label--exhaust {border-left-color:#4589b3;}
+  .solution-overlay-label strong {font-size:clamp(.82rem,.95vw,.97rem);color:#173649;letter-spacing:-.015em;}
+  .solution-overlay-label span {font-size:clamp(.72rem,.75vw,.8rem);color:#466273;}
+}
+@media (min-width:761px) and (max-width:1100px) {
+  .home-hero--v43 ~ .home-solution .solution-grid {display:grid;grid-template-columns:1fr;gap:15px;}
+  .home-hero--v43 ~ .home-solution .solution-diagram {position:relative;inset:auto;width:100%;height:auto;aspect-ratio:1036/338;}
+}
+@media(max-width:760px) {
+  .home-hero--v43 ~ .home-solution .solution-overlay-labels {display:none;}
+}
+/* Quiet native scrollbar; platform overlay scrollbars remain respected. */
+html {scrollbar-width:thin;scrollbar-color:#a8b8c3 #f7f9fa;}
+html::-webkit-scrollbar {width:7px;height:7px;}
+html::-webkit-scrollbar-track {background:#f7f9fa;}
+html::-webkit-scrollbar-thumb {background:#a8b8c3;border:2px solid #f7f9fa;border-radius:12px;}
+html::-webkit-scrollbar-thumb:hover {background:#7c93a2;}
+
+/* PONSSE: full 21-image project archive preserved without cluttering primary dossier. */
+.case-gallery-archive {margin-top:clamp(28px,5vw,64px);padding-top:25px;border-top:1px solid #d0dce3;}
+.case-gallery-archive>summary {cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:52px;padding:10px 0;font-size:clamp(1rem,1.4vw,1.18rem);font-weight:740;color:#18384c;}
+.case-gallery-archive>summary::-webkit-details-marker {display:none;}
+.case-gallery-archive>summary:after {content:'+';font-weight:480;font-size:1.8rem;color:#5788a3;}
+.case-gallery-archive[open]>summary:after {content:'−';}
+.case-gallery-archive>summary span {margin-right:auto;font-size:.82rem;font-weight:500;color:#728899;}
+.case-gallery-archive>summary:focus-visible {outline:3px solid #1478ba;outline-offset:3px;}
+.case-gallery-archive .case-gallery__grid {margin-top:20px;grid-template-columns:repeat(3,minmax(0,1fr));}
+.case-gallery-archive .case-gallery__item img {aspect-ratio:1.42;object-fit:cover;}
+.case-gallery-archive .case-gallery__item figcaption {font-size:.76rem;}
+@media(max-width:760px){.case-gallery-archive .case-gallery__grid {grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}.case-gallery-archive .case-gallery__item figcaption {padding:8px;font-size:.72rem;}}
+
+/* Owner visual readback: keep both engineering labels clear of the floating consultant launcher. */
+@media (min-width:1101px) {
+  .home-hero--v43 ~ .home-solution .solution-overlay-labels {
+    top:clamp(96px,12%,118px);
+    padding-right:clamp(260px,24vw,360px);
+    padding-left:clamp(178px,22%,268px);
+    gap:15px;
+  }
+  .home-hero--v43 ~ .home-solution .solution-overlay-label {
+    flex:1 1 0;max-width:205px;min-width:0;
+    background:rgba(248,250,251,.91);box-shadow:0 2px 20px rgba(23,52,71,.02);
+  }
+  .home-hero--v43 ~ .home-solution .solution-diagram::before {
+    background:
+      linear-gradient(90deg,#f8fafb 0%,rgba(248,250,251,.97) 11%,rgba(248,250,251,.69) 24%,rgba(248,250,251,.12) 46%,transparent 61%),
+      linear-gradient(180deg,#f8fafb 0%,rgba(248,250,251,.98) 13%,rgba(248,250,251,.78) 25%,rgba(248,250,251,.1) 48%,transparent 62%);
+  }
+}
+
+/* Suppress faint raster double of the original blue caption without masking the ductwork below. */
+@media (min-width:1101px) {
+  .home-hero--v43 ~ .home-solution .solution-diagram::after {
+    content:"";display:block;position:absolute;z-index:2;pointer-events:none;
+    top:0;right:0;width:35%;height:43%;
+    background:linear-gradient(180deg,#f8fafb 0%,rgba(248,250,251,.985) 36%,rgba(248,250,251,.91) 62%,transparent 100%);
+  }
+}
