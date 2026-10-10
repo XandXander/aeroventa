@@ -99,19 +99,52 @@ try {
           const optical = await page.evaluate(() => {
             const diagram = document.querySelector('.home-solution .solution-diagram');
             const copy = document.querySelector('.home-solution .section-copy');
-            const legend = document.querySelector('.home-solution .solution-mobile-legend');
+            const d = diagram?.getBoundingClientRect(), c = copy?.getBoundingClientRect();
             return {
-              diagram_top: diagram?.getBoundingClientRect().top,
-              copy_bottom: copy?.getBoundingClientRect().bottom,
+              diagram_left: d?.left, diagram_right: d?.right, diagram_top: d?.top,
+              copy_left: c?.left, copy_right: c?.right, copy_bottom: c?.bottom,
               overlay_display: diagram && getComputedStyle(diagram, '::before').display,
-              legend_display: legend && getComputedStyle(legend).display,
+              diagram_object_fit: diagram && getComputedStyle(diagram.querySelector('img')).objectFit,
             };
           });
           const mobilePanels = await page.locator('.solution-mobile-pair__panel').count();
           const mobilePairVisible = await page.locator('.solution-mobile-pair').isVisible();
-          if ((width > 760 && (optical.overlay_display !== 'none' || optical.diagram_top < optical.copy_bottom - 3)) ||
+          const desktopIntegrated = width <= 1100 || (
+            optical.diagram_left >= optical.copy_right - 10 &&
+            optical.diagram_right > optical.diagram_left + 120 &&
+            optical.diagram_top < optical.copy_bottom &&
+            optical.diagram_object_fit === 'contain'
+          );
+          if ((width > 760 && (optical.overlay_display !== 'none' || !desktopIntegrated)) ||
               (width <= 760 && (mobilePanels !== 2 || !mobilePairVisible))) {
-            report.fail.push({ route, view, reason: 'supply/exhaust labels optical legibility', optical, mobilePanels, mobilePairVisible });
+            report.fail.push({ route, view, reason: 'Owner integrated HVAC composition / native labels', optical, mobilePanels, mobilePairVisible });
+          }
+          const recognition = page.locator('.home-ponsse');
+          const orderCorrect = await page.evaluate(() => {
+            const section = document.querySelector('.home-ponsse');
+            const prior = section?.previousElementSibling;
+            const after = section?.nextElementSibling;
+            return prior?.id === 'objects' && !!prior?.previousElementSibling?.classList.contains('case-feature') && !!after?.classList.contains('decision-preview');
+          });
+          if (!orderCorrect || await recognition.count() !== 1 ||
+              await recognition.locator('img[src="/evidence/karelia/ponsse-letter-20220405.png"]').count() !== 1 ||
+              await recognition.locator('a[href="/blog/detail/montazh-ventilyatsii-v-karelii/"]').count() !== 1) {
+            report.fail.push({route,view,reason:'PONSSE historical proof placement and direct case path',orderCorrect});
+          }
+          const opened = await page.locator('dialog[open]').count();
+          if (opened) report.fail.push({route,view,reason:'Surprise modal on initial page load',opened});
+        }
+        if (id === 'portfolio') {
+          const cards = page.locator('.portfolio-card');
+          const count = await cards.count();
+          const photos = await cards.locator('img').count();
+          const ponsse = await page.locator('.portfolio-card:has-text("PONSSE")').count();
+          if (count !== 6 || photos !== 6 || ponsse !== 1) {
+            report.fail.push({route,view,reason:'Six photo-backed direct named cases',count,photos,ponsse});
+          }
+          for (const card of await cards.all()) {
+            const href = await card.getAttribute('href');
+            if (!href?.startsWith('/blog/detail/')) report.fail.push({route,view,reason:'Case must link directly to historic case URL',href});
           }
         }
         if (id === 'services') {
@@ -133,7 +166,7 @@ try {
           const content = await page.locator('.ponsse-recognition').innerText();
           if (!content.includes('05.04.2022') || !content.includes('Petteri Teittinen')) report.fail.push({ route, view, reason: 'PONSSE letter editorial content absent' });
           const expectedLetter = report.owner_media[1].status === 'EXACT';
-          const expectedPortrait = report.owner_media[2].status === 'EXACT';
+          const expectedPortrait = report.owner_media[2].status === 'EXACT' && process.env.PUBLIC_PONSSE_PORTRAIT_PUBLICATION_APPROVED === 'true';
           const actualLetter = await page.locator('[data-ponsse-open] img').count();
           const actualPortrait = await page.locator('.ponsse-recognition__portrait img').count();
           if (actualLetter !== Number(expectedLetter) || actualPortrait !== Number(expectedPortrait)) {
@@ -151,6 +184,13 @@ try {
           if ((await letterModal.locator('img').getAttribute('src')) !== '/evidence/karelia/ponsse-letter-20220405.png') {
             report.fail.push({route,view,reason:'Wrong PONSSE fullsize original'});
           }
+          const letterFit = await letterModal.evaluate(dialog => {
+            const image = dialog.querySelector('.ponsse-letter-dialog__sheet img');
+            const body = dialog.querySelector('.ponsse-letter-dialog__sheet');
+            const ir = image.getBoundingClientRect(), br=body.getBoundingClientRect();
+            return ir.width > 0 && ir.height > 0 && ir.height <= br.height + 1 && ir.width <= br.width + 1;
+          });
+          if (!letterFit) report.fail.push({route,view,reason:'PONSSE full original must initially fit without clipping'});
           if (view === 'desktop_1440' || view === 'mobile_390') {
             await page.screenshot({path:path.join(root,'ponsse_letter_open__'+view+'.png'),animations:'disabled'});
           }
@@ -167,8 +207,21 @@ try {
           await page.screenshot({ path: path.join(root, 'consultant_open__' + view + '.png'), animations: 'disabled' });
         }
         if (id === 'home' && view === 'desktop_1440') {
+          await page.locator('.header-project').click();
+          const contactDialog = page.locator('[data-contact-dialog]');
+          await contactDialog.waitFor({state:'visible'});
+          await page.screenshot({ path:path.join(root,'contact_open__desktop_1440.png'),animations:'disabled' });
+          const formCount = await contactDialog.locator('form[data-contact-form]').count();
+          const sheetWidth = await contactDialog.evaluate(x=>x.getBoundingClientRect().width);
+          if (sheetWidth > 640 || formCount !== 1) report.fail.push({route,view,reason:'Bounded contact form sheet',sheetWidth,formCount});
+          await contactDialog.locator('[data-dialog-close]').click();
+          await contactDialog.waitFor({state:'hidden'});
+          const returnFocus = await page.locator('.header-project').evaluate(x => x === document.activeElement);
+          if (!returnFocus) report.fail.push({route,view,reason:'Contact sheet does not restore focus to trigger'});
+        }
+        if (id === 'home' && view === 'desktop_1440') {
           const nav = await page.locator('.nav--desktop').innerText();
-          if (nav.includes('Консультант') || !nav.includes('Статьи')) report.fail.push({ route, view, reason: 'navigation contract', nav });
+          if (nav.includes('Консультант') || !nav.includes('Статьи') || !nav.includes('Наши работы') || nav.includes('Объекты')) report.fail.push({ route, view, reason: 'navigation contract', nav });
           const title = await page.locator('.header-project').innerText();
           if (!title.includes('Обсудить задачу')) report.fail.push({ route, view, reason: 'CTA contract', title });
         }

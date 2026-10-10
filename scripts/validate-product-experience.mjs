@@ -42,6 +42,15 @@ for (const [name, marker] of [
   check(files.layout.includes(marker), `BaseLayout wires ${name}`);
 }
 
+check(files.header.includes('<a href="/portfolio/">Наши работы</a>'), 'Five-item desktop/mobile primary nav exposes completed work');
+check(!files.header.includes('<a href="/obekty/">Объекты</a>'), 'Object-type hub no longer masks completed-work navigation');
+check(files.home.indexOf('class="case-feature"') < files.home.indexOf('id="objects"') &&
+      files.home.indexOf('id="objects"') < files.home.indexOf('class="home-ponsse"') &&
+      files.home.indexOf('class="home-ponsse"') < files.home.indexOf('class="home-section decision-preview"'), 'Historical PONSSE block follows one real intervening section after 7 PARK');
+check(files.home.includes('/evidence/karelia/ponsse-letter-20220405.png'), 'Original PONSSE 2022 letter stays intact on home');
+check(files.globalCss.includes('.home-ponsse__grid') && files.globalCss.includes('grid-template-columns:minmax(0,36%)'), 'Owner-approved source scene restored beside text and PONSSE editorial styled');
+check(files.contactForm.includes('compact ? 3 : 4') && files.css.includes('experience-dialog--contact'), 'Bounded contact UX with preserved lead form');
+check(files.premium.includes('lastDialogTrigger') && files.premium.includes("opener.focus({ preventScroll: true })"), 'Dialog keyboard focus restored');
 check(files.layout.includes('PUBLIC_YANDEX_WEBMASTER_VERIFICATION'), 'Yandex Webmaster verification seam exists');
 check(files.layout.includes('PUBLIC_GOOGLE_SITE_VERIFICATION'), 'Google Search Console verification seam exists');
 
