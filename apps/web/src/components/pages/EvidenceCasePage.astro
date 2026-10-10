@@ -20,6 +20,7 @@ type CaseSpec = {
   facts: Array<[string,string]>;
   evidence: string[];
   media: Array<[string,string,string]>;
+  archiveMedia?: Array<[string,string,string]>;
   proves: string[];
   limits: string[];
   related: Array<[string,string,string]>;
@@ -212,7 +213,29 @@ const specs: Record<string, CaseSpec> = {
     media:[
       ['/evidence/karelia/owner-cover-v43.webp','Фасад сервисного центра PONSSE в Питкяранте с вывеской','PONSSE · сервисный центр'],
       ['/evidence/karelia/object-exterior.jpg','Объект PONSSE в Питкяранте, Республика Карелия','Питкяранта · объект PONSSE'],
-      ['/evidence/karelia/equipment.jpg','Вентиляционное оборудование на объекте в Питкяранте','Вентиляционное оборудование на объекте']
+      ['/evidence/karelia/equipment.jpg','Вентиляционное оборудование на объекте в Питкяранте','Вентиляционное оборудование на объекте'],
+      ['/evidence/karelia/archive/img-8306.webp','Установленные воздуховоды и вентиляционные агрегаты PONSSE','Смонтированная вентиляционная система'],
+      ['/evidence/karelia/archive/img-8307.webp','Воздуховоды и оборудование на объекте PONSSE','Монтаж вентиляции · Питкяранта']
+    ],
+    archiveMedia:[
+      ['/evidence/karelia/archive/img-8007.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8007','Монтаж вентиляции · архив, кадр 01'],
+      ['/evidence/karelia/archive/img-8008.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8008','Монтаж вентиляции · архив, кадр 02'],
+      ['/evidence/karelia/archive/img-8009.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8009','Монтаж вентиляции · архив, кадр 03'],
+      ['/evidence/karelia/archive/img-8010.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8010','Монтаж вентиляции · архив, кадр 04'],
+      ['/evidence/karelia/archive/img-8087.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8087','Монтаж вентиляции · архив, кадр 05'],
+      ['/evidence/karelia/archive/img-8088.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8088','Монтаж вентиляции · архив, кадр 06'],
+      ['/evidence/karelia/archive/img-8090.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8090','Монтаж вентиляции · архив, кадр 07'],
+      ['/evidence/karelia/archive/img-8096.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8096','Монтаж вентиляции · архив, кадр 08'],
+      ['/evidence/karelia/archive/img-8099.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8099','Монтаж вентиляции · архив, кадр 09'],
+      ['/evidence/karelia/archive/img-8100.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8100','Монтаж вентиляции · архив, кадр 10'],
+      ['/evidence/karelia/archive/img-8110.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8110','Монтаж вентиляции · архив, кадр 11'],
+      ['/evidence/karelia/archive/img-8111.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8111','Монтаж вентиляции · архив, кадр 12'],
+      ['/evidence/karelia/archive/img-8179.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8179','Монтаж вентиляции · архив, кадр 13'],
+      ['/evidence/karelia/archive/img-8181.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8181','Монтаж вентиляции · архив, кадр 14'],
+      ['/evidence/karelia/archive/img-8193.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8193','Монтаж вентиляции · архив, кадр 15'],
+      ['/evidence/karelia/archive/img-8194.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8194','Монтаж вентиляции · архив, кадр 16'],
+      ['/evidence/karelia/archive/img-8196.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8196','Монтаж вентиляции · архив, кадр 17'],
+      ['/evidence/karelia/archive/img-8199.webp','Архивный фотокадр монтажа вентиляции на объекте PONSSE, IMG_8199','Монтаж вентиляции · архив, кадр 18']
     ],
     proves:[
       'Реальный опыт выполнения объекта за пределами Санкт-Петербурга и Ленинградской области.',
@@ -366,6 +389,21 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
           </figure>
         ))}
       </div>
+      {spec.archiveMedia?.length && (
+        <details class="case-gallery-archive">
+          <summary>Ещё фотографии с объекта <span>({spec.archiveMedia.length})</span></summary>
+          <div class="case-gallery__grid">
+            {spec.archiveMedia.map(([src, alt, caption]) => (
+              <figure class="case-gallery__item">
+                <a href={src} target="_blank" rel="noopener noreferrer" aria-label={`Открыть архивное фото: ${caption}`}>
+                  <img src={src} alt={alt} width="800" height="520" loading="lazy" decoding="async" />
+                </a>
+                <figcaption>{caption}</figcaption>
+              </figure>
+            ))}
+          </div>
+        </details>
+      )}
     </div>
   </section>
   <section class="home-section case-detail-related" aria-labelledby="case-related-title">

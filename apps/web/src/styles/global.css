@@ -3281,3 +3281,16 @@ html::-webkit-scrollbar {width:7px;height:7px;}
 html::-webkit-scrollbar-track {background:#f7f9fa;}
 html::-webkit-scrollbar-thumb {background:#a8b8c3;border:2px solid #f7f9fa;border-radius:12px;}
 html::-webkit-scrollbar-thumb:hover {background:#7c93a2;}
+
+/* PONSSE: full 21-image project archive preserved without cluttering primary dossier. */
+.case-gallery-archive {margin-top:clamp(28px,5vw,64px);padding-top:25px;border-top:1px solid #d0dce3;}
+.case-gallery-archive>summary {cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:52px;padding:10px 0;font-size:clamp(1rem,1.4vw,1.18rem);font-weight:740;color:#18384c;}
+.case-gallery-archive>summary::-webkit-details-marker {display:none;}
+.case-gallery-archive>summary:after {content:'+';font-weight:480;font-size:1.8rem;color:#5788a3;}
+.case-gallery-archive[open]>summary:after {content:'−';}
+.case-gallery-archive>summary span {margin-right:auto;font-size:.82rem;font-weight:500;color:#728899;}
+.case-gallery-archive>summary:focus-visible {outline:3px solid #1478ba;outline-offset:3px;}
+.case-gallery-archive .case-gallery__grid {margin-top:20px;grid-template-columns:repeat(3,minmax(0,1fr));}
+.case-gallery-archive .case-gallery__item img {aspect-ratio:1.42;object-fit:cover;}
+.case-gallery-archive .case-gallery__item figcaption {font-size:.76rem;}
+@media(max-width:760px){.case-gallery-archive .case-gallery__grid {grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}.case-gallery-archive .case-gallery__item figcaption {padding:8px;font-size:.72rem;}}
