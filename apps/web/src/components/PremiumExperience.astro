@@ -8,7 +8,11 @@ interface Props {
 const { pagePath = '' } = Astro.props;
 ---
 
-<dialog class="experience-dialog experience-dialog--consultant" data-consultant-dialog aria-labelledby="consultant-title">
+<a class="consultant-launcher" href="/contact/" data-consultant-open data-source="persistent_launcher" aria-haspopup="dialog" aria-controls="aeroventa-consultant-dialog" aria-label="Открыть инженерного консультанта">
+  <span class="consultant-launcher__symbol" aria-hidden="true">↗</span>
+  <span class="consultant-launcher__label">Инженерный консультант</span>
+</a>
+<dialog id="aeroventa-consultant-dialog" class="experience-dialog experience-dialog--consultant" data-consultant-dialog aria-labelledby="consultant-title">
   <div class="experience-dialog__shell">
     <div class="experience-dialog__head">
       <div>

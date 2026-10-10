@@ -271,45 +271,31 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
     </div>
   </section>
 
-  <section class="case-detail-evidence" aria-labelledby="case-evidence-title">
-    <div class="home-shell case-detail-evidence__grid">
-      <div>
-        <p class="section-index section-index--orange">02 / Доказательства</p>
-        <h2 id="case-evidence-title">Не достраиваем историю догадками.</h2>
+  <section class="home-section case-gallery" aria-labelledby="case-gallery-title">
+    <div class="home-shell">
+      <p class="section-index section-index--orange">02 / Реальные фотографии</p>
+      <h2 id="case-gallery-title">Объект и выполненные работы</h2>
+      <div class="case-gallery__grid">
+        {spec.media.map(([src,alt,caption]) => (
+          <figure class="case-gallery__item">
+            <img src={src} alt={alt} width="800" height="520" loading="lazy" decoding="async" />
+            <figcaption>{caption}</figcaption>
+          </figure>
+        ))}
       </div>
-      <ol>
-        {spec.evidence.map((item,index) => <li><span>{String(index+1).padStart(2,'0')}</span><p>{item}</p></li>)}
-      </ol>
     </div>
   </section>
-
   <section class="home-section case-detail-meaning" aria-labelledby="case-meaning-title">
     <div class="home-shell case-detail-meaning__grid">
-      <div>
-        <p class="section-index">03 / Что показывает кейс</p>
-        <h2 id="case-meaning-title">Вывод только в пределах доказательств.</h2>
-      </div>
+      <div><p class="section-index">03 / Опыт на объекте</p><h2 id="case-meaning-title">Что выполнено и учтено.</h2></div>
       <div class="case-detail-meaning__list">
         {spec.proves.map((item,index) => <div><span>{String(index+1).padStart(2,'0')}</span><p>{item}</p></div>)}
       </div>
     </div>
   </section>
-
-  <section class="case-detail-limits" aria-labelledby="case-limits-title">
-    <div class="home-shell case-detail-limits__grid">
-      <div>
-        <p class="section-index section-index--orange">04 / Граница доказательств</p>
-        <h2 id="case-limits-title">Чего на этой странице намеренно нет.</h2>
-      </div>
-      <div class="case-detail-limits__list">
-        {spec.limits.map((item) => <div>{item}</div>)}
-      </div>
-    </div>
-  </section>
-
   <section class="home-section case-detail-related" aria-labelledby="case-related-title">
     <div class="home-shell">
-      <p class="section-index">05 / Продолжить</p>
+      <p class="section-index">04 / Продолжить</p>
       <h2 id="case-related-title">Перейти от доказательства к своей задаче.</h2>
       <div class="case-detail-related__grid">
         {spec.related.map(([title,href,text],index) => <a href={href}><span>{String(index+1).padStart(2,'0')}</span><h3>{title}</h3><p>{text}</p><b>Открыть →</b></a>)}
@@ -319,7 +305,7 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
 
   <section class="conversion-close">
     <div class="home-shell">
-      <p class="section-index section-index--orange">06 / Ваш объект</p>
+      <p class="section-index section-index--orange">05 / Ваш объект</p>
       <h2>Есть похожая задача — начните с исходных данных.</h2>
       <div class="home-actions">
         <a class="button button--light" href="/montazh-po-proektu/">Монтаж по готовому проекту →</a>

@@ -516,3 +516,17 @@
 @media (prefers-reduced-motion:reduce) {
  .consultant-conversation__history {scroll-behavior:auto;}
 }
+
+/* Consultant launcher outside navigation, no automatic popup or model claim. */
+.consultant-launcher {position:fixed;z-index:29;right:max(22px,env(safe-area-inset-right,22px));bottom:max(20px,env(safe-area-inset-bottom,20px));display:inline-flex;align-items:center;gap:12px;min-height:52px;padding:7px 19px 7px 8px;border:1px solid #c9dae5;border-radius:999px;background:#fff;color:#12344c;text-decoration:none;box-shadow:0 10px 28px rgba(7,28,43,.15);font-size:.84rem;font-weight:760;}
+.consultant-launcher:hover {border-color:#8cb8ce;background:#f7fbfd;}
+.consultant-launcher__symbol {display:grid;place-items:center;width:37px;height:37px;flex:0 0 37px;border-radius:50%;background:#17648d;color:#fff;font-size:1.45rem;font-weight:600;}
+@media (max-width:760px) {
+.consultant-launcher {right:max(13px,env(safe-area-inset-right,13px));bottom:max(13px,env(safe-area-inset-bottom,13px));min-height:52px;max-width:calc(100vw - 26px);}
+.consultant-launcher__label {font-size:.76rem;}
+}
+@media (max-width:360px) {
+.consultant-launcher {padding:6px;width:51px;height:51px;justify-content:center;}
+.consultant-launcher__label {position:absolute;clip:rect(0,0,0,0);width:1px;height:1px;overflow:hidden;white-space:nowrap;}
+}
+@media (prefers-reduced-motion:reduce) {.consultant-launcher {transition:none;}}

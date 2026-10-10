@@ -2970,3 +2970,39 @@ main { min-height: 60vh; }
  .object-evidence__installation {grid-template-columns:1fr;gap:12px;}
  .object-evidence__installation img {max-width:380px;height:auto;aspect-ratio:1.4;}
 }
+
+/* V43 completion: restrained editorial typography, real case imagery and responsive controls. */
+.site-header .nav--desktop {gap:clamp(12px,1.4vw,26px);}
+.site-header .nav--desktop a,.site-header .header-project {white-space:nowrap;}
+.home-hero--v43 h1 {font-size:clamp(3.5rem,5.3vw,5.35rem);font-weight:760;line-height:1.015;letter-spacing:-.046em;}
+.home-hero--v43 .hero-engineering__veil {background:linear-gradient(90deg,#fff 0%,rgba(255,255,255,.93) 7%,rgba(255,255,255,.6) 25%,transparent 64%);}
+.home-hero--v43 ~ .home-solution .solution-diagram::before {background:linear-gradient(90deg,rgba(255,255,255,.76),transparent 18%);}
+.home-hero--v43 ~ .home-solution .solution-diagram img {filter:saturate(.88) contrast(1.06);}
+.section-copy h2,.section-heading h2,.decision-preview h2,.conversion-close h2 {letter-spacing:-.045em;line-height:1.06;}
+.about-honesty__list a {color:inherit;text-decoration:none;display:block;}
+.about-honesty__list a:hover {text-decoration:underline;text-underline-offset:4px;}
+.portfolio-feature__visual--photo {margin:0;position:relative;min-height:320px;overflow:hidden;border:0;}
+.portfolio-feature__visual--photo img {width:100%;height:100%;min-height:320px;object-fit:cover;display:block;filter:saturate(.82);}
+.portfolio-feature__visual--photo figcaption {position:absolute;bottom:12px;left:14px;background:rgba(7,28,43,.86);color:#fff;padding:7px 10px;font-size:.78rem;}
+.case-gallery__grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(14px,2.5vw,32px);margin-top:28px;}
+.case-gallery__item {margin:0;min-width:0;background:#f0f4f6;}
+.case-gallery__item img {display:block;width:100%;height:auto;aspect-ratio:1.54;object-fit:cover;}
+.case-gallery__item figcaption {padding:12px 15px;color:#334657;font-size:.91rem;}
+@media (max-width:1100px) and (min-width:761px) {
+.site-header__inner {gap:14px;} .site-header .nav--desktop {gap:12px;}
+.site-header .nav--desktop a,.site-header .header-project {font-size:.8rem;}
+}
+@media (max-width:760px) {
+.home-hero--v43 h1 {font-size:clamp(2.35rem,10.1vw,3.5rem);font-weight:760;letter-spacing:-.044em;line-height:1.045;}
+.home-hero--v43 .home-hero__copy {padding-top:22px;}
+.home-hero--v43 .hero-engineering {min-height:245px;margin-bottom:8px;}
+.home-hero--v43 .home-hero__copy .home-actions {display:grid;grid-template-columns:minmax(0,1fr);}
+.home-hero--v43 .home-hero__copy .home-actions .button {width:100%;min-width:0;white-space:normal;}
+.case-gallery__grid {grid-template-columns:1fr;}
+.portfolio-feature__visual--photo,.portfolio-feature__visual--photo img {min-height:230px;}
+.site-header .mobile-menu nav {max-height:calc(100dvh - 64px);overflow-y:auto;padding-bottom:max(28px,env(safe-area-inset-bottom,28px));}
+}
+@media (max-width:360px) {
+.home-hero--v43 h1 {font-size:clamp(2.25rem,10vw,2.8rem);}
+.home-hero--v43 .hero-engineering {min-height:215px;}
+}

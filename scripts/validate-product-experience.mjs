@@ -107,8 +107,8 @@ check(files.premium.includes('Не является сметой, проекто
 check(files.premium.includes('if (!endpoint)'), 'Lead form has safe no-endpoint fallback');
 check(files.premium.includes('mailto:'), 'Lead fallback keeps direct human contact');
 
-check(files.header.includes('data-consultant-open'), 'Header has consultant entry point');
-check(files.footer.includes('data-consultant-open') && files.footer.includes('data-contact-open'), 'Footer has consultant and form entry points');
+check(!files.header.includes('data-consultant-open') && files.premium.includes('data-source="persistent_launcher"'), 'Consultant entry is standalone, outside navigation');
+check(!files.footer.includes('data-consultant-open') && files.footer.includes('data-contact-open'), 'Footer retains contact form without consultant menu');
 check(files.lead.includes('data-contact-open'), 'Lead CTA opens modern contact form');
 check(files.contactPage.includes('<ContactForm'), 'Contact page includes semantic form');
 check(files.home.includes('data-consultant-open') && files.home.includes('data-contact-open'), 'Homepage close offers consultant and direct contact');
@@ -129,14 +129,14 @@ check(files.brandMark.includes('data:image/png;base64,'), 'Candidate compact-mar
 check(files.header.includes('/brand/aeroventa-mark.svg') && files.header.includes('brand-mark-locked') && files.header.includes('brand-wordmark-tail">EROVENTA') && files.header.includes('brand-domain">.RU'), 'Header uses locked AEROVENTA 01 A-symbol integrated into the wordmark');
 check(files.footer.includes('/brand/aeroventa-mark.svg') && files.footer.includes('brand-mark-locked--footer') && files.footer.includes('brand-wordmark-tail">EROVENTA'), 'Footer uses locked AEROVENTA 01 A-symbol integrated into the wordmark');
 check(!files.header.includes('/brand/aeroventa-wordmark.svg') && !files.footer.includes('/brand/aeroventa-wordmark.svg'), 'Corrupt shortlist-heading crop is not exposed as the visible wordmark');
-check(files.header.includes('Есть проект <span aria-hidden="true">→</span>'), 'Header project CTA matches canonical visual baseline wording');
+check(files.header.includes('Обсудить задачу <span aria-hidden="true">→</span>') && files.header.includes('data-contact-open'), 'Header universal CTA links to contact');
 check(files.home.includes('Получить ориентир стоимости') && files.home.includes('Есть проект — запросить смету'), 'Homepage CTA hierarchy matches canonical visual baseline');
-check(files.home.includes('hero-engineering__overlay'), 'Hero airflow authorship remains present');
+check(!files.home.includes('<svg class="hero-engineering__overlay"') && files.home.includes('solution-mobile-legend'), 'Displaced hero arrows absent; supply/exhaust still explained');
 check(files.home.includes('/evidence/hero/engineering-scene-accepted-v43.webp') && files.home.includes('Комплексный подход к вентиляции'), 'Owner-approved architectural engineering illustration preserved');
 check(!files.home.includes('object-ribbon__number') && (files.home.match(/\['(?:Квартиры|Коттеджи|Рестораны|Магазины|Производства|Новостройки)/g) ?? []).length === 6, 'Object navigation has six named destinations without catalogue counters');
 check(files.home.includes('src="/evidence/hero/ductwork-editorial-v43.webp"'), 'Hero retains the selected Owner-supplied 7 PARK installation photo');
-check(files.home.includes('ПРИТОК') && files.home.includes('SUPPLY · схема потока') && files.home.includes('ВЫТЯЖКА') && files.home.includes('EXHAUST · схема потока'), 'Hero uses restrained Russian-first supply/exhaust technical annotations');
-check(files.home.includes('РЕАЛЬНЫЙ МОНТАЖ · 7 PARK · ПАВЛОВСК') && files.home.includes('подтверждено владельцем') && files.home.includes('не исполнительная схема объекта'), 'Hero uses Owner-confirmed 7 PARK attribution and keeps accessible schematic disclaimer');
+check(files.home.includes('Приток · воздух в помещение') && files.home.includes('Вытяжка · удаление воздуха'), 'Supply/exhaust remain independent in accepted diagram');
+check(!files.home.includes('РЕАЛЬНЫЙ МОНТАЖ · 7 PARK · ПАВЛОВСК') && files.home.includes('Реальный монтаж AEROVENTA на объекте 7 PARK'), 'Rejected visual caption gone, accessible attribution preserved');
 const heroFigure = files.home.match(/<figure class="hero-engineering">([\s\S]*?)<\/figure>/)?.[1] ?? '';
 const caseSection = files.home.match(/<section class="case-feature"[\s\S]*?<\/section>/)?.[0] ?? '';
 const caseImageCount = (caseSection.match(/<img\s/gu) ?? []).length;
