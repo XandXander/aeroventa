@@ -21,6 +21,17 @@ const routes = [
   ['articles', '/blog/'],
   ['about', '/about/'],
   ['contact', '/contact/'],
+  ['karelia_ponsse', '/blog/detail/montazh-ventilyatsii-v-karelii/'],
+  ['polisan', '/blog/detail/ntff-polisan/'],
+  ['leont', '/blog/detail/restoran-v-zhk-leontevskiy-mys/'],
+  ['zhukov', '/blog/detail/kvartira-na-zhukova/'],
+  ['cafe', '/blog/detail/kafe-rimskogo-korsakova-3/'],
+  ['objects', '/obekty/'],
+  ['project_ready', '/montazh-po-proektu/'],
+  ['project_not_ready', '/obekt-bez-gotovogo-proekta/'],
+  ['articles_index', '/blog/poleznye-stati/'],
+  ['case_stories', '/blog/istorii-proektov/'],
+  ['faq', '/faq/'],
 ];
 await fs.mkdir(root, { recursive: true });
 const report = { build_mode: 'fixture', local_http_only: true, routes: routes.length, viewports: views.map(x => x[0]), pages: [], fail: [] };
@@ -55,6 +66,42 @@ try {
         }));
         entry.broken_images = await page.evaluate(() => [...document.images].filter(img => !img.complete || !img.naturalWidth).map(img => img.getAttribute('src')));
         entry.page_errors = pageErrors;
+        if (id === 'home') {
+          const optical = await page.evaluate(() => {
+            const diagram = document.querySelector('.home-solution .solution-diagram');
+            const copy = document.querySelector('.home-solution .section-copy');
+            const legend = document.querySelector('.home-solution .solution-mobile-legend');
+            return {
+              diagram_top: diagram?.getBoundingClientRect().top,
+              copy_bottom: copy?.getBoundingClientRect().bottom,
+              overlay_display: diagram && getComputedStyle(diagram, '::before').display,
+              legend_display: legend && getComputedStyle(legend).display,
+            };
+          });
+          if (optical.overlay_display !== 'none' ||
+              optical.diagram_top < optical.copy_bottom - 3 ||
+              (width <= 760 && optical.legend_display === 'none')) {
+            report.fail.push({ route, view, reason: 'supply/exhaust labels optical legibility', optical });
+          }
+        }
+        if (id === 'services') {
+          const visual = await page.locator('img[src="/evidence/hero/hiend-engineering-visual-owner-v43.webp"]').count();
+          if (visual !== 1) report.fail.push({ route, view, reason: 'owner services visual missing or duplicate', actual: visual });
+        }
+        if (id === 'ventilation') {
+          const hasOld = await page.locator('img[src="/evidence/hero/hiend-engineering-visual-owner-v43.webp"]').count();
+          const hasNew = await page.locator('img[src="/evidence/hero/engineering-ductwork.jpg"]').count();
+          if (hasOld || hasNew !== 1) report.fail.push({ route, view, reason: 'owner image relocation failed', old: hasOld, replacement: hasNew });
+        }
+        if (['seven_park','karelia_ponsse','polisan','leont','zhukov','cafe'].includes(id)) {
+          const media = await page.locator('.case-gallery__item img').count();
+          const story = await page.locator('.case-story__grid > div').count();
+          if (media < 2 || story !== 3) report.fail.push({ route, view, reason: 'object evidence/story missing', media, story });
+        }
+        if (id === 'karelia_ponsse') {
+          const content = await page.locator('.ponsse-recognition').innerText();
+          if (!content.includes('05.04.2022') || !content.includes('Petteri Teittinen')) report.fail.push({ route, view, reason: 'PONSSE letter editorial content absent' });
+        }
         if (entry.status !== 200 || entry.overflow_px > 1 || entry.broken_images.length || pageErrors.length) {
           report.fail.push(entry);
         }

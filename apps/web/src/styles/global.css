@@ -3069,3 +3069,9 @@ main { min-height: 60vh; }
 .case-story__grid h2 {font-size:clamp(1.25rem,1.75vw,1.85rem);line-height:1.15;letter-spacing:-.027em;margin:12px 0;}
 .case-story__grid p {color:#495c68;line-height:1.58;margin:0;}
 @media(max-width:760px){.case-story__grid {grid-template-columns:1fr;gap:23px;}.case-story__grid h2{font-size:1.46rem;}}
+
+/* Correct exact 320px overflow in Services limits grid, without hiding content. */
+@media (max-width:760px) {
+  .hub-limits__grid {grid-template-columns:minmax(0,1fr);gap:28px;}
+  .hub-limits__grid > * {min-width:0;overflow-wrap:anywhere;}
+}
