@@ -97,27 +97,34 @@ try {
           const expectedHero = ownerImage ? '/evidence/hero/owner-luxury-airflow-20261010.png' : '/evidence/hero/ductwork-editorial-v43.webp';
           if (actualHero !== expectedHero) report.fail.push({route,view,reason:'Owner hero source does not match media gate',expectedHero,actualHero});
           const optical = await page.evaluate(() => {
+            const grid = document.querySelector('.home-solution .solution-grid');
             const diagram = document.querySelector('.home-solution .solution-diagram');
             const copy = document.querySelector('.home-solution .section-copy');
-            const d = diagram?.getBoundingClientRect(), c = copy?.getBoundingClientRect();
+            const g = grid?.getBoundingClientRect(), d = diagram?.getBoundingClientRect(), c = copy?.getBoundingClientRect();
             return {
-              diagram_left: d?.left, diagram_right: d?.right, diagram_top: d?.top,
-              copy_left: c?.left, copy_right: c?.right, copy_bottom: c?.bottom,
-              overlay_display: diagram && getComputedStyle(diagram, '::before').display,
-              diagram_object_fit: diagram && getComputedStyle(diagram.querySelector('img')).objectFit,
+              grid_top:g?.top,grid_bottom:g?.bottom,
+              diagram_top:d?.top,diagram_bottom:d?.bottom,diagram_left:d?.left,diagram_right:d?.right,
+              copy_right:c?.right,
+              overlay_display:diagram && getComputedStyle(diagram,'::before').display,
+              diagram_object_fit:diagram && getComputedStyle(diagram.querySelector('img')).objectFit,
+              label_count:diagram?.querySelectorAll('.solution-overlay-label').length,
+              label_visible:diagram && getComputedStyle(diagram.querySelector('.solution-overlay-labels')).display !== 'none',
             };
           });
           const mobilePanels = await page.locator('.solution-mobile-pair__panel').count();
           const mobilePairVisible = await page.locator('.solution-mobile-pair').isVisible();
           const desktopIntegrated = width <= 1100 || (
-            optical.diagram_left >= optical.copy_right - 10 &&
-            optical.diagram_right > optical.diagram_left + 120 &&
-            optical.diagram_top < optical.copy_bottom &&
-            optical.diagram_object_fit === 'contain'
+            optical.diagram_left >= optical.copy_right - 26 &&
+            Math.abs(optical.diagram_top - optical.grid_top) <= 2 &&
+            Math.abs(optical.diagram_bottom - optical.grid_bottom) <= 2 &&
+            optical.diagram_right >= width - 2 &&
+            optical.diagram_object_fit === 'cover' &&
+            optical.overlay_display !== 'none' &&
+            optical.label_count === 2 && optical.label_visible
           );
-          if ((width > 760 && (optical.overlay_display !== 'none' || !desktopIntegrated)) ||
+          if ((width > 760 && !desktopIntegrated) ||
               (width <= 760 && (mobilePanels !== 2 || !mobilePairVisible))) {
-            report.fail.push({ route, view, reason: 'Owner integrated HVAC composition / native labels', optical, mobilePanels, mobilePairVisible });
+            report.fail.push({ route, view, reason: 'Owner full-height HVAC scene + safe labels', optical, mobilePanels, mobilePairVisible });
           }
           const recognition = page.locator('.home-ponsse');
           const orderCorrect = await page.evaluate(() => {
@@ -139,6 +146,17 @@ try {
           const count = await cards.count();
           const photos = await cards.locator('img').count();
           const ponsse = await page.locator('.portfolio-card:has-text("PONSSE")').count();
+          const requiredCovers = {
+            'Ресторан в ЖК': '/evidence/leont/owner-cover-v43.webp',
+            'НТФФ': '/evidence/polisan/owner-cover-v43.webp',
+            'Маршала Жукова': '/evidence/zhukov/owner-cover-v43.webp',
+            'PONSSE': '/evidence/karelia/owner-cover-v43.webp',
+            'Римского-Корсакова': '/evidence/cafe/owner-cover-v43.webp',
+          };
+          for (const [name, src] of Object.entries(requiredCovers)) {
+            const count = await page.locator(`.portfolio-card:has-text("${name}") img[src="${src}"]`).count();
+            if (count !== 1) report.fail.push({route,view,reason:'Owner authentic cover mismatch',name,src,count});
+          }
           if (count !== 6 || photos !== 6 || ponsse !== 1) {
             report.fail.push({route,view,reason:'Six photo-backed direct named cases',count,photos,ponsse});
           }
@@ -165,6 +183,8 @@ try {
         if (id === 'karelia_ponsse') {
           const content = await page.locator('.ponsse-recognition').innerText();
           if (!content.includes('05.04.2022') || !content.includes('Petteri Teittinen')) report.fail.push({ route, view, reason: 'PONSSE letter editorial content absent' });
+          const galleryCount = await page.locator('.case-gallery-archive img').count();
+          if (galleryCount !== 18) report.fail.push({route,view,reason:'Complete PONSSE historical image inventory not present',galleryCount});
           const expectedLetter = report.owner_media[1].status === 'EXACT';
           const expectedPortrait = report.owner_media[2].status === 'EXACT' && process.env.PUBLIC_PONSSE_PORTRAIT_PUBLICATION_APPROVED === 'true';
           const actualLetter = await page.locator('[data-ponsse-open] img').count();

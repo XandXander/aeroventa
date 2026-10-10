@@ -27,6 +27,23 @@ const files = {
   brandMark: await read('apps/web/public/brand/aeroventa-mark.svg'),
 };
 
+// Owner wording is a hard gate on publicly rendered Astro templates.
+const siteSources = [
+  'apps/web/src/components/pages',
+  'apps/web/src/pages',
+  'apps/web/src/components/PremiumExperience.astro',
+];
+const publicCopyViolations = [];
+for (const dir of siteSources) {
+  const absolute = path.join(root, dir);
+  const items = (await fs.stat(absolute)).isDirectory()
+    ? (await fs.readdir(absolute)).filter(n => n.endsWith('.astro')).map(n => path.join(absolute,n))
+    : [absolute];
+  for(const file of items) {
+    const source = await fs.readFile(file,'utf8');
+    if (/ограничен[а-яё]*/i.test(source)) publicCopyViolations.push(path.relative(root,file));
+  }
+}
 const failures = [];
 const checks = [];
 const check = (condition, message) => {
@@ -34,6 +51,7 @@ const check = (condition, message) => {
   if (!condition) failures.push(message);
 };
 
+check(publicCopyViolations.length === 0, 'Disallowed public-facing wording removed: '+publicCopyViolations.join(', '));
 for (const [name, marker] of [
   ['Telemetry', '<Telemetry />'],
   ['PremiumExperience', '<PremiumExperience pagePath={content.path} />'],
