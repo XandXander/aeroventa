@@ -42,7 +42,7 @@ const isStories = content.path === '/blog/istorii-proektov/';
         <div class="practice-entry__routes">
           <a href="/faq/"><span>01</span><div><h3>Решение до монтажа</h3><p>Что прислать, как сравнить сметы, что согласовать и что проверить до закрытия.</p></div><b>→</b></a>
           <a href="/blog/poleznye-stati/"><span>02</span><div><h3>Практическая проблема</h3><p>Конкретный вопрос, реальный опыт и полезная последовательность решений.</p></div><b>→</b></a>
-          <a href="/blog/istorii-proektov/"><span>03</span><div><h3>Реальный объект</h3><p>Задача, состав работ и подтверждённые исторические факты без рекламной надстройки.</p></div><b>→</b></a>
+          <a href="/blog/istorii-proektov/"><span>03</span><div><h3>Реальный объект</h3><p>Задача, объём работ и реальные фотографии выполненных объектов.</p></div><b>→</b></a>
         </div>
       </div>
     </section>
@@ -110,14 +110,14 @@ const isStories = content.path === '/blog/istorii-proektov/';
     <header class="practice-hero">
       <div class="home-shell practice-hero__grid">
         <div><p class="home-kicker">Статьи / истории объектов</p><h1>Истории объектов</h1></div>
-        <div><p class="practice-hero__lede">Хронологический и редакционный вход в реальные кейсы AEROVENTA. Каноническая страница каждого объекта остаётся одна — этот раздел только помогает её найти.</p><div class="home-actions"><a class="button button--primary" href="/portfolio/">Портфолио / раздел доказательств →</a><a class="button button--ghost" href="/blog/">Статьи</a></div></div>
+        <div><p class="practice-hero__lede">Здесь собраны истории наших объектов: что требовалось выполнить, какие работы проводились и как выглядел результат на площадке.</p><div class="home-actions"><a class="button button--primary" href="/portfolio/">Все выполненные объекты →</a><a class="button button--ghost" href="/blog/">Статьи</a></div></div>
       </div>
     </header>
 
     <section class="home-section story-index">
       <div class="home-shell"><p class="section-index">01 / Подтверждённые истории</p><h2>Квартиры, жилые дома, кафе и производство.</h2>
         <div class="story-index__grid">
-          {cases.map((item,index) => <a href={item.href}><div><span>{String(index+1).padStart(2,'0')}</span><b>{item.tag}</b></div><h3>{item.title}</h3><p>{item.meta}</p><strong>Открыть канонический кейс →</strong></a>)}
+          {cases.map((item,index) => <a href={item.href}><div><span>{String(index+1).padStart(2,'0')}</span><b>{item.tag}</b></div><h3>{item.title}</h3><p>{item.meta}</p><strong>Смотреть объект →</strong></a>)}
         </div>
       </div>
     </section>
