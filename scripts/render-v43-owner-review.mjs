@@ -205,6 +205,8 @@ try {
           await page.locator('.consultant-launcher').click();
           await page.locator('[data-consultant-dialog]').waitFor({ state: 'visible' });
           await page.screenshot({ path: path.join(root, 'consultant_open__' + view + '.png'), animations: 'disabled' });
+          await page.locator('[data-consultant-dialog] [data-dialog-close]').click();
+          await page.locator('[data-consultant-dialog]').waitFor({state:'hidden'});
         }
         if (id === 'home' && view === 'desktop_1440') {
           await page.locator('.header-project').click();
