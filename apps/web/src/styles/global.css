@@ -3006,3 +3006,55 @@ main { min-height: 60vh; }
 .home-hero--v43 h1 {font-size:clamp(2.25rem,10vw,2.8rem);}
 .home-hero--v43 .hero-engineering {min-height:215px;}
 }
+
+
+/* V43 audited correction: do not overlay baked-in supply/exhaust raster labels.
+   Image and copy occupy their own editorial rows at all widths. */
+.home-hero--v43 ~ .home-solution .solution-grid {
+  display:grid;grid-template-columns:minmax(0,1fr);gap:clamp(20px,3vw,38px);min-height:0;align-items:start;
+}
+.home-hero--v43 ~ .home-solution .section-copy {
+  grid-column:1;max-width:900px;padding:0 0 8px;z-index:1;
+}
+.home-hero--v43 ~ .home-solution .solution-diagram {
+  display:block;position:relative;inset:auto;grid-column:1;width:100%;height:auto;
+  aspect-ratio:1036/338;max-height:none;min-height:0;overflow:visible;
+  border:1px solid #d5e2e8;background:#f4f8fa;
+}
+.home-hero--v43 ~ .home-solution .solution-diagram img {
+  display:block;width:100%;height:100%;min-height:0;object-fit:contain;object-position:center;
+  filter:none;
+}
+.home-hero--v43 ~ .home-solution .solution-diagram::before,
+.home-hero--v43 ~ .home-solution .solution-diagram::after {content:none;display:none;}
+.home-hero--v43 ~ .home-solution .solution-mobile-legend {display:none;}
+.home-hero--v43 ~ .home-solution .process-strip {margin-top:clamp(24px,4vw,44px);}
+.services-editorial {background:#ecf1f3;padding:clamp(22px,3vw,40px) 0 clamp(30px,5vw,70px);}
+.services-editorial__grid {display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,.8fr);gap:clamp(25px,4vw,70px);align-items:center;}
+.services-editorial__image {margin:0;min-width:0;overflow:hidden;background:#d5dce0;}
+.services-editorial__image img {width:100%;height:auto;aspect-ratio:1.55;object-fit:cover;object-position:53% 50%;display:block;}
+.services-editorial__image figcaption {padding:12px 18px;color:#475a69;background:#f5f8f9;font-size:.85rem;line-height:1.45;}
+.services-editorial__copy h2 {font-size:clamp(2.15rem,3.75vw,4.3rem);font-weight:750;letter-spacing:-.045em;line-height:1.06;margin:0;}
+.services-editorial__copy p:not(.section-index) {font-size:1.08rem;line-height:1.6;color:#415568;}
+.services-editorial__copy a {display:inline-block;margin-top:9px;text-decoration:none;font-weight:800;border-bottom:1px solid currentColor;padding-bottom:5px;}
+.ponsse-recognition {background:#f2f4f5;padding:clamp(44px,6vw,80px) 0;}
+.ponsse-recognition__grid {display:grid;grid-template-columns:minmax(0,1.1fr) minmax(290px,.72fr);gap:clamp(30px,5vw,90px);align-items:center;}
+.ponsse-recognition h2 {font-size:clamp(2rem,4vw,4.4rem);letter-spacing:-.045em;line-height:1.05;margin:0 0 20px;}
+.ponsse-recognition p {max-width:68ch;line-height:1.6;color:#40536a;}
+.ponsse-recognition__citation {background:#fff;padding:clamp(25px,4vw,47px);border-top:6px solid #ecc900;box-shadow:0 20px 40px rgba(7,28,43,.07);}
+.ponsse-recognition__citation span {display:block;letter-spacing:.095em;font-weight:850;color:#4a4f55;font-size:.72rem;margin-bottom:12px;}
+.ponsse-recognition__citation strong {display:block;font-size:clamp(1.8rem,3vw,3rem);font-weight:730;letter-spacing:-.03em;}
+.ponsse-recognition__citation .ponsse-recognition__signer {color:#1e3345;font-size:.84rem;margin-top:24px;border-top:1px solid #d8dfe3;padding-top:14px;}
+@media (max-width:760px) {
+ .home-hero--v43 ~ .home-solution .solution-grid {display:flex;flex-direction:column;gap:14px;}
+ .home-hero--v43 ~ .home-solution .section-copy {padding:0;}
+ .home-hero--v43 ~ .home-solution .solution-mobile-legend {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:6px 0 0;width:100%;}
+ .home-hero--v43 ~ .home-solution .solution-mobile-legend span {background:#fff;padding:13px 10px;border-top:3px solid #b96a47;color:#1d3344;font-size:.82rem;line-height:1.35;}
+ .home-hero--v43 ~ .home-solution .solution-mobile-legend span:last-child {border-top-color:#3b87b0;}
+ .home-hero--v43 ~ .home-solution .solution-diagram {width:100%;aspect-ratio:1.9;overflow:hidden;}
+ .home-hero--v43 ~ .home-solution .solution-diagram img {width:100%;height:100%;object-fit:cover;object-position:center;}
+ .services-editorial__grid,.ponsse-recognition__grid {grid-template-columns:minmax(0,1fr);gap:24px;}
+ .services-editorial__image img {aspect-ratio:1.3;}
+ .services-editorial__copy h2 {font-size:clamp(2.1rem,8vw,3rem);}
+ .ponsse-recognition__citation {padding:24px;}
+}
