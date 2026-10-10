@@ -3075,3 +3075,19 @@ main { min-height: 60vh; }
   .hub-limits__grid {grid-template-columns:minmax(0,1fr);gap:28px;}
   .hub-limits__grid > * {min-width:0;overflow-wrap:anywhere;}
 }
+
+/* Owner screenshot 1: mobile shows each native-raster airflow annotation at usable scale. */
+.solution-mobile-pair {display:none;}
+@media(max-width:760px) {
+ .home-hero--v43 ~ .home-solution .solution-diagram {display:none;}
+ .home-hero--v43 ~ .home-solution .solution-mobile-pair {display:grid;grid-template-columns:minmax(0,1fr);gap:15px;width:100%;}
+ .solution-mobile-pair__panel {margin:0;min-width:0;background:#eff5f7;border:1px solid #d1dfe6;overflow:hidden;}
+ .solution-mobile-pair__crop {width:100%;height:auto;aspect-ratio:518/338;overflow:hidden;}
+ .solution-mobile-pair__crop img {display:block;max-width:none;width:200%;height:auto;filter:none;}
+ .solution-mobile-pair__panel--exhaust .solution-mobile-pair__crop img {transform:translateX(-50%);}
+ .solution-mobile-pair__panel figcaption {padding:10px 14px;background:#fff;color:#344b5a;font-size:.86rem;line-height:1.45;border-top:3px solid #bb7452;}
+ .solution-mobile-pair__panel--exhaust figcaption {border-top-color:#4689b0;}
+ .story-index__grid {grid-template-columns:minmax(0,1fr);}
+ .story-index__grid a {min-width:0;overflow-wrap:anywhere;}
+ .story-index__grid a>div {min-width:0;flex-wrap:wrap;gap:6px;}
+}
