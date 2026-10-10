@@ -1,5 +1,12 @@
 ---
 import type { ContentRecord } from '@/lib/types';
+import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+
+const letterSrc = '/evidence/karelia/ponsse-letter-20220405.png';
+const portraitSrc = '/evidence/karelia/p-teittinen-original.jpg';
+const hasLetter = ['apps/web/public/evidence/karelia/ponsse-letter-20220405.png','public/evidence/karelia/ponsse-letter-20220405.png'].some(p => existsSync(resolve(p)));
+const hasPortrait = ['apps/web/public/evidence/karelia/p-teittinen-original.jpg','public/evidence/karelia/p-teittinen-original.jpg'].some(p => existsSync(resolve(p)));
 interface Props { content: ContentRecord; fixture: boolean; }
 const { content } = Astro.props;
 
@@ -299,16 +306,38 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
           <p class="section-index section-index--orange">02 / Отзыв о сотрудничестве</p>
           <h2 id="ponsse-recognition-title">Благодарность за работу и соблюдение сроков.</h2>
           <p>5 апреля 2022 года в адрес Евгения, Александра и команды AEROVENTA.RU поступило благодарственное письмо от представителя сервисного центра PONSSE в Питкяранте.</p>
-          <p>В письме отмечены профессионализм, деловой подход и соблюдение сроков при совместной работе. Это отзыв о сотрудничестве, а не подтверждение неуказанных характеристик вентиляционной системы.</p>
+          <p>В письме отдельно отмечены профессионализм команды, двухлетнее сотрудничество и выполнение задач в согласованные сроки.</p>
         </div>
         <aside class="ponsse-recognition__citation">
           <span>LETTER OF APPRECIATION</span>
           <strong>05.04.2022</strong>
           <p>Благодарность команде AEROVENTA за работу, ответственность и выполнение задач в срок.</p>
-          <p class="ponsse-recognition__signer">Petteri Teittinen<br/>Service support and development manager<br/>PONSSE service centre · Питкяранта</p>
+          {hasLetter && (
+            <button type="button" class="ponsse-letter-preview" data-ponsse-open aria-haspopup="dialog" aria-controls="ponsse-letter-dialog" aria-label="Увеличить подлинное благодарственное письмо PONSSE">
+              <img src={letterSrc} alt="Письмо PONSSE с датой 5 апреля 2022 года и подписью" width="1481" height="2048" loading="lazy" decoding="async" />
+              <span>Посмотреть оригинал письма ↗</span>
+            </button>
+          )}
+          <div class="ponsse-recognition__person">
+            {hasPortrait && (
+              <figure class="ponsse-recognition__portrait">
+                <img src={portraitSrc} alt="Портрет подписанта письма, предоставленный владельцем сайта" width="533" height="800" loading="lazy" decoding="async" />
+              </figure>
+            )}
+            <p class="ponsse-recognition__signer">Petteri Teittinen<br/>Service support and development manager<br/>PONSSE service centre · Питкяранта</p>
+          </div>
         </aside>
       </div>
     </section>
+  )}
+  {content.path === '/blog/detail/montazh-ventilyatsii-v-karelii/' && hasLetter && (
+    <dialog class="ponsse-letter-dialog" id="ponsse-letter-dialog" aria-label="Благодарственное письмо PONSSE">
+      <form method="dialog" class="ponsse-letter-dialog__actions">
+        <button type="submit" class="ponsse-letter-dialog__close" aria-label="Закрыть письмо">Закрыть ×</button>
+      </form>
+      <div class="ponsse-letter-dialog__sheet"><img src={letterSrc} width="1481" height="2048" alt="Полноразмерное благодарственное письмо PONSSE от 5 апреля 2022 года" decoding="async" /></div>
+      <a href={letterSrc} class="ponsse-letter-dialog__link" target="_blank" rel="noopener noreferrer">Открыть изображение в полном размере ↗</a>
+    </dialog>
   )}
   <section class="home-section case-story" aria-label="Задача, выполненные работы и результат">
     <div class="home-shell case-story__grid">
@@ -352,3 +381,18 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
     </div>
   </section>
 </article>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-ponsse-open]').forEach(button => {
+    button.addEventListener('click', () => {
+      const dialog = document.getElementById('ponsse-letter-dialog');
+      if (dialog instanceof HTMLDialogElement && !dialog.open) dialog.showModal();
+    });
+  });
+  const documentDialog = document.getElementById('ponsse-letter-dialog');
+  if (documentDialog instanceof HTMLDialogElement) {
+    documentDialog.addEventListener('click', event => {
+      if (event.target === documentDialog) documentDialog.close();
+    });
+  }
+</script>

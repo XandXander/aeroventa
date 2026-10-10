@@ -1,6 +1,14 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getByPath } from '@/lib/content-source';
+import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+
+const ownerHeroMedia = '/evidence/hero/owner-luxury-airflow-20261010.png';
+const hasOwnerHeroMedia = [
+  'apps/web/public/evidence/hero/owner-luxury-airflow-20261010.png',
+  'public/evidence/hero/owner-luxury-airflow-20261010.png',
+].some(p => existsSync(resolve(p)));
 
 const content = await getByPath('/');
 if (!content) throw new Error('Home content is missing');
@@ -31,7 +39,7 @@ const questions = [
 ---
 
 <BaseLayout content={page}>
-  <section class="home-hero home-hero--v43" aria-labelledby="home-title">
+  <section class:list={['home-hero', 'home-hero--v43', hasOwnerHeroMedia && 'home-hero--owner-interior']} aria-labelledby="home-title">
     <div class="home-shell home-hero__grid">
       <div class="home-hero__copy">
         <p class="home-kicker">Монтаж вентиляции под ключ</p>
@@ -50,10 +58,10 @@ const questions = [
       <figure class="hero-engineering">
         <img
           class="hero-engineering__photo"
-          src="/evidence/hero/ductwork-editorial-v43.webp"
-          width="800"
-          height="600"
-          alt="Реальный монтаж вентиляционных воздуховодов на объекте 7 PARK в Павловске"
+          src={hasOwnerHeroMedia ? ownerHeroMedia : '/evidence/hero/ductwork-editorial-v43.webp'}
+          width={hasOwnerHeroMedia ? 1774 : 800}
+          height={hasOwnerHeroMedia ? 887 : 600}
+          alt={hasOwnerHeroMedia ? 'Художественная визуализация интерьерной вентиляции с воздушными потоками — не выполненный объект AEROVENTA' : 'Реальный монтаж вентиляционных воздуховодов на объекте 7 PARK в Павловске'}
           fetchpriority="high"
           decoding="async"
         />
@@ -61,8 +69,7 @@ const questions = [
         <div class="hero-engineering__frame" aria-hidden="true">
           <span></span><span></span><span></span><span></span>
         </div>
-        <figcaption class="sr-only">Реальный монтаж AEROVENTA на объекте 7 PARK в Павловске. Сведения о работах — в кейсе.
-</figcaption>
+        <figcaption class="sr-only">{hasOwnerHeroMedia ? 'Архитектурная концепция вентиляции. Реальные фотографии выполненных работ на 7 PARK показаны ниже.' : 'Реальный монтаж AEROVENTA на объекте 7 PARK в Павловске. Сведения о работах — в кейсе.'}</figcaption>
       </figure>
     </div>
 

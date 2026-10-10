@@ -97,13 +97,14 @@ try {
           }
         }
         if (id === 'services') {
-          const visual = await page.locator('img[src="/evidence/hero/hiend-engineering-visual-owner-v43.webp"]').count();
-          if (visual !== 1) report.fail.push({ route, view, reason: 'owner services visual missing or duplicate', actual: visual });
+          const ducts = await page.locator('.services-editorial__image img[src="/evidence/hero/engineering-ductwork.jpg"]').count();
+          const wrong = await page.locator('.services-editorial__image img[src="/evidence/hero/hiend-engineering-visual-owner-v43.webp"]').count();
+          if (ducts !== 1 || wrong) report.fail.push({ route, view, reason: 'Owner services photo assignment', ducts, wrong });
         }
         if (id === 'ventilation') {
-          const hasOld = await page.locator('img[src="/evidence/hero/hiend-engineering-visual-owner-v43.webp"]').count();
-          const hasNew = await page.locator('img[src="/evidence/hero/engineering-ductwork.jpg"]').count();
-          if (hasOld || hasNew !== 1) report.fail.push({ route, view, reason: 'owner image relocation failed', old: hasOld, replacement: hasNew });
+          const architectural = await page.locator('.service-premium__visual img[src="/evidence/hero/hiend-engineering-visual-owner-v43.webp"]').count();
+          const wrong = await page.locator('.service-premium__visual img[src="/evidence/hero/engineering-ductwork.jpg"]').count();
+          if (architectural !== 1 || wrong) report.fail.push({ route, view, reason: 'Owner montage hero assignment', architectural, wrong });
         }
         if (['seven_park','karelia_ponsse','polisan','leont','zhukov','cafe'].includes(id)) {
           const media = await page.locator('.case-gallery__item img').count();
