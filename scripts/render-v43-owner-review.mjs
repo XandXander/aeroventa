@@ -1,6 +1,7 @@
 import { chromium } from 'playwright';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { createHash } from 'node:crypto';
 
 const root = path.resolve('V43_OWNER_BROWSER_REVIEW');
 const baseUrl = 'http://127.0.0.1:4178';
@@ -34,7 +35,20 @@ const routes = [
   ['faq', '/faq/'],
 ];
 await fs.mkdir(root, { recursive: true });
-const report = { build_mode: 'fixture', local_http_only: true, routes: routes.length, viewports: views.map(x => x[0]), pages: [], fail: [] };
+const report = { build_mode: 'fixture', local_http_only: true, routes: routes.length, viewports: views.map(x => x[0]), pages: [], fail: [], owner_media: [] };
+for (const [name, file, expected] of [
+  ['home_original','apps/web/public/evidence/hero/owner-luxury-airflow-20261010.png','56704487b748269038168c1cb64f74b4415054e61a2e73b3e9a6f2eb002f83ee'],
+  ['ponsse_letter','apps/web/public/evidence/karelia/ponsse-letter-20220405.png','67287d0c52b42391a9e4e8ff105b779093b64b3cf5e2ddb3897218f69848f886'],
+  ['ponsse_portrait','apps/web/public/evidence/karelia/p-teittinen-original.jpg','73376f20193c18e4d99ba148df98ae21ec69988f5e372db72edc295a3b964d95'],
+]) {
+  let actual = null;
+  try { actual = createHash('sha256').update(await fs.readFile(path.resolve(file))).digest('hex'); } catch (e) {
+    if (e.code !== 'ENOENT') throw e;
+  }
+  const status = actual === null ? 'PENDING_UPLOAD' : actual === expected ? 'EXACT' : 'HASH_MISMATCH';
+  report.owner_media.push({name,file,status,expected_sha256:expected,actual_sha256:actual});
+  if (status === 'HASH_MISMATCH') report.fail.push({ reason: 'Owner media corruption', name, actual, expected });
+}
 const browser = await chromium.launch({ headless: true, args: ['--no-sandbox'] });
 try {
   for (const [id, route] of routes) {
@@ -78,6 +92,10 @@ try {
         entry.broken_images = await page.evaluate(() => [...document.images].filter(img => !img.complete || !img.naturalWidth).map(img => img.getAttribute('src')));
         entry.page_errors = pageErrors;
         if (id === 'home') {
+          const ownerImage = report.owner_media[0].status === 'EXACT';
+          const actualHero = await page.locator('.hero-engineering__photo').getAttribute('src');
+          const expectedHero = ownerImage ? '/evidence/hero/owner-luxury-airflow-20261010.png' : '/evidence/hero/ductwork-editorial-v43.webp';
+          if (actualHero !== expectedHero) report.fail.push({route,view,reason:'Owner hero source does not match media gate',expectedHero,actualHero});
           const optical = await page.evaluate(() => {
             const diagram = document.querySelector('.home-solution .solution-diagram');
             const copy = document.querySelector('.home-solution .section-copy');
@@ -114,11 +132,31 @@ try {
         if (id === 'karelia_ponsse') {
           const content = await page.locator('.ponsse-recognition').innerText();
           if (!content.includes('05.04.2022') || !content.includes('Petteri Teittinen')) report.fail.push({ route, view, reason: 'PONSSE letter editorial content absent' });
+          const expectedLetter = report.owner_media[1].status === 'EXACT';
+          const expectedPortrait = report.owner_media[2].status === 'EXACT';
+          const actualLetter = await page.locator('[data-ponsse-open] img').count();
+          const actualPortrait = await page.locator('.ponsse-recognition__portrait img').count();
+          if (actualLetter !== Number(expectedLetter) || actualPortrait !== Number(expectedPortrait)) {
+            report.fail.push({route,view,reason:'PONSSE original image binding',actualLetter,actualPortrait,expectedLetter,expectedPortrait});
+          }
         }
         if (entry.status !== 200 || entry.overflow_px > 1 || entry.broken_images.length || pageErrors.length) {
           report.fail.push(entry);
         }
         await page.screenshot({ path: path.join(root, id + '__' + view + '.png'), fullPage: true, animations: 'disabled' });
+        if (id === 'karelia_ponsse' && report.owner_media[1].status === 'EXACT') {
+          await page.locator('[data-ponsse-open]').click();
+          const letterModal = page.locator('#ponsse-letter-dialog');
+          await letterModal.waitFor({state:'visible'});
+          if ((await letterModal.locator('img').getAttribute('src')) !== '/evidence/karelia/ponsse-letter-20220405.png') {
+            report.fail.push({route,view,reason:'Wrong PONSSE fullsize original'});
+          }
+          if (view === 'desktop_1440' || view === 'mobile_390') {
+            await page.screenshot({path:path.join(root,'ponsse_letter_open__'+view+'.png'),animations:'disabled'});
+          }
+          await letterModal.locator('.ponsse-letter-dialog__close').click();
+          await letterModal.waitFor({state:'hidden'});
+        }
         if (id === 'home' && view === 'mobile_390') {
           await page.locator('.mobile-menu summary').click();
           await page.screenshot({ path: path.join(root, 'mobile_390_navigation.png'), animations: 'disabled' });
@@ -146,7 +184,7 @@ try {
 } finally {
   await browser.close();
 }
-report.status = report.fail.length ? 'FAIL' : 'PASS';
+report.status = report.fail.length ? 'FAIL' : report.owner_media.every(x => x.status === 'EXACT') ? 'PASS' : 'PASS_MEDIA_PENDING';
 await fs.writeFile(path.join(root, 'manifest.json'), JSON.stringify(report, null, 2));
 console.log('V43 compiled browser render:', report.status, report.pages.length, 'captures;', report.fail.length, 'failures');
 if (report.fail.length) {
