@@ -45,6 +45,14 @@ try {
           }));
         });
         entry.overflow_px = await page.evaluate(() => Math.max(0, document.documentElement.scrollWidth - innerWidth));
+        if (entry.overflow_px > 1) entry.offenders = await page.evaluate(() => [...document.querySelectorAll('body *')].filter(el => {
+          const box = el.getBoundingClientRect();
+          const style = getComputedStyle(el);
+          return style.display !== 'none' && box.width > 0 && (box.right > innerWidth + 2 || box.left < -2);
+        }).slice(0, 16).map(el => {
+          const b = el.getBoundingClientRect();
+          return { tag: el.tagName.toLowerCase(), cls: String(el.className).slice(0, 85), left: Math.round(b.left), right: Math.round(b.right), text: (el.textContent || '').trim().slice(0, 55) };
+        }));
         entry.broken_images = await page.evaluate(() => [...document.images].filter(img => !img.complete || !img.naturalWidth).map(img => img.getAttribute('src')));
         entry.page_errors = pageErrors;
         if (entry.status !== 200 || entry.overflow_px > 1 || entry.broken_images.length || pageErrors.length) {
