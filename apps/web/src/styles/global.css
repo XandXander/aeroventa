@@ -3091,3 +3091,22 @@ main { min-height: 60vh; }
  .story-index__grid a {min-width:0;overflow-wrap:anywhere;}
  .story-index__grid a>div {min-width:0;flex-wrap:wrap;gap:6px;}
 }
+
+/* V43 browser-verified optical cleanup after independent full-page screenshot review. */
+.service-premium__hero h1 {
+  font-size:clamp(2.75rem,4.25vw,4.7rem);
+  line-height:1.055;letter-spacing:-.047em;font-weight:760;
+}
+@media (max-width:760px) {
+  .service-premium__hero h1 {font-size:clamp(2.25rem,9.2vw,3.5rem);line-height:1.075;letter-spacing:-.043em;}
+  /* The split mobile panels have their own enlarged labels and captions. */
+  .home-hero--v43 ~ .home-solution .solution-mobile-legend {display:none;}
+  .home-hero--v43 ~ .home-solution .process-strip div {
+    display:grid;grid-template-columns:minmax(24px,auto) minmax(0,1fr);
+    gap:8px;align-items:center;padding:12px 10px;
+  }
+  .home-hero--v43 ~ .home-solution .process-strip span {
+    min-width:0;text-align:right;line-height:1.28;font-size:.76rem;
+    overflow-wrap:anywhere;
+  }
+}

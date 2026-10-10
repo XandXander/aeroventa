@@ -92,7 +92,7 @@ try {
           const mobilePanels = await page.locator('.solution-mobile-pair__panel').count();
           const mobilePairVisible = await page.locator('.solution-mobile-pair').isVisible();
           if ((width > 760 && (optical.overlay_display !== 'none' || optical.diagram_top < optical.copy_bottom - 3)) ||
-              (width <= 760 && (optical.legend_display === 'none' || mobilePanels !== 2 || !mobilePairVisible))) {
+              (width <= 760 && (mobilePanels !== 2 || !mobilePairVisible))) {
             report.fail.push({ route, view, reason: 'supply/exhaust labels optical legibility', optical, mobilePanels, mobilePairVisible });
           }
         }
