@@ -6,7 +6,7 @@ import { resolve } from 'node:path';
 const letterSrc = '/evidence/karelia/ponsse-letter-20220405.png';
 const portraitSrc = '/evidence/karelia/p-teittinen-original.jpg';
 const hasLetter = ['apps/web/public/evidence/karelia/ponsse-letter-20220405.png','public/evidence/karelia/ponsse-letter-20220405.png'].some(p => existsSync(resolve(p)));
-const hasPortrait = ['apps/web/public/evidence/karelia/p-teittinen-original.jpg','public/evidence/karelia/p-teittinen-original.jpg'].some(p => existsSync(resolve(p)));
+const hasPortrait = import.meta.env.PUBLIC_PONSSE_PORTRAIT_PUBLICATION_APPROVED === 'true' && ['apps/web/public/evidence/karelia/p-teittinen-original.jpg','public/evidence/karelia/p-teittinen-original.jpg'].some(p => existsSync(resolve(p)));
 interface Props { content: ContentRecord; fixture: boolean; }
 const { content } = Astro.props;
 
@@ -309,7 +309,7 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
           <p>В письме отдельно отмечены профессионализм команды, двухлетнее сотрудничество и выполнение задач в согласованные сроки.</p>
         </div>
         <aside class="ponsse-recognition__citation">
-          <span>LETTER OF APPRECIATION</span>
+          <span>Благодарственное письмо · 2022</span>
           <strong>05.04.2022</strong>
           <p>Благодарность команде AEROVENTA за работу, ответственность и выполнение задач в срок.</p>
           {hasLetter && (
@@ -353,7 +353,9 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
       <div class="case-gallery__grid">
         {spec.media.map(([src,alt,caption]) => (
           <figure class="case-gallery__item">
-            <img src={src} alt={alt} width="800" height="520" loading="lazy" decoding="async" />
+            <a href={src} target="_blank" rel="noopener noreferrer" aria-label={`Открыть фотографию в полном размере: ${caption}`}>
+              <img src={src} alt={alt} width="800" height="520" loading="lazy" decoding="async" />
+            </a>
             <figcaption>{caption}</figcaption>
           </figure>
         ))}

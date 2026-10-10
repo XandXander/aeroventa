@@ -47,12 +47,12 @@ const endpoint = (import.meta.env.PUBLIC_LEAD_ENDPOINT || '/api/lead.php').trim(
 
     <div class="field field--wide">
       <label for={`${idPrefix}-task`}>Кратко задача</label>
-      <textarea id={`${idPrefix}-task`} name="task" rows="4" maxlength="4000" required></textarea>
+      <textarea id={`${idPrefix}-task`} name="task" rows={compact ? 3 : 4} maxlength="4000" required></textarea>
       <span class="field__hint">Без технического «идеального брифа». Достаточно текущей ситуации и ожидаемого результата.</span>
       <span class="field__error" data-error-for="task"></span>
     </div>
 
-    <div class="field field--wide">
+    <div class:list={['field', 'field--wide', {'field--optional': compact}]}>
       <label for={`${idPrefix}-company`}>Компания <span>необязательно</span></label>
       <input id={`${idPrefix}-company`} name="company" autocomplete="organization" maxlength="160" />
     </div>

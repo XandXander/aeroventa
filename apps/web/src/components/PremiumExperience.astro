@@ -147,6 +147,7 @@ const { pagePath = '' } = Astro.props;
   const consultantForm = document.querySelector('[data-consultant-form]');
   const consultantResult = document.querySelector('[data-consultant-result]');
   let consultantSummary = '';
+  const lastDialogTrigger = new WeakMap();
 
   const track = (name, payload = {}) => window.aeroventaTrack?.(name, payload);
 
@@ -175,6 +176,7 @@ const { pagePath = '' } = Astro.props;
     const consultantOpen = event.target.closest('[data-consultant-open]');
     if (consultantOpen) {
       event.preventDefault();
+      lastDialogTrigger.set(consultantDialog, consultantOpen);
       openDialog(consultantDialog);
       track('consultant_open', { source: consultantOpen.dataset.source || 'site_navigation' });
       return;
@@ -187,6 +189,7 @@ const { pagePath = '' } = Astro.props;
         intent: contactOpen.dataset.contactIntent || '',
         projectStatus: contactOpen.dataset.projectStatus || '',
       });
+      lastDialogTrigger.set(contactDialog, contactOpen);
       openDialog(contactDialog);
       track('contact_form_open', {
         source: contactOpen.dataset.source || 'site_cta',
@@ -198,6 +201,10 @@ const { pagePath = '' } = Astro.props;
   for (const dialog of [consultantDialog, contactDialog]) {
     dialog?.addEventListener('click', (event) => {
       if (event.target === dialog) closeDialog(dialog);
+    });
+    dialog?.addEventListener('close', () => {
+      const opener = lastDialogTrigger.get(dialog);
+      if (opener?.isConnected) opener.focus({ preventScroll: true });
     });
   }
 
