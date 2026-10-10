@@ -80,11 +80,30 @@ check(await exists(path.join(dist, 'sitemap.xml')), 'sitemap.xml is missing');
 check(await exists(path.join(dist, 'robots.txt')), 'robots.txt is missing');
 
 const html200 = routes.filter((r) => Number(r.http_outcome) === 200 && !String(r.path).startsWith('/upload/'));
+const retainedSeoTitles = new Map();
+const targetedMetaDescriptions = new Set([
+  '/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/',
+  '/vakansii/',
+  '/news/korporativnaya-zhizn/',
+  '/news/istoriya-kompanii/',
+  '/faq/',
+]);
 for (const r of html200) {
   const file = htmlFileFor(r.path);
   check(await exists(file), `Retained HTTP-200 route missing built HTML: ${r.path}`);
   if (await exists(file)) {
     const html = await fs.readFile(file, 'utf8');
+    const title = html.match(/<title(?:\\s[^>]*)?>([^<]+)<\\/title>/i)?.[1]?.trim() || '';
+    check(Boolean(title), `SEO title missing for ${r.path}`);
+    if (title) {
+      const previous = retainedSeoTitles.get(title);
+      check(!previous, `Duplicate rendered SEO title for ${previous} and ${r.path}: ${title}`);
+      retainedSeoTitles.set(title, r.path);
+    }
+    if (targetedMetaDescriptions.has(r.path)) {
+      const description = html.match(/<meta\\s+name=["']description["']\\s+content=["']([^"']+)["']/i)?.[1]?.trim() || '';
+      check(description.length >= 60 && description.length <= 220, `Missing/invalid migrated meta description for ${r.path}`);
+    }
     const expectedCanonical = new URL(r.path, 'https://aeroventa.ru').toString();
     check(
       html.includes(`rel="canonical" href="${expectedCanonical}"`)

@@ -132,6 +132,7 @@ check(!files.header.includes('/brand/aeroventa-wordmark.svg') && !files.footer.i
 check(files.header.includes('Обсудить задачу <span aria-hidden="true">→</span>') && files.header.includes('data-contact-open'), 'Header universal CTA links to contact');
 check(files.home.includes('Получить ориентир стоимости') && files.home.includes('Есть проект — запросить смету'), 'Homepage CTA hierarchy matches canonical visual baseline');
 check(files.home.includes('AEROVENTA — инженерные системы вентиляции в СПб и Ленобласти'), 'Home SEO title distinct from primary installation service title');
+check(files.layout.includes('retainedDescriptionFallback') && files.layout.includes('seoDescription') && files.layout.includes('content.seo_description?.trim()'), 'Five legacy SEO descriptions use safe metadata fallbacks, preserving Directus priority');
 check(files.layout.includes('editorialOgFallback') && files.layout.includes('content.og_image || editorialOgFallback[content.path]'), 'Social sharing uses case-context media if Directus has not supplied an image');
 check(!files.home.includes('<svg class="hero-engineering__overlay"') && files.home.includes('solution-mobile-legend'), 'Displaced hero arrows absent; supply/exhaust still explained');
 check(files.home.includes('/evidence/hero/engineering-scene-accepted-v43.webp') && files.home.includes('Комплексный подход к вентиляции'), 'Owner-approved architectural engineering illustration preserved');

@@ -15,8 +15,22 @@ const preview = import.meta.env.AEROVENTA_RELEASE_MODE === 'preview';
 const canonical = canonicalUrl(content.path, content.canonical_override);
 const robots = preview ? 'noindex,nofollow,noarchive,nosnippet' : robotsValue(content);
 const schema = preview ? null : jsonLd(content);
+// Controlled fallbacks for five historical HTML-200 routes. Approved Directus copy wins.
+const retainedDescriptionFallback: Record<string, string> = {
+  '/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/':
+    'Застрявшая алмазная коронка в бетоне: причины заклинивания, безопасный порядок действий и архивный практический опыт AEROVENTA.',
+  '/vakansii/':
+    'Сотрудничество с AEROVENTA для специалистов по монтажу вентиляции: какой опыт сообщить и как связаться с командой. Актуальные вакансии уточняйте.',
+  '/news/korporativnaya-zhizn/':
+    'Архив корпоративных материалов AEROVENTA. Для знакомства с актуальными направлениями монтажа вентиляции и реальными объектами смотрите портфолио.',
+  '/news/istoriya-kompanii/':
+    'История AEROVENTA через архивные материалы, развитие направления вентиляции и ссылки на подтверждённые выполненные объекты.',
+  '/faq/':
+    'Ответы о монтаже вентиляции: подготовка проекта, сравнение смет, оборудование, воздуховоды, условия объекта, согласование изменений и приёмка.',
+};
+const seoDescription = content.seo_description?.trim() || retainedDescriptionFallback[content.path] || '';
 const ogTitle = content.og_title || content.seo_title || content.title;
-const ogDescription = content.og_description || content.seo_description;
+const ogDescription = content.og_description?.trim() || seoDescription;
 const editorialOgFallback: Record<string, string> = {
   '/': '/evidence/hero/owner-luxury-airflow-20261010.png',
   '/services/': '/evidence/hero/engineering-ductwork.jpg',
@@ -45,7 +59,7 @@ const googleVerification = (import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION || '
     <link rel="stylesheet" href={globalCssUrl} />
     <link rel="stylesheet" href={experienceCssUrl} />
     <title>{content.seo_title || content.title}</title>
-    {content.seo_description && <meta name="description" content={content.seo_description} />}
+    {seoDescription && <meta name="description" content={seoDescription} />}
     <meta name="robots" content={robots} />
     <link rel="canonical" href={canonical} />
     {yandexVerification && <meta name="yandex-verification" content={yandexVerification} />}
