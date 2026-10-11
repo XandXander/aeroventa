@@ -1,5 +1,6 @@
 ---
 import type { ContentRecord } from '@/lib/types';
+import legacySources from '../../../../../migration/legacy-page-source-index.json';
 
 interface Props { content: ContentRecord; fixture: boolean; }
 const { content } = Astro.props;
@@ -271,6 +272,20 @@ const specs: Record<string, ArticleSpec> = {
 
 const spec = specs[content.path];
 if (!spec) throw new Error(`P0 article spec is missing for ${content.path}`);
+
+// Historical content belongs to the current published page, not an external SEO-only document.
+// The source index is an archived text extract; never present it as byte-perfect original HTML.
+const legacyPage = legacySources.find(row => row.path === content.path);
+const legacyExtract = (legacyPage?.legacy_text_excerpt || '').trim();
+if (!legacyExtract) throw new Error(`Missing preserved legacy text for ${content.path}`);
+const sentences = legacyExtract.split(/(?<=[.!?])\s+(?=[А-ЯЁA-Z])/u).filter(Boolean);
+const legacyParagraphs: string[] = [];
+let paragraph = '';
+for (const sentence of sentences) {
+  if (paragraph.length > 370 && paragraph) { legacyParagraphs.push(paragraph.trim()); paragraph = ''; }
+  paragraph += (paragraph ? ' ' : '') + sentence;
+}
+if (paragraph) legacyParagraphs.push(paragraph.trim());
 ---
 
 <article class="p0-article">
@@ -281,9 +296,9 @@ if (!spec) throw new Error(`P0 article spec is missing for ${content.path}`);
         <h1>{content.h1}</h1>
       </div>
       <div>
-        <p class="p0-hero__signal">{spec.signal}</p>
+        <p class="p0-hero__signal">Инженерная практика · архив AEROVENTA</p>
         <p class="p0-hero__lede">{spec.lede}</p>
-        <div class="p0-source-note"><strong>Источник и граница:</strong> {spec.sourceNote}</div>
+        <p class="p0-source-note">{spec.sourceNote}</p>
       </div>
     </div>
   </header>
@@ -320,31 +335,19 @@ if (!spec) throw new Error(`P0 article spec is missing for ${content.path}`);
     ))}
   </div>
 
-  <section class="p0-original home-section" aria-labelledby="p0-original-title">
-    <div class="home-shell p0-original__grid">
-      <div>
-        <p class="section-index section-index--orange">Оригинальный полевой материал</p>
-        <h2 id="p0-original-title">{spec.sourceObservations.title}</h2>
-        <p>Восстановлено по сохранённому тексту исходной публикации AEROVENTA. Схемы и исторические фотографии включаются только после проверки оригиналов.</p>
+  <section class="p0-historic-reading home-section" aria-labelledby="p0-archive-title">
+    <div class="home-shell p0-historic-reading__layout">
+      <div class="p0-historic-reading__aside">
+        <p class="section-index section-index--orange">Из архива AEROVENTA</p>
+        <h2 id="p0-archive-title">Опыт и подробности первоначальной публикации</h2>
+        <p>Ниже — сохранённое текстовое содержание архивной статьи. Формат абзацев адаптирован для чтения. Исторические способы, оборудование и стоимость не являются действующими рекомендациями или предложением.</p>
+        <p class="p0-historic-reading__caution">{spec.sourceObservations.caution}</p>
       </div>
-      <div>
-        <ol class="p0-original__items">
-          {spec.sourceObservations.points.map(point => <li>{point}</li>)}
-        </ol>
-        <p class="p0-original__caution">{spec.sourceObservations.caution}</p>
+      <div class="p0-historic-reading__body">
+        {legacyParagraphs.map(p => <p>{p}</p>)}
       </div>
     </div>
   </section>
-  <section class="p0-history" aria-labelledby="p0-history-title">
-    <div class="home-shell p0-history__grid">
-      <div>
-        <p class="section-index section-index--orange">Исторический контекст</p>
-        <h2 id="p0-history-title">{spec.historicalTitle}</h2>
-      </div>
-      <p>{spec.historicalText}</p>
-    </div>
-  </section>
-
   <section class="home-section p0-related" aria-labelledby="p0-related-title">
     <div class="home-shell">
       <p class="section-index">Связанные материалы</p>
@@ -380,4 +383,31 @@ if (!spec) throw new Error(`P0 article spec is missing for ${content.path}`);
 .p0-original__items li{padding:10px 0 17px 9px;border-bottom:1px solid #bdcbd5}
 .p0-original__caution{border-left:3px solid #c76c3a;padding:13px 17px;margin-top:23px;background:#f8f9fa;line-height:1.6}
 @media(max-width:760px){.p0-original__grid{grid-template-columns:1fr}.p0-original h2{max-width:none}}
+
+/* Editorial correction: practical technical reading replaces oversized corporate slabs. */
+.p0-hero{padding:clamp(42px,5.2vw,78px) 0 clamp(40px,4vw,60px);}
+.p0-hero__grid{grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);gap:clamp(24px,4.8vw,74px);align-items:center;}
+.p0-hero h1{font-size:clamp(2.5rem,4.45vw,5rem);line-height:1.025;letter-spacing:-.048em;max-width:18ch;text-wrap:balance;}
+.p0-hero__signal{font-size:.75rem;letter-spacing:.07em;}
+.p0-hero__lede{font-size:clamp(1.05rem,1.48vw,1.3rem);line-height:1.56;}
+.p0-source-note{font-size:.84rem;line-height:1.5;margin-top:20px;color:#526574;}
+.p0-verdict{padding:clamp(34px,4.4vw,64px) 0;}
+.p0-verdict h2{font-size:clamp(1.6rem,3.15vw,3.2rem);line-height:1.12;letter-spacing:-.034em;}
+.p0-section{padding:clamp(25px,3.3vw,49px) 0;}
+.p0-section__grid{grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr);gap:clamp(24px,5vw,68px);}
+.p0-section h2{font-size:clamp(1.45rem,2.6vw,2.7rem);line-height:1.12;letter-spacing:-.038em;}
+.p0-list{margin-top:0;}
+.p0-list li{min-height:0;padding:13px 0;grid-template-columns:35px 1fr;}
+.p0-list p,.p0-section__body p{line-height:1.65;}
+.p0-historic-reading{background:#f4f6f7;padding:clamp(48px,6.4vw,104px) 0;}
+.p0-historic-reading__layout{display:grid;grid-template-columns:minmax(230px,.55fr) minmax(0,1fr);gap:clamp(35px,6vw,100px);align-items:start;}
+.p0-historic-reading__aside{position:sticky;top:105px;align-self:start;}
+.p0-historic-reading__aside h2{font-size:clamp(1.75rem,3vw,3.2rem);line-height:1.13;letter-spacing:-.037em;max-width:17ch;margin:12px 0 24px;}
+.p0-historic-reading__aside>p{font-size:.94rem;line-height:1.7;color:#4e6472;}
+.p0-historic-reading__aside .p0-historic-reading__caution{border-left:2px solid #d06736;padding-left:16px;margin-top:27px;}
+.p0-historic-reading__body{max-width:71ch;font-size:clamp(1.02rem,1.25vw,1.14rem);line-height:1.82;color:#203449;}
+.p0-historic-reading__body p{margin:0 0 1.45em;overflow-wrap:break-word;}
+.p0-historic-reading__body p:first-child:first-letter{font-size:1.6em;font-weight:650;line-height:1;}
+@media(max-width:1000px){.p0-hero__grid,.p0-historic-reading__layout,.p0-section__grid{grid-template-columns:1fr;}.p0-historic-reading__aside{position:static;}.p0-historic-reading__aside h2{max-width:22ch;}.p0-hero h1{max-width:none;}}
+@media(max-width:760px){.p0-hero{padding:34px 0 42px;}.p0-hero h1{font-size:clamp(2.15rem,10.5vw,3.7rem);line-height:1.06;}.p0-historic-reading{padding:44px 0;}.p0-historic-reading__body{font-size:1rem;line-height:1.74;}.p0-section h2{max-width:none;}}
 </style>
