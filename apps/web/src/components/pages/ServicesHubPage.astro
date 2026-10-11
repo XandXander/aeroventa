@@ -22,34 +22,30 @@ const objectLinks = [
 ---
 
 <article class="hub-page">
-  <header class="hub-hero">
-    <div class="home-shell hub-hero__grid">
-      <div>
+  <header class="hub-hero services-hero">
+    <div class="home-shell services-hero__grid">
+      <div class="services-hero__intro">
         <p class="home-kicker">Услуги и возможности</p>
         <h1>Что мы делаем по вентиляции</h1>
-      </div>
-      <div>
-        <p class="hub-hero__lede">
-          Монтаж вентиляции для квартир, домов, ресторанов, коммерческих и производственных объектов.
-          Работаем по готовой документации и помогаем определить исходные данные, если проект ещё не подготовлен.
-        </p>
+        <p class="services-hero__lede">Монтируем системы вентиляции для жилых, коммерческих и производственных объектов. Работаем по проекту и уточняем необходимые исходные данные, если он ещё не подготовлен.</p>
         <p class="home-geo">Санкт-Петербург · Ленинградская область · Москва · Карелия</p>
+        <a class="button button--primary" href="/contact/" data-contact-open data-source="services_hero" aria-haspopup="dialog">Обсудить задачу →</a>
       </div>
+      <figure class="services-editorial__image services-hero__photo">
+        <img src="/evidence/hero/engineering-ductwork.jpg" width="1200" height="600"
+             loading="eager" fetchpriority="high" decoding="async"
+             alt="Инженерные воздуховоды и фасонные элементы системы вентиляции" />
+        <figcaption>Монтаж воздуховодов. Реальные выполненные объекты показаны в разделе «Наши работы».</figcaption>
+      </figure>
     </div>
   </header>
 
-  <section class="services-editorial" aria-label="Инженерные системы вентиляции">
-    <div class="home-shell services-editorial__grid">
-      <figure class="services-editorial__image">
-        <img src="/evidence/hero/engineering-ductwork.jpg"
-             width="1200" height="600" loading="eager" decoding="async"
-             alt="Крупный фрагмент воздуховодов и фасонных элементов вентиляционной системы" />
-        <figcaption>Фотография инженерных воздуховодов. Примеры выполненного монтажа — в портфолио.</figcaption>
-      </figure>
+  <section class="services-editorial" aria-labelledby="services-editorial-title">
+    <div class="home-shell services-editorial__grid services-editorial__grid--text">
       <div class="services-editorial__copy">
-        <p class="section-index section-index--orange">Монтаж вентиляции</p>
-        <h2>Монтаж воздуховодов и вентиляционного оборудования.</h2>
-        <p>От прокладки трасс и монтажа оборудования до согласования сложных узлов на площадке. Состав работ определяем по проекту и условиям конкретного объекта.</p>
+        <p class="section-index section-index--orange">Инженерная компетенция</p>
+        <h2 id="services-editorial-title">Монтаж воздуховодов и вентиляционного оборудования.</h2>
+        <p>От прокладки трасс и монтажа оборудования до согласования сложных узлов на площадке. Состав работ определяется проектом и фактическими условиями конкретного объекта.</p>
         <a href="/montazh-ventiliacii/">Что входит в монтаж <span aria-hidden="true">→</span></a>
       </div>
     </div>
@@ -136,3 +132,19 @@ const objectLinks = [
     </div>
   </section>
 </article>
+
+<style>
+  .hub-hero.services-hero {padding:clamp(34px,4vw,68px) 0;min-width:0}
+  .services-hero__grid {display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);align-items:center;gap:clamp(28px,5vw,80px)}
+  .services-hero__intro {min-width:0}
+  .services-hero__intro h1 {margin:0;max-width:12ch;font-size:clamp(3rem,5vw,5.8rem);line-height:.98;letter-spacing:-.06em}
+  .services-hero__lede {font-size:clamp(1rem,1.45vw,1.22rem);line-height:1.6;color:#425868;margin:25px 0 15px;max-width:55ch}
+  .services-hero__intro .button {margin-top:24px}
+  .services-hero__photo {margin:0;min-width:0}
+  .services-hero__photo img {width:100%;height:auto;aspect-ratio:1.43;object-fit:cover;object-position:50% 50%;display:block}
+  .services-hero__photo figcaption {padding:12px 15px;font-size:.78rem;line-height:1.4;color:#465c6b}
+  .services-editorial__grid--text {display:block;max-width:1200px}
+  .services-editorial__grid--text .services-editorial__copy {max-width:920px}
+  @media(max-width:920px) {.services-hero__grid{grid-template-columns:1fr;gap:24px}.services-hero__intro h1{max-width:17ch}.services-hero__photo img{aspect-ratio:1.8}}
+  @media(max-width:560px) {.hub-hero.services-hero{padding:28px 0 33px}.services-hero__intro h1{font-size:clamp(2.6rem,11.6vw,4.4rem)}.services-hero__lede{margin:18px 0 9px}.services-hero__photo img{aspect-ratio:1.25}.services-hero__intro .button{margin:18px 0 0}}
+</style>
