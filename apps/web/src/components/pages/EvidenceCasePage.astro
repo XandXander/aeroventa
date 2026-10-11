@@ -362,6 +362,17 @@ const specs: Record<string, CaseSpec> = {
   }
 };
 
+
+const documentaryTitles: Record<string, {gallery:string;facts:string}> = {
+  '/blog/detail/kak-my-sdali-7-domov/': {gallery:'7 PARK: здания и монтажные работы',facts:'Семь домов в Павловске — объём и сроки'},
+  '/blog/detail/restoran-v-zhk-leontevskiy-mys/': {gallery:'Ресторан на Ждановской, 45: монтаж вентиляции',facts:'Что было выполнено в ресторане'},
+  '/blog/detail/ntff-polisan/': {gallery:'«Полисан»: фотографии производственного объекта',facts:'Вентиляция фармацевтического предприятия'},
+  '/blog/detail/montazh-ventilyatsii-v-karelii/': {gallery:'PONSSE: инженерные работы в Питкяранте',facts:'Сервисно-образовательный центр в Карелии'},
+  '/blog/detail/kvartira-na-zhukova/': {gallery:'Квартира на Маршала Жукова: выполненные работы',facts:'Объём вентиляции в квартире'},
+  '/blog/detail/kafe-na-rimskogo-korsakova/': {gallery:'Кафе на Римского-Корсакова: фотодокументация',facts:'Работы в помещении кафе'},
+};
+const documentary = documentaryTitles[content.path] || {gallery:'Фотографии объекта и выполненных работ',facts:'Состав работ на объекте'};
+
 const spec=specs[content.path];
 if(!spec) throw new Error('Case spec missing: '+content.path);
 ---
@@ -377,17 +388,66 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
         <p class="case-detail-hero__location">{spec.location}</p>
         <p class="case-detail-hero__lede">{spec.lede}</p>
         <div class="home-actions">
-          <a class="button button--primary" href="/contact/?intent=project">Показать похожий проект →</a>
+          <a class="button button--primary" href="/contact/?intent=project">Обсудить похожую задачу →</a>
           <a class="button button--ghost" href="/portfolio/">Все объекты</a>
         </div>
       </div>
     </div>
   </header>
 
+  <section class="home-section case-gallery case-gallery--lead" aria-labelledby="case-gallery-title">
+    <div class="home-shell">
+      <p class="section-index section-index--orange">Реальные фотографии</p>
+      <h2 id="case-gallery-title">{documentary.gallery}</h2>
+      <p class="case-gallery__intro">Оригинальные фотографии объекта и монтажа. Нажмите на кадр для увеличения, не покидая страницу.</p>
+      <div class="case-gallery__grid case-gallery__grid--featured">
+        {spec.media.map(([src, alt, caption]) => (
+          <figure class="case-gallery__item">
+            <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={alt} data-photo-caption={caption} aria-label={`Увеличить фотографию: ${caption}`}>
+              <img src={src} alt={alt} width="800" height="520" loading="lazy" decoding="async" />
+            </button>
+            <figcaption>{caption}</figcaption>
+          </figure>
+        ))}
+      </div>
+      {Boolean(spec.archiveMedia?.length) && (
+        <section class="case-gallery__archive" aria-labelledby="case-photo-archive-title">
+          <h3 id="case-photo-archive-title">Все фотографии монтажных работ</h3>
+          <div class="case-gallery__thumbs">
+            {(spec.archiveMedia || []).map(([src, alt, caption]) => (
+              <figure class="case-gallery__item case-gallery__item--thumb">
+                <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={alt} data-photo-caption={caption} aria-label={`Увеличить фотографию: ${caption}`}>
+                  <img src={src} alt={alt} width="460" height="300" loading="lazy" decoding="async" />
+                </button>
+                <figcaption>{caption}</figcaption>
+              </figure>
+            ))}
+          </div>
+        </section>
+      )}
+    </div>
+  </section>
+  <dialog id="case-photo-viewer" class="case-photo-dialog" aria-label="Просмотр фотографий объекта">
+    <div class="case-photo-dialog__panel">
+      <div class="case-photo-dialog__top">
+        <span>Фотографии объекта <span data-photo-count></span></span>
+        <button type="button" class="case-photo-dialog__close" data-photo-close>Закрыть ×</button>
+      </div>
+      <figure class="case-photo-dialog__figure">
+        <img data-photo-large src={spec.media[0][0]} alt={spec.media[0][1]} loading="lazy" />
+        <figcaption data-photo-description></figcaption>
+      </figure>
+      <nav class="case-photo-dialog__nav" aria-label="Навигация по фотографиям">
+        <button type="button" data-photo-previous>← Предыдущая</button>
+        <button type="button" data-photo-next>Следующая →</button>
+      </nav>
+    </div>
+  </dialog>
+
   <section class="case-detail-facts" aria-labelledby="case-facts-title">
     <div class="home-shell">
       <p class="section-index">01 / Факты объекта</p>
-      <h2 id="case-facts-title">Объект и выполненные работы.</h2>
+      <h2 id="case-facts-title">{documentary.facts}</h2>
       <dl class="case-detail-facts__grid">
         {spec.facts.map(([label,value]) => <div><dt>{label}</dt><dd>{value}</dd></div>)}
       </dl>
@@ -441,58 +501,10 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
       <div><span>03 / Результат</span><h2>Результат в документах</h2><p>{spec.result}</p></div>
     </div>
   </section>
-  <section class="home-section case-gallery" aria-labelledby="case-gallery-title">
-    <div class="home-shell">
-      <p class="section-index section-index--orange">Реальные фотографии</p>
-      <h2 id="case-gallery-title">Работы на объекте: фотографии и детали</h2>
-      <p class="case-gallery__intro">Фотографии объекта и монтажа. Нажмите на снимок, чтобы рассмотреть его на этой странице.</p>
-      <div class="case-gallery__grid case-gallery__grid--featured">
-        {spec.media.map(([src, alt, caption]) => (
-          <figure class="case-gallery__item">
-            <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={alt} data-photo-caption={caption} aria-label={`Увеличить фотографию: ${caption}`}>
-              <img src={src} alt={alt} width="800" height="520" loading="lazy" decoding="async" />
-            </button>
-            <figcaption>{caption}</figcaption>
-          </figure>
-        ))}
-      </div>
-      {Boolean(spec.archiveMedia?.length) && (
-        <section class="case-gallery__archive" aria-labelledby="case-photo-archive-title">
-          <h3 id="case-photo-archive-title">Фото работ — полный доступный архив</h3>
-          <div class="case-gallery__thumbs">
-            {(spec.archiveMedia || []).map(([src, alt, caption]) => (
-              <figure class="case-gallery__item case-gallery__item--thumb">
-                <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={alt} data-photo-caption={caption} aria-label={`Увеличить фотографию: ${caption}`}>
-                  <img src={src} alt={alt} width="460" height="300" loading="lazy" decoding="async" />
-                </button>
-                <figcaption>{caption}</figcaption>
-              </figure>
-            ))}
-          </div>
-        </section>
-      )}
-    </div>
-  </section>
-  <dialog id="case-photo-viewer" class="case-photo-dialog" aria-label="Просмотр фотографий объекта">
-    <div class="case-photo-dialog__panel">
-      <div class="case-photo-dialog__top">
-        <span>Фотографии объекта <span data-photo-count></span></span>
-        <button type="button" class="case-photo-dialog__close" data-photo-close>Закрыть ×</button>
-      </div>
-      <figure class="case-photo-dialog__figure">
-        <img data-photo-large src={spec.media[0][0]} alt={spec.media[0][1]} loading="lazy" />
-        <figcaption data-photo-description></figcaption>
-      </figure>
-      <nav class="case-photo-dialog__nav" aria-label="Навигация по фотографиям">
-        <button type="button" data-photo-previous>← Предыдущая</button>
-        <button type="button" data-photo-next>Следующая →</button>
-      </nav>
-    </div>
-  </dialog>
   <section class="home-section case-detail-related" aria-labelledby="case-related-title">
     <div class="home-shell">
       <p class="section-index">04 / Продолжить</p>
-      <h2 id="case-related-title">Перейти от доказательства к своей задаче.</h2>
+      <h2 id="case-related-title">Другие выполненные работы и ваша задача</h2>
       <div class="case-detail-related__grid">
         {spec.related.map(([title,href,text],index) => <a href={href}><span>{String(index+1).padStart(2,'0')}</span><h3>{title}</h3><p>{text}</p><b>Открыть →</b></a>)}
       </div>
