@@ -478,7 +478,7 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
         <button type="button" class="case-photo-dialog__close" data-photo-close>Закрыть ×</button>
       </div>
       <figure class="case-photo-dialog__figure">
-        <img data-photo-large alt="" />
+        <img data-photo-large src={spec.media[0][0]} alt={spec.media[0][1]} loading="lazy" />
         <figcaption data-photo-description></figcaption>
       </figure>
       <nav class="case-photo-dialog__nav" aria-label="Навигация по фотографиям">
