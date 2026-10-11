@@ -442,34 +442,51 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
   <section class="home-section case-gallery" aria-labelledby="case-gallery-title">
     <div class="home-shell">
       <p class="section-index section-index--orange">Реальные фотографии</p>
-      <h2 id="case-gallery-title">Объект и выполненные работы</h2>
-      <div class="case-gallery__grid">
-        {spec.media.map(([src,alt,caption]) => (
+      <h2 id="case-gallery-title">Работы на объекте: фотографии и детали</h2>
+      <p class="case-gallery__intro">Фотографии объекта и монтажа. Нажмите на снимок, чтобы рассмотреть его на этой странице.</p>
+      <div class="case-gallery__grid case-gallery__grid--featured">
+        {spec.media.map(([src, alt, caption]) => (
           <figure class="case-gallery__item">
-            <a href={src} target="_blank" rel="noopener noreferrer" aria-label={`Открыть фотографию в полном размере: ${caption}`}>
+            <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={alt} data-photo-caption={caption} aria-label={`Увеличить фотографию: ${caption}`}>
               <img src={src} alt={alt} width="800" height="520" loading="lazy" decoding="async" />
-            </a>
+            </button>
             <figcaption>{caption}</figcaption>
           </figure>
         ))}
       </div>
-      {spec.archiveMedia?.length && (
-        <details class="case-gallery-archive">
-          <summary>Ещё фотографии с объекта <span>({spec.archiveMedia.length})</span></summary>
-          <div class="case-gallery__grid">
-            {spec.archiveMedia.map(([src, alt, caption]) => (
-              <figure class="case-gallery__item">
-                <a href={src} target="_blank" rel="noopener noreferrer" aria-label={`Открыть архивное фото: ${caption}`}>
-                  <img src={src} alt={alt} width="800" height="520" loading="lazy" decoding="async" />
-                </a>
+      {Boolean(spec.archiveMedia?.length) && (
+        <section class="case-gallery__archive" aria-labelledby="case-photo-archive-title">
+          <h3 id="case-photo-archive-title">Фото работ — полный доступный архив</h3>
+          <div class="case-gallery__thumbs">
+            {(spec.archiveMedia || []).map(([src, alt, caption]) => (
+              <figure class="case-gallery__item case-gallery__item--thumb">
+                <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={alt} data-photo-caption={caption} aria-label={`Увеличить фотографию: ${caption}`}>
+                  <img src={src} alt={alt} width="460" height="300" loading="lazy" decoding="async" />
+                </button>
                 <figcaption>{caption}</figcaption>
               </figure>
             ))}
           </div>
-        </details>
+        </section>
       )}
     </div>
   </section>
+  <dialog id="case-photo-viewer" class="case-photo-dialog" aria-label="Просмотр фотографий объекта">
+    <div class="case-photo-dialog__panel">
+      <div class="case-photo-dialog__top">
+        <span>Фотографии объекта <span data-photo-count></span></span>
+        <button type="button" class="case-photo-dialog__close" data-photo-close>Закрыть ×</button>
+      </div>
+      <figure class="case-photo-dialog__figure">
+        <img data-photo-large alt="" />
+        <figcaption data-photo-description></figcaption>
+      </figure>
+      <nav class="case-photo-dialog__nav" aria-label="Навигация по фотографиям">
+        <button type="button" data-photo-previous>← Предыдущая</button>
+        <button type="button" data-photo-next>Следующая →</button>
+      </nav>
+    </div>
+  </dialog>
   <section class="home-section case-detail-related" aria-labelledby="case-related-title">
     <div class="home-shell">
       <p class="section-index">04 / Продолжить</p>
@@ -503,6 +520,39 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
   if (documentDialog instanceof HTMLDialogElement) {
     documentDialog.addEventListener('click', event => {
       if (event.target === documentDialog) documentDialog.close();
+    });
+  }
+  const photos = [...document.querySelectorAll<HTMLButtonElement>('[data-case-photo]')];
+  const viewer = document.getElementById('case-photo-viewer');
+  if (viewer instanceof HTMLDialogElement && photos.length) {
+    let activeIndex = 0;
+    let activeTrigger: HTMLButtonElement | null = null;
+    const large = viewer.querySelector<HTMLImageElement>('[data-photo-large]');
+    const description = viewer.querySelector<HTMLElement>('[data-photo-description]');
+    const counter = viewer.querySelector<HTMLElement>('[data-photo-count]');
+    const show = (index: number) => {
+      activeIndex = (index + photos.length) % photos.length;
+      const photo = photos[activeIndex];
+      if (large) { large.src = photo.dataset.photoSrc || ''; large.alt = photo.dataset.photoAlt || ''; }
+      if (description) description.textContent = photo.dataset.photoCaption || '';
+      if (counter) counter.textContent = `${activeIndex + 1} / ${photos.length}`;
+    };
+    photos.forEach((button, index) => button.addEventListener('click', () => {
+      activeTrigger = button;
+      show(index);
+      if (!viewer.open) viewer.showModal();
+    }));
+    viewer.querySelector('[data-photo-close]')?.addEventListener('click', () => viewer.close());
+    viewer.querySelector('[data-photo-previous]')?.addEventListener('click', () => show(activeIndex - 1));
+    viewer.querySelector('[data-photo-next]')?.addEventListener('click', () => show(activeIndex + 1));
+    viewer.addEventListener('keydown', event => {
+      if (event.key === 'ArrowLeft') { event.preventDefault(); show(activeIndex - 1); }
+      if (event.key === 'ArrowRight') { event.preventDefault(); show(activeIndex + 1); }
+    });
+    viewer.addEventListener('click', event => { if (event.target === viewer) viewer.close(); });
+    viewer.addEventListener('close', () => {
+      if (large) large.removeAttribute('src');
+      activeTrigger?.focus({ preventScroll: true });
     });
   }
 </script>
