@@ -3398,3 +3398,51 @@ html::-webkit-scrollbar-thumb:hover {background:#7c93a2;}
   .home-ponsse__document > button {transition:none;}
 }
 @media(prefers-reduced-motion:reduce){.home-ponsse__document > button{transition:none;}}
+
+
+/* V43 HI-END case editorial layout — source-backed imagery becomes the primary content. */
+.case-detail-hero{padding:clamp(36px,5vw,76px) 0 clamp(36px,4.5vw,68px);}
+.case-detail-hero__grid{grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:clamp(25px,5vw,80px);align-items:center;}
+.case-detail-hero h1{font-size:clamp(2.6rem,4.7vw,5.4rem);line-height:1.02;letter-spacing:-.045em;text-wrap:balance;overflow-wrap:normal;word-break:normal;}
+.case-detail-hero__lede{line-height:1.62;max-width:59ch;}
+.case-gallery--lead{background:#edf2f4;padding:clamp(30px,4.5vw,72px) 0 clamp(46px,5.5vw,90px);border-bottom:1px solid #d4dee4;}
+.case-gallery--lead h2{margin:10px 0 0;max-width:23ch;font-size:clamp(2rem,3.5vw,3.9rem);letter-spacing:-.047em;line-height:1.11;text-wrap:balance;}
+.case-gallery--lead .case-gallery__intro{font-size:1rem;margin:17px 0 0;max-width:60ch;}
+.case-gallery__grid--featured{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:clamp(12px,1.7vw,25px);margin-top:clamp(25px,3vw,44px);}
+.case-gallery__grid--featured .case-gallery__item{grid-column:span 6;background:#fff;box-shadow:0 1px 1px rgba(20,39,55,.07);}
+.case-gallery__grid--featured .case-gallery__item:nth-child(4n + 1){grid-column:span 7;}
+.case-gallery__grid--featured .case-gallery__item:nth-child(4n + 2){grid-column:span 5;}
+.case-gallery__grid--featured .case-gallery__item:nth-child(4n + 3){grid-column:span 5;}
+.case-gallery__grid--featured .case-gallery__item:nth-child(4n){grid-column:span 7;}
+.case-gallery__grid--featured .case-gallery__item:nth-child(3):last-child{grid-column:1/-1;}
+.case-gallery__grid--featured .case-gallery__item img{aspect-ratio:1.6;object-fit:cover;}
+.case-gallery__grid--featured .case-gallery__item:nth-child(3):last-child img{aspect-ratio:2.2;}
+.case-gallery__grid--featured figcaption{padding:13px 16px;font-size:.9rem;letter-spacing:-.005em;}
+.case-gallery__archive{margin-top:clamp(34px,5vw,72px);padding-top:30px;border-top:1px solid #ced8de;}
+.case-gallery__archive h3{font-size:clamp(1.45rem,2.1vw,2.1rem);letter-spacing:-.03em;}
+.case-gallery__thumbs{grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(12px,1.5vw,20px);}
+.case-gallery__thumbs .case-gallery__item{background:#fff;}
+.case-gallery__thumbs .case-gallery__item--thumb img{aspect-ratio:1.44;object-fit:cover;}
+.case-gallery__thumbs .case-gallery__item--thumb figcaption{min-height:36px;display:flex;align-items:center;line-height:1.35;}
+.case-detail-facts{padding:clamp(42px,5vw,76px) 0;background:#fff;}
+.case-detail-facts h2{font-size:clamp(1.85rem,3.25vw,3.25rem);line-height:1.1;letter-spacing:-.039em;}
+.case-detail-facts__grid{margin-top:28px;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;}
+.case-detail-facts__grid div{min-height:107px;padding:19px 22px;}
+.case-detail-facts dd{margin:14px 0 0;font-size:clamp(.95rem,1.15vw,1.11rem);font-weight:730;line-height:1.42;}
+.case-detail-related h2{font-size:clamp(1.85rem,3vw,3.1rem);line-height:1.1;letter-spacing:-.04em;}
+.case-detail-related__grid a{min-height:200px;}
+@media(max-width:1050px){
+  .case-detail-hero__grid{grid-template-columns:1fr;}
+  .case-gallery__thumbs{grid-template-columns:repeat(3,minmax(0,1fr));}
+}
+@media(max-width:760px){
+  .case-detail-hero h1{font-size:clamp(2.1rem,9.2vw,3.7rem);line-height:1.05;}
+  .case-gallery__grid--featured{grid-template-columns:1fr;gap:15px;}
+  .case-gallery__grid--featured .case-gallery__item,
+  .case-gallery__grid--featured .case-gallery__item:nth-child(n){grid-column:1/-1;}
+  .case-gallery__grid--featured .case-gallery__item img,
+  .case-gallery__grid--featured .case-gallery__item:nth-child(3):last-child img{aspect-ratio:1.52;}
+  .case-gallery__thumbs{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .case-detail-facts__grid{grid-template-columns:1fr;}
+  .case-detail-facts__grid div{min-height:74px;}
+}
