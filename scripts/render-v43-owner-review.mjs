@@ -178,17 +178,19 @@ try {
         if (['seven_park','karelia_ponsse','polisan','leont','zhukov','cafe'].includes(id)) {
           const expectedGallery = {karelia_ponsse:18,leont:26,polisan:15,cafe:10,zhukov:5};
           if (Object.hasOwn(expectedGallery,id)) {
-            const archiveImages = await page.locator('.case-gallery-archive img').count();
+            const archiveImages = await page.locator('.case-gallery__archive .case-gallery__item img').count();
             if (archiveImages !== expectedGallery[id]) report.fail.push({route,view,reason:'Original case archive not fully represented',archiveImages,expected:expectedGallery[id]});
           }
           const media = await page.locator('.case-gallery__item img').count();
           const story = await page.locator('.case-story__grid > div').count();
           if (media < 2 || story !== 3) report.fail.push({ route, view, reason: 'object evidence/story missing', media, story });
+          const hiddenArchive = await page.locator('details.case-gallery-archive, .case-gallery-archive details').count();
+          if (hiddenArchive) report.fail.push({route,view,reason:'Case photos must not be gated behind a disclosure',hiddenArchive});
         }
         if (id === 'karelia_ponsse') {
           const content = await page.locator('.ponsse-recognition').innerText();
           if (!content.includes('05.04.2022') || !content.includes('Petteri Teittinen')) report.fail.push({ route, view, reason: 'PONSSE letter editorial content absent' });
-          const galleryCount = await page.locator('.case-gallery-archive img').count();
+          const galleryCount = await page.locator('.case-gallery__archive .case-gallery__item img').count();
           if (galleryCount !== 18) report.fail.push({route,view,reason:'Complete PONSSE historical image inventory not present',galleryCount});
           const expectedLetter = report.owner_media[1].status === 'EXACT';
           const expectedPortrait = report.owner_media[2].status === 'EXACT' && process.env.PUBLIC_PONSSE_PORTRAIT_PUBLICATION_APPROVED === 'true';
@@ -202,6 +204,22 @@ try {
           report.fail.push(entry);
         }
         await page.screenshot({ path: path.join(root, id + '__' + view + '.png'), fullPage: true, animations: 'disabled' });
+        if (['seven_park','karelia_ponsse','polisan','leont','zhukov','cafe'].includes(id) && (view === 'desktop_1440' || view === 'mobile_390')) {
+          const firstPhoto = page.locator('[data-case-photo]').first();
+          const firstSrc = await firstPhoto.getAttribute('data-photo-src');
+          await firstPhoto.click();
+          const viewer = page.locator('#case-photo-viewer');
+          await viewer.waitFor({state:'visible'});
+          const shown = await viewer.locator('[data-photo-large]').getAttribute('src');
+          if (shown !== firstSrc) report.fail.push({route,view,reason:'Case viewer selected image mismatch',firstSrc,shown});
+          await viewer.locator('[data-photo-next]').click();
+          const secondCount = await viewer.locator('[data-photo-count]').innerText();
+          if (!secondCount.startsWith('2 / ')) report.fail.push({route,view,reason:'Case viewer next navigation failed',secondCount});
+          await page.keyboard.press('Escape');
+          await viewer.waitFor({state:'hidden'});
+          const returned = await firstPhoto.evaluate(el => el === document.activeElement);
+          if (!returned) report.fail.push({route,view,reason:'Case viewer focus not restored'});
+        }
         if (id === 'karelia_ponsse' && report.owner_media[1].status === 'EXACT') {
           await page.locator('[data-ponsse-open]').click();
           const letterModal = page.locator('#ponsse-letter-dialog');
