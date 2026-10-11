@@ -33,6 +33,31 @@ const timeline = [
     </div>
   </header>
 
+  <section class="about-proof home-section" aria-labelledby="about-proof-title">
+    <div class="home-shell">
+      <div class="section-heading">
+        <div>
+          <p class="section-index section-index--orange">Фактическая работа</p>
+          <h2 id="about-proof-title">Вентиляция, которую можно увидеть на объектах.</h2>
+        </div>
+        <a href="/portfolio/">Все шесть объектов →</a>
+      </div>
+      <div class="about-proof__grid">
+        <a href="/blog/detail/kak-my-sdali-7-domov/">
+          <img src="/evidence/7park/duct-route.jpg" alt="Воздуховоды, смонтированные на объекте 7 PARK в Павловске" width="800" height="600" loading="lazy" decoding="async"/>
+          <span><small>Павловск · семь домов</small><strong>7 PARK</strong><em>Монтаж и история работ ↗</em></span>
+        </a>
+        <a href="/blog/detail/ntff-polisan/">
+          <img src="/evidence/polisan/owner-cover-v43.webp" alt="Монтаж вентиляции на фармацевтическом объекте НТФФ «Полисан»" width="800" height="520" loading="lazy" decoding="async"/>
+          <span><small>Производственный объект</small><strong>НТФФ «Полисан»</strong><em>Фотографии и факты ↗</em></span>
+        </a>
+        <a href="/blog/detail/montazh-ventilyatsii-v-karelii/">
+          <img src="/evidence/karelia/owner-cover-v43.webp" alt="Монтажная фотодокументация объекта PONSSE в Питкяранте" width="800" height="520" loading="lazy" decoding="async"/>
+          <span><small>Питкяранта · Карелия</small><strong>PONSSE</strong><em>Работы и оригинал письма ↗</em></span>
+        </a>
+      </div>
+    </div>
+  </section>
   <section class="about-principle" aria-labelledby="about-principle-title">
     <div class="home-shell about-principle__grid">
       <div>
@@ -131,3 +156,15 @@ const timeline = [
     </div>
   </section>
 </article>
+
+<style>
+.about-proof__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,2vw,24px)}
+.about-proof__grid a{background:#193144;display:flex;flex-direction:column;color:#fff;text-decoration:none;min-width:0}
+.about-proof__grid img{display:block;width:100%;height:auto;aspect-ratio:1.42;object-fit:cover}
+.about-proof__grid span{display:flex;flex-direction:column;align-items:start;gap:9px;padding:clamp(16px,2vw,27px)}
+.about-proof__grid small{font-size:.75rem;letter-spacing:.06em;color:#b5cbd7}
+.about-proof__grid strong{font-size:clamp(1.25rem,2vw,1.9rem)}
+.about-proof__grid em{font-style:normal;color:#f2a477;font-size:.85rem}
+.about-proof__grid a:focus-visible{outline:3px solid #e98c43;outline-offset:3px}
+@media(max-width:760px){.about-proof__grid{grid-template-columns:1fr}.about-proof__grid img{aspect-ratio:1.65}}
+</style>
