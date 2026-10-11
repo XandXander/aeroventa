@@ -240,6 +240,20 @@ try {
           await letterModal.locator('.ponsse-letter-dialog__close').click();
           await letterModal.waitFor({state:'hidden'});
         }
+        if (id === 'home' && (view === 'desktop_1440' || view === 'mobile_390')) {
+          await page.locator('[data-home-ponsse-open]').first().click();
+          const letter = page.locator('#home-ponsse-letter-dialog');
+          await letter.waitFor({state:'visible'});
+          const fit = await letter.evaluate(node => {
+            const img = node.querySelector('.ponsse-letter-dialog__sheet img');
+            const box = node.querySelector('.ponsse-letter-dialog__sheet');
+            const a = img.getBoundingClientRect(), b = box.getBoundingClientRect();
+            return a.width > 0 && a.height > 0 && a.width <= b.width + 1 && a.height <= b.height + 1;
+          });
+          if (!fit) report.fail.push({route,view,reason:'Home PONSSE letter must fit entirely in its dialog'});
+          await letter.locator('.ponsse-letter-dialog__close').click();
+          await letter.waitFor({state:'hidden'});
+        }
         if (id === 'home' && view === 'mobile_390') {
           await page.locator('.mobile-menu summary').click();
           await page.screenshot({ path: path.join(root, 'mobile_390_navigation.png'), animations: 'disabled' });
