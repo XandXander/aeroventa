@@ -131,7 +131,11 @@ try {
             const section = document.querySelector('.home-ponsse');
             const prior = section?.previousElementSibling;
             const after = section?.nextElementSibling;
-            return prior?.id === 'objects' && !!prior?.previousElementSibling?.classList.contains('case-feature') && !!after?.classList.contains('decision-preview');
+            const afterLetter = after?.matches('dialog#home-ponsse-letter-dialog') ? after.nextElementSibling : after;
+            return prior?.id === 'objects' &&
+              !!prior?.previousElementSibling?.classList.contains('case-feature') &&
+              !!after?.matches('dialog#home-ponsse-letter-dialog') &&
+              !!afterLetter?.classList.contains('decision-preview');
           });
           if (!orderCorrect || await recognition.count() !== 1 ||
               await recognition.locator('img[src="/evidence/karelia/ponsse-letter-20220405.png"]').count() !== 1 ||
