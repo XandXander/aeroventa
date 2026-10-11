@@ -33,6 +33,10 @@ const routes = [
   ['articles_index', '/blog/poleznye-stati/'],
   ['case_stories', '/blog/istorii-proektov/'],
   ['faq', '/faq/'],
+  ['drill_crown', '/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/'],
+  ['drill_screed', '/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/'],
+  ['drill_cost', '/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/'],
+  ['drill_horizontal', '/blog/detail/gorizontalnoe-almaznoe-burenie/'],
 ];
 await fs.mkdir(root, { recursive: true });
 const report = { build_mode: 'fixture', local_http_only: true, routes: routes.length, viewports: views.map(x => x[0]), pages: [], fail: [], owner_media: [] };
@@ -169,6 +173,18 @@ try {
             if (!href?.startsWith('/blog/detail/')) report.fail.push({route,view,reason:'Case must link directly to historic case URL',href});
           }
         }
+        if (id.startsWith('drill_')) {
+          const reading = page.locator('.p0-historic-reading__body');
+          const restoredText = await reading.innerText();
+          if (restoredText.trim().length < 350 || await reading.locator('p').count() < 1) {
+            report.fail.push({route,view,reason:'Historical technical content not presented as readable main page text',chars:restoredText.length});
+          }
+          const figures = await page.locator('.p0-historic-reading figure, .p0-article figure').count();
+          report.open_media_debt ||= [];
+          if (figures === 0 && view === 'desktop_1440') {
+            report.open_media_debt.push({route,reason:'Original illustrated instruction still lacks historical media; source restore required before release'});
+          }
+        }
         if (id === 'services') {
           const ducts = await page.locator('.services-editorial__image img[src="/evidence/hero/engineering-ductwork.jpg"]').count();
           const wrong = await page.locator('.services-editorial__image img[src="/evidence/hero/hiend-engineering-visual-owner-v43.webp"]').count();
@@ -300,7 +316,7 @@ try {
 } finally {
   await browser.close();
 }
-report.status = report.fail.length ? 'FAIL' : report.owner_media.every(x => x.status === 'EXACT') ? 'PASS' : 'PASS_MEDIA_PENDING';
+report.status = report.fail.length ? 'FAIL' : (report.owner_media.every(x => x.status === 'EXACT') && !report.open_media_debt?.length) ? 'PASS' : 'PASS_MEDIA_PENDING';
 await fs.writeFile(path.join(root, 'manifest.json'), JSON.stringify(report, null, 2));
 console.log('V43 compiled browser render:', report.status, report.pages.length, 'captures;', report.fail.length, 'failures');
 if (report.fail.length) {
