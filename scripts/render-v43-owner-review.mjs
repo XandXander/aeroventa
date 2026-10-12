@@ -37,6 +37,17 @@ const routes = [
   ['drill_screed', '/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/'],
   ['drill_cost', '/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/'],
   ['drill_horizontal', '/blog/detail/gorizontalnoe-almaznoe-burenie/'],
+  ['drill_hub', '/almaznoe-burenie/'],
+  ['drill_history', '/blog/detail/novoe-almaznoe-burenie/'],
+  ['reviews_archive', '/blog/obzory-i-intervyu/'],
+  ['covid', '/covid-pritochnaya-ventilacia/'],
+  ['news_archive', '/news/'],
+  ['company_history', '/news/istoriya-kompanii/'],
+  ['corporate_archive', '/news/korporativnaya-zhizn/'],
+  ['events_archive', '/news/znachimye-sobytiya/'],
+  ['privacy', '/privacy/'],
+  ['vacancies', '/vakansii/'],
+  ['notfound_preview', '/404.html'],
 ];
 await fs.mkdir(root, { recursive: true });
 const report = { build_mode: 'fixture', local_http_only: true, routes: routes.length, viewports: views.map(x => x[0]), pages: [], fail: [], owner_media: [] };
