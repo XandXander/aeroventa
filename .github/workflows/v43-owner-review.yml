@@ -58,3 +58,38 @@ jobs:
           path: V43_OWNER_BROWSER_REVIEW
           if-no-files-found: warn
           retention-days: 7
+      # This artifact is for *authenticated Beget staging only*, never production.
+      # Browser QA must PASS first. The archive contains compiled site files
+      # at ZIP root (including .htaccess), suitable for existing staging upload.
+      - name: Seal tested staging-only site
+        if: success()
+        env:
+          REVIEW_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          test -f apps/web/dist/index.html
+          test -f apps/web/dist/.htaccess
+          test -f apps/web/dist/404.html
+          test -f apps/web/dist/sitemap.xml
+          grep -qi 'name="robots" content="noindex' apps/web/dist/index.html
+          printf 'User-agent: *\nDisallow: /\n' > apps/web/dist/robots.txt
+          cat > apps/web/dist/STAGING_ONLY_BUILD_INFO.txt <<EOF
+          AEROVENTA STAGING-ONLY FIXTURE REVIEW BUILD
+          GITHUB_SHA=$REVIEW_SHA
+          TEST=implementation validation + compiled Playwright browser review PASS
+          INDEXING=DISABLED (noindex and robots Disallow)
+          DESTINATION=staging.aeroventa.ru ONLY, behind existing Basic Auth
+          NOT_A_DIRECTUS_PRODUCTION_BUILD
+          DO_NOT_UPLOAD_TO_PRODUCTION_OR_REPLACE_LIVE_BITRIX
+          EOF
+          grep -q '^Disallow: /' apps/web/dist/robots.txt
+          grep -q '^DO_NOT_UPLOAD_TO_PRODUCTION' apps/web/dist/STAGING_ONLY_BUILD_INFO.txt
+      - name: Upload exact tested staging-only site
+        if: success()
+        uses: actions/upload-artifact@v6
+        with:
+          name: AEROVENTA_V43_STAGING_ONLY_SITE_DO_NOT_UPLOAD_TO_PRODUCTION
+          path: apps/web/dist/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 6
