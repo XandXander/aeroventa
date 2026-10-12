@@ -58,9 +58,9 @@ jobs:
           path: V43_OWNER_BROWSER_REVIEW
           if-no-files-found: warn
           retention-days: 7
-      # This artifact is for *authenticated Beget staging only*, never production.
+      # This artifact must not replace staging authentication or production Bitrix.
       # Browser QA must PASS first. The archive contains compiled site files
-      # at ZIP root (including .htaccess), suitable for existing staging upload.
+      # at ZIP root. Existing staging .htaccess / Basic Auth MUST be preserved.
       - name: Seal tested staging-only site
         if: success()
         env:
@@ -77,12 +77,19 @@ jobs:
           GITHUB_SHA=$REVIEW_SHA
           TEST=implementation validation + compiled Playwright browser review PASS
           INDEXING=DISABLED (noindex and robots Disallow)
-          DESTINATION=staging.aeroventa.ru ONLY, behind existing Basic Auth
+          DESTINATION=staging.aeroventa.ru ONLY, after verifying existing Basic Auth
+          EXISTING_STAGING_HTACCESS=DO_NOT_REPLACE
+          ROUTING_RULES_GENERATED=reference-only in STAGING_RULES_REFERENCE_ONLY.txt
           NOT_A_DIRECTUS_PRODUCTION_BUILD
           DO_NOT_UPLOAD_TO_PRODUCTION_OR_REPLACE_LIVE_BITRIX
           EOF
           grep -q '^Disallow: /' apps/web/dist/robots.txt
           grep -q '^DO_NOT_UPLOAD_TO_PRODUCTION' apps/web/dist/STAGING_ONLY_BUILD_INFO.txt
+          # Beget staging Basic Auth historically resides inside .htaccess.
+          # Never allow this distributable bundle to overwrite that security
+          # boundary with the raw generated production routing rules.
+          mv apps/web/dist/.htaccess apps/web/dist/STAGING_RULES_REFERENCE_ONLY.txt
+          test ! -f apps/web/dist/.htaccess
       - name: Upload exact tested staging-only site
         if: success()
         uses: actions/upload-artifact@v6
