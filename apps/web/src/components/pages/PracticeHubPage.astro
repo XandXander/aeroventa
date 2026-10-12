@@ -11,11 +11,11 @@ const p0 = [
 ];
 
 const cases = [
-  {tag:'Новостройки',title:'7 PARK',meta:'Павловск · 7 домов',href:'/blog/detail/kak-my-sdali-7-domov/'},
+  {tag:'Новостройки',title:'7 PARK',meta:'Павловск · 7 домов',image:'/evidence/7park/object-exterior-day.jpg',imageAlt:'Реальный дневной вид 7 PARK в Павловске',href:'/blog/detail/kak-my-sdali-7-domov/'},
   {tag:'Ресторан',title:'ЖК «Леонтьевский Мыс»',meta:'Санкт-Петербург · приточно-вытяжная вентиляция + оборудование',href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/'},
-  {tag:'Производство',title:'НТФФ «Полисан»',meta:'Санкт-Петербург · монтаж на фармацевтическом объекте',href:'/blog/detail/ntff-polisan/'},
+  {tag:'Производство',title:'НТФФ «Полисан»',meta:'Санкт-Петербург · монтаж на фармацевтическом объекте',image:'/evidence/polisan/owner-cover-v43.webp',imageAlt:'Архивный фотокадр работ на объекте НТФФ Полисан',href:'/blog/detail/ntff-polisan/'},
   {tag:'Квартира',title:'Маршала Жукова',meta:'Санкт-Петербург · приточно-вытяжная вентиляция',href:'/blog/detail/kvartira-na-zhukova/'},
-  {tag:'Карелия',title:'Питкяранта / PONSSE',meta:'Сервисно-образовательный центр · вентиляция + оборудование',href:'/blog/detail/montazh-ventilyatsii-v-karelii/'},
+  {tag:'Карелия',title:'Питкяранта / PONSSE',meta:'Сервисно-образовательный центр · вентиляция + оборудование',image:'/evidence/karelia/owner-cover-v43.webp',imageAlt:'Фотография сервисного центра PONSSE в Питкяранте',href:'/blog/detail/montazh-ventilyatsii-v-karelii/'},
   {tag:'Кафе',title:'Римского-Корсакова, 3',meta:'Санкт-Петербург · приточно-вытяжная вентиляция + оборудование',href:'/blog/detail/kafe-rimskogo-korsakova-3/'},
 ];
 
@@ -60,7 +60,7 @@ const isStories = content.path === '/blog/istorii-proektov/';
       <div class="home-shell">
         <div class="section-heading"><div><p class="section-index section-index--orange">03 / Истории объектов</p><h2 id="practice-cases-title">Опыт компании лучше читать по конкретным объектам.</h2></div><a href="/blog/istorii-proektov/">Все истории →</a></div>
         <div class="practice-case-strip">
-          {cases.slice(0,4).map((item) => <a href={item.href}><span>{item.tag}</span><h3>{item.title}</h3><p>{item.meta}</p><b>Открыть →</b></a>)}
+          {cases.slice(0,4).map((item) => <a href={item.href}>{item.image && <img class="practice-case-strip__photo" src={item.image} alt={item.imageAlt} width="800" height="450" loading="lazy" decoding="async" />}<span>{item.tag}</span><h3>{item.title}</h3><p>{item.meta}</p><b>Открыть →</b></a>)}
         </div>
       </div>
     </section>
@@ -117,7 +117,7 @@ const isStories = content.path === '/blog/istorii-proektov/';
     <section class="home-section story-index">
       <div class="home-shell"><p class="section-index">01 / Подтверждённые истории</p><h2>Квартиры, жилые дома, кафе и производство.</h2>
         <div class="story-index__grid">
-          {cases.map((item,index) => <a href={item.href}><div><span>{String(index+1).padStart(2,'0')}</span><b>{item.tag}</b></div><h3>{item.title}</h3><p>{item.meta}</p><strong>Смотреть объект →</strong></a>)}
+          {cases.map((item,index) => <a href={item.href}>{item.image && <img class="story-index__photo" src={item.image} alt={item.imageAlt} width="800" height="450" loading="lazy" decoding="async" />}<div><span>{String(index+1).padStart(2,'0')}</span><b>{item.tag}</b></div><h3>{item.title}</h3><p>{item.meta}</p><strong>Смотреть объект →</strong></a>)}
         </div>
       </div>
     </section>
