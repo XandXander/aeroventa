@@ -41,7 +41,13 @@ const routes = [
 await fs.mkdir(root, { recursive: true });
 const report = { build_mode: 'fixture', local_http_only: true, routes: routes.length, viewports: views.map(x => x[0]), pages: [], fail: [], owner_media: [] };
 for (const [name, file, expected] of [
-  ['home_original','apps/web/public/evidence/hero/owner-luxury-airflow-20261010.png','56704487b748269038168c1cb64f74b4415054e61a2e73b3e9a6f2eb002f83ee'],
+  ['home_calm_640','apps/web/public/evidence/hero/home-owner-editorial-640.webp','43d548fc97e5d1e401573d4e29542d6302fec219727f964193d4353c564d2f61'],
+  ['home_calm_1100','apps/web/public/evidence/hero/home-owner-editorial-1100.webp','3a0744be0b0669593fb18199cdc17df4915626ae845451a58da7ee2528e1be5b'],
+  ['home_calm_1672','apps/web/public/evidence/hero/home-owner-editorial-1672.webp','9188163c8add06b69d6157b034ddb9927c62a3e04a5bd2470983612d72924a50'],
+  ['services_owner_640','apps/web/public/evidence/hero/services-owner-editorial-640.webp','f86045ef038c95c93ed8c7968c19a149cc1b822b0495fa94a9b40da43c0a3e6f'],
+  ['services_owner_1100','apps/web/public/evidence/hero/services-owner-editorial-1100.webp','e9e9e51c2a5b390f94d45880082a8fc63a34165c3e575677c809889d998d4aa5'],
+  ['services_owner_1774','apps/web/public/evidence/hero/services-owner-editorial-1774.webp','b4c95b0a5a17a011f8adf6dc7f635d7c68c8222281cf0377e9637fb1552f25ca'],
+  ['home_previous_original','apps/web/public/evidence/hero/owner-luxury-airflow-20261010.png','56704487b748269038168c1cb64f74b4415054e61a2e73b3e9a6f2eb002f83ee'],
   ['ponsse_letter','apps/web/public/evidence/karelia/ponsse-letter-20220405.png','67287d0c52b42391a9e4e8ff105b779093b64b3cf5e2ddb3897218f69848f886'],
   ['ponsse_portrait','apps/web/public/evidence/karelia/p-teittinen-original.jpg','73376f20193c18e4d99ba148df98ae21ec69988f5e372db72edc295a3b964d95'],
 ]) {
@@ -96,40 +102,40 @@ try {
         entry.broken_images = await page.evaluate(() => [...document.images].filter(img => !img.complete || !img.naturalWidth).map(img => img.getAttribute('src')));
         entry.page_errors = pageErrors;
         if (id === 'home') {
-          const ownerImage = report.owner_media[0].status === 'EXACT';
+          const expectedHero = '/evidence/hero/home-owner-editorial-1672.webp';
           const actualHero = await page.locator('.hero-engineering__photo').getAttribute('src');
-          const expectedHero = ownerImage ? '/evidence/hero/owner-luxury-airflow-20261010.png' : '/evidence/hero/ductwork-editorial-v43.webp';
-          if (actualHero !== expectedHero) report.fail.push({route,view,reason:'Owner hero source does not match media gate',expectedHero,actualHero});
+          if (actualHero !== expectedHero) report.fail.push({route,view,reason:'Latest Owner calm HERO source mismatch',expectedHero,actualHero});
           const optical = await page.evaluate(() => {
-            const grid = document.querySelector('.home-solution .solution-grid');
-            const diagram = document.querySelector('.home-solution .solution-diagram');
-            const copy = document.querySelector('.home-solution .section-copy');
-            const g = grid?.getBoundingClientRect(), d = diagram?.getBoundingClientRect(), c = copy?.getBoundingClientRect();
+            const image = document.querySelector('.home-hero--calm-editorial .hero-engineering__photo');
+            const photo = document.querySelector('.home-hero--calm-editorial .hero-engineering');
+            const copy = document.querySelector('.home-hero--calm-editorial .home-hero__copy');
+            const strip = document.querySelector('.home-hero--calm-editorial .object-ribbon');
+            const inline = document.querySelector('.home-consultant-inline');
+            const fixed = document.querySelector('.consultant-launcher');
+            const rect = el => el?.getBoundingClientRect();
+            const p = rect(photo),c=rect(copy),r=rect(strip);
             return {
-              grid_top:g?.top,grid_bottom:g?.bottom,
-              diagram_top:d?.top,diagram_bottom:d?.bottom,diagram_left:d?.left,diagram_right:d?.right,
-              copy_right:c?.right,
-              overlay_display:diagram && getComputedStyle(diagram,'::before').display,
-              diagram_object_fit:diagram && getComputedStyle(diagram.querySelector('img')).objectFit,
-              label_count:diagram?.querySelectorAll('.solution-overlay-label').length,
-              label_visible:diagram && getComputedStyle(diagram.querySelector('.solution-overlay-labels')).display !== 'none',
+              natural_width:image?.naturalWidth??0,photo_fit:image?getComputedStyle(image).objectFit:null,
+              photo_left:p?.left??0,photo_right:p?.right??0,photo_top:p?.top??0,photo_bottom:p?.bottom??0,
+              copy_left:c?.left??0,copy_top:c?.top??0,copy_right:c?.right??0,copy_bottom:c?.bottom??0,
+              strip_top:r?.top??0,inline_visible:inline?getComputedStyle(inline).display!=='none':false,
+              floating_visible:fixed?getComputedStyle(fixed).display!=='none':false,
+              diagram_count:document.querySelectorAll('.home-solution .solution-diagram,.home-solution .solution-mobile-pair').length,
+              process_stages:document.querySelectorAll('.home-solution .process-strip > div').length,
             };
           });
-          const mobilePanels = await page.locator('.solution-mobile-pair__panel').count();
-          const mobilePairVisible = await page.locator('.solution-mobile-pair').isVisible();
-          const desktopIntegrated = width <= 1100 || (
-            optical.diagram_left >= optical.copy_right - 26 &&
-            Math.abs(optical.diagram_top - optical.grid_top) <= 2 &&
-            Math.abs(optical.diagram_bottom - optical.grid_bottom) <= 2 &&
-            optical.diagram_right >= width - 2 &&
-            optical.diagram_object_fit === 'cover' &&
-            optical.overlay_display !== 'none' &&
-            optical.label_count === 2 && optical.label_visible
-          );
-          if ((width > 760 && !desktopIntegrated) ||
-              (width <= 760 && (mobilePanels !== 2 || !mobilePairVisible))) {
-            report.fail.push({ route, view, reason: 'Owner full-height HVAC scene + safe labels', optical, mobilePanels, mobilePairVisible });
-          }
+          const isMobile = width <= 760;
+          const isTablet = width > 760 && width <= 1100;
+          const photoBeforeCopy = optical.photo_bottom <= optical.copy_top + 3;
+          const desktopColumns = optical.copy_right <= optical.photo_left + 3 && optical.photo_right >= width*.8;
+          const ownerScenePass = optical.natural_width > 0 &&
+            optical.diagram_count === 0 && optical.process_stages === 4 &&
+            (isMobile || isTablet ?
+              (optical.photo_fit === 'contain' && photoBeforeCopy) :
+              (optical.photo_fit === 'cover' && desktopColumns)) &&
+            (!isMobile || (optical.inline_visible && !optical.floating_visible &&
+             optical.strip_top >= optical.copy_bottom - 2));
+          if (!ownerScenePass) report.fail.push({route,view,reason:'Calm Owner HERO scene/adaptation or consultant-overlap contract',optical});
           const recognition = page.locator('.home-ponsse');
           const orderCorrect = await page.evaluate(() => {
             const section = document.querySelector('.home-ponsse');
@@ -186,9 +192,26 @@ try {
           }
         }
         if (id === 'services') {
-          const ducts = await page.locator('.services-editorial__image img[src="/evidence/hero/engineering-ductwork.jpg"]').count();
-          const wrong = await page.locator('.services-editorial__image img[src="/evidence/hero/hiend-engineering-visual-owner-v43.webp"]').count();
-          if (ducts !== 1 || wrong) report.fail.push({ route, view, reason: 'Owner services photo assignment', ducts, wrong });
+
+          const editorial = page.locator('.services-hero__backdrop img[src="/evidence/hero/services-owner-editorial-1774.webp"]');
+          const wrong = await page.locator('.services-hero img[src="/evidence/hero/engineering-ductwork.jpg"]').count();
+          const servicesOptical = await page.evaluate(() => {
+            const pic = document.querySelector('.services-hero__backdrop img');
+            const intro = document.querySelector('.services-hero__intro');
+            const rect = e => e?.getBoundingClientRect();
+            const p=rect(pic),t=rect(intro);
+            return {natural_width:pic?.naturalWidth??0,object_fit:pic?getComputedStyle(pic).objectFit:null,
+              photo_top:p?.top??0,intro_bottom:t?.bottom??0,
+              inline_visible:getComputedStyle(document.querySelector('.services-consultant-inline')).display!=='none',
+              floating_visible:getComputedStyle(document.querySelector('.consultant-launcher')).display!=='none'};
+          });
+          const serviceMobile = width<=760;
+          if (await editorial.count()!==1 || wrong || !servicesOptical.natural_width ||
+              (serviceMobile && (servicesOptical.object_fit!=='contain' ||
+               servicesOptical.photo_top < servicesOptical.intro_bottom-3 ||
+               !servicesOptical.inline_visible || servicesOptical.floating_visible))) {
+            report.fail.push({route,view,reason:'Owner Services architectural scene and mobile placement',wrong,servicesOptical});
+          }
         }
         if (id === 'ventilation') {
           const architectural = await page.locator('.service-premium__visual img[src="/evidence/hero/hiend-engineering-visual-owner-v43.webp"]').count();
@@ -277,9 +300,10 @@ try {
         if (id === 'home' && view === 'mobile_390') {
           await page.locator('.mobile-menu summary').click();
           await page.screenshot({ path: path.join(root, 'mobile_390_navigation.png'), animations: 'disabled' });
+          await page.locator('.mobile-menu summary').click();
         }
         if (id === 'home' && (view === 'desktop_1440' || view === 'mobile_390')) {
-          await page.locator('.consultant-launcher').click();
+          await page.locator(view === 'mobile_390' ? '.home-consultant-inline' : '.consultant-launcher').click();
           await page.locator('[data-consultant-dialog]').waitFor({ state: 'visible' });
           await page.screenshot({ path: path.join(root, 'consultant_open__' + view + '.png'), animations: 'disabled' });
           await page.locator('[data-consultant-dialog] [data-dialog-close]').click();
