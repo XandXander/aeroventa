@@ -3655,3 +3655,15 @@ html::-webkit-scrollbar-thumb:hover {background:#7c93a2;}
   .covid-current__hero-grid p{overflow-wrap:break-word}
   .support-page .conversion-close h2{max-width:100%;font-size:clamp(1.85rem,8.2vw,2.15rem);line-height:1.11;letter-spacing:-.03em;overflow-wrap:anywhere}
 }
+
+
+/* Optical QA 2026-10-12: About hero text must not be baseline-shifted under a huge photo. */
+.about-premium .about-hero__grid{align-items:start}
+.about-premium .about-hero__team img{height:clamp(250px,28vw,430px);object-fit:cover;object-position:center 53%}
+@media(min-width:761px) and (max-width:1100px){
+ .about-premium .about-hero__team img{height:clamp(300px,45vw,420px)}
+}
+@media(max-width:760px){
+ .about-premium .about-hero h1{font-size:clamp(1.96rem,7.9vw,2.65rem);line-height:1.1;letter-spacing:-.048em;text-wrap:balance}
+ .about-premium .about-hero__team img{height:min(63vw,285px);object-position:center 55%;max-height:285px}
+}
