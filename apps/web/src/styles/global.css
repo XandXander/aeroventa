@@ -3644,3 +3644,14 @@ html::-webkit-scrollbar-thumb:hover {background:#7c93a2;}
 .home-hero--owner-airflow .hero-engineering{aspect-ratio:6/5}
 .objects-hero h1,.object-detail__hero h1,.engagement-hero h1,.portfolio-hero h1,.practice-hero h1,.case-detail-hero h1{font-size:clamp(1.92rem,8.3vw,2.15rem)}
 }
+
+
+/* Chromium 144-screen audit: 320px COVID and vacancies overflow repair. Scoped, no horizontal clipping. */
+@media(max-width:360px){
+  .covid-current__hero-grid{grid-template-columns:minmax(0,1fr);min-width:0}
+  .covid-current__hero-grid>*{min-width:0;max-width:100%}
+  .covid-current__hero h1{font-size:clamp(2rem,9.1vw,2.5rem);line-height:1.05;overflow-wrap:anywhere;letter-spacing:-.047em}
+  .covid-current__hero-grid .home-kicker,
+  .covid-current__hero-grid p{overflow-wrap:break-word}
+  .support-page .conversion-close h2{max-width:100%;font-size:clamp(1.85rem,8.2vw,2.15rem);line-height:1.11;letter-spacing:-.03em;overflow-wrap:anywhere}
+}
