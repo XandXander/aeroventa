@@ -163,6 +163,21 @@ try {
           const opened = await page.locator('dialog[open]').count();
           if (opened) report.fail.push({route,view,reason:'Surprise modal on initial page load',opened});
         }
+        if (id === 'about') {
+          const optical = await page.evaluate(() => {
+            const h = document.querySelector('.about-hero h1')?.getBoundingClientRect();
+            const i = document.querySelector('.about-hero__team img');
+            const p = i?.getBoundingClientRect();
+            const l = document.querySelector('.consultant-launcher')?.getBoundingClientRect();
+            const overlaps = !!p && !!l && Math.max(p.left,l.left)<Math.min(p.right,l.right) &&
+              Math.max(p.top,l.top)<Math.min(p.bottom,l.bottom);
+            return {headingTop:h?.top,photoWidth:i?.naturalWidth,photoHeight:p?.height,photoBottom:p?.bottom,launcherOverlap:overlaps};
+          });
+          if (!optical.photoWidth || optical.headingTop == null || optical.headingTop >= height*.55 ||
+              (width<=760 && (optical.photoHeight > 320 || optical.launcherOverlap))) {
+            report.fail.push({route,view,reason:'About first-fold heading and documentary team photo must be visible without consultant obscuring the image',optical});
+          }
+        }
         if (id === 'portfolio') {
           const cards = page.locator('.portfolio-card');
           const count = await cards.count();
