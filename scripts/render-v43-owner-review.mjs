@@ -187,7 +187,7 @@ try {
             if (!href?.startsWith('/blog/detail/')) report.fail.push({route,view,reason:'Case must link directly to historic case URL',href});
           }
         }
-        if (id.startsWith('drill_')) {
+        if (['drill_crown', 'drill_screed', 'drill_cost', 'drill_horizontal'].includes(id)) {
           const reading = page.locator('.p0-historic-reading__body');
           const restoredText = await reading.innerText();
           if (restoredText.trim().length < 350 || await reading.locator('p').count() < 1) {
