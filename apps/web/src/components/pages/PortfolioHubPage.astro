@@ -4,12 +4,12 @@ interface Props { content: ContentRecord; fixture: boolean; }
 const { content } = Astro.props;
 
 const cases = [
-  { index:'01', title:'7 PARK', location:'Павловск, Ленинградская область', scope:'7 домов · монтаж приточно-вытяжной вентиляции', detail:'18.11.2020 — 10.12.2020', href:'/blog/detail/kak-my-sdali-7-domov/', kind:'Новостройки' },
-  { index:'02', title:'ЖК «Леонтьевский Мыс»', location:'Санкт-Петербург', scope:'Ресторан · приточно-вытяжная вентиляция + оборудование', detail:'Исторический срок: 2 недели', href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/', kind:'Рестораны' },
-  { index:'03', title:'НТФФ «Полисан»', location:'Санкт-Петербург, ул. Салова, 72', scope:'Фармацевтический объект · вентиляция + оборудование', detail:'Исторический период: 06.2017 — 06.2018', href:'/blog/detail/ntff-polisan/', kind:'Производство' },
-  { index:'04', title:'Маршала Жукова', location:'Санкт-Петербург', scope:'Квартира · приточно-вытяжная вентиляция', detail:'Исторический источник: ~100 м.п., 5 дней', href:'/blog/detail/kvartira-na-zhukova/', kind:'Квартиры' },
-  { index:'05', title:'Питкяранта / Карелия', location:'Республика Карелия', scope:'Сервисно-образовательный центр · вентиляция + оборудование', detail:'Исторический срок: 2 недели', href:'/blog/detail/montazh-ventilyatsii-v-karelii/', kind:'География' },
-  { index:'06', title:'Римского-Корсакова, 3', location:'Санкт-Петербург', scope:'Кафе · приточно-вытяжная вентиляция + оборудование', detail:'Исторический источник: 200 м², 5 дней', href:'/blog/detail/kafe-rimskogo-korsakova-3/', kind:'Рестораны' }
+  { index:'01', title:'7 PARK', image:'/evidence/7park/object-exterior-day.jpg', location:'Павловск, Санкт-Петербург', scope:'7 домов · монтаж приточно-вытяжной вентиляции', detail:'18.11.2020 — 10.12.2020', href:'/blog/detail/kak-my-sdali-7-domov/', kind:'Новостройки' },
+  { index:'02', title:'Ресторан в ЖК «Леонтьевский Мыс»', image:'/evidence/leont/owner-cover-v43.webp', location:'Санкт-Петербург', scope:'Ресторан · приточно-вытяжная вентиляция + оборудование', detail:'Исторический срок: 2 недели', href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/', kind:'Рестораны' },
+  { index:'03', title:'НТФФ «Полисан»', image:'/evidence/polisan/owner-cover-v43.webp', location:'Санкт-Петербург, ул. Салова, 72', scope:'Фармацевтический объект · вентиляция + оборудование', detail:'Исторический период: 06.2017 — 06.2018', href:'/blog/detail/ntff-polisan/', kind:'Производство' },
+  { index:'04', title:'Квартира на Маршала Жукова', image:'/evidence/zhukov/owner-cover-v43.webp', location:'Санкт-Петербург', scope:'Квартира · приточно-вытяжная вентиляция', detail:'Исторический источник: ~100 м.п., 5 дней', href:'/blog/detail/kvartira-na-zhukova/', kind:'Квартиры' },
+  { index:'05', title:'PONSSE — Питкяранта', image:'/evidence/karelia/owner-cover-v43.webp', location:'Республика Карелия', scope:'Сервисно-образовательный центр · вентиляция + оборудование', detail:'Исторический срок: 2 недели', href:'/blog/detail/montazh-ventilyatsii-v-karelii/', kind:'География' },
+  { index:'06', title:'Кафе на Римского-Корсакова, 3', image:'/evidence/cafe/owner-cover-v43.webp', location:'Санкт-Петербург', scope:'Кафе · приточно-вытяжная вентиляция + оборудование', detail:'Исторический источник: 200 м², 5 дней', href:'/blog/detail/kafe-rimskogo-korsakova-3/', kind:'Рестораны' }
 ];
 ---
 
@@ -17,15 +17,14 @@ const cases = [
   <header class="portfolio-hero">
     <div class="home-shell portfolio-hero__grid">
       <div>
-        <p class="home-kicker">Раздел доказательств</p>
+        <p class="home-kicker">Выполненные работы AEROVENTA</p>
         <h1>Реальные объекты и выполненные работы</h1>
       </div>
       <div>
         <p class="portfolio-hero__lede">
-          Кейсы здесь нужны не для декора. Они показывают тип объекта, нашу роль, масштаб,
-          исторические сроки там, где они подтверждены, и то, какую задачу можно сравнить со своей.
+          Собрали жилые, коммерческие и производственные объекты: что монтировали, какой был объём работ и какие особенности пришлось учитывать.
         </p>
-        <p class="portfolio-hero__note">Без выдуманных логотипов клиентов, неподтверждённых объёмов и сгенерированных изображений вместо доказательств.</p>
+        
       </div>
     </div>
   </header>
@@ -38,17 +37,14 @@ const cases = [
         <p class="portfolio-feature__sub">Павловск · 7 домов · приточно-вытяжная вентиляция</p>
         <a class="button button--case" href="/blog/detail/kak-my-sdali-7-domov/">Открыть кейс →</a>
       </div>
-      <div class="portfolio-feature__visual" aria-hidden="true">
-        <div class="portfolio-buildings">
-          <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-        </div>
-        <div class="portfolio-air portfolio-air--orange">Приток</div>
-        <div class="portfolio-air portfolio-air--blue">Вытяжка</div>
-      </div>
+      <figure class="portfolio-feature__visual portfolio-feature__visual--photo">
+        <img src="/evidence/7park/object-exterior-day.jpg" alt="Жилые дома квартала 7 PARK в Павловске" width="800" height="450" loading="lazy" />
+        <figcaption>7 PARK · жилой квартал в Павловске</figcaption>
+      </figure>
       <dl class="case-facts">
         <div><dt>Объём</dt><dd>7 домов</dd></div>
         <div><dt>Период</dt><dd>18.11.2020 — 10.12.2020</dd></div>
-        <div><dt>Локация</dt><dd>Павловск, Ленинградская область</dd></div>
+        <div><dt>Локация</dt><dd>Павловск, Санкт-Петербург</dd></div>
         <div><dt>Роль</dt><dd>Монтаж приточно-вытяжной вентиляции</dd></div>
       </dl>
     </div>
@@ -59,12 +55,14 @@ const cases = [
       <div class="section-heading">
         <div>
           <p class="section-index">02 / Сравнить по объекту</p>
-          <h2 id="cases-title">Ищите не «похожую картинку», а похожие ограничения.</h2>
+          <h2 id="cases-title">Найдите опыт работы на похожем объекте.</h2>
         </div>
       </div>
       <div class="portfolio-grid">
         {cases.map((item) => (
           <a href={item.href} class="portfolio-card">
+            <div class="portfolio-card__media"><img src={item.image} width="800" height="520" alt={`Реальные фотографии работ: ${item.title}`} loading="lazy" decoding="async" /></div>
+            <div class="portfolio-card__body">
             <div class="portfolio-card__top"><span>{item.index}</span><b>{item.kind}</b></div>
             <div>
               <p>{item.location}</p>
@@ -72,7 +70,8 @@ const cases = [
               <strong>{item.scope}</strong>
             </div>
             <div class="portfolio-card__bottom">
-              <span>{item.detail}</span><b>Открыть →</b>
+              <span>{item.detail}</span><b>Смотреть работы →</b>
+            </div>
             </div>
           </a>
         ))}
@@ -84,13 +83,13 @@ const cases = [
     <div class="home-shell portfolio-method__grid">
       <div>
         <p class="section-index section-index--orange">03 / Как читаем кейс</p>
-        <h2 id="portfolio-method-title">Задача → ограничения → наша роль → результат.</h2>
+        <h2 id="portfolio-method-title">Задача → особенности объекта → наша роль → результат.</h2>
       </div>
       <div class="portfolio-method__list">
         <div><span>01</span><p>Что было за объект и на какой стадии.</p></div>
         <div><span>02</span><p>Что реально входило в работу AEROVENTA.</p></div>
-        <div><span>03</span><p>Какие факты подтверждены старым источником или Owner.</p></div>
-        <div><span>04</span><p>Чего кейс не доказывает и что не надо переносить на другой объект автоматически.</p></div>
+        <div><span>03</span><p>Какие реальные фотографии показывают объект и монтаж.</p></div>
+        <div><span>04</span><p>Какие условия монтажа и объём работ отличаются от вашего объекта.</p></div>
       </div>
     </div>
   </section>
@@ -99,7 +98,7 @@ const cases = [
     <div class="home-shell">
       <p class="section-index section-index--orange">04 / Ваш объект</p>
       <h2 id="portfolio-close-title">Не нашли точного аналога — это нормально.</h2>
-      <p class="portfolio-close-copy">Пришлите проект или опишите задачу: сравнивать надо не по названию объекта, а по составу монтажных работ и ограничениям.</p>
+      <p class="portfolio-close-copy">Пришлите проект или опишите задачу: сравнивать надо не по названию объекта, а по составу монтажных работ и особенностям исполнения.</p>
       <div class="home-actions">
         <a class="button button--light" href="/montazh-po-proektu/">Передать проект →</a>
         <a class="button button--light" href="/contact/?intent=budget">Описать объект →</a>

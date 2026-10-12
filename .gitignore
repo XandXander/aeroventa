@@ -26,3 +26,8 @@ migration/legacy-crawl/
 IMPLEMENTATION_STATUS_T2.json
 IMPLEMENTATION_REPORT_T2.md
 SHA256SUMS.txt
+
+# Reproducible optimized presentation variants, generated from immutable Owner PNG during build
+apps/web/public/evidence/hero/owner-luxury-airflow-640.webp
+apps/web/public/evidence/hero/owner-luxury-airflow-1100.webp
+apps/web/public/evidence/hero/owner-luxury-airflow-1774.webp

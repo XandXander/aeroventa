@@ -8,7 +8,11 @@ interface Props {
 const { pagePath = '' } = Astro.props;
 ---
 
-<dialog class="experience-dialog experience-dialog--consultant" data-consultant-dialog aria-labelledby="consultant-title">
+<a class="consultant-launcher" href="/contact/" data-consultant-open data-source="persistent_launcher" aria-haspopup="dialog" aria-controls="aeroventa-consultant-dialog" aria-label="Открыть инженерного консультанта">
+  <span class="consultant-launcher__symbol" aria-hidden="true">↗</span>
+  <span class="consultant-launcher__label">Инженерный консультант</span>
+</a>
+<dialog id="aeroventa-consultant-dialog" class="experience-dialog experience-dialog--consultant" data-consultant-dialog aria-labelledby="consultant-title">
   <div class="experience-dialog__shell">
     <div class="experience-dialog__head">
       <div>
@@ -18,10 +22,28 @@ const { pagePath = '' } = Astro.props;
       <button type="button" class="dialog-close" data-dialog-close aria-label="Закрыть консультанта">×</button>
     </div>
 
-    <p class="experience-dialog__lede">
-      Короткий разбор без выдуманной цены и без подмены проектирования. Ответ строится только из публичных правил AEROVENTA.
-    </p>
+    <section class="consultant-conversation" aria-label="Диалог с навигатором AEROVENTA">
+      <ol class="consultant-conversation__history" data-consultant-chat-messages aria-live="polite" aria-relevant="additions">
+        <li class="consultant-message consultant-message--guide">
+          <span class="consultant-message__author">AEROVENTA / Навигатор</span>
+          <p>Опишите объект и вопрос. Подскажу подходящую страницу и какие исходные данные нужны. Без выдуманной сметы и инженерных обещаний.</p>
+        </li>
+      </ol>
+      <form class="consultant-conversation__composer" data-consultant-chat-form>
+        <label for="consultant-chat-question">Ваш вопрос</label>
+        <div class="consultant-conversation__input">
+          <textarea id="consultant-chat-question" name="question" maxlength="800" rows="2" placeholder="Например: есть проект вентиляции ресторана, нужен монтаж" required></textarea>
+          <button type="submit" aria-label="Отправить вопрос">→</button>
+        </div>
+      </form>
+      <div class="consultant-conversation__foot">
+        <span>Навигация по опубликованным материалам, без вызова AI-модели.</span>
+        <button type="button" data-consultant-chat-handoff>Передать вопрос специалисту →</button>
+      </div>
+    </section>
 
+    <details class="consultant-structured">
+      <summary>Уточнить параметры объекта <span>необязательно</span></summary>
     <form class="consultant-form" data-consultant-form>
       <div class="consultant-form__grid">
         <div class="field">
@@ -101,6 +123,7 @@ const { pagePath = '' } = Astro.props;
         <button class="button button--primary" type="button" data-consultant-handoff>Передать контекст человеку →</button>
       </div>
     </section>
+    </details>
   </div>
 </dialog>
 
@@ -124,6 +147,7 @@ const { pagePath = '' } = Astro.props;
   const consultantForm = document.querySelector('[data-consultant-form]');
   const consultantResult = document.querySelector('[data-consultant-result]');
   let consultantSummary = '';
+  const lastDialogTrigger = new WeakMap();
 
   const track = (name, payload = {}) => window.aeroventaTrack?.(name, payload);
 
@@ -152,6 +176,7 @@ const { pagePath = '' } = Astro.props;
     const consultantOpen = event.target.closest('[data-consultant-open]');
     if (consultantOpen) {
       event.preventDefault();
+      lastDialogTrigger.set(consultantDialog, consultantOpen);
       openDialog(consultantDialog);
       track('consultant_open', { source: consultantOpen.dataset.source || 'site_navigation' });
       return;
@@ -164,6 +189,7 @@ const { pagePath = '' } = Astro.props;
         intent: contactOpen.dataset.contactIntent || '',
         projectStatus: contactOpen.dataset.projectStatus || '',
       });
+      lastDialogTrigger.set(contactDialog, contactOpen);
       openDialog(contactDialog);
       track('contact_form_open', {
         source: contactOpen.dataset.source || 'site_cta',
@@ -176,6 +202,10 @@ const { pagePath = '' } = Astro.props;
     dialog?.addEventListener('click', (event) => {
       if (event.target === dialog) closeDialog(dialog);
     });
+    dialog?.addEventListener('close', () => {
+      const opener = lastDialogTrigger.get(dialog);
+      if (opener?.isConnected) opener.focus({ preventScroll: true });
+    });
   }
 
   const routeMap = {
@@ -187,7 +217,7 @@ const { pagePath = '' } = Astro.props;
     not_ready: {
       href: '/obekt-bez-gotovogo-proekta/',
       title: 'Сначала определить достаточные исходные данные.',
-      copy: 'Без готового проекта разумно зафиксировать объект, задачу и ограничения, а затем определить, чего не хватает для корректной оценки.',
+      copy: 'Без готового проекта разумно зафиксировать объект, задачу и исходные условия, а затем определить, чего не хватает для корректной оценки.',
     },
     unclear: {
       href: '/faq/',
@@ -368,17 +398,103 @@ const { pagePath = '' } = Astro.props;
     }
   }
 
+  // Dialogue-first public-content routing. No external inference or simulated model wait state.
+  const chatForm = consultantDialog?.querySelector('[data-consultant-chat-form]');
+  const chatHistory = consultantDialog?.querySelector('[data-consultant-chat-messages]');
+  const chatInput = chatForm?.elements?.question;
+  let lastChatQuestion = '';
+  const safeChatRoute = (input) => {
+    if (/нет проекта|без проекта|проект(а)? нет|не готов(ый|а)|нет чертеж/i.test(input)) {
+      return ['/obekt-bez-gotovogo-proekta/', 'Какие исходные данные нужны до оценки монтажа',
+        'Начните с имеющихся планов, фото и описания объекта.'];
+    }
+    if (/есть проект|готов(ый|ая|ого) проект|по проекту|рабоч(ая|ий) документац|спецификац/i.test(input)) {
+      return ['/montazh-po-proektu/', 'Монтаж по готовому проекту',
+        'Пришлите рабочую документацию и сформулируйте границы монтажных работ.'];
+    }
+    if (/ресторан|кафе|кухн|вытяжк.*общепит/i.test(input)) {
+      return ['/obekty/restorany-i-kafe/', 'Вентиляция ресторанов и кафе',
+        'Состав монтажа зависит от помещений, трасс, оборудования и стадии отделки.'];
+    }
+    if (/новострой|жил(ой|ого) комплекс|многоквартир|7 park|7 парк/i.test(input)) {
+      return ['/obekty/novostroyki-i-zhilye-kompleksy/', 'Монтаж в новостройках и жилых комплексах',
+        'Посмотрите подтверждённый кейс 7 PARK и особенности повторяемых объёмов.'];
+    }
+    if (/стоимост|сколько стоит|смет|цен|расцен/i.test(input)) {
+      return ['/faq/', 'Что влияет на расчёт стоимости',
+        'Точную цену без проекта и исходных данных не обещаем. Сначала определим состав работ.'];
+    }
+    return ['/montazh-ventiliacii/', 'Монтаж вентиляции — состав работ и примеры',
+      'Если вопрос требует инженерного решения, передайте описание напрямую специалисту.'];
+  };
+  const addChatMessage = (role, title, body, route) => {
+    if (!chatHistory) return;
+    const item = document.createElement('li');
+    item.className = 'consultant-message consultant-message--' + role;
+    const author = document.createElement('span');
+    author.className = 'consultant-message__author';
+    author.textContent = title;
+    const text = document.createElement('p');
+    text.textContent = body;
+    item.append(author, text);
+    if (route) {
+      const link = document.createElement('a');
+      link.href = route;
+      link.textContent = 'Открыть раздел →';
+      item.append(link);
+    }
+    chatHistory.append(item);
+    // Keep bounded recent history without losing the opening explanation.
+    while (chatHistory.children.length > 11) chatHistory.children[1]?.remove();
+    chatHistory.scrollTop = chatHistory.scrollHeight;
+  };
+  chatForm?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (!chatForm.reportValidity()) return;
+    const question = String(chatInput?.value || '').trim().slice(0, 800);
+    if (!question) return;
+    lastChatQuestion = question;
+    addChatMessage('visitor', 'Ваш вопрос', question);
+    const [route, title, explanation] = safeChatRoute(question);
+    addChatMessage('guide', 'AEROVENTA / Навигатор', title + '. ' + explanation, route);
+    consultantSummary = 'Вопрос посетителя: ' + question + '\nРекомендованный раздел: ' + route;
+    chatInput.value = '';
+    chatInput.focus();
+    track('consultant_relevant_link', { target: route, source: 'public_content_guide' });
+  });
+  chatInput?.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) {
+      event.preventDefault();
+      chatForm?.requestSubmit();
+    }
+  });
+  consultantDialog?.querySelector('[data-consultant-chat-handoff]')?.addEventListener('click', () => {
+    hydrateContactContext(contactDialog, {
+      consultantSummary: consultantSummary || 'Переход из публичного навигатора AEROVENTA',
+      task: lastChatQuestion,
+    });
+    closeDialog(consultantDialog);
+    openDialog(contactDialog);
+    track('consultant_handoff', { source: 'public_content_guide' });
+    track('contact_form_open', { source: 'consultant' });
+  });
+
   document.querySelectorAll('[data-contact-form]').forEach((form) => {
     hydrateContactContext(form.closest('dialog') || document);
+    form.addEventListener('focusin', () => {
+      const started = form.elements.started_at;
+      if (started && !started.value) started.value = String(Date.now());
+    }, { once: true });
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
+      if (form.dataset.submitting === 'true') return;
 
       const contact = form.elements.contact;
       const contactValue = String(contact?.value || '').trim();
       const digits = contactValue.replace(/\D/g, '');
       const emailLike = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactValue);
-      const phoneLike = digits.length >= 10;
+      const phoneLike = digits.length >= 10 && digits.length <= 15 && /^\+?[0-9 ()\t.\-]+$/.test(contactValue);
 
       contact?.setCustomValidity(emailLike || phoneLike ? '' : 'Укажите корректный телефон или e-mail.');
       if (!form.reportValidity()) return;
@@ -386,10 +502,14 @@ const { pagePath = '' } = Astro.props;
       hydrateContactContext(form.closest('dialog') || document);
 
       const formData = new FormData(form);
-      const payload = Object.fromEntries(formData.entries());
+      const payload = {
+        ...Object.fromEntries(formData.entries()),
+        consent: formData.has('consent'),
+        started_at: Number(formData.get('started_at') || 0),
+      };
       const status = form.querySelector('[data-form-status]');
       const submit = form.querySelector('button[type="submit"]');
-      const endpoint = form.dataset.leadEndpoint || '';
+      const endpoint = form.dataset.leadEndpoint || '/api/lead.php';
 
       track('contact_form_submit', {
         source: location.pathname,
@@ -423,6 +543,7 @@ const { pagePath = '' } = Astro.props;
         return;
       }
 
+      form.dataset.submitting = 'true';
       submit.disabled = true;
       submit.setAttribute('aria-busy', 'true');
       status.textContent = 'Передаём запрос…';
@@ -430,14 +551,17 @@ const { pagePath = '' } = Astro.props;
       try {
         const response = await fetch(endpoint, {
           method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          credentials: 'omit',
+          headers: { 'content-type': 'application/json', 'accept': 'application/json' },
+          credentials: 'same-origin',
+          cache: 'no-store',
           body: JSON.stringify(payload),
         });
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const result = await response.json().catch(() => null);
+        if (!response.ok || result?.ok !== true) throw new Error('server_rejected');
 
-        status.textContent = 'Запрос передан. Контакт сохранён только для ответа по этой задаче.';
+        status.textContent = 'Запрос принят к отправке. Доставка письма ещё не подтверждена.';
         form.reset();
+        if (form.elements.started_at) form.elements.started_at.value = String(Date.now());
         hydrateContactContext(form.closest('dialog') || document);
         track('contact_form_success', { source: location.pathname });
         track('lead_success', { source: location.pathname });
@@ -450,6 +574,7 @@ const { pagePath = '' } = Astro.props;
         else status.append(message);
         track('contact_form_error', { source: location.pathname, outcome: 'network_or_server' });
       } finally {
+        form.dataset.submitting = 'false';
         submit.disabled = false;
         submit.removeAttribute('aria-busy');
       }

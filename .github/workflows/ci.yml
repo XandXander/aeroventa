@@ -26,6 +26,11 @@ jobs:
       - name: Install dependencies
         run: npm install --no-audit --no-fund
 
+      - name: Validate local PHP lead intake (mock mail, no outbound)
+        run: |
+          php -l apps/web/public/api/lead.php
+          python3 tests/test_lead_local.py
+
       - name: Generate route rules
         run: npm run generate:hosting-rules
 

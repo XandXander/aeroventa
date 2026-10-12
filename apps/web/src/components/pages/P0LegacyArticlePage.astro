@@ -1,5 +1,6 @@
 ---
 import type { ContentRecord } from '@/lib/types';
+import legacySources from '../../../../../migration/legacy-page-source-index.json';
 
 interface Props { content: ContentRecord; fixture: boolean; }
 const { content } = Astro.props;
@@ -18,6 +19,7 @@ type ArticleSpec = {
     items?: string[];
     note?: string;
   }>;
+  sourceObservations: { title: string; points: string[]; caution: string };
   historicalTitle: string;
   historicalText: string;
   related: Array<[string,string,string]>;
@@ -62,6 +64,16 @@ const specs: Record<string, ArticleSpec> = {
         'Учитывать арматуру, состояние керна и противоположную сторону проходки.'
       ]}
     ],
+    sourceObservations: {
+          "title": "Что сохранилось в первоначальном полевом описании",
+          "points": [
+                "Три прямо описанные причины: недостаточная подача воды и шлам, отколовшийся керн, застрявший фрагмент арматуры.",
+                "Заводской обратный молоток в статье описан как приспособление со стержнем, резьбовым соединением с коронкой, подвижным грузом и упором. Это описание принципа, не руководство по сборке.",
+                "Авторы рассказали об историческом полевом способе со стяжным винтом, гайкой и удлинителем; позднее его заменили заводским съёмником.",
+                "Основной неизменный вывод текста: остановить привод, разобраться с причиной, применять предусмотренную для установки процедуру освобождения и проверять свободный ход перед продолжением."
+          ],
+          "caution": "Исторические самодельные ударные приспособления не рекомендованы для повторения. Применяйте инструкции изготовителя, изоляцию энергии и подходящий заводской инструмент."
+    },
     historicalTitle: 'Полевой приём из старой статьи — сохраняем как историю, не как рекомендацию.',
     historicalText: 'В старой версии материала AEROVENTA подробно описывалось самодельное приспособление из стяжной шпильки и гайки — так выходили из ситуации до появления штатного съёмника. Этот фрагмент остаётся частью реального опыта, но не современной пошаговой рекомендацией: сегодня правильнее опираться на процедуру производителя и подходящий extractor.',
     related:[
@@ -105,9 +117,19 @@ const specs: Record<string, ArticleSpec> = {
         'Чертёж / точки проходок.',
         'Фото готовой отделки рядом.',
         'Доступ с обеих сторон.',
-        'Ограничения по воде, электричеству и времени работ.'
+        'Условия по воде, электричеству и времени работ.'
       ]}
     ],
+    sourceObservations: {
+          "title": "Подлинные условия объекта из первоначального фотоотчёта",
+          "points": [
+                "В описании фигурировали 290 мм общей толщины перекрытия: стяжка, минеральная вата и бетон; стяжка составляла около 4–5 см.",
+                "Стены уже были зашиты гипсокартоном: перед мокрыми работами на объекте защищали вертикальные поверхности.",
+                "Автор описывал особый случай сквозного крепления буровой стойки, поскольку стяжка не являлась достаточной основой для обычного анкера.",
+                "Верхний слой содержал армирующую сетку; после проходки были получены два отверстия под подающий и обратный стояки отопления."
+          ],
+          "caution": "Способ крепления и работа со слоистым перекрытием — описание одного объекта, а не универсальная инструкция."
+    },
     historicalTitle:'Что из старого материала не переносим.',
     historicalText:'Не возвращаем формулировку о «приоритетном направлении», старый рекламный призыв и универсальные утверждения про конкретный анкер. AEROVENTA сохраняет статью как инженерный архив и поисковый актив; отдельное алмазное бурение сегодня не является основной собственной услугой команды.',
     related:[
@@ -162,9 +184,19 @@ const specs: Record<string, ArticleSpec> = {
         'Высоту и доступ.',
         'Фото.',
         'Проект/чертёж, если отверстия относятся к вентиляции или другим инженерным системам.',
-        'Стадию отделки и ограничения действующего объекта.'
+        'Стадию отделки и особенности действующего объекта.'
       ]}
     ],
+    sourceObservations: {
+          "title": "Статьи расходов, описанные автором исходной публикации",
+          "points": [
+                "Износ корпуса алмазной коронки, восстановление режущих сегментов и техническое обслуживание буровой установки.",
+                "Расход крепежа: анкеры, шпильки и вспомогательная оснастка; обслуживание насоса и подшипников.",
+                "Транспортировка тяжёлой буровой установки и дополнительных компонентов, оплата труда специалиста и помощников.",
+                "Дополнительные факторы: диаметр, глубина, высота, прочность и неоднородность строительного основания."
+          ],
+          "caution": "Исторические интервалы обслуживания и стоимость оборудования не заменяют актуальные инструкции или коммерческую смету."
+    },
     historicalTitle:'Исторический контекст AEROVENTA.',
     historicalText:'Раньше AEROVENTA выполняла алмазное бурение собственной техникой, поэтому исходная статья опиралась на внутреннюю себестоимость: оснастку, сервис, крепёж, транспорт и труд. Сегодня прямое бурение не является основным направлением команды, но сама логика факторов цены остаётся полезной.',
     related:[
@@ -188,7 +220,7 @@ const specs: Record<string, ArticleSpec> = {
         'Какой воздуховод / оборудование / соединение проходит через стену.',
         'Фактическую точку и ось с обеих сторон.',
         'Толщину и материал стены.',
-        'Скрытые коммуникации и конструктивные ограничения.',
+        'Скрытые коммуникации и особенности конструкций.',
         'Что находится на фасадной или дальней стороне.',
         'Высоту, доступ и состояние отделки.'
       ]},
@@ -212,10 +244,20 @@ const specs: Record<string, ArticleSpec> = {
         'Диаметр/габарит вентиляционного соединения.',
         'Проект или план.',
         'Высоту и доступ.',
-        'Ограничения по отделке и режиму объекта.'
+        'Условия по отделке и режиму объекта.'
       ]},
       { index:'05', title:'Когда проходку надо считать вместе с вентиляцией', copy:'Если задача — не просто сделать отверстие, а установить приточную/вытяжную систему, точку и геометрию проходки лучше определять из вентиляционного решения. Тогда смежное бурение подчиняется трассе, а не наоборот.'}
     ],
+    sourceObservations: {
+          "title": "Точные сведения об исторической проходке под вентиляцию",
+          "points": [
+                "В старом фонде Санкт-Петербурга описывалась кирпичная стена толщиной более 70 см и коронка длиной 50 см.",
+                "Для конкретного объекта упоминались удлинение оснастки, подача воды и итоговое отверстие диаметром 110 мм.",
+                "Отдельно объяснялась геометрическая привязка оси отверстия к прямому выходу вентиляционного воздуховода.",
+                "Автор отмечал вероятность старых скрытых металлических включений в конструкциях."
+          ],
+          "caution": "Указанные значения — параметры одного описанного объекта, а не типовой диаметр, угол или способ бурения."
+    },
     historicalTitle:'Что не переносим из старого материала.',
     historicalText:'Не возвращаем старый прямой рекламный призыв, универсальные диаметры анкеров, режимы машины или обещание собственного бурового исполнения. Сохраняем реальный кейс, геометрическую логику и связь проходки с вентиляционным монтажом.',
     related:[
@@ -230,6 +272,20 @@ const specs: Record<string, ArticleSpec> = {
 
 const spec = specs[content.path];
 if (!spec) throw new Error(`P0 article spec is missing for ${content.path}`);
+
+// Historical content belongs to the current published page, not an external SEO-only document.
+// The source index is an archived text extract; never present it as byte-perfect original HTML.
+const legacyPage = legacySources.find(row => row.path === content.path);
+const legacyExtract = (legacyPage?.legacy_text_excerpt || '').trim();
+if (!legacyExtract) throw new Error(`Missing preserved legacy text for ${content.path}`);
+const sentences = legacyExtract.split(/(?<=[.!?])\s+(?=[А-ЯЁA-Z])/u).filter(Boolean);
+const legacyParagraphs: string[] = [];
+let paragraph = '';
+for (const sentence of sentences) {
+  if (paragraph.length > 370 && paragraph) { legacyParagraphs.push(paragraph.trim()); paragraph = ''; }
+  paragraph += (paragraph ? ' ' : '') + sentence;
+}
+if (paragraph) legacyParagraphs.push(paragraph.trim());
 ---
 
 <article class="p0-article">
@@ -240,9 +296,9 @@ if (!spec) throw new Error(`P0 article spec is missing for ${content.path}`);
         <h1>{content.h1}</h1>
       </div>
       <div>
-        <p class="p0-hero__signal">{spec.signal}</p>
+        <p class="p0-hero__signal">Инженерная практика · архив AEROVENTA</p>
         <p class="p0-hero__lede">{spec.lede}</p>
-        <div class="p0-source-note"><strong>Источник и граница:</strong> {spec.sourceNote}</div>
+        <p class="p0-source-note">{spec.sourceNote}</p>
       </div>
     </div>
   </header>
@@ -256,6 +312,25 @@ if (!spec) throw new Error(`P0 article spec is missing for ${content.path}`);
       </div>
     </div>
   </section>
+
+  {content.path === '/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/' && (
+    <section class="p0-authentic-photo home-section" aria-labelledby="p0-authentic-photo-title">
+      <div class="home-shell p0-authentic-photo__layout">
+        <figure>
+          <img src="/upload/medialibrary/548/5488fb415056eee52ac63ff9d4850c63.jpg"
+            width="800" height="600" loading="lazy" decoding="async"
+            alt="Керн из бетона после алмазного бурения: подлинное изображение из исторической статьи AEROVENTA" />
+          <figcaption>Оригинальный архивный снимок из этой статьи, сохранённый по исходному URL. Не отдельное подтверждение способа извлечения заклинившей коронки.</figcaption>
+        </figure>
+        <div>
+          <p class="section-index section-index--orange">Фото из первоисточника</p>
+          <h2 id="p0-authentic-photo-title">Что действительно находилось внутри бетонного основания.</h2>
+          <p>Отколовшийся керн и попавшие в рез включения могут менять сопротивление коронки. На фото — реальный керн из исходной публикации; порядок работы при заклинивании определяется безопасной процедурой для конкретной установки.</p>
+          <p>Историческая схема обратного молота остаётся отдельным материалом: её нельзя заменять чужим товарным изображением или искусственно созданным чертежом.</p>
+        </div>
+      </div>
+    </section>
+  )}
 
   <div class="p0-sections">
     {spec.sections.map((section) => (
@@ -279,16 +354,19 @@ if (!spec) throw new Error(`P0 article spec is missing for ${content.path}`);
     ))}
   </div>
 
-  <section class="p0-history" aria-labelledby="p0-history-title">
-    <div class="home-shell p0-history__grid">
-      <div>
-        <p class="section-index section-index--orange">Исторический контекст</p>
-        <h2 id="p0-history-title">{spec.historicalTitle}</h2>
+  <section class="p0-historic-reading home-section" aria-labelledby="p0-archive-title">
+    <div class="home-shell p0-historic-reading__layout">
+      <div class="p0-historic-reading__aside">
+        <p class="section-index section-index--orange">Из архива AEROVENTA</p>
+        <h2 id="p0-archive-title">Опыт и подробности первоначальной публикации</h2>
+        <p>Ниже — сохранённое текстовое содержание архивной статьи. Формат абзацев адаптирован для чтения. Исторические способы, оборудование и стоимость не являются действующими рекомендациями или предложением.</p>
+        <p class="p0-historic-reading__caution">{spec.sourceObservations.caution}</p>
       </div>
-      <p>{spec.historicalText}</p>
+      <div class="p0-historic-reading__body">
+        {legacyParagraphs.map(p => <p>{p}</p>)}
+      </div>
     </div>
   </section>
-
   <section class="home-section p0-related" aria-labelledby="p0-related-title">
     <div class="home-shell">
       <p class="section-index">Связанные материалы</p>
@@ -314,3 +392,50 @@ if (!spec) throw new Error(`P0 article spec is missing for ${content.path}`);
     </div>
   </section>
 </article>
+
+<style>
+.p0-original{background:#eaf0f4;color:#193144}
+.p0-original__grid{display:grid;grid-template-columns:minmax(0,.78fr) minmax(0,1.22fr);gap:clamp(22px,5vw,84px)}
+.p0-original h2{font-size:clamp(1.8rem,3.5vw,3.15rem);line-height:1.13;max-width:22ch}
+.p0-original__grid>div>p:last-child{line-height:1.65;color:#456070}
+.p0-original__items{margin:0;padding-left:25px;line-height:1.65}
+.p0-original__items li{padding:10px 0 17px 9px;border-bottom:1px solid #bdcbd5}
+.p0-original__caution{border-left:3px solid #c76c3a;padding:13px 17px;margin-top:23px;background:#f8f9fa;line-height:1.6}
+@media(max-width:760px){.p0-original__grid{grid-template-columns:1fr}.p0-original h2{max-width:none}}
+
+/* Editorial correction: practical technical reading replaces oversized corporate slabs. */
+.p0-hero{padding:clamp(42px,5.2vw,78px) 0 clamp(40px,4vw,60px);}
+.p0-hero__grid{grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);gap:clamp(24px,4.8vw,74px);align-items:center;}
+.p0-hero h1{font-size:clamp(2.5rem,4.45vw,5rem);line-height:1.025;letter-spacing:-.048em;max-width:18ch;text-wrap:balance;}
+.p0-hero__signal{font-size:.75rem;letter-spacing:.07em;}
+.p0-hero__lede{font-size:clamp(1.05rem,1.48vw,1.3rem);line-height:1.56;}
+.p0-source-note{font-size:.84rem;line-height:1.5;margin-top:20px;color:#526574;}
+.p0-verdict{padding:clamp(34px,4.4vw,64px) 0;}
+.p0-verdict h2{font-size:clamp(1.6rem,3.15vw,3.2rem);line-height:1.12;letter-spacing:-.034em;}
+.p0-section{padding:clamp(25px,3.3vw,49px) 0;}
+.p0-section__grid{grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr);gap:clamp(24px,5vw,68px);}
+.p0-section h2{font-size:clamp(1.45rem,2.6vw,2.7rem);line-height:1.12;letter-spacing:-.038em;}
+.p0-list{margin-top:0;}
+.p0-list li{min-height:0;padding:13px 0;grid-template-columns:35px 1fr;}
+.p0-list p,.p0-section__body p{line-height:1.65;}
+.p0-historic-reading{background:#f4f6f7;padding:clamp(48px,6.4vw,104px) 0;}
+.p0-historic-reading__layout{display:grid;grid-template-columns:minmax(230px,.55fr) minmax(0,1fr);gap:clamp(35px,6vw,100px);align-items:start;}
+.p0-historic-reading__aside{position:sticky;top:105px;align-self:start;}
+.p0-historic-reading__aside h2{font-size:clamp(1.75rem,3vw,3.2rem);line-height:1.13;letter-spacing:-.037em;max-width:17ch;margin:12px 0 24px;}
+.p0-historic-reading__aside>p{font-size:.94rem;line-height:1.7;color:#4e6472;}
+.p0-historic-reading__aside .p0-historic-reading__caution{border-left:2px solid #d06736;padding-left:16px;margin-top:27px;}
+.p0-historic-reading__body{max-width:71ch;font-size:clamp(1.02rem,1.25vw,1.14rem);line-height:1.82;color:#203449;}
+.p0-historic-reading__body p{margin:0 0 1.45em;overflow-wrap:break-word;}
+.p0-historic-reading__body p:first-child:first-letter{font-size:1.6em;font-weight:650;line-height:1;}
+@media(max-width:1000px){.p0-hero__grid,.p0-historic-reading__layout,.p0-section__grid{grid-template-columns:1fr;}.p0-historic-reading__aside{position:static;}.p0-historic-reading__aside h2{max-width:22ch;}.p0-hero h1{max-width:none;}}
+@media(max-width:760px){.p0-hero{padding:34px 0 42px;}.p0-hero h1{font-size:clamp(2.15rem,10.5vw,3.7rem);line-height:1.06;}.p0-historic-reading{padding:44px 0;}.p0-historic-reading__body{font-size:1rem;line-height:1.74;}.p0-section h2{max-width:none;}}
+
+.p0-authentic-photo{background:#e8edf0;color:#203749}
+.p0-authentic-photo__layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(24px,4vw,72px);align-items:center}
+.p0-authentic-photo figure{margin:0;min-width:0}
+.p0-authentic-photo img{display:block;width:100%;height:auto;max-height:520px;object-fit:contain;background:#dee6eb}
+.p0-authentic-photo figcaption{font-size:.8rem;line-height:1.55;color:#506674;margin-top:12px}
+.p0-authentic-photo h2{font-size:clamp(1.65rem,3.2vw,3.3rem);line-height:1.12;letter-spacing:-.04em}
+.p0-authentic-photo__layout>div>p:not(.section-index){line-height:1.67;color:#405668}
+@media(max-width:850px){.p0-authentic-photo__layout{grid-template-columns:1fr}}
+</style>

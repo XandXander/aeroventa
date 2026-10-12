@@ -7,88 +7,22 @@ const { content } = Astro.props;
 const tel = SITE.phone.replace(/[^+\d]/g, '');
 ---
 
-<article class="contact-premium">
+<article class="contact-premium contact-premium--direct">
   <header class="contact-hero">
     <div class="home-shell contact-hero__grid">
-      <div>
+      <div class="contact-hero__direct">
         <p class="home-kicker">Контакты</p>
         <h1>Связаться с AEROVENTA</h1>
-      </div>
-      <div>
-        <p class="contact-hero__lede">
-          Начните с текущего состояния задачи. Для готовой документации и для объекта,
-          который ещё требует подготовки исходных данных, предусмотрены отдельные рабочие маршруты.
-        </p>
+        <p class="contact-hero__lede">Монтаж вентиляции в Санкт-Петербурге и Ленинградской области. Рассматриваем объекты в Москве и Карелии. Позвоните, напишите или оставьте короткую заявку — начнём с вашей задачи.</p>
         <div class="contact-direct">
-          <a href={`tel:${tel}`}><span>Телефон</span><strong>{SITE.phone}</strong></a>
-          <a href={`mailto:${SITE.email}`}><span>E-mail</span><strong>{SITE.email}</strong></a>
+          <a href={`tel:${tel}`}><span>Позвонить</span><strong>{SITE.phone}</strong></a>
+          <a href={`mailto:${SITE.email}`}><span>Написать</span><strong>{SITE.email}</strong></a>
         </div>
+        <p class="contact-hero__support">Есть проект, план, фото или только описание? Для первого обращения достаточно того, что уже есть. Недостающие данные уточним отдельно.</p>
       </div>
-    </div>
-  </header>
-
-  <section class="contact-routes" aria-labelledby="contact-routes-title">
-    <div class="home-shell">
-      <p class="section-index">01 / Рабочий маршрут</p>
-      <h2 id="contact-routes-title">Выберите исходную ситуацию.</h2>
-      <div class="engagement-index">
-        <a href="/montazh-po-proektu/">
-          <span>01</span>
-          <div><strong>Готовая проектная документация</strong><p>Монтажный объём, вопросы к исполнению, смета и границы работ.</p></div>
-          <b aria-hidden="true">→</b>
-        </a>
-        <a href="/obekt-bez-gotovogo-proekta/">
-          <span>02</span>
-          <div><strong>Исходные данные ещё формируются</strong><p>Объект, задача, ограничения и перечень того, что нужно определить до оценки.</p></div>
-          <b aria-hidden="true">→</b>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <section class="contact-area" aria-labelledby="contact-area-title">
-    <div class="home-shell contact-area__grid">
-      <div>
-        <p class="section-index section-index--orange">02 / Где работаем</p>
-        <h2 id="contact-area-title">Санкт-Петербург и Ленинградская область — основная зона.</h2>
-      </div>
-      <div class="contact-area__facts">
-        <div><span>Основная зона</span><strong>Санкт-Петербург + Ленинградская область</strong></div>
-        <div><span>Берём объекты</span><strong>Москва + Республика Карелия</strong></div>
-        <p>Региональная география не означает наличие отдельного офиса. Локацию оцениваем вместе с объёмом и логистикой объекта.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="home-section contact-what" aria-labelledby="contact-what-title">
-    <div class="home-shell">
-      <p class="section-index">03 / Для первого контакта</p>
-      <h2 id="contact-what-title">Передайте то, что уже есть. Недостающие данные определим отдельно.</h2>
-      <div class="contact-what__grid">
-        <article><span>01</span><h3>План / проект</h3><p>Любой актуальный материал, который показывает объект и предполагаемую систему.</p></article>
-        <article><span>02</span><h3>Фото</h3><p>Трассы, потолки, стены, технические зоны и место, где возникает вопрос.</p></article>
-        <article><span>03</span><h3>Стадия</h3><p>Строительство, отделочные работы, готовая отделка или действующий объект.</p></article>
-        <article><span>04</span><h3>Задача</h3><p>Что требуется от AEROVENTA и какой результат нужен на следующем этапе.</p></article>
-      </div>
-    </div>
-  </section>
-
-  <section class="contact-data" aria-labelledby="contact-data-title">
-    <div class="home-shell contact-data__grid">
-      <div>
-        <p class="section-index section-index--orange">04 / Начать разговор</p>
-        <h2 id="contact-data-title">Короткая форма — без повторного брифа.</h2>
-        <div class="contact-data__direct">
-          <p>Если удобнее напрямую:</p>
-          <div class="home-actions">
-            <a class="button button--ghost" href={`tel:${tel}`}>Позвонить: {SITE.phone}</a>
-            <a class="button button--ghost" href={`mailto:${SITE.email}`}>Написать на e-mail</a>
-          </div>
-        </div>
-      </div>
-      <div class="contact-data__form">
+      <div class="contact-hero__form">
         <ContactForm idPrefix="contact-page" sourcePath={content.path} />
       </div>
     </div>
-  </section>
+  </header>
 </article>

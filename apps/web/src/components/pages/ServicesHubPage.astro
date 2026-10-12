@@ -22,27 +22,49 @@ const objectLinks = [
 ---
 
 <article class="hub-page">
-  <header class="hub-hero">
-    <div class="home-shell hub-hero__grid">
-      <div>
+  <header class="hub-hero services-hero services-hero--owner-editorial">
+    <div class="services-hero__backdrop">
+      <img src="/evidence/hero/services-owner-editorial-1774.webp"
+           srcset="/evidence/hero/services-owner-editorial-640.webp 640w, /evidence/hero/services-owner-editorial-1100.webp 1100w, /evidence/hero/services-owner-editorial-1774.webp 1774w"
+           sizes="100vw" width="1774" height="887" loading="eager" fetchpriority="high" decoding="async"
+           alt="Архитектурная иллюстрация интерьера с потолочными воздухораспределителями — не объект AEROVENTA" />
+    </div>
+    <div class="home-shell services-hero__grid">
+      <div class="services-hero__intro">
         <p class="home-kicker">Услуги и возможности</p>
         <h1>Что мы делаем по вентиляции</h1>
-      </div>
-      <div>
-        <p class="hub-hero__lede">
-          AEROVENTA занимается монтажом вентиляции — от локальной задачи до большого коммерческого
-          или производственного объекта. Здесь не перечисляем всё, что теоретически бывает в вентиляции:
-          показываем только тот состав работ, который можно честно связать с текущей работой и реальными объектами.
-        </p>
+        <p class="services-hero__lede">Монтируем системы вентиляции для жилых, коммерческих и производственных объектов. Работаем по проекту и уточняем необходимые исходные данные, если он ещё не подготовлен.</p>
         <p class="home-geo">Санкт-Петербург · Ленинградская область · Москва · Карелия</p>
+        <a class="button button--primary" href="/contact/" data-source="services_hero">Обсудить задачу <span aria-hidden="true">→</span></a>
       </div>
     </div>
+    <p class="services-hero__artnote">Архитектурная иллюстрация · реальные выполненные работы — в разделе «Наши работы»</p>
   </header>
+
+  <nav class="services-hero__routes" aria-label="Ключевые направления работ">
+    <div class="home-shell services-hero__routes-inner">
+      <a href="/montazh-ventiliacii/"><span>01 / Основная услуга</span>Монтаж систем вентиляции <b aria-hidden="true">↗</b></a>
+      <a href="/montazh-po-proektu/"><span>02 / Готовый проект</span>Монтаж по проектной документации <b aria-hidden="true">↗</b></a>
+      <a href="/obekt-bez-gotovogo-proekta/"><span>03 / Проект ещё не готов</span>Подготовка исходных данных <b aria-hidden="true">↗</b></a>
+    </div>
+  </nav>
+  <a class="services-consultant-inline" href="/contact/" data-consultant-open data-source="services_inline_mobile" aria-controls="aeroventa-consultant-dialog" aria-haspopup="dialog">Инженерный консультант <span aria-hidden="true">↗</span></a>
+
+  <section class="services-editorial" aria-labelledby="services-editorial-title">
+    <div class="home-shell services-editorial__grid services-editorial__grid--text">
+      <div class="services-editorial__copy">
+        <p class="section-index section-index--orange">Инженерная компетенция</p>
+        <h2 id="services-editorial-title">Монтаж воздуховодов и вентиляционного оборудования.</h2>
+        <p>От прокладки трасс и монтажа оборудования до согласования сложных узлов на площадке. Состав работ определяется проектом и фактическими условиями конкретного объекта.</p>
+        <a href="/montazh-ventiliacii/">Что входит в монтаж <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
 
   <section class="home-section hub-capabilities" aria-labelledby="capabilities-title">
     <div class="home-shell">
       <p class="section-index">01 / Возможности</p>
-      <h2 id="capabilities-title">Основное — монтаж. Остальное не маскируем под «всё под ключ».</h2>
+      <h2 id="capabilities-title">Монтажные работы и сопутствующие задачи.</h2>
       <div class="hub-capability-grid">
         {capabilities.map(([number,title,text]) => (
           <article>
@@ -79,7 +101,7 @@ const objectLinks = [
       <div class="section-heading">
         <div>
           <p class="section-index">03 / По типу объекта</p>
-          <h2 id="hub-objects-title">Один монтажный подрядчик — разные ограничения объекта.</h2>
+          <h2 id="hub-objects-title">Один монтажный подрядчик — разные особенности объекта.</h2>
         </div>
         <a href="/portfolio/">Смотреть доказательства →</a>
       </div>
@@ -99,7 +121,7 @@ const objectLinks = [
     <div class="home-shell hub-limits__grid">
       <div>
         <p class="section-index section-index--orange">04 / Границы</p>
-        <h2 id="hub-limits-title">Не добавляем услугу в список только потому, что её ищут.</h2>
+        <h2 id="hub-limits-title">Какие работы согласовываются отдельно.</h2>
       </div>
       <div class="hub-limits__body">
         <p><strong>Проектирование, ПНР, балансировка, автоматика и смежные дисциплины</strong> не считаются автоматически включёнными в любой объект. Если конкретная задача требует отдельных проектных или инженерных работ — это должно быть явно определено до договора.</p>
@@ -120,3 +142,61 @@ const objectLinks = [
     </div>
   </section>
 </article>
+
+<style>
+  .services-hero--owner-editorial {position:relative;display:flex;align-items:center;min-height:590px;padding:55px 0;isolation:isolate;overflow:hidden;background:#263f4a;color:#fff}
+  .services-hero--owner-editorial .services-hero__backdrop {position:absolute;inset:0;z-index:-2;overflow:hidden}
+  .services-hero--owner-editorial .services-hero__backdrop img {position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:55% 48%;display:block}
+  .services-hero--owner-editorial::before {content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(13,27,35,.88) 0%,rgba(13,27,35,.67) 23%,rgba(13,27,35,.1) 65%,transparent 100%);pointer-events:none}
+  .services-hero--owner-editorial .services-hero__grid {position:relative;display:block;min-width:0;width:min(100% - 48px,1380px);margin:auto}
+  .services-hero--owner-editorial .services-hero__intro {width:min(590px,45%);min-width:0}
+  .services-hero--owner-editorial .home-kicker {color:#e3b095}
+  .services-hero--owner-editorial h1 {margin:0;max-width:13ch;font-size:clamp(3rem,5.3vw,5.1rem);font-weight:760;line-height:1.03;letter-spacing:-.067em;text-wrap:balance;color:#fff}
+  .services-hero--owner-editorial .services-hero__lede {font-size:clamp(1rem,1.3vw,1.1rem);line-height:1.58;color:#e3e9eb;margin:24px 0 0;max-width:55ch}
+  .services-hero--owner-editorial .home-geo {color:#cedadf;margin-top:18px}
+  .services-hero--owner-editorial .button {margin-top:24px;min-height:50px;background:#fff;color:#132b3e;border:1px solid #fff;box-shadow:none;width:max-content;max-width:100%}
+  .services-hero__artnote {position:absolute;right:clamp(20px,4.4vw,70px);bottom:20px;font-size:.68rem;max-width:46ch;color:#f7fbfc;text-shadow:0 2px 5px rgba(0,0,0,.7);margin:0;line-height:1.4}
+  .services-hero__routes {background:#fff;border-bottom:1px solid #d7dedf}
+  .services-hero__routes-inner {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;padding-block:30px}
+  .services-hero__routes a {display:block;padding:0 28px;text-decoration:none;border-right:1px solid #d9dedf;font-weight:760;font-size:clamp(.94rem,1.28vw,1.19rem);line-height:1.35;letter-spacing:-.025em;color:#193547}
+  .services-hero__routes a:first-child {padding-left:0}
+  .services-hero__routes a:last-child {border-right:0}
+  .services-hero__routes a span {display:block;margin-bottom:6px;color:#a66543;text-transform:uppercase;font-size:.67rem;font-weight:820;letter-spacing:.08em}
+  .services-hero__routes a b {font-weight:500}
+  .services-hero__routes a:hover {color:#ac5636}
+  .services-consultant-inline {display:none}
+  .services-editorial__grid--text {display:block;max-width:1200px}
+  .services-editorial__grid--text .services-editorial__copy {max-width:920px}
+  @media(max-width:1100px) and (min-width:761px) {
+    .services-hero--owner-editorial {min-height:540px}
+    .services-hero--owner-editorial .services-hero__intro {width:52%}
+    .services-hero--owner-editorial h1 {font-size:clamp(2.9rem,5.5vw,4.1rem)}
+    .services-hero--owner-editorial .services-hero__lede {font-size:.94rem}
+    .services-hero--owner-editorial::before {background:linear-gradient(90deg,rgba(13,27,35,.9),rgba(13,27,35,.7) 30%,rgba(13,27,35,.13) 78%)}
+  }
+  @media(max-width:760px) {
+    .services-hero--owner-editorial {display:flex;flex-direction:column;align-items:stretch;min-height:0;padding:0;background:#fff;color:#132b3e;overflow:visible}
+    .services-hero--owner-editorial::before {display:none}
+    .services-hero--owner-editorial .services-hero__grid {order:0;width:100%;padding:28px 14px 24px;margin:0}
+    .services-hero--owner-editorial .services-hero__intro {width:100%}
+    .services-hero--owner-editorial .home-kicker {color:#a66543}
+    .services-hero--owner-editorial h1 {color:#132b3e;font-size:clamp(2.06rem,9.4vw,3.06rem);letter-spacing:-.052em;line-height:1.08}
+    .services-hero--owner-editorial .services-hero__lede {color:#506473;font-size:.91rem;line-height:1.49;margin-top:15px}
+    .services-hero--owner-editorial .home-geo {color:#596d79;font-size:.82rem;line-height:1.4}
+    .services-hero--owner-editorial .button {display:flex;background:#18384b;color:#fff;border-color:#18384b;width:100%;margin-top:20px}
+    .services-hero--owner-editorial .services-hero__backdrop {position:relative;order:1;z-index:auto;aspect-ratio:1774/887;width:100%;height:auto}
+    .services-hero--owner-editorial .services-hero__backdrop img {position:static;width:100%;height:100%;object-fit:contain;object-position:center}
+    .services-hero__artnote {position:static;order:2;background:#f3f5f5;color:#596875;text-shadow:none;padding:10px 14px;font-size:.66rem}
+    .services-hero__routes-inner {display:block;padding-block:10px}
+    .services-hero__routes a {padding:15px 0;border-right:0;border-bottom:1px solid #d9dedf;font-size:.97rem;min-height:0}
+    .services-hero__routes a:last-child {border-bottom:0}
+    .services-consultant-inline {display:flex;align-items:center;justify-content:space-between;padding:17px 14px;background:#edf4f6;border-bottom:1px solid #d7dedf;text-decoration:none;color:#31526a;font-size:.83rem;font-weight:750}
+  }
+  @media(max-width:340px) {
+    .services-hero--owner-editorial h1 {font-size:2.05rem}
+    .services-hero--owner-editorial .services-hero__grid {padding-top:22px}
+  }
+  @media(prefers-reduced-motion:reduce) {
+    .services-hero__routes a {scroll-behavior:auto}
+  }
+</style>

@@ -1,6 +1,18 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getByPath } from '@/lib/content-source';
+import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+
+const ownerHeroMedia = '/evidence/hero/home-owner-editorial-1672.webp';
+const hasOwnerHeroMedia = [
+  'apps/web/public/evidence/hero/home-owner-editorial-1672.webp',
+  'public/evidence/hero/home-owner-editorial-1672.webp',
+].some(p => existsSync(resolve(p)));
+const hasOptimizedOwnerHero = hasOwnerHeroMedia && [
+  'apps/web/public/evidence/hero/home-owner-editorial-640.webp',
+  'public/evidence/hero/home-owner-editorial-640.webp',
+].some(p => existsSync(resolve(p)));
 
 const content = await getByPath('/');
 if (!content) throw new Error('Home content is missing');
@@ -8,7 +20,7 @@ if (!content) throw new Error('Home content is missing');
 const page = {
   ...content,
   h1: 'Инженерная вентиляция без лишнего.',
-  seo_title: 'Монтаж вентиляции в СПб и Ленобласти — AEROVENTA',
+  seo_title: 'AEROVENTA — инженерные системы вентиляции в СПб и Ленобласти',
   seo_description: 'AEROVENTA — монтаж вентиляции для квартир, домов, ресторанов, коммерческих, производственных и крупных объектов. Санкт-Петербург и Ленинградская область; берём объекты в Москве и Карелии.',
 };
 
@@ -17,21 +29,21 @@ const objects = [
   ['Коттеджи и бани', '/obekty/#private'],
   ['Рестораны и кафе', '/obekty/restorany-i-kafe/'],
   ['Магазины и склады', '/obekty/#warehouses'],
-  ['Производства', '/obekty/#production'],
+  ['Производства', '/blog/detail/ntff-polisan/'],
   ['Новостройки', '/obekty/novostroyki-i-zhilye-kompleksy/'],
 ];
 
 const questions = [
-  'Можно ли понять бюджет без проекта?',
-  'Как сравнивать две сметы на вентиляцию?',
-  'Что должно быть решено до выхода монтажников?',
-  'Что делать, если проект не совпадает с реальным объектом?',
-  'Что проверить до закрытия потолков?',
+  ['Можно ли понять бюджет без проекта?', 'Да, предварительный ориентир возможен при наличии сопоставимого сценария. Для сметы нужны сведения об объекте, трассах, оборудовании и условиях монтажа.'],
+  ['Как сравнивать две сметы на вентиляцию?', 'Сравните состав системы, оборудование, объёмы, включённые и исключённые работы, доступ и порядок изменений. Только после этого сопоставляйте суммы.'],
+  ['Что должно быть решено до выхода монтажников?', 'Нужны проект либо согласованный состав работ, расположение ключевых трасс и оборудования, доступ, поставка материалов и порядок согласования изменений.'],
+  ['Что делать, если проект не совпадает с реальным объектом?', 'Зафиксировать расхождение, оценить влияние на монтаж, предложить варианты и согласовать существенное изменение до выполнения работ.'],
+  ['Что проверить до закрытия потолков?', 'Проверить скрываемые трассы, соединения, крепления, сервисный доступ и соответствие согласованному решению; конкретный перечень зависит от объекта.'],
 ];
 ---
 
 <BaseLayout content={page}>
-  <section class="home-hero home-hero--v43" aria-labelledby="home-title">
+  <section class:list={['home-hero', 'home-hero--v43', hasOwnerHeroMedia && 'home-hero--owner-interior', hasOwnerHeroMedia && 'home-hero--calm-editorial']} aria-labelledby="home-title">
     <div class="home-shell home-hero__grid">
       <div class="home-hero__copy">
         <p class="home-kicker">Монтаж вентиляции под ключ</p>
@@ -42,7 +54,7 @@ const questions = [
         </p>
         <p class="home-geo">Санкт-Петербург · Ленинградская область · Москва · Карелия</p>
         <div class="home-actions" aria-label="Основные действия">
-          <a class="button button--primary" href="/obekt-bez-gotovogo-proekta/" data-aeroventa-event="primary_cta">Получить ориентир стоимости <span aria-hidden="true">→</span></a>
+          <a class="button button--primary" href="/contact/" data-aeroventa-event="primary_cta">Обсудить задачу <span aria-hidden="true">→</span></a>
           <a class="button button--ghost" href="/montazh-po-proektu/">Есть проект — запросить смету</a>
         </div>
       </div>
@@ -50,36 +62,20 @@ const questions = [
       <figure class="hero-engineering">
         <img
           class="hero-engineering__photo"
-          src="/evidence/hero/ductwork-editorial-v43.webp"
-          width="800"
-          height="600"
-          alt="Реальный монтаж вентиляционных воздуховодов на объекте 7 PARK в Павловске"
+          src={hasOwnerHeroMedia ? ownerHeroMedia : '/evidence/hero/ductwork-editorial-v43.webp'}
+          srcset={hasOptimizedOwnerHero ? '/evidence/hero/home-owner-editorial-640.webp 640w, /evidence/hero/home-owner-editorial-1100.webp 1100w, /evidence/hero/home-owner-editorial-1672.webp 1672w' : undefined}
+          sizes={hasOptimizedOwnerHero ? '100vw' : undefined}
+          width={hasOwnerHeroMedia ? 1672 : 800}
+          height={hasOwnerHeroMedia ? 941 : 600}
+          alt={hasOwnerHeroMedia ? 'Архитектурная иллюстрация спокойного интерьера со встроенными потолочными воздухораспределителями — не выполненный объект AEROVENTA' : 'Реальный монтаж вентиляционных воздуховодов на объекте 7 PARK в Павловске'}
           fetchpriority="high"
           decoding="async"
         />
         <div class="hero-engineering__veil" aria-hidden="true"></div>
-        <svg class="hero-engineering__overlay" viewBox="0 0 734 551" aria-hidden="true" focusable="false">
-          <path class="hero-airflow-path hero-airflow-path--supply" d="M212 334 C184 360 157 391 126 426" />
-          <path class="hero-airflow-tick hero-airflow-tick--supply" d="M171 376 l-9 2 3-8 M148 402 l-9 2 3-8" />
-          <circle class="hero-airflow-node hero-airflow-node--supply" cx="212" cy="334" r="3" />
-
-          <path class="hero-airflow-path hero-airflow-path--exhaust" d="M526 414 C551 388 570 357 589 323" />
-          <path class="hero-airflow-tick hero-airflow-tick--exhaust" d="M552 382 l9-1 -3 8 M570 353 l9-1 -3 8" />
-          <circle class="hero-airflow-node hero-airflow-node--exhaust" cx="526" cy="414" r="3" />
-        </svg>
-        <div class="hero-engineering__label hero-engineering__label--supply">
-          <span>ПРИТОК</span><small>SUPPLY · схема потока</small>
-        </div>
-        <div class="hero-engineering__label hero-engineering__label--exhaust">
-          <span>ВЫТЯЖКА</span><small>EXHAUST · схема потока</small>
-        </div>
         <div class="hero-engineering__frame" aria-hidden="true">
           <span></span><span></span><span></span><span></span>
         </div>
-        <figcaption class="hero-engineering__evidence">
-          <strong>РЕАЛЬНЫЙ МОНТАЖ · 7 PARK · ПАВЛОВСК</strong>
-          <span class="sr-only">Фото монтажных работ AEROVENTA на объекте 7 PARK в Павловске, подтверждено владельцем. Цветные линии условно обозначают независимые направления притока и вытяжки; это не исполнительная схема объекта.</span>
-        </figcaption>
+        <figcaption class="sr-only">{hasOwnerHeroMedia ? 'Архитектурная концепция вентиляции. Реальные фотографии выполненных работ на 7 PARK показаны ниже.' : 'Реальный монтаж AEROVENTA на объекте 7 PARK в Павловске. Сведения о работах — в кейсе.'}</figcaption>
       </figure>
     </div>
 
@@ -90,6 +86,7 @@ const questions = [
         </a>
       ))}
     </nav>
+    <a class="home-consultant-inline" href="/contact/" data-consultant-open data-source="home_inline_mobile" aria-controls="aeroventa-consultant-dialog" aria-haspopup="dialog">Инженерный консультант <span aria-hidden="true">↗</span></a>
   </section>
 
   <section class="home-section home-solution" id="process" aria-labelledby="solution-title">
@@ -104,14 +101,6 @@ const questions = [
         <a class="button button--ghost solution-cta" href="/montazh-ventiliacii/">Подробнее о процессе <span aria-hidden="true">→</span></a>
       </div>
 
-      <div class="solution-mobile-legend" aria-label="Два независимых потока">
-        <span>Приток · воздух в помещение</span>
-        <span>Вытяжка · удаление воздуха</span>
-      </div>
-      <div class="solution-diagram" role="img" aria-label="Архитектурная визуализация двух независимых потоков вентиляции: приток направлен к помещению; вытяжка выводит отработанный воздух. Иллюстрация, не исполнительная схема.">
-        <img src="/evidence/hero/engineering-scene-accepted-v43.webp" alt="" width="1036" height="338" loading="lazy" decoding="async" />
-        <span class="solution-visual-note">Принципиальная иллюстрация · не исполнительная схема</span>
-      </div>
     </div>
 
     <div class="home-shell process-strip" aria-label="Этапы работы">
@@ -129,7 +118,7 @@ const questions = [
         <h2 id="case-title">7 PARK</h2>
         <p class="case-feature__subtitle">Павловск · жилой квартал</p>
         <p class="case-dossier__statement">
-          Монтаж приточно-вытяжной вентиляции в семи домах. Ниже — подтверждённые границы работ, период и локация; без неподтверждённых характеристик.
+          Монтаж приточно-вытяжной вентиляции в семи домах жилого квартала. Посмотрите фотографии работ и сведения об объекте.
         </p>
       </header>
 
@@ -151,7 +140,7 @@ const questions = [
 
       <dl class="case-dossier__facts case-dossier__facts--secondary">
         <div><dt>Объём</dt><dd>7 домов</dd></div>
-        <div><dt>Локация</dt><dd>Павловск, Ленинградская область</dd></div>
+        <div><dt>Локация</dt><dd>Павловск, Санкт-Петербург</dd></div>
       </dl>
 
       <a class="case-dossier__cta" href="/blog/detail/kak-my-sdali-7-domov/">Смотреть объект <span aria-hidden="true">→</span></a>
@@ -169,7 +158,7 @@ const questions = [
       </div>
 
       <div class="object-grid">
-        <a class="object-link" href="/obekty/#production"><h3>Производство</h3><p>Проект, действующий режим, трассы, доступ и границы состава монтажных работ.</p></a>
+        <a class="object-link" href="/blog/detail/ntff-polisan/"><h3>Производство</h3><p>Проект, действующий режим, трассы, доступ и границы состава монтажных работ.</p></a>
         <a class="object-link" href="/obekty/restorany-i-kafe/"><h3>Рестораны и кафе</h3><p>Кухня, зал, оборудование, потолки и координация с отделкой.</p></a>
         <a class="object-link" href="/obekty/novostroyki-i-zhilye-kompleksy/"><h3>Новостройки</h3><p>Повторяемый объём, график по корпусам и управляемое усиление команды.</p></a>
         <a class="object-link" href="/obekty/#private"><h3>Квартиры и дома</h3><p>Шум, пространство, отделка и аккуратная прокладка трасс.</p></a>
@@ -178,6 +167,34 @@ const questions = [
       </div>
     </div>
   </section>
+
+
+  <!-- Historic recognition from original letter dated 05.04.2022. -->
+  <section class="home-ponsse" aria-labelledby="home-ponsse-title">
+    <div class="home-shell home-ponsse__grid">
+      <div class="home-ponsse__copy">
+        <p class="section-index section-index--orange">PONSSE · Питкяранта · 2022</p>
+        <h2 id="home-ponsse-title">Благодарственное письмо PONSSE</h2>
+        <p>Международная компания PONSSE выразила благодарность команде AEROVENTA за деликатную, эстетически аккуратную работу и высокий профессионализм в течение двух лет сотрудничества. В оригинальном письме от 5 апреля 2022 года особо отмечены профессиональная этика и соблюдение сроков.</p>
+        <div class="home-ponsse__actions">
+          <a class="home-ponsse__case" href="/blog/detail/montazh-ventilyatsii-v-karelii/">Посмотреть объект PONSSE <span aria-hidden="true">↗</span></a>
+          <button type="button" class="home-ponsse__letter-link" data-home-ponsse-open aria-haspopup="dialog" aria-controls="home-ponsse-letter-dialog">Прочитать оригинал письма <span aria-hidden="true">↗</span></button>
+        </div>
+      </div>
+      <figure class="home-ponsse__document">
+        <button type="button" data-home-ponsse-open aria-haspopup="dialog" aria-controls="home-ponsse-letter-dialog" aria-label="Посмотреть благодарственное письмо PONSSE во всплывающем окне">
+          <img src="/evidence/karelia/ponsse-letter-20220405.png" width="1481" height="2048" loading="lazy" decoding="async" alt="Оригинальное благодарственное письмо PONSSE от 5 апреля 2022 года с подписью" />
+        </button>
+        <figcaption>Оригинал документа · 05.04.2022</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <dialog class="ponsse-letter-dialog" id="home-ponsse-letter-dialog" aria-label="Благодарственное письмо PONSSE от 5 апреля 2022 года">
+    <form method="dialog" class="ponsse-letter-dialog__actions"><button class="ponsse-letter-dialog__close" type="submit" aria-label="Закрыть письмо">Закрыть ×</button></form>
+    <div class="ponsse-letter-dialog__sheet"><img src="/evidence/karelia/ponsse-letter-20220405.png" width="1481" height="2048" alt="Полное благодарственное письмо PONSSE от 5 апреля 2022 года" decoding="async" /></div>
+    <a href="/evidence/karelia/ponsse-letter-20220405.png" class="ponsse-letter-dialog__link" target="_blank" rel="noopener noreferrer">Открыть оригинал в полном разрешении ↗</a>
+  </dialog>
 
   <section class="home-section decision-preview" aria-labelledby="decisions-title">
     <div class="home-shell decision-preview__grid">
@@ -191,8 +208,11 @@ const questions = [
         <a class="button button--ghost" href="/faq/">Разобрать вопросы по объекту →</a>
       </div>
       <div class="question-list">
-        {questions.map((question, index) => (
-          <a href="/faq/"><span>{String(index + 1).padStart(2, '0')}</span>{question}<b aria-hidden="true">→</b></a>
+        {questions.map(([question, answer], index) => (
+          <details class="home-faq-item">
+            <summary><span>{String(index + 1).padStart(2, '0')}</span><strong>{question}</strong><b aria-hidden="true">+</b></summary>
+            <div class="home-faq-item__answer"><p>{answer}</p></div>
+          </details>
         ))}
       </div>
     </div>
@@ -220,4 +240,21 @@ const questions = [
       </div>
     </div>
   </section>
+
+  <script>
+    const ponsseHomeDialog = document.getElementById('home-ponsse-letter-dialog');
+    if (ponsseHomeDialog instanceof HTMLDialogElement) {
+      let opener: HTMLButtonElement | null = null;
+      document.querySelectorAll<HTMLButtonElement>('[data-home-ponsse-open]').forEach(button => {
+        button.addEventListener('click', () => {
+          opener = button;
+          if (!ponsseHomeDialog.open) ponsseHomeDialog.showModal();
+        });
+      });
+      ponsseHomeDialog.addEventListener('click', event => {
+        if (event.target === ponsseHomeDialog) ponsseHomeDialog.close();
+      });
+      ponsseHomeDialog.addEventListener('close', () => opener?.focus({ preventScroll: true }));
+    }
+  </script>
 </BaseLayout>
