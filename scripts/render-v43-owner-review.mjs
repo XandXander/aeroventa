@@ -171,10 +171,10 @@ try {
             const l = document.querySelector('.consultant-launcher')?.getBoundingClientRect();
             const overlaps = !!p && !!l && Math.max(p.left,l.left)<Math.min(p.right,l.right) &&
               Math.max(p.top,l.top)<Math.min(p.bottom,l.bottom);
-            return {headingTop:h?.top,photoWidth:i?.naturalWidth,photoHeight:p?.height,photoBottom:p?.bottom,launcherOverlap:overlaps};
+            return {headingTop:h?.top,photoWidth:i?.naturalWidth,photoHeight:p?.height,photoBottom:p?.bottom,launcherOverlap:overlaps,launcherVisible:!!l && getComputedStyle(document.querySelector('.consultant-launcher')).display!=='none',inlineConsultant:!!document.querySelector('.about-hero a[data-consultant-open][data-source="about_inline"]')};
           });
           if (!optical.photoWidth || optical.headingTop == null || optical.headingTop >= height*.55 ||
-              (width<=760 && (optical.photoHeight > 320 || optical.launcherOverlap))) {
+              (width<=760 && (optical.photoHeight > 320 || optical.launcherOverlap || optical.launcherVisible || !optical.inlineConsultant))) {
             report.fail.push({route,view,reason:'About first-fold heading and documentary team photo must be visible without consultant obscuring the image',optical});
           }
         }
