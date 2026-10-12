@@ -75,7 +75,11 @@ $validDomain = static function (string $addr): bool {
     if (filter_var($addr, FILTER_VALIDATE_EMAIL) === false) return false;
     return strtolower((string)substr(strrchr($addr, '@'), 1)) === 'aeroventa.ru';
 };
-if (!$validDomain($destination) || !$validDomain($sender)) answer(503, 'mailbox_unconfigured');
+// Recipient may be the Owner's already-public AEROVENTA Yandex mailbox.
+// This is an exact allowlisted address, never an arbitrary third-party destination.
+// Sender must still be a verified aeroventa.ru domain mailbox to preserve transport identity.
+$recipientAllowed = $validDomain($destination) || strcasecmp($destination, 'aeroventaspb@yandex.ru') === 0;
+if (!$recipientAllowed || !$validDomain($sender)) answer(503, 'mailbox_unconfigured');
 // Fail closed when rate limiting is unavailable. Atomic per-IP rolling 10m window.
 $ip = (string)($_SERVER['REMOTE_ADDR'] ?? '');
 $rateKey = substr(hash('sha256', __FILE__ . '|' . $ip), 0, 40);
