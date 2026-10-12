@@ -4,15 +4,12 @@ import { getByPath } from '@/lib/content-source';
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-const ownerHeroMedia = '/evidence/hero/home-owner-editorial-1672.webp';
+const ownerHeroMedia = '/evidence/hero/owner-luxury-airflow-20261010.png';
 const hasOwnerHeroMedia = [
-  'apps/web/public/evidence/hero/home-owner-editorial-1672.webp',
-  'public/evidence/hero/home-owner-editorial-1672.webp',
+  'apps/web/public/evidence/hero/owner-luxury-airflow-20261010.png',
+  'public/evidence/hero/owner-luxury-airflow-20261010.png',
 ].some(p => existsSync(resolve(p)));
-const hasOptimizedOwnerHero = hasOwnerHeroMedia && [
-  'apps/web/public/evidence/hero/home-owner-editorial-640.webp',
-  'public/evidence/hero/home-owner-editorial-640.webp',
-].some(p => existsSync(resolve(p)));
+if (!hasOwnerHeroMedia) throw new Error('Approved Owner HOME HERO original missing; refusing image substitution');
 
 const content = await getByPath('/');
 if (!content) throw new Error('Home content is missing');
@@ -43,7 +40,7 @@ const questions = [
 ---
 
 <BaseLayout content={page}>
-  <section class:list={['home-hero', 'home-hero--v43', hasOwnerHeroMedia && 'home-hero--owner-interior', hasOwnerHeroMedia && 'home-hero--calm-editorial']} aria-labelledby="home-title">
+  <section class:list={['home-hero', 'home-hero--v43', hasOwnerHeroMedia && 'home-hero--owner-interior', hasOwnerHeroMedia && 'home-hero--owner-airflow']} aria-labelledby="home-title">
     <div class="home-shell home-hero__grid">
       <div class="home-hero__copy">
         <p class="home-kicker">Монтаж вентиляции под ключ</p>
@@ -62,12 +59,10 @@ const questions = [
       <figure class="hero-engineering">
         <img
           class="hero-engineering__photo"
-          src={hasOwnerHeroMedia ? ownerHeroMedia : '/evidence/hero/ductwork-editorial-v43.webp'}
-          srcset={hasOptimizedOwnerHero ? '/evidence/hero/home-owner-editorial-640.webp 640w, /evidence/hero/home-owner-editorial-1100.webp 1100w, /evidence/hero/home-owner-editorial-1672.webp 1672w' : undefined}
-          sizes={hasOptimizedOwnerHero ? '100vw' : undefined}
+          src={ownerHeroMedia}
           width={hasOwnerHeroMedia ? 1672 : 800}
           height={hasOwnerHeroMedia ? 941 : 600}
-          alt={hasOwnerHeroMedia ? 'Архитектурная иллюстрация спокойного интерьера со встроенными потолочными воздухораспределителями — не выполненный объект AEROVENTA' : 'Реальный монтаж вентиляционных воздуховодов на объекте 7 PARK в Павловске'}
+          alt="Утверждённая архитектурная визуализация интерьера с синими воздушными потоками. Не фотография объекта AEROVENTA"
           fetchpriority="high"
           decoding="async"
         />

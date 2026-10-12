@@ -572,6 +572,8 @@
 /* V43 Owner independent mobile consultant placement: accessible inline at category boundary,
    never overlay the home/service HERO, categories, CTA, or mobile menu. */
 @media (max-width:760px) {
-  body:has(.home-hero--calm-editorial) .consultant-launcher,
+  body:has(.home-hero--owner-airflow) .consultant-launcher,
   body:has(.services-hero--owner-editorial) .consultant-launcher { display:none; }
 }
+
+@media(max-width:760px){.experience-dialog--contact .experience-dialog__shell{padding-bottom:max(24px,env(safe-area-inset-bottom,24px))}}

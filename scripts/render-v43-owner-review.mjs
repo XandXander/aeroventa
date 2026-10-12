@@ -41,13 +41,10 @@ const routes = [
 await fs.mkdir(root, { recursive: true });
 const report = { build_mode: 'fixture', local_http_only: true, routes: routes.length, viewports: views.map(x => x[0]), pages: [], fail: [], owner_media: [] };
 for (const [name, file, expected] of [
-  ['home_calm_640','apps/web/public/evidence/hero/home-owner-editorial-640.webp','43d548fc97e5d1e401573d4e29542d6302fec219727f964193d4353c564d2f61'],
-  ['home_calm_1100','apps/web/public/evidence/hero/home-owner-editorial-1100.webp','3a0744be0b0669593fb18199cdc17df4915626ae845451a58da7ee2528e1be5b'],
-  ['home_calm_1672','apps/web/public/evidence/hero/home-owner-editorial-1672.webp','9188163c8add06b69d6157b034ddb9927c62a3e04a5bd2470983612d72924a50'],
   ['services_owner_640','apps/web/public/evidence/hero/services-owner-editorial-640.webp','f86045ef038c95c93ed8c7968c19a149cc1b822b0495fa94a9b40da43c0a3e6f'],
   ['services_owner_1100','apps/web/public/evidence/hero/services-owner-editorial-1100.webp','e9e9e51c2a5b390f94d45880082a8fc63a34165c3e575677c809889d998d4aa5'],
   ['services_owner_1774','apps/web/public/evidence/hero/services-owner-editorial-1774.webp','b4c95b0a5a17a011f8adf6dc7f635d7c68c8222281cf0377e9637fb1552f25ca'],
-  ['home_previous_original','apps/web/public/evidence/hero/owner-luxury-airflow-20261010.png','56704487b748269038168c1cb64f74b4415054e61a2e73b3e9a6f2eb002f83ee'],
+  ['home_approved_original','apps/web/public/evidence/hero/owner-luxury-airflow-20261010.png','56704487b748269038168c1cb64f74b4415054e61a2e73b3e9a6f2eb002f83ee'],
   ['ponsse_letter','apps/web/public/evidence/karelia/ponsse-letter-20220405.png','67287d0c52b42391a9e4e8ff105b779093b64b3cf5e2ddb3897218f69848f886'],
   ['ponsse_portrait','apps/web/public/evidence/karelia/p-teittinen-original.jpg','73376f20193c18e4d99ba148df98ae21ec69988f5e372db72edc295a3b964d95'],
 ]) {
@@ -102,14 +99,14 @@ try {
         entry.broken_images = await page.evaluate(() => [...document.images].filter(img => !img.complete || !img.naturalWidth).map(img => img.getAttribute('src')));
         entry.page_errors = pageErrors;
         if (id === 'home') {
-          const expectedHero = '/evidence/hero/home-owner-editorial-1672.webp';
+          const expectedHero = '/evidence/hero/owner-luxury-airflow-20261010.png';
           const actualHero = await page.locator('.hero-engineering__photo').getAttribute('src');
           if (actualHero !== expectedHero) report.fail.push({route,view,reason:'Latest Owner calm HERO source mismatch',expectedHero,actualHero});
           const optical = await page.evaluate(() => {
-            const image = document.querySelector('.home-hero--calm-editorial .hero-engineering__photo');
-            const photo = document.querySelector('.home-hero--calm-editorial .hero-engineering');
-            const copy = document.querySelector('.home-hero--calm-editorial .home-hero__copy');
-            const strip = document.querySelector('.home-hero--calm-editorial .object-ribbon');
+            const image = document.querySelector('.home-hero--owner-airflow .hero-engineering__photo');
+            const photo = document.querySelector('.home-hero--owner-airflow .hero-engineering');
+            const copy = document.querySelector('.home-hero--owner-airflow .home-hero__copy');
+            const strip = document.querySelector('.home-hero--owner-airflow .object-ribbon');
             const inline = document.querySelector('.home-consultant-inline');
             const fixed = document.querySelector('.consultant-launcher');
             const rect = el => el?.getBoundingClientRect();
@@ -131,11 +128,11 @@ try {
           const ownerScenePass = optical.natural_width > 0 &&
             optical.diagram_count === 0 && optical.process_stages === 4 &&
             (isMobile || isTablet ?
-              (optical.photo_fit === 'contain' && photoBeforeCopy) :
+              (optical.photo_fit === (isMobile ? 'cover' : 'contain') && photoBeforeCopy) :
               (optical.photo_fit === 'cover' && desktopColumns)) &&
             (!isMobile || (optical.inline_visible && !optical.floating_visible &&
              optical.strip_top >= optical.copy_bottom - 2));
-          if (!ownerScenePass) report.fail.push({route,view,reason:'Calm Owner HERO scene/adaptation or consultant-overlap contract',optical});
+          if (!ownerScenePass) report.fail.push({route,view,reason:'Approved Owner airflow HERO scene/adaptation contract',optical});
           const recognition = page.locator('.home-ponsse');
           const orderCorrect = await page.evaluate(() => {
             const section = document.querySelector('.home-ponsse');
@@ -171,8 +168,8 @@ try {
             const count = await page.locator(`.portfolio-card:has-text("${name}") img[src="${src}"]`).count();
             if (count !== 1) report.fail.push({route,view,reason:'Owner authentic cover mismatch',name,src,count});
           }
-          if (count !== 6 || photos !== 6 || ponsse !== 1) {
-            report.fail.push({route,view,reason:'Six photo-backed direct named cases',count,photos,ponsse});
+          if (count !== 5 || photos !== 5 || ponsse !== 1 || await page.locator('.portfolio-feature a[href="/blog/detail/kak-my-sdali-7-domov/"]').count() !== 1) {
+            report.fail.push({route,view,reason:'Five distinct case cards plus featured 7 PARK',count,photos,ponsse});
           }
           for (const card of await cards.all()) {
             const href = await card.getAttribute('href');
@@ -235,8 +232,8 @@ try {
           if (!content.includes('05.04.2022') || !content.includes('Petteri Teittinen')) report.fail.push({ route, view, reason: 'PONSSE letter editorial content absent' });
           const galleryCount = await page.locator('.case-gallery__archive .case-gallery__item img').count();
           if (galleryCount !== 18) report.fail.push({route,view,reason:'Complete PONSSE historical image inventory not present',galleryCount});
-          const expectedLetter = report.owner_media[1].status === 'EXACT';
-          const expectedPortrait = report.owner_media[2].status === 'EXACT' && process.env.PUBLIC_PONSSE_PORTRAIT_PUBLICATION_APPROVED === 'true';
+          const expectedLetter = report.owner_media.find(x=>x.name==='ponsse_letter')?.status === 'EXACT';
+          const expectedPortrait = report.owner_media.find(x=>x.name==='ponsse_portrait')?.status === 'EXACT' && process.env.PUBLIC_PONSSE_PORTRAIT_PUBLICATION_APPROVED === 'true';
           const actualLetter = await page.locator('[data-ponsse-open] img').count();
           const actualPortrait = await page.locator('.ponsse-recognition__portrait img').count();
           if (actualLetter !== Number(expectedLetter) || actualPortrait !== Number(expectedPortrait)) {
@@ -263,7 +260,7 @@ try {
           const returned = await firstPhoto.evaluate(el => el === document.activeElement);
           if (!returned) report.fail.push({route,view,reason:'Case viewer focus not restored'});
         }
-        if (id === 'karelia_ponsse' && report.owner_media[1].status === 'EXACT') {
+        if (id === 'karelia_ponsse' && report.owner_media.find(x=>x.name==='ponsse_letter')?.status === 'EXACT') {
           await page.locator('[data-ponsse-open]').click();
           const letterModal = page.locator('#ponsse-letter-dialog');
           await letterModal.waitFor({state:'visible'});

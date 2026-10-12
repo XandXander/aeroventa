@@ -32,6 +32,7 @@ const timeline = [
         <h1>AEROVENTA — команда по монтажу вентиляции</h1>
       </div>
       <div>
+        {teamPhotos.length > 0 && <figure class="about-hero__team"><img src={teamPhotos[0].src} alt={teamPhotos[0].alt} width="980" height="735" loading="eager" decoding="async" /><figcaption>{teamPhotos[0].caption}</figcaption></figure>}
         <p class="about-hero__lede">
           Постоянное ядро команды держит технический и организационный контроль объекта.
           Когда объём или график требуют усиления, подключаем проверенных профильных специалистов.

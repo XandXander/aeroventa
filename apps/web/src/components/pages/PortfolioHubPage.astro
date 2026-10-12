@@ -59,7 +59,7 @@ const cases = [
         </div>
       </div>
       <div class="portfolio-grid">
-        {cases.map((item) => (
+        {cases.filter((item) => item.index !== '01').map((item) => (
           <a href={item.href} class="portfolio-card">
             <div class="portfolio-card__media"><img src={item.image} width="800" height="520" alt={`Реальные фотографии работ: ${item.title}`} loading="lazy" decoding="async" /></div>
             <div class="portfolio-card__body">
