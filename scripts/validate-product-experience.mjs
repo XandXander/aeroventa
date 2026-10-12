@@ -19,6 +19,7 @@ const files = {
   ready: await read('apps/web/src/components/pages/ProjectReadyPage.astro'),
   notReady: await read('apps/web/src/components/pages/ProjectNotReadyPage.astro'),
   home: await read('apps/web/src/pages/index.astro'),
+  services: await read('apps/web/src/components/pages/ServicesHubPage.astro'),
   airflow: await read('apps/web/src/components/AirflowTracePulse.astro'),
   css: await read('apps/web/src/styles/experience.css'),
   globalCss: await read('apps/web/src/styles/global.css'),
@@ -157,16 +158,39 @@ check(files.header.includes('/brand/aeroventa-mark.svg') && files.header.include
 check(files.footer.includes('/brand/aeroventa-mark.svg') && files.footer.includes('brand-mark-locked--footer') && files.footer.includes('brand-wordmark-tail">EROVENTA'), 'Footer uses locked AEROVENTA 01 A-symbol integrated into the wordmark');
 check(!files.header.includes('/brand/aeroventa-wordmark.svg') && !files.footer.includes('/brand/aeroventa-wordmark.svg'), 'Corrupt shortlist-heading crop is not exposed as the visible wordmark');
 check(files.header.includes('Обсудить задачу <span aria-hidden="true">→</span>') && files.header.includes('data-contact-open'), 'Header universal CTA links to contact');
-check(files.home.includes('Получить ориентир стоимости') && files.home.includes('Есть проект — запросить смету'), 'Homepage CTA hierarchy matches canonical visual baseline');
+check(files.home.includes('href="/contact/" data-aeroventa-event="primary_cta">Обсудить задачу') && files.home.includes('Есть проект — запросить смету'), 'Homepage CTA respects latest Owner-approved discussion-first hierarchy');
 check(files.home.includes('AEROVENTA — инженерные системы вентиляции в СПб и Ленобласти'), 'Home SEO title distinct from primary installation service title');
 check(files.layout.includes('retainedDescriptionFallback') && files.layout.includes('seoDescription') && files.layout.includes('content.seo_description?.trim()'), 'Five legacy SEO descriptions use safe metadata fallbacks, preserving Directus priority');
 check(files.layout.includes('editorialOgFallback') && files.layout.includes('content.og_image || editorialOgFallback[content.path]'), 'Social sharing uses case-context media if Directus has not supplied an image');
-check(!files.home.includes('<svg class="hero-engineering__overlay"') && files.home.includes('solution-mobile-legend'), 'Displaced hero arrows absent; supply/exhaust still explained');
-check(files.home.includes('/evidence/hero/engineering-scene-accepted-v43.webp') && files.home.includes('Комплексный подход к вентиляции'), 'Owner-approved architectural engineering illustration preserved');
+check(!files.home.includes('<svg class="hero-engineering__overlay"') && !files.home.includes('solution-mobile-pair') && files.home.includes('class="home-shell process-strip"'), 'No displaced HERO arrows or repeating mobile HVAC triptych; existing stages preserved');
+check(!files.home.includes('/evidence/hero/engineering-scene-accepted-v43.webp') && files.home.includes('Комплексный подход к вентиляции'), 'Rejected repeated engineering illustration removed while informational copy remains');
 check(!files.home.includes('object-ribbon__number') && (files.home.match(/\['(?:Квартиры|Коттеджи|Рестораны|Магазины|Производства|Новостройки)/g) ?? []).length === 6, 'Object navigation has six named destinations without catalogue counters');
-check(files.home.includes('owner-luxury-airflow-20261010.png') && files.home.includes("'/evidence/hero/ductwork-editorial-v43.webp'") && files.home.includes('hasOwnerHeroMedia'), 'Owner architectural HERO bound to exact asset with safe legacy fallback until binary is installed');
-check(files.home.includes('Приток · воздух в помещение') && files.home.includes('Вытяжка · удаление воздуха'), 'Supply/exhaust remain independent in accepted diagram');
+check(files.home.includes('home-owner-editorial-1672.webp') && files.home.includes('home-owner-editorial-640.webp') && files.home.includes('hasOwnerHeroMedia') && !files.home.includes('owner-luxury-airflow-20261010.png'), 'Latest Owner calm architectural HERO bound to explicit optimized variants');
+check(files.airflow.includes('airflow-header-trace__route--supply') && files.airflow.includes('airflow-header-trace__route--exhaust') && !files.home.includes('solution-overlay-label'), 'Independent supply/exhaust TRACE remains; removed diagram does not assert a false connection');
 check(!files.home.includes('РЕАЛЬНЫЙ МОНТАЖ · 7 PARK · ПАВЛОВСК') && files.home.includes('Реальный монтаж AEROVENTA на объекте 7 PARK'), 'Rejected visual caption gone, accessible attribution preserved');
+
+const ownerMediaVariants = [
+  'home-owner-editorial-640.webp',
+  'home-owner-editorial-1100.webp',
+  'home-owner-editorial-1672.webp',
+  'services-owner-editorial-640.webp',
+  'services-owner-editorial-1100.webp',
+  'services-owner-editorial-1774.webp',
+];
+const mediaStats = await Promise.all(ownerMediaVariants.map(async name => {
+  try { return await fs.stat(path.join(root, 'apps/web/public/evidence/hero', name)); }
+  catch { return null; }
+}));
+check(mediaStats.every(stat => stat?.isFile() && stat.size > 20000), 'All six optimized Owner source image variants exist as nonempty files');
+check(files.services.includes('services-owner-editorial-1774.webp') &&
+      files.services.includes('services-owner-editorial-640.webp') &&
+      !files.services.includes('engineering-ductwork.jpg'), 'Rejected Services metal-duct HERO replaced with Owner architectural illustration');
+check(files.home.includes('class="home-consultant-inline"') &&
+      files.services.includes('class="services-consultant-inline"') &&
+      files.css.includes('body:has(.home-hero--calm-editorial) .consultant-launcher') &&
+      files.css.includes('body:has(.services-hero--owner-editorial) .consultant-launcher'),
+      'Mobile consultant access remains reachable inline without fixed overlap on both changed heroes');
+
 const heroFigure = files.home.match(/<figure class="hero-engineering">([\s\S]*?)<\/figure>/)?.[1] ?? '';
 const caseSection = files.home.match(/<section class="case-feature"[\s\S]*?<\/section>/)?.[0] ?? '';
 const caseImageCount = (caseSection.match(/<img\s/gu) ?? []).length;
