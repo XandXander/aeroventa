@@ -20,6 +20,9 @@ jobs:
     steps:
       - name: Checkout exact review commit
         uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
       - name: Set up Node
         uses: actions/setup-node@v6
         with:
