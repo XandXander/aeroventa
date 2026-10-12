@@ -577,3 +577,6 @@
 }
 
 @media(max-width:760px){.experience-dialog--contact .experience-dialog__shell{padding-bottom:max(24px,env(safe-area-inset-bottom,24px))}}
+
+/* About mobile: in-flow consultant CTA is reachable without covering the principal portfolio action. */
+@media(max-width:760px){body:has(.about-premium) .consultant-launcher{display:none}}
