@@ -4,14 +4,14 @@ import { getByPath } from '@/lib/content-source';
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-const ownerHeroMedia = '/evidence/hero/owner-luxury-airflow-20261010.png';
+const ownerHeroMedia = '/evidence/hero/home-owner-editorial-1672.webp';
 const hasOwnerHeroMedia = [
-  'apps/web/public/evidence/hero/owner-luxury-airflow-20261010.png',
-  'public/evidence/hero/owner-luxury-airflow-20261010.png',
+  'apps/web/public/evidence/hero/home-owner-editorial-1672.webp',
+  'public/evidence/hero/home-owner-editorial-1672.webp',
 ].some(p => existsSync(resolve(p)));
 const hasOptimizedOwnerHero = hasOwnerHeroMedia && [
-  'apps/web/public/evidence/hero/owner-luxury-airflow-640.webp',
-  'public/evidence/hero/owner-luxury-airflow-640.webp',
+  'apps/web/public/evidence/hero/home-owner-editorial-640.webp',
+  'public/evidence/hero/home-owner-editorial-640.webp',
 ].some(p => existsSync(resolve(p)));
 
 const content = await getByPath('/');
@@ -43,7 +43,7 @@ const questions = [
 ---
 
 <BaseLayout content={page}>
-  <section class:list={['home-hero', 'home-hero--v43', hasOwnerHeroMedia && 'home-hero--owner-interior']} aria-labelledby="home-title">
+  <section class:list={['home-hero', 'home-hero--v43', hasOwnerHeroMedia && 'home-hero--owner-interior', hasOwnerHeroMedia && 'home-hero--calm-editorial']} aria-labelledby="home-title">
     <div class="home-shell home-hero__grid">
       <div class="home-hero__copy">
         <p class="home-kicker">Монтаж вентиляции под ключ</p>
@@ -54,7 +54,7 @@ const questions = [
         </p>
         <p class="home-geo">Санкт-Петербург · Ленинградская область · Москва · Карелия</p>
         <div class="home-actions" aria-label="Основные действия">
-          <a class="button button--primary" href="/obekt-bez-gotovogo-proekta/" data-aeroventa-event="primary_cta">Получить ориентир стоимости <span aria-hidden="true">→</span></a>
+          <a class="button button--primary" href="/contact/" data-aeroventa-event="primary_cta">Обсудить задачу <span aria-hidden="true">→</span></a>
           <a class="button button--ghost" href="/montazh-po-proektu/">Есть проект — запросить смету</a>
         </div>
       </div>
@@ -63,11 +63,11 @@ const questions = [
         <img
           class="hero-engineering__photo"
           src={hasOwnerHeroMedia ? ownerHeroMedia : '/evidence/hero/ductwork-editorial-v43.webp'}
-          srcset={hasOptimizedOwnerHero ? '/evidence/hero/owner-luxury-airflow-640.webp 640w, /evidence/hero/owner-luxury-airflow-1100.webp 1100w, /evidence/hero/owner-luxury-airflow-1774.webp 1774w' : undefined}
+          srcset={hasOptimizedOwnerHero ? '/evidence/hero/home-owner-editorial-640.webp 640w, /evidence/hero/home-owner-editorial-1100.webp 1100w, /evidence/hero/home-owner-editorial-1672.webp 1672w' : undefined}
           sizes={hasOptimizedOwnerHero ? '100vw' : undefined}
-          width={hasOwnerHeroMedia ? 1774 : 800}
-          height={hasOwnerHeroMedia ? 887 : 600}
-          alt={hasOwnerHeroMedia ? 'Художественная визуализация интерьерной вентиляции с воздушными потоками — не выполненный объект AEROVENTA' : 'Реальный монтаж вентиляционных воздуховодов на объекте 7 PARK в Павловске'}
+          width={hasOwnerHeroMedia ? 1672 : 800}
+          height={hasOwnerHeroMedia ? 941 : 600}
+          alt={hasOwnerHeroMedia ? 'Архитектурная иллюстрация спокойного интерьера со встроенными потолочными воздухораспределителями — не выполненный объект AEROVENTA' : 'Реальный монтаж вентиляционных воздуховодов на объекте 7 PARK в Павловске'}
           fetchpriority="high"
           decoding="async"
         />
@@ -86,6 +86,7 @@ const questions = [
         </a>
       ))}
     </nav>
+    <a class="home-consultant-inline" href="/contact/" data-consultant-open data-source="home_inline_mobile" aria-controls="aeroventa-consultant-dialog" aria-haspopup="dialog">Инженерный консультант <span aria-hidden="true">↗</span></a>
   </section>
 
   <section class="home-section home-solution" id="process" aria-labelledby="solution-title">
@@ -100,28 +101,6 @@ const questions = [
         <a class="button button--ghost solution-cta" href="/montazh-ventiliacii/">Подробнее о процессе <span aria-hidden="true">→</span></a>
       </div>
 
-      <div class="solution-mobile-legend" aria-hidden="true">
-        <span>Приток · воздух в помещение</span>
-        <span>Вытяжка · удаление воздуха</span>
-      </div>
-      <div class="solution-diagram" role="img" aria-label="Иллюстрация двух независимых направлений вентиляции: подача свежего воздуха в помещение и удаление отработанного воздуха. Условная схема, не исполнительный чертёж.">
-        <img src="/evidence/hero/engineering-scene-accepted-v43.webp" alt="" width="1036" height="338" loading="lazy" decoding="async" />
-        <div class="solution-overlay-labels" aria-hidden="true">
-          <p class="solution-overlay-label solution-overlay-label--supply"><strong>Приток</strong><span>Подача свежего воздуха</span></p>
-          <p class="solution-overlay-label solution-overlay-label--exhaust"><strong>Вытяжка</strong><span>Удаление отработанного воздуха</span></p>
-        </div>
-        
-      </div>
-      <div class="solution-mobile-pair" aria-label="Две независимые инженерные линии вентиляции">
-        <figure class="solution-mobile-pair__panel">
-          <div class="solution-mobile-pair__crop"><img src="/evidence/hero/engineering-scene-accepted-v43.webp" width="1036" height="338" alt="" loading="lazy" decoding="async" /></div>
-          <figcaption>Подача свежего воздуха · условная схема притока</figcaption>
-        </figure>
-        <figure class="solution-mobile-pair__panel solution-mobile-pair__panel--exhaust">
-          <div class="solution-mobile-pair__crop"><img src="/evidence/hero/engineering-scene-accepted-v43.webp" width="1036" height="338" alt="" loading="lazy" decoding="async" /></div>
-          <figcaption>Удаление отработанного воздуха · условная схема вытяжки</figcaption>
-        </figure>
-      </div>
     </div>
 
     <div class="home-shell process-strip" aria-label="Этапы работы">
