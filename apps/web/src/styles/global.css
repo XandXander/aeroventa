@@ -3667,3 +3667,16 @@ html::-webkit-scrollbar-thumb:hover {background:#7c93a2;}
  .about-premium .about-hero h1{font-size:clamp(1.96rem,7.9vw,2.65rem);line-height:1.1;letter-spacing:-.048em;text-wrap:balance}
  .about-premium .about-hero__team img{height:min(63vw,285px);object-position:center 55%;max-height:285px}
 }
+
+
+/* Archive story index: documentary imagery only for attributable projects, not generic art. */
+.practice-case-strip__photo,.story-index__photo{
+ display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;object-position:center center;
+ margin-bottom:16px;border:1px solid #d6e0e7
+}
+.story-index__grid .story-index__photo{max-height:205px}
+.practice-case-strip .practice-case-strip__photo{max-height:180px}
+@media(max-width:760px){
+ .story-index__grid .story-index__photo,.practice-case-strip .practice-case-strip__photo{max-height:185px}
+ .story-index__grid a,.practice-case-strip a{min-width:0}
+}
