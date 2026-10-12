@@ -1,5 +1,12 @@
 # V43 Owner legacy object and photograph coverage register — 2026-10-10
 
+> **2026-10-12 Owner confirmation — CURRENT and overrides the earlier photographic-rights assumptions below.** Owner explicitly states that ALL discussed AEROVENTA photos were personally photographed by the Owner. Some copies were later downloaded from internet websites where the Owner had previously uploaded them, after some phone copies were deleted. An internet download of one's own photo is not a third-party stock licence. Do not request authorship proof again, and do not block source restoration by incorrectly classifying these as third-party images.
+
+> Case assignment/provenance is a separate factual check: a self-authored image still has to belong to the correct case, and the person in an image may carry separate identifiable-person consent considerations where applicable.
+
+> **Old photo binary PENDING statements below are historical.** Fresh PR #10 Git tree at 2026-10-12 contains Owner homepage hero, PONSSE original letter, original portrait and additional case/team photograph archives. These Git-tree files do not prove staging/production deployment.
+
+
 ## Evidence boundaries
 - Compared: `migration/route-contract.json`, `migration/legacy-page-source-index.json` (29 existing fetched HTML evidence rows), `migration/legacy-source-manifest.json`, original indexed old Bitrix site `/blog/istorii-proektov/` and old case pages, current PR #10 source `EvidenceCasePage.astro`, `PortfolioHubPage.astro`, `PracticeHubPage.astro`, media Git tree.
 - Current legacy SEO contract unchanged: **29 retained HTML 200 + 1 PDF 200 + 13 exact 301 + 54 exact 410 + 8 exact preserved media paths**. 98 normalized candidates including 404 technical removal.
