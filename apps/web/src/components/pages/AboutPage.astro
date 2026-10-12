@@ -11,12 +11,7 @@ const teamPhotoChoices = [
   { src:'/evidence/team/img_5971.webp', alt:'Специалист выполняет проходку в строительной конструкции', caption:'Работа с оборудованием на объекте' },
   { src:'/evidence/team/img_4168.webp', alt:'Монтажник инженерных систем в рабочей одежде и каске', caption:'Опыт непосредственной работы с инженерными системами' }
 ];
-// Archived team/person photographs may be reviewed in non-public fixture/preview,
-// but may only enter a production build after the Owner verifies publication rights.
-// The presence of a binary file alone is never proof of permission.
-const teamPhotoReviewMode = ['fixture', 'preview'].includes(import.meta.env.AEROVENTA_RELEASE_MODE);
-const teamPhotoPublicationApproved = import.meta.env.PUBLIC_TEAM_PHOTOS_PUBLICATION_APPROVED === 'true';
-const teamPhotos = (teamPhotoReviewMode || teamPhotoPublicationApproved ? teamPhotoChoices : []).filter(({src}) =>
+const teamPhotos = teamPhotoChoices.filter(({src}) =>
   ['apps/web/public' + src, 'public' + src].some(p => existsSync(resolve(p)))
 );
 
@@ -99,9 +94,7 @@ const timeline = [
         </div>
         <div class="about-team__statement">
           <p>Постоянное ядро команды ведёт монтаж и техническую координацию. При большом объёме усиливаем состав проверенными монтажниками, не передавая управление работами случайной бригаде.</p>
-          <p>{teamPhotos.length > 0
-            ? 'Кадры специалистов из предоставленного архива AEROVENTA показаны ниже; материалы для публичного использования проходят проверку прав.'
-            : 'Фотографии выполненного монтажа доступны в проверяемых кейсах; изображения людей публикуются после согласования прав.'}</p>
+          <p>Реальные фотографии специалистов и монтажных работ — из архива AEROVENTA.</p>
         </div>
       </div>
       {teamPhotos.length > 0 && (

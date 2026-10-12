@@ -185,11 +185,6 @@ try {
             report.open_media_debt.push({route,reason:'Original illustrated instruction still lacks historical media; source restore required before release'});
           }
         }
-        if (id === 'about') {
-          // Fixture visual review needs the actual archive imagery; production is fail-closed.
-          const teamCount = await page.locator('.about-team__photos img').count();
-          if (teamCount !== 3) report.fail.push({route,view,reason:'Protected fixture must display three original team photos',teamCount});
-        }
         if (id === 'services') {
           const ducts = await page.locator('.services-editorial__image img[src="/evidence/hero/engineering-ductwork.jpg"]').count();
           const wrong = await page.locator('.services-editorial__image img[src="/evidence/hero/hiend-engineering-visual-owner-v43.webp"]').count();

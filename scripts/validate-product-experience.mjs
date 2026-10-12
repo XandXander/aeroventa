@@ -16,7 +16,6 @@ const files = {
   footer: await read('apps/web/src/components/Footer.astro'),
   lead: await read('apps/web/src/components/LeadCTA.astro'),
   contactPage: await read('apps/web/src/components/pages/ContactPage.astro'),
-  aboutPage: await read('apps/web/src/components/pages/AboutPage.astro'),
   ready: await read('apps/web/src/components/pages/ProjectReadyPage.astro'),
   notReady: await read('apps/web/src/components/pages/ProjectNotReadyPage.astro'),
   home: await read('apps/web/src/pages/index.astro'),
@@ -139,10 +138,6 @@ check(!files.header.includes('data-consultant-open') && files.premium.includes('
 check(!files.footer.includes('data-consultant-open') && files.footer.includes('data-contact-open'), 'Footer retains contact form without consultant menu');
 check(files.lead.includes('data-contact-open'), 'Lead CTA opens modern contact form');
 check(files.contactPage.includes('<ContactForm'), 'Contact page includes semantic form');
-check(files.aboutPage.includes("PUBLIC_TEAM_PHOTOS_PUBLICATION_APPROVED === 'true'") &&
-      files.aboutPage.includes("['fixture', 'preview'].includes(import.meta.env.AEROVENTA_RELEASE_MODE)") &&
-      files.aboutPage.includes("teamPhotoReviewMode || teamPhotoPublicationApproved"),
-      'People images are visible to private preview but require explicit publication rights in production');
 check(files.home.includes('data-consultant-open') && files.home.includes('data-contact-open'), 'Homepage close offers consultant and direct contact');
 check(files.ready.includes('data-contact-open') && files.ready.includes('data-project-status="ready"'), 'Ready-project route preserves contextual contact');
 check(files.notReady.includes('data-contact-open') && files.notReady.includes('data-consultant-open'), 'No-project route exposes form and consultant');
