@@ -165,7 +165,7 @@ check(files.layout.includes('editorialOgFallback') && files.layout.includes('con
 check(!files.home.includes('<svg class="hero-engineering__overlay"') && !files.home.includes('solution-mobile-pair') && files.home.includes('class="home-shell process-strip"'), 'No displaced HERO arrows or repeating mobile HVAC triptych; existing stages preserved');
 check(!files.home.includes('/evidence/hero/engineering-scene-accepted-v43.webp') && files.home.includes('Комплексный подход к вентиляции'), 'Rejected repeated engineering illustration removed while informational copy remains');
 check(!files.home.includes('object-ribbon__number') && (files.home.match(/\['(?:Квартиры|Коттеджи|Рестораны|Магазины|Производства|Новостройки)/g) ?? []).length === 6, 'Object navigation has six named destinations without catalogue counters');
-check(files.home.includes('home-owner-editorial-1672.webp') && files.home.includes('home-owner-editorial-640.webp') && files.home.includes('hasOwnerHeroMedia') && !files.home.includes('owner-luxury-airflow-20261010.png'), 'Latest Owner calm architectural HERO bound to explicit optimized variants');
+check(files.home.includes('owner-luxury-airflow-20261010.png') && files.home.includes('hasOwnerHeroMedia') && files.home.includes('if (!hasOwnerHeroMedia) throw') && !files.home.includes('home-owner-editorial-1672.webp'), 'Current Owner-approved original blue-airflow HERO is fail-closed and not substituted');
 check(files.airflow.includes('airflow-header-trace__route--supply') && files.airflow.includes('airflow-header-trace__route--exhaust') && !files.home.includes('solution-overlay-label'), 'Independent supply/exhaust TRACE remains; removed diagram does not assert a false connection');
 check(!files.home.includes('РЕАЛЬНЫЙ МОНТАЖ · 7 PARK · ПАВЛОВСК') && files.home.includes('Реальный монтаж AEROVENTA на объекте 7 PARK'), 'Rejected visual caption gone, accessible attribution preserved');
 
@@ -187,7 +187,7 @@ check(files.services.includes('services-owner-editorial-1774.webp') &&
       !files.services.includes('engineering-ductwork.jpg'), 'Rejected Services metal-duct HERO replaced with Owner architectural illustration');
 check(files.home.includes('class="home-consultant-inline"') &&
       files.services.includes('class="services-consultant-inline"') &&
-      files.css.includes('body:has(.home-hero--calm-editorial) .consultant-launcher') &&
+      files.css.includes('body:has(.home-hero--owner-airflow) .consultant-launcher') &&
       files.css.includes('body:has(.services-hero--owner-editorial) .consultant-launcher'),
       'Mobile consultant access remains reachable inline without fixed overlap on both changed heroes');
 
