@@ -313,6 +313,25 @@ if (paragraph) legacyParagraphs.push(paragraph.trim());
     </div>
   </section>
 
+  {content.path === '/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/' && (
+    <section class="p0-authentic-photo home-section" aria-labelledby="p0-authentic-photo-title">
+      <div class="home-shell p0-authentic-photo__layout">
+        <figure>
+          <img src="/upload/medialibrary/548/5488fb415056eee52ac63ff9d4850c63.jpg"
+            width="1024" height="700" loading="lazy" decoding="async"
+            alt="Керн из бетона после алмазного бурения: подлинное изображение из исторической статьи AEROVENTA" />
+          <figcaption>Оригинальный архивный снимок из этой статьи, сохранённый по исходному URL. Не отдельное подтверждение способа извлечения заклинившей коронки.</figcaption>
+        </figure>
+        <div>
+          <p class="section-index section-index--orange">Фото из первоисточника</p>
+          <h2 id="p0-authentic-photo-title">Что действительно находилось внутри бетонного основания.</h2>
+          <p>Отколовшийся керн и попавшие в рез включения могут менять сопротивление коронки. На фото — реальный керн из исходной публикации; порядок работы при заклинивании определяется безопасной процедурой для конкретной установки.</p>
+          <p>Историческая схема обратного молота остаётся отдельным материалом: её нельзя заменять чужим товарным изображением или искусственно созданным чертежом.</p>
+        </div>
+      </div>
+    </section>
+  )}
+
   <div class="p0-sections">
     {spec.sections.map((section) => (
       <section class="p0-section">
@@ -410,4 +429,13 @@ if (paragraph) legacyParagraphs.push(paragraph.trim());
 .p0-historic-reading__body p:first-child:first-letter{font-size:1.6em;font-weight:650;line-height:1;}
 @media(max-width:1000px){.p0-hero__grid,.p0-historic-reading__layout,.p0-section__grid{grid-template-columns:1fr;}.p0-historic-reading__aside{position:static;}.p0-historic-reading__aside h2{max-width:22ch;}.p0-hero h1{max-width:none;}}
 @media(max-width:760px){.p0-hero{padding:34px 0 42px;}.p0-hero h1{font-size:clamp(2.15rem,10.5vw,3.7rem);line-height:1.06;}.p0-historic-reading{padding:44px 0;}.p0-historic-reading__body{font-size:1rem;line-height:1.74;}.p0-section h2{max-width:none;}}
+
+.p0-authentic-photo{background:#e8edf0;color:#203749}
+.p0-authentic-photo__layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(24px,4vw,72px);align-items:center}
+.p0-authentic-photo figure{margin:0;min-width:0}
+.p0-authentic-photo img{display:block;width:100%;height:auto;max-height:520px;object-fit:contain;background:#dee6eb}
+.p0-authentic-photo figcaption{font-size:.8rem;line-height:1.55;color:#506674;margin-top:12px}
+.p0-authentic-photo h2{font-size:clamp(1.65rem,3.2vw,3.3rem);line-height:1.12;letter-spacing:-.04em}
+.p0-authentic-photo__layout>div>p:not(.section-index){line-height:1.67;color:#405668}
+@media(max-width:850px){.p0-authentic-photo__layout{grid-template-columns:1fr}}
 </style>
