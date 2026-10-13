@@ -407,7 +407,7 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
         <p class="case-detail-hero__location">{spec.location}</p>
         <p class="case-detail-hero__lede">{spec.lede}</p>
         <div class="home-actions">
-          <a class="button button--primary" href="/contact/?intent=project">Обсудить похожую задачу →</a>
+          <button class="button button--primary" type="button" data-contact-open data-source="evidence_case" data-project-status="unknown">Обсудить похожую задачу →</button>
           <a class="button button--ghost" href="/portfolio/">Все объекты</a>
         </div>
       </div>
@@ -465,7 +465,7 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
 
   <section class="case-detail-facts" aria-labelledby="case-facts-title">
     <div class="home-shell">
-      <p class="section-index">01 / Факты объекта</p>
+      <p class="section-index">01 / Сведения из публикации</p>
       <h2 id="case-facts-title">{documentary.facts}</h2>
       <dl class="case-detail-facts__grid">
         {spec.facts.map(([label,value]) => <div><dt>{label}</dt><dd>{value}</dd></div>)}

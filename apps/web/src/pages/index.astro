@@ -4,15 +4,12 @@ import { getByPath } from '@/lib/content-source';
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-const ownerHeroMedia = '/evidence/hero/home-owner-editorial-1672.webp';
+const ownerHeroMedia = '/evidence/hero/owner-luxury-airflow-20261010.png';
 const hasOwnerHeroMedia = [
-  'apps/web/public/evidence/hero/home-owner-editorial-1672.webp',
-  'public/evidence/hero/home-owner-editorial-1672.webp',
+  'apps/web/public/evidence/hero/owner-luxury-airflow-20261010.png',
+  'public/evidence/hero/owner-luxury-airflow-20261010.png',
 ].some(p => existsSync(resolve(p)));
-const hasOptimizedOwnerHero = hasOwnerHeroMedia && [
-  'apps/web/public/evidence/hero/home-owner-editorial-640.webp',
-  'public/evidence/hero/home-owner-editorial-640.webp',
-].some(p => existsSync(resolve(p)));
+if (!hasOwnerHeroMedia) throw new Error('Approved Owner HOME HERO original missing; refusing image substitution');
 
 const content = await getByPath('/');
 if (!content) throw new Error('Home content is missing');
@@ -43,7 +40,7 @@ const questions = [
 ---
 
 <BaseLayout content={page}>
-  <section class:list={['home-hero', 'home-hero--v43', hasOwnerHeroMedia && 'home-hero--owner-interior', hasOwnerHeroMedia && 'home-hero--calm-editorial']} aria-labelledby="home-title">
+  <section class:list={['home-hero', 'home-hero--v43', hasOwnerHeroMedia && 'home-hero--owner-interior', hasOwnerHeroMedia && 'home-hero--owner-airflow']} aria-labelledby="home-title">
     <div class="home-shell home-hero__grid">
       <div class="home-hero__copy">
         <p class="home-kicker">Монтаж вентиляции под ключ</p>
@@ -54,20 +51,18 @@ const questions = [
         </p>
         <p class="home-geo">Санкт-Петербург · Ленинградская область · Москва · Карелия</p>
         <div class="home-actions" aria-label="Основные действия">
-          <a class="button button--primary" href="/contact/" data-aeroventa-event="primary_cta">Обсудить задачу <span aria-hidden="true">→</span></a>
-          <a class="button button--ghost" href="/montazh-po-proektu/">Есть проект — запросить смету</a>
+          <a class="button button--primary" href="/contact/" data-contact-open data-source="home_primary" data-aeroventa-event="primary_cta" aria-haspopup="dialog">Обсудить задачу <span aria-hidden="true">→</span></a>
+          <a class="button button--ghost" href="/montazh-po-proektu/" data-contact-open data-project-status="ready" data-source="home_estimate" aria-haspopup="dialog">Есть проект — запросить смету</a>
         </div>
       </div>
 
       <figure class="hero-engineering">
         <img
           class="hero-engineering__photo"
-          src={hasOwnerHeroMedia ? ownerHeroMedia : '/evidence/hero/ductwork-editorial-v43.webp'}
-          srcset={hasOptimizedOwnerHero ? '/evidence/hero/home-owner-editorial-640.webp 640w, /evidence/hero/home-owner-editorial-1100.webp 1100w, /evidence/hero/home-owner-editorial-1672.webp 1672w' : undefined}
-          sizes={hasOptimizedOwnerHero ? '100vw' : undefined}
-          width={hasOwnerHeroMedia ? 1672 : 800}
-          height={hasOwnerHeroMedia ? 941 : 600}
-          alt={hasOwnerHeroMedia ? 'Архитектурная иллюстрация спокойного интерьера со встроенными потолочными воздухораспределителями — не выполненный объект AEROVENTA' : 'Реальный монтаж вентиляционных воздуховодов на объекте 7 PARK в Павловске'}
+          src={ownerHeroMedia}
+          width={hasOwnerHeroMedia ? 1774 : 800}
+          height={hasOwnerHeroMedia ? 887 : 600}
+          alt="Утверждённая архитектурная визуализация интерьера с синими воздушными потоками. Не фотография объекта AEROVENTA"
           fetchpriority="high"
           decoding="async"
         />
@@ -100,7 +95,20 @@ const questions = [
         </p>
         <a class="button button--ghost solution-cta" href="/montazh-ventiliacii/">Подробнее о процессе <span aria-hidden="true">→</span></a>
       </div>
-
+      <figure class="solution-diagram" role="img" aria-label="Принципиальная иллюстрация двух независимых вентиляционных потоков: приток и вытяжка. Не исполнительная схема.">
+        <img src="/evidence/hero/engineering-scene-accepted-v43.webp" width="1036" height="338" alt="" loading="lazy" decoding="async" />
+        <figcaption class="solution-visual-note">Принципиальная иллюстрация · не исполнительная схема</figcaption>
+      </figure>
+      <div class="solution-mobile-pair" aria-label="Два фрагмента утверждённой инженерной иллюстрации">
+        <figure class="solution-mobile-pair__panel solution-mobile-pair__panel--supply">
+          <div class="solution-mobile-pair__crop"><img src="/evidence/hero/engineering-scene-accepted-v43.webp" width="1036" height="338" alt="" loading="lazy" decoding="async" /></div>
+          <figcaption>Приток · подача воздуха в помещение</figcaption>
+        </figure>
+        <figure class="solution-mobile-pair__panel solution-mobile-pair__panel--exhaust">
+          <div class="solution-mobile-pair__crop"><img src="/evidence/hero/engineering-scene-accepted-v43.webp" width="1036" height="338" alt="" loading="lazy" decoding="async" /></div>
+          <figcaption>Вытяжка · удаление воздуха из помещения</figcaption>
+        </figure>
+      </div>
     </div>
 
     <div class="home-shell process-strip" aria-label="Этапы работы">
