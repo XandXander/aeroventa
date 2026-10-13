@@ -3680,3 +3680,10 @@ html::-webkit-scrollbar-thumb:hover {background:#7c93a2;}
  .story-index__grid .story-index__photo,.practice-case-strip .practice-case-strip__photo{max-height:185px}
  .story-index__grid a,.practice-case-strip a{min-width:0}
 }
+
+/* PR12 P0 — optical clarity of the unchanged approved original illustration. */
+.home-hero--owner-airflow ~ .home-solution .solution-diagram img,
+.home-hero--owner-airflow ~ .home-solution .solution-mobile-pair__crop img {
+ filter:contrast(1.2) saturate(1.08) brightness(.97);
+}
+.home-hero--owner-airflow ~ .home-solution .solution-diagram{background:#dce7e9}
