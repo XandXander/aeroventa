@@ -201,6 +201,19 @@ const timeline = [
 .about-team__verified-names strong{font-size:clamp(1rem,1.3vw,1.25rem);line-height:1.3}
 .about-team__verified-names span{font-size:.9rem;line-height:1.4;color:#4c6571}
 .about-hero__team--group img{object-fit:contain;aspect-ratio:4/3;width:100%;height:auto}
+@media(max-width:360px){
+  /* 320 px: reserve an editorial photographic stage rather than crop or distort four people.
+     Image remains fully visible at its natural 4:3 proportion, centered on the quiet backdrop. */
+  .about-premium .about-hero__team--group img{
+    display:block;
+    width:100%;
+    height:clamp(250px,78vw,280px);
+    aspect-ratio:auto;
+    object-fit:contain;
+    object-position:center;
+    background:#e7edf0;
+  }
+}
 @media(max-width:960px){.about-team__photos--owners,.about-team__verified-names{grid-template-columns:repeat(2,minmax(0,1fr))}.about-team__photos--owners .about-team__photo:last-child{grid-column:auto;justify-self:auto;width:auto}}
 @media(max-width:520px){.about-team__photos--owners,.about-team__verified-names{grid-template-columns:1fr 1fr;gap:20px 12px}.about-team__verified-names{gap:24px 16px}.about-team__photos--owners figcaption strong{font-size:.92rem}}
 </style>
