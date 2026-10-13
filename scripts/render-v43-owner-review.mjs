@@ -129,6 +129,8 @@ try {
               strip_top:r?.top??0,inline_visible:inline?getComputedStyle(inline).display!=='none':false,
               floating_visible:fixed?getComputedStyle(fixed).display!=='none':false,
               diagram_count:document.querySelectorAll('.home-solution .solution-diagram,.home-solution .solution-mobile-pair').length,
+              desktop_diagram_visible:!!document.querySelector('.home-solution .solution-diagram') && getComputedStyle(document.querySelector('.home-solution .solution-diagram')).display !== 'none',
+              mobile_pair_visible:!!document.querySelector('.home-solution .solution-mobile-pair') && getComputedStyle(document.querySelector('.home-solution .solution-mobile-pair')).display !== 'none',
               process_stages:document.querySelectorAll('.home-solution .process-strip > div').length,
             };
           });
@@ -137,7 +139,9 @@ try {
           const photoBeforeCopy = optical.photo_bottom <= optical.copy_top + 3;
           const desktopColumns = optical.copy_right <= optical.photo_left + 3 && optical.photo_right >= width*.8;
           const ownerScenePass = optical.natural_width > 0 &&
-            optical.diagram_count === 0 && optical.process_stages === 4 &&
+            optical.diagram_count === 2 && optical.process_stages === 4 &&
+            (isMobile ? (!optical.desktop_diagram_visible && optical.mobile_pair_visible) :
+                        (optical.desktop_diagram_visible && !optical.mobile_pair_visible)) &&
             (isMobile || isTablet ?
               (optical.photo_fit === (isMobile ? 'cover' : 'contain') && photoBeforeCopy) :
               (optical.photo_fit === 'cover' && desktopColumns)) &&
@@ -171,10 +175,10 @@ try {
             const l = document.querySelector('.consultant-launcher')?.getBoundingClientRect();
             const overlaps = !!p && !!l && Math.max(p.left,l.left)<Math.min(p.right,l.right) &&
               Math.max(p.top,l.top)<Math.min(p.bottom,l.bottom);
-            return {headingTop:h?.top,photoWidth:i?.naturalWidth,photoHeight:p?.height,photoBottom:p?.bottom,launcherOverlap:overlaps,launcherVisible:!!l && getComputedStyle(document.querySelector('.consultant-launcher')).display!=='none',inlineConsultant:!!document.querySelector('.about-hero a[data-consultant-open][data-source="about_inline"]')};
+            return {headingTop:h?.top,photoTop:p?.top,photoWidth:i?.naturalWidth,photoHeight:p?.height,photoBottom:p?.bottom,launcherOverlap:overlaps,launcherVisible:!!l && getComputedStyle(document.querySelector('.consultant-launcher')).display!=='none',inlineConsultant:!!document.querySelector('.about-hero a[data-consultant-open][data-source="about_inline"]')};
           });
           if (!optical.photoWidth || optical.headingTop == null || optical.headingTop >= height*.55 ||
-              (width<=760 && (optical.photoHeight > 320 || optical.launcherOverlap || optical.launcherVisible || !optical.inlineConsultant))) {
+              (width<=760 && (optical.photoHeight < 250 || optical.photoHeight > height*.85 || optical.photoTop >= height*.7 || optical.launcherOverlap || optical.launcherVisible || !optical.inlineConsultant))) {
             report.fail.push({route,view,reason:'About first-fold heading and documentary team photo must be visible without consultant obscuring the image',optical});
           }
         }
