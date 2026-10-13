@@ -205,9 +205,15 @@ const mediaStats = await Promise.all(ownerMediaVariants.map(async name => {
   catch { return null; }
 }));
 check(mediaStats.every(stat => stat?.isFile() && stat.size > 20000), 'All six optimized Owner source image variants exist as nonempty files');
-check(files.services.includes('services-owner-editorial-1774.webp') &&
-      files.services.includes('services-owner-editorial-640.webp') &&
-      !files.services.includes('engineering-ductwork.jpg'), 'Rejected Services metal-duct HERO replaced with Owner architectural illustration');
+check(files.services.includes('/evidence/cafe/owner-cover-v43.webp') &&
+      files.services.includes('/evidence/7park/duct-route.jpg') &&
+      !files.services.includes('<img src="/evidence/hero/services-owner-editorial-1774.webp"') &&
+      !files.services.includes('engineering-ductwork.jpg'),
+      'Services HERO uses two attributable source-evidenced real jobs, not a duplicated HOME rendering');
+for(const p of ['evidence/cafe/owner-cover-v43.webp','evidence/7park/duct-route.jpg']){
+  const stat=await fs.stat(path.join(root,'apps/web/public',p)).catch(()=>null);
+  check(Boolean(stat?.isFile() && stat.size>20000), 'Source-valid Services evidence asset exists: '+p);
+}
 check(files.home.includes('class="home-consultant-inline"') &&
       files.services.includes('class="services-consultant-inline"') &&
       files.css.includes('body:has(.home-hero--owner-airflow) .consultant-launcher') &&
