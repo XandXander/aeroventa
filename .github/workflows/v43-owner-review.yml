@@ -2,7 +2,7 @@ name: V43 owner review — compiled browser screenshots
 
 on:
   pull_request:
-    branches: [main, aeroventa/v43-owner-visual-implementation-2026-10-09]
+    branches: [main, aeroventa/v43-owner-visual-implementation-2026-10-09, aeroventa/hiend-audit-av-correction-2026-10-12]
     paths:
       - 'apps/web/**'
       - 'scripts/render-v43-owner-review.mjs'
@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   screenshot-review:
-    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.number == 10 || github.event.pull_request.number == 11
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.number == 10 || github.event.pull_request.number == 11 || github.event.pull_request.number == 12
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
