@@ -3615,7 +3615,7 @@ html::-webkit-scrollbar-thumb:hover {background:#7c93a2;}
 .home-hero--owner-airflow .hero-engineering__photo{filter:none;object-position:51% 48%}
 .home-hero--owner-airflow .hero-engineering{background:#d6e4ec}
 .about-hero__team{margin:0 0 24px}
-.about-hero__team img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;object-position:center 42%}
+.about-hero__team img{display:block;width:min(100%,380px);height:auto;aspect-ratio:3/4;object-fit:contain;object-position:center}
 .about-hero__team figcaption{font-size:.74rem;color:#597184;margin-top:8px}
 .case-detail-facts{padding:clamp(30px,4vw,55px) 0;background:#f5f7f8}
 .case-detail-facts h2{font-size:clamp(1.35rem,2.8vw,2.35rem);line-height:1.18;letter-spacing:-.025em}
@@ -3659,13 +3659,13 @@ html::-webkit-scrollbar-thumb:hover {background:#7c93a2;}
 
 /* Optical QA 2026-10-12: About hero text must not be baseline-shifted under a huge photo. */
 .about-premium .about-hero__grid{align-items:start}
-.about-premium .about-hero__team img{height:clamp(250px,28vw,430px);object-fit:cover;object-position:center 53%}
+.about-premium .about-hero__team img{width:min(100%,380px);height:auto;max-height:none;aspect-ratio:3/4;object-fit:contain;object-position:center}
 @media(min-width:761px) and (max-width:1100px){
- .about-premium .about-hero__team img{height:clamp(300px,45vw,420px)}
+ .about-premium .about-hero__team img{width:min(100%,360px);height:auto;max-height:none}
 }
 @media(max-width:760px){
  .about-premium .about-hero h1{font-size:clamp(1.96rem,7.9vw,2.65rem);line-height:1.1;letter-spacing:-.048em;text-wrap:balance}
- .about-premium .about-hero__team img{height:min(63vw,285px);object-position:center 55%;max-height:285px}
+ .about-premium .about-hero__team img{width:min(100%,320px);height:auto;max-height:none;object-position:center}
 }
 
 
