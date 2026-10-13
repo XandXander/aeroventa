@@ -219,25 +219,34 @@ try {
           }
         }
         if (id === 'services') {
-
-          const editorial = page.locator('.services-hero__backdrop img[src="/evidence/hero/services-owner-editorial-1774.webp"]');
-          const wrong = await page.locator('.services-hero img[src="/evidence/hero/engineering-ductwork.jpg"]').count();
+          const photographicProof = page.locator('.services-hero__backdrop--evidence img');
+          const expected = ['/evidence/cafe/owner-cover-v43.webp','/evidence/7park/duct-route.jpg'];
+          const actual = await photographicProof.evaluateAll(nodes=>nodes.map(n=>new URL(n.src).pathname));
+          const wrong = await page.locator('.services-hero img[src="/evidence/hero/engineering-ductwork.jpg"], .services-hero img[src="/evidence/hero/services-owner-editorial-1774.webp"]').count();
           const servicesOptical = await page.evaluate(() => {
-            const pic = document.querySelector('.services-hero__backdrop img');
-            const intro = document.querySelector('.services-hero__intro');
-            const rect = e => e?.getBoundingClientRect();
-            const p=rect(pic),t=rect(intro);
-            return {natural_width:pic?.naturalWidth??0,object_fit:pic?getComputedStyle(pic).objectFit:null,
-              photo_top:p?.top??0,intro_bottom:t?.bottom??0,
-              inline_visible:getComputedStyle(document.querySelector('.services-consultant-inline')).display!=='none',
-              floating_visible:getComputedStyle(document.querySelector('.consultant-launcher')).display!=='none'};
+            const pics=[...document.querySelectorAll('.services-hero__backdrop--evidence img')];
+            const intro=document.querySelector('.services-hero__intro');
+            const picture = pics[0]?.getBoundingClientRect();
+            const text = intro?.getBoundingClientRect();
+            const inline=document.querySelector('.services-consultant-inline');
+            const floating=document.querySelector('.consultant-launcher');
+            return {
+              natural_widths:pics.map(n=>n.naturalWidth),
+              object_fits:pics.map(n=>getComputedStyle(n).objectFit),
+              photo_top:picture?.top??0,
+              intro_bottom:text?.bottom??0,
+              inline_visible:inline?getComputedStyle(inline).display!=='none':false,
+              floating_visible:floating?getComputedStyle(floating).display!=='none':false
+            };
           });
-          const serviceMobile = width<=760;
-          if (await editorial.count()!==1 || wrong || !servicesOptical.natural_width ||
-              (serviceMobile && (servicesOptical.object_fit!=='contain' ||
-               servicesOptical.photo_top < servicesOptical.intro_bottom-3 ||
-               !servicesOptical.inline_visible || servicesOptical.floating_visible))) {
-            report.fail.push({route,view,reason:'Owner Services architectural scene and mobile placement',wrong,servicesOptical});
+          const mobile=width<=760;
+          if (JSON.stringify(actual)!==JSON.stringify(expected) || wrong ||
+              servicesOptical.natural_widths.length!==2 ||
+              servicesOptical.natural_widths.some(n=>n<400) ||
+              servicesOptical.object_fits.some(n=>n!=='cover') ||
+              (mobile && (servicesOptical.photo_top<servicesOptical.intro_bottom-3 ||
+                  !servicesOptical.inline_visible || servicesOptical.floating_visible))) {
+            report.fail.push({route,view,reason:'Owner Services source-evidenced diptych and mobile placement',wrong,actual,servicesOptical});
           }
         }
         if (id === 'ventilation') {
