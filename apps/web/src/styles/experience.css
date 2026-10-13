@@ -587,3 +587,9 @@
 .experience-dialog--consultant{border-radius:clamp(15px,2vw,24px)}
 @media(max-width:760px){.experience-dialog--consultant{border-radius:23px}}
 @media(prefers-reduced-motion:reduce){.experience-dialog[open]{animation:none}}
+
+/* Mobile: in-flow launcher cannot obscure case galleries, buttons or reading. */
+@media(max-width:760px){
+  .consultant-launcher{position:relative;inset:auto;right:auto;bottom:auto;width:max-content;max-width:calc(100% - 32px);margin:22px auto;z-index:1}
+  body:has(.mobile-contact-dock.is-visible) .consultant-launcher{bottom:auto;z-index:1}
+}

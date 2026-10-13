@@ -166,7 +166,7 @@ check(files.layout.includes('retainedDescriptionFallback') && files.layout.inclu
 check(files.layout.includes('editorialOgFallback') && files.layout.includes('content.og_image || editorialOgFallback[content.path]'), 'Social sharing uses case-context media if Directus has not supplied an image');
 check(!files.home.includes('<svg class="hero-engineering__overlay"') && files.home.includes('class="solution-mobile-pair"') && files.home.includes('class="home-shell process-strip"'), 'HERO has no invented arrows; mobile native split illustration and original stages remain present');
 check(files.home.includes('/evidence/hero/engineering-scene-accepted-v43.webp') && files.home.includes('Комплексный подход к вентиляции'), 'Owner-locked original engineering illustration restored without replacing HOME HERO');
-check(!files.home.includes('object-ribbon__number') && (files.home.match(/\['(?:Квартиры|Коттеджи|Рестораны|Магазины|Производства|Новостройки)/g) ?? []).length === 6, 'Object navigation has six named destinations without catalogue counters');
+check(!files.home.includes('object-ribbon__number') && (files.home.match(/\['(?:Квартиры|Офисы|Рестораны|Магазины|Производства|Новостройки)/g) ?? []).length === 6, 'Object navigation has six named destinations without catalogue counters');
 // 2026-10-13 Owner supersession: one group frame + four individually named source portraits.
 // Fixture can render identity-safe text while binary uploads are pending; PUBLICATION is fail-closed.
 const ownerTeamNames = ['Евгений Панов','Александр Тарасов','Денис Иванов','Александр Шаламов'];
