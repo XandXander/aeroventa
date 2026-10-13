@@ -450,15 +450,15 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
     <div class="case-photo-dialog__panel">
       <div class="case-photo-dialog__top">
         <span>Фотографии объекта <span data-photo-count></span></span>
-        <button type="button" class="case-photo-dialog__close" data-photo-close>Закрыть ×</button>
+        <button type="button" class="case-photo-dialog__close" data-photo-close aria-label="Закрыть просмотр">×</button>
       </div>
       <figure class="case-photo-dialog__figure">
         <img data-photo-large src={spec.media[0][0]} alt={spec.media[0][1]} loading="lazy" />
         <figcaption data-photo-description></figcaption>
       </figure>
       <nav class="case-photo-dialog__nav" aria-label="Навигация по фотографиям">
-        <button type="button" data-photo-previous>← Предыдущая</button>
-        <button type="button" data-photo-next>Следующая →</button>
+        <button type="button" data-photo-previous aria-label="Предыдущая фотография">‹</button>
+        <button type="button" data-photo-next aria-label="Следующая фотография">›</button>
       </nav>
     </div>
   </dialog>
@@ -583,9 +583,33 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
       if (event.key === 'ArrowRight') { event.preventDefault(); show(activeIndex + 1); }
     });
     viewer.addEventListener('click', event => { if (event.target === viewer) viewer.close(); });
+    let startX: number | null = null;
+    viewer.addEventListener('touchstart', event => { startX = event.changedTouches[0]?.clientX ?? null; }, { passive: true });
+    viewer.addEventListener('touchend', event => {
+      const endX = event.changedTouches[0]?.clientX;
+      if (startX !== null && endX !== undefined && Math.abs(endX - startX) > 55) show(activeIndex + (endX < startX ? 1 : -1));
+      startX = null;
+    }, { passive: true });
     viewer.addEventListener('close', () => {
       if (large) large.removeAttribute('src');
       activeTrigger?.focus({ preventScroll: true });
     });
   }
 </script>
+
+<style>
+/* A quiet, full-viewport documentary viewer, controlled by side arrows and Escape. */
+.case-photo-dialog{width:min(100vw,1600px);max-width:100vw;max-height:100dvh;height:100dvh;padding:0;border:0;background:rgba(8,17,24,.96);color:#fff;overflow:hidden}
+.case-photo-dialog::backdrop{background:rgba(4,11,16,.92)}
+.case-photo-dialog__panel{position:relative;width:100%;height:100%;display:grid;grid-template-rows:1fr}
+.case-photo-dialog__top{position:absolute;inset:14px 16px auto;z-index:3;display:flex;align-items:center;justify-content:space-between;pointer-events:none}
+.case-photo-dialog__top>span{font-size:.75rem;color:#e2e7eb;text-shadow:0 1px 3px #000}
+.case-photo-dialog__close{pointer-events:auto;display:grid;place-items:center;width:42px;height:42px;border:0;border-radius:50%;background:rgba(18,34,45,.70);color:#fff;font:400 30px/1 inherit;cursor:pointer}
+.case-photo-dialog__figure{margin:0;min-width:0;min-height:0;padding:58px clamp(20px,6vw,96px) 44px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+.case-photo-dialog__figure img{display:block;width:auto;height:auto;max-width:100%;max-height:calc(100dvh - 140px);object-fit:contain}
+.case-photo-dialog__figure figcaption{text-align:center;color:#c4d1d9;font-size:.8rem;line-height:1.35}
+.case-photo-dialog__nav{position:absolute;inset:50% 12px auto;transform:translateY(-50%);display:flex;justify-content:space-between;pointer-events:none}
+.case-photo-dialog__nav button{pointer-events:auto;display:grid;place-items:center;width:clamp(38px,4vw,54px);height:clamp(38px,4vw,54px);padding:0;border:0;border-radius:50%;background:rgba(28,47,61,.68);color:#fff;font-size:2.35rem;line-height:1;cursor:pointer}
+.case-photo-dialog button:focus-visible{outline:2px solid #fff;outline-offset:3px}
+@media(max-width:600px){.case-photo-dialog__figure{padding:52px 8px 44px}.case-photo-dialog__figure img{max-height:calc(100dvh - 120px)}.case-photo-dialog__nav{inset-inline:7px}}
+</style>

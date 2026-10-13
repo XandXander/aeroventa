@@ -3,6 +3,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import PageRenderer from '@/components/PageRenderer.astro';
 import { getAllContent } from '@/lib/content-source';
 import type { ContentRecord } from '@/lib/types';
+import legacySources from '../../../../migration/legacy-page-source-index.json';
 
 export async function getStaticPaths() {
   const all = await getAllContent();
@@ -184,9 +185,18 @@ const overrides: Record<string, Partial<ContentRecord>> = {
   },
 };
 
+// SEO source lock: the retained article URL, H1 and title remain linked to the legacy primary index.
+// Historical on-page procedures and prices are NOT restored by this metadata-only safeguard.
+const legacyArticle = content.path.startsWith('/blog/detail/')
+  ? legacySources.find(row => row.path === content.path && row.status === 200)
+  : undefined;
+if (content.path.startsWith('/blog/detail/') && (!legacyArticle?.h1 || !legacyArticle?.title)) {
+  throw new Error(`Legacy indexed heading/title evidence missing for ${content.path}`);
+}
 const pageContent: ContentRecord = {
   ...content,
   ...(overrides[content.path] ?? {}),
+  ...(legacyArticle ? { h1: legacyArticle.h1, seo_title: legacyArticle.title } : {}),
 };
 ---
 <BaseLayout content={pageContent}>
