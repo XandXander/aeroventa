@@ -48,9 +48,9 @@ const specs: Record<string, CaseSpec> = {
       'На исходной странице сохранена отдельная галерея «Фото объекта 7 ПАРК»; показанные ниже файлы взяты именно из неё.'
     ],
     media:[
-      ['/evidence/7park/object-exterior.jpg','Жилой квартал 7 PARK в Павловске','Объект 7 PARK · Павловск'],
-      ['/evidence/7park/duct-route.jpg','Смонтированный воздуховод на объекте 7 PARK','Фрагмент монтажных работ'],
       ['/evidence/7park/object-exterior-day.jpg','Дневной вид зданий жилого квартала 7 PARK в Павловске','Жилой квартал · дневной вид'],
+      ['/evidence/7park/duct-route.jpg','Смонтированный воздуховод на объекте 7 PARK','Фрагмент монтажных работ'],
+      ['/evidence/7park/object-exterior.jpg','Жилой квартал 7 PARK в Павловске','Объект 7 PARK · Павловск'],
       ['/evidence/7park/object-courtyard-night.jpg','Вечерний вид двора жилого квартала 7 PARK в Павловске','Жилой квартал · вечерний вид']
     ],
     archiveMedia:[
@@ -418,7 +418,7 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
     <div class="home-shell">
       <p class="section-index section-index--orange">Реальные фотографии</p>
       <h2 id="case-gallery-title">{documentary.gallery}</h2>
-      <p class="case-gallery__intro">Оригинальные фотографии объекта и монтажа. Нажмите на кадр для увеличения, не покидая страницу.</p>
+      <p class="case-gallery__intro">Фотографии объекта и выполненных работ.</p>
       <div class="case-gallery__grid case-gallery__grid--featured">
         {spec.media.map(([src, alt, caption]) => (
           <figure class="case-gallery__item">
@@ -612,4 +612,15 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
 .case-photo-dialog__nav button{pointer-events:auto;display:grid;place-items:center;width:clamp(38px,4vw,54px);height:clamp(38px,4vw,54px);padding:0;border:0;border-radius:50%;background:rgba(28,47,61,.68);color:#fff;font-size:2.35rem;line-height:1;cursor:pointer}
 .case-photo-dialog button:focus-visible{outline:2px solid #fff;outline-offset:3px}
 @media(max-width:600px){.case-photo-dialog__figure{padding:52px 8px 44px}.case-photo-dialog__figure img{max-height:calc(100dvh - 120px)}.case-photo-dialog__nav{inset-inline:7px}}
+</style>
+<style>
+.case-detail-hero h1{font-size:clamp(2.4rem,4.6vw,5rem);line-height:1.07;letter-spacing:-.042em;text-wrap:balance;overflow-wrap:normal;word-break:normal}
+.case-gallery__grid--featured{gap:clamp(12px,1.5vw,24px)}
+.case-gallery__grid--featured .case-gallery__item:first-child img{aspect-ratio:1.8;object-fit:cover}
+.case-gallery__thumbs{gap:clamp(12px,1.6vw,20px)}
+.case-gallery__item{border:0;box-shadow:none}
+.case-gallery__item figcaption{background:transparent;font-weight:400}
+.ponsse-recognition h2{font-size:clamp(1.8rem,3.2vw,3.5rem);line-height:1.11;letter-spacing:-.032em;overflow-wrap:normal;hyphens:none;text-wrap:balance}
+@media(max-width:760px){.case-detail-hero h1{font-size:clamp(1.95rem,7.8vw,3.1rem)}.case-gallery__grid--featured .case-gallery__item:first-child img{aspect-ratio:1.45}.case-gallery__thumbs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:370px){.case-gallery__thumbs{grid-template-columns:1fr}}
 </style>

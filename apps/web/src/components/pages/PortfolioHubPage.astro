@@ -22,7 +22,7 @@ const cases = [
       </div>
       <div>
         <p class="portfolio-hero__lede">
-          Собрали жилые, коммерческие и производственные объекты: что монтировали, какой был объём работ и какие особенности пришлось учитывать.
+          Объекты разного масштаба: фотографии, выполненный монтаж, условия и результаты работ.
         </p>
         
       </div>
@@ -55,7 +55,7 @@ const cases = [
       <div class="section-heading">
         <div>
           <p class="section-index">02 / Сравнить по объекту</p>
-          <h2 id="cases-title">Найдите опыт работы на похожем объекте.</h2>
+          <h2 id="cases-title">Работы на разных объектах.</h2>
         </div>
       </div>
       <div class="portfolio-grid">
@@ -97,8 +97,8 @@ const cases = [
   <section class="conversion-close" aria-labelledby="portfolio-close-title">
     <div class="home-shell">
       <p class="section-index section-index--orange">04 / Ваш объект</p>
-      <h2 id="portfolio-close-title">Не нашли точного аналога — это нормально.</h2>
-      <p class="portfolio-close-copy">Пришлите проект или опишите задачу: сравнивать надо не по названию объекта, а по составу монтажных работ и особенностям исполнения.</p>
+      <h2 id="portfolio-close-title">Расскажите о вашем объекте.</h2>
+      <p class="portfolio-close-copy">Пришлите проект или описание задачи. Уточним состав работ, исходные данные и следующий шаг.</p>
       <div class="home-actions">
         <a class="button button--light" href="/montazh-po-proektu/">Передать проект →</a>
         <a class="button button--light" href="/contact/?intent=budget">Описать объект →</a>
@@ -106,3 +106,17 @@ const cases = [
     </div>
   </section>
 </article>
+
+<style>
+/* Photography leads; typography and evidence are deliberately restrained. */
+.portfolio-hero{padding:clamp(38px,5vw,74px) 0 clamp(34px,4vw,60px)}
+.portfolio-hero__grid{align-items:center;gap:clamp(24px,5vw,80px)}
+.portfolio-hero h1{font-size:clamp(2.45rem,4.55vw,5rem);line-height:1.03;letter-spacing:-.044em;max-width:17ch;text-wrap:balance}
+.portfolio-hero__lede{font-size:clamp(1rem,1.35vw,1.2rem);line-height:1.52;max-width:48ch}
+.portfolio-grid{gap:clamp(16px,2vw,28px)}
+.portfolio-card__media{aspect-ratio:1.5}
+.portfolio-card__media img{filter:none}
+.portfolio-card h3{font-size:clamp(1.23rem,1.65vw,1.75rem);line-height:1.18;letter-spacing:-.025em}
+.portfolio-feature__visual img{object-fit:cover}
+@media(max-width:760px){.portfolio-hero{padding:36px 0 38px}.portfolio-hero h1{font-size:clamp(2rem,8vw,3.2rem);max-width:none}.portfolio-hero__grid{gap:18px}.portfolio-grid{gap:20px}}
+</style>
