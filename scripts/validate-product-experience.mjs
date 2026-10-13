@@ -167,11 +167,23 @@ check(files.layout.includes('editorialOgFallback') && files.layout.includes('con
 check(!files.home.includes('<svg class="hero-engineering__overlay"') && files.home.includes('class="solution-mobile-pair"') && files.home.includes('class="home-shell process-strip"'), 'HERO has no invented arrows; mobile native split illustration and original stages remain present');
 check(files.home.includes('/evidence/hero/engineering-scene-accepted-v43.webp') && files.home.includes('Комплексный подход к вентиляции'), 'Owner-locked original engineering illustration restored without replacing HOME HERO');
 check(!files.home.includes('object-ribbon__number') && (files.home.match(/\['(?:Квартиры|Коттеджи|Рестораны|Магазины|Производства|Новостройки)/g) ?? []).length === 6, 'Object navigation has six named destinations without catalogue counters');
-const approvedTeamFiles = ['img_4170.webp', 'img_4166.webp', 'img_4168.webp', 'img_4169.webp'];
-check(approvedTeamFiles.every(name => files.about.includes('/evidence/team/' + name)) && 
-      !files.about.includes('/evidence/team/img_5958.webp') &&
-      !files.about.includes('/evidence/team/img_5971.webp') &&
-      files.about.includes('teamPhotos.slice(1).map'), 'Four Owner-selected team photographs present; no substitute photos or repeated hero portrait');
+// 2026-10-13 Owner supersession: one group frame + four individually named source portraits.
+// Fixture can render identity-safe text while binary uploads are pending; PUBLICATION is fail-closed.
+const ownerTeamNames = ['Евгений Панов','Александр Тарасов','Денис Иванов','Александр Шаламов'];
+const ownerTeamMedia = ['owner-team-group-20261013.webp','owner-evgeniy-panov-20261013.webp',
+  'owner-aleksandr-tarasov-20261013.webp','owner-denis-ivanov-20261013.webp','owner-aleksandr-shalamov-20261013.webp'];
+check(ownerTeamNames.every(name => files.about.includes(name)) &&
+      ownerTeamMedia.every(name => files.about.includes('/evidence/team/' + name)) &&
+      files.about.includes('hasOwnerGroup') && files.about.includes('hasAllOwnerPortraits') &&
+      !files.about.includes('teamPhotos.slice(1).map') &&
+      !files.about.includes('/evidence/team/img_5958.webp'),
+      'New four-person identity-safe Owner mapping and group/portrait gating');
+if (process.env.AEROVENTA_REQUIRE_OWNER_TEAM_MEDIA === 'true') {
+  for (const name of ownerTeamMedia) {
+    const file = await fs.stat(path.join(root,'apps/web/public/evidence/team',name)).catch(() => null);
+    check(Boolean(file?.isFile() && file.size > 20000), 'Release requires physical Owner media '+name);
+  }
+}
 check(files.restaurants.includes("heroMedia={{ src:'/evidence/leont/owner-cover-v43.webp'") &&
       !files.restaurants.includes("heroMedia={{ src:'/evidence/leont/duct-installation-02.jpg'"), 'Restaurant direction uses authentic architectural context, retains montage only as case evidence');
 const acceptedScene = await fs.stat(path.join(root, 'apps/web/public/evidence/hero/engineering-scene-accepted-v43.webp')).catch(() => null);
