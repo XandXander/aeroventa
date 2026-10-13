@@ -580,3 +580,10 @@
 
 /* About mobile: in-flow consultant CTA is reachable without covering the principal portfolio action. */
 @media(max-width:760px){body:has(.about-premium) .consultant-launcher{display:none}}
+
+/* Quiet on-page sheet, without a fabricated progress state. */
+@keyframes aeroventa-sheet-in{from{opacity:.4;transform:translateY(12px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+.experience-dialog[open]{animation:aeroventa-sheet-in .3s cubic-bezier(.2,.75,.25,1) both;overscroll-behavior:contain}
+.experience-dialog--consultant{border-radius:clamp(15px,2vw,24px)}
+@media(max-width:760px){.experience-dialog--consultant{border-radius:23px}}
+@media(prefers-reduced-motion:reduce){.experience-dialog[open]{animation:none}}

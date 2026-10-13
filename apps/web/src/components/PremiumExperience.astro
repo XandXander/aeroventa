@@ -10,7 +10,7 @@ const { pagePath = '' } = Astro.props;
 
 <a class="consultant-launcher" href="/contact/" data-consultant-open data-source="persistent_launcher" aria-haspopup="dialog" aria-controls="aeroventa-consultant-dialog" aria-label="Открыть инженерного консультанта">
   <span class="consultant-launcher__symbol" aria-hidden="true">↗</span>
-  <span class="consultant-launcher__label">Инженерный консультант</span>
+  <span class="consultant-launcher__label">Навигатор по сайту</span>
 </a>
 <dialog id="aeroventa-consultant-dialog" class="experience-dialog experience-dialog--consultant" data-consultant-dialog aria-labelledby="consultant-title">
   <div class="experience-dialog__shell">
@@ -26,7 +26,7 @@ const { pagePath = '' } = Astro.props;
       <ol class="consultant-conversation__history" data-consultant-chat-messages aria-live="polite" aria-relevant="additions">
         <li class="consultant-message consultant-message--guide">
           <span class="consultant-message__author">AEROVENTA / Навигатор</span>
-          <p>Опишите объект и вопрос. Подскажу подходящую страницу и какие исходные данные нужны. Без выдуманной сметы и инженерных обещаний.</p>
+          <p>Опишите объект или задайте вопрос. Этот навигатор поможет найти подходящий раздел сайта. Для инженерного решения можно обратиться к специалисту.</p>
         </li>
       </ol>
       <form class="consultant-conversation__composer" data-consultant-chat-form>
