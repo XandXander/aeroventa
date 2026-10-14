@@ -194,15 +194,48 @@ try {
             const panov = page.locator('.about-team__photo--lead img');
             const expectedGroup = '/evidence/team/owner-team-group-20261013.webp';
             const expectedPanov = '/evidence/team/owner-evgeniy-panov-20261013.webp';
-            const media = await Promise.all([group,panov].map(async img => ({
-              count:await img.count(),
-              src:await img.first().getAttribute('src').catch(()=>null),
-              loaded:await img.first().evaluate(el=>el.complete && el.naturalWidth>0).catch(()=>false)
-            })));
+            // Compare displayed WebP subjects against the two PNG originals supplied
+            // by Owner on 14 October. 8x8 grayscale fingerprints tolerate WebP coding
+            // but detect the wrong group/person. No raw PNG reaches webroot.
+            // Group source SHA256 c6659ec091b93c37f3f6eb9a48284fd429e68032d82288839e63677aaf8eae83
+            // Panov source SHA256 64f0eaab5fa18abd878bb0e175f55827c6e73ba79ab72dea0579bcd635652207
+            const expectedFps = ['ffffff0100000021','e0c1cfedc1c18100'];
+            const diffBits = (s,t) => {
+              let count=0;
+              for(let k=0;k<16;k++){
+                const v=parseInt(s[k],16)^parseInt(t[k],16);
+                count+=((v>>0)&1)+((v>>1)&1)+((v>>2)&1)+((v>>3)&1);
+              }
+              return count;
+            };
+            const media = await Promise.all([group,panov].map(async (loc,index) => {
+              const count=await loc.count();
+              if (!count) return {count,src:null,loaded:false,fingerprint:null,distance:64};
+              const img=loc.first();
+              const src=await img.getAttribute('src');
+              const rendered=await img.evaluate(async el=>{
+                el.loading='eager'; // load offscreen portrait explicitly for deterministic evidence
+                try { await el.decode(); } catch { /* reported via naturalWidth */ }
+                if (!el.complete || !el.naturalWidth) return null;
+                const c=document.createElement('canvas');c.width=8;c.height=8;
+                const ctx=c.getContext('2d',{willReadFrequently:true});
+                if(!ctx)return null;
+                ctx.drawImage(el,0,0,8,8);
+                const px=ctx.getImageData(0,0,8,8).data;
+                const l=[];for(let i=0;i<64;i++){const j=i*4;l.push(.2126*px[j]+.7152*px[j+1]+.0722*px[j+2]);}
+                const average=l.reduce((a,b)=>a+b,0)/64;
+                let out='';for(const v of l)out+=v>=average?'1':'0';
+                return {hash:BigInt('0b'+out).toString(16).padStart(16,'0'),width:el.naturalWidth,height:el.naturalHeight};
+              });
+              return {count,src,loaded:!!rendered,fingerprint:rendered?.hash||null,
+                dimensions:rendered?[rendered.width,rendered.height]:null,
+                distance:rendered?diffBits(rendered.hash,expectedFps[index]):64};
+            }));
             if(media[0].count!==1 || media[0].src!==expectedGroup || !media[0].loaded ||
                media[1].count!==1 || media[1].src!==expectedPanov || !media[1].loaded ||
+               media.some(x=>x.distance>12) ||
                await page.locator('.about-hero__team img[src*="img_4170"]').count()) {
-              report.fail.push({route,view,reason:'Owner team and Panov image bindings',media});
+              report.fail.push({route,view,reason:'Owner original group and Panov perceptual source match',media});
             }
           }
           const optical = await page.evaluate(() => {
