@@ -143,7 +143,7 @@ check(!files.footer.includes('data-consultant-open') && !files.footer.includes('
 check(files.lead.includes('data-contact-open'), 'Lead CTA opens modern contact form');
 check(files.contactPage.includes('<ContactForm'), 'Contact page includes semantic form');
 check(files.home.includes('data-consultant-open') && files.home.includes('data-contact-open'), 'Homepage close offers consultant and direct contact');
-check(files.ready.includes('data-contact-open') && files.ready.includes('data-project-status="ready"'), 'Ready-project route preserves contextual contact');
+check(files.ready.includes('projectMail') && files.ready.includes('href={projectMail}') && files.header.includes('data-contact-open'), 'Ready-project route offers direct mail and header contact without repetitive CTAs');
 check(files.notReady.includes('data-contact-open') && files.notReady.includes('data-consultant-open'), 'No-project route exposes form and consultant');
 
 check(files.airflow.includes('airflow-header-trace__route--supply'), 'AIRFLOW TRACE supply route preserved');
