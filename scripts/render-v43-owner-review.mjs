@@ -434,6 +434,12 @@ try {
           await page.locator('.mobile-menu summary').click();
         }
         if (id === 'home' && (view === 'desktop_1440' || view === 'mobile_390')) {
+          // On desktop the persistent launcher is intentionally hidden
+          // until the full category ribbon has left the first fold.
+          if(view === 'desktop_1440') {
+            await page.locator('.decision-preview').scrollIntoViewIfNeeded();
+            await page.waitForFunction(()=>document.documentElement.classList.contains('is-past-first-fold'),null,{timeout:4000});
+          }
           await page.locator(view === 'mobile_390' ? '.home-consultant-inline' : '.consultant-launcher').click();
           await page.locator('[data-consultant-dialog]').waitFor({ state: 'visible' });
           await page.screenshot({ path: path.join(root, 'consultant_open__' + view + '.png'), animations: 'disabled' });
