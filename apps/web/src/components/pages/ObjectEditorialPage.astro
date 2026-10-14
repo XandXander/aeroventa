@@ -1,0 +1,37 @@
+---
+import type { ContentRecord } from '@/lib/types';
+interface Props {
+  content: ContentRecord;
+  eyebrow: string; lead: string; proofTitle: string; proofText: string;
+  photo?: string; photoAlt?: string;
+  link: string; linkLabel: string; description: string;
+}
+const { content,eyebrow,lead,proofTitle,proofText,photo,photoAlt,link,linkLabel,description }=Astro.props;
+---
+<article class="object-editorial">
+  <header class="object-editorial__hero">
+    <div class="home-shell object-editorial__grid">
+      <div class="object-editorial__copy">
+        <p class="home-kicker">{eyebrow}</p>
+        <h1>{content.h1}</h1>
+        <p class="object-editorial__lead">{lead}</p>
+        <a class="button button--primary" href="/contact/" data-contact-open data-source="object_category" aria-haspopup="dialog">Обсудить объект <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="object-editorial__evidence">
+        {photo && <figure><img src={photo} alt={photoAlt||proofTitle} width="1000" height="650" loading="eager" decoding="async"/><figcaption>{proofTitle}</figcaption></figure>}
+        <p class="section-index section-index--orange">По существу</p>
+        <h2>{proofTitle}</h2>
+        <p>{proofText}</p>
+        <a href={link}>{linkLabel} →</a>
+      </div>
+    </div>
+  </header>
+  <section class="object-editorial__info">
+    <div class="home-shell object-editorial__info-grid">
+      <div><p class="section-index">01 / Для оценки работ</p><h2>От исходных данных — к составу монтажа.</h2></div>
+      <div><p>{description}</p><p>Рабочие чертежи, спецификация, назначение помещений, адрес объекта и сведения об условиях работ позволяют подготовить предметное обсуждение объёма монтажа.</p>
+        <a href="/montazh-po-proektu/">Что прислать для расчёта <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+</article>
