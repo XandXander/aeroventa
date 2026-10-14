@@ -143,7 +143,7 @@ try {
             (isMobile ? (!optical.desktop_diagram_visible && optical.mobile_pair_visible) :
                         (optical.desktop_diagram_visible && !optical.mobile_pair_visible)) &&
             (isMobile || isTablet ?
-              (optical.photo_fit === (isMobile ? 'cover' : 'contain') && photoBeforeCopy) :
+              (optical.photo_fit === 'contain' && photoBeforeCopy) :
               (optical.photo_fit === 'cover' && desktopColumns)) &&
             (!isMobile || (optical.inline_visible && !optical.floating_visible &&
              optical.strip_top >= optical.copy_bottom - 2));
@@ -221,7 +221,7 @@ try {
         if (id === 'services') {
           // 14 Oct Owner explicitly rejected the old two-photo services HERO.
           const photographicProof = page.locator('.services-hero__backdrop--single img');
-          const expected = ['/evidence/cafe/owner-interior-v43.webp'];
+          const expected = ['/evidence/cafe/owner-cover-v43.webp'];
           const actual = await photographicProof.evaluateAll(nodes=>nodes.map(n=>new URL(n.src).pathname));
           const wrong = await page.locator('.services-hero img[src="/evidence/hero/engineering-ductwork.jpg"], .services-hero img[src="/evidence/hero/services-owner-editorial-1774.webp"]').count();
           const servicesOptical = await page.evaluate(() => {
