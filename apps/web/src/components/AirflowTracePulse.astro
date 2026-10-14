@@ -44,16 +44,23 @@ const tel = SITE.phone.replace(/[^+\d]/g, '');
 
   // Never simulate loading on navigation. PULSE is attached to real network activity only.
   entry?.remove();
-  const pendingForms = [...document.querySelectorAll('form[data-contact-form]')];
-  const reflectProcessing = () => {
-    const processing = pendingForms.some(form => form.getAttribute('data-submitting') === 'true');
-    root.toggleAttribute('data-airflow-processing', processing);
+  // AirflowTracePulse renders before PremiumExperience. Wait for the form DOM:
+  // binding before DOMContentLoaded silently misses all submission states.
+  const bindRequestPulse = () => {
+    const pendingForms = [...document.querySelectorAll('form[data-contact-form]')];
+    const reflectProcessing = () => {
+      const processing = pendingForms.some(form => form.getAttribute('data-submitting') === 'true');
+      root.toggleAttribute('data-airflow-processing', processing);
+    };
+    if (pendingForms.length) {
+      const observer = new MutationObserver(reflectProcessing);
+      pendingForms.forEach(form => observer.observe(form, {attributes:true,attributeFilter:['data-submitting']}));
+      reflectProcessing();
+    }
   };
-  if (pendingForms.length) {
-    const observer = new MutationObserver(reflectProcessing);
-    pendingForms.forEach(form => observer.observe(form,{attributes:true,attributeFilter:['data-submitting']}));
-    reflectProcessing();
-  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bindRequestPulse, {once:true});
+  } else bindRequestPulse();
 
   const sections = [...document.querySelectorAll('main > section, main article > section')]
     .filter((section) => !section.hasAttribute('data-airflow-ignore'));

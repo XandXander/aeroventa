@@ -506,6 +506,38 @@ try {
     }catch(error){report.fail.push({reason:'Lead and true Pulse interaction test failed',error:String(error)})}
     finally{await context.close()}
   }
+  // Artistic regression that the original 400 captures missed:
+  // assert the actually rendered photographic and 3-route editorial geometry.
+  for(const [width,height] of [[1440,900],[1280,768],[1024,768],[390,844],[320,640]]){
+    const context=await browser.newContext({viewport:{width,height}});
+    const page=await context.newPage();
+    try{
+      await page.goto(baseUrl+'/services/',{waitUntil:'load'});
+      const m=await page.evaluate(()=>{
+        const box=s=>document.querySelector(s)?.getBoundingClientRect();
+        const hero=box('header.services-hero--owner-editorial');
+        const photo=box('header.services-hero--owner-editorial>figure.services-hero__backdrop--single');
+        const copy=box('.services-hero__intro');
+        const routes=[...document.querySelectorAll('.services-hero__routes-inner>a')].map(a=>a.getBoundingClientRect());
+        const text=[...document.querySelectorAll('.services-hero__routes-inner>a')].map(a=>a.innerText);
+        const inline=document.querySelector('.services-consultant-inline');
+        return {hero:hero&&{x:hero.x,y:hero.y,w:hero.width,h:hero.height},photo:photo&&{x:photo.x,y:photo.y,w:photo.width,h:photo.height},
+          copy:copy&&{x:copy.x,y:copy.y,w:copy.width,h:copy.height,bottom:copy.bottom},
+          routes:routes.map(x=>({x:x.x,y:x.y,w:x.width,h:x.height})),
+          text,inline:!!inline&&getComputedStyle(inline).display!=='none',
+          overflow:document.documentElement.scrollWidth-innerWidth};
+      });
+      const desktop=width>=761;
+      const valid=!!m.hero&&!!m.photo&&!!m.copy&&m.routes.length===3&&m.overflow<=1&&
+       (desktop
+        ?m.photo.w>width*.3&&m.photo.h>350&&m.photo.x>m.copy.x+m.copy.w*.7&&
+         m.routes.every((r,i)=>r.w>width*.19&&r.h>=72&&(i===0||r.x>m.routes[i-1].x+60))&&!m.inline
+        :m.photo.w>=width-2&&m.photo.y>=m.copy.bottom-1&&m.photo.h>140&&
+         m.routes.every((r,i)=>r.w>width*.76&&r.h>=50&&(i===0||r.y>m.routes[i-1].y+32)));
+      if(!valid)report.fail.push({reason:'Services actual optical grid and legible three routes',width,height,m});
+    }catch(e){report.fail.push({reason:'Services editorial geometry exception',width,height,error:String(e)})}
+    finally{await context.close()}
+  }
   // OWNER-sensitive geometry regression. Adds diverse viewport heights, browser
   // text scaling, first-fold finishing, real document interactions and motion.
   for (const [route, width, height] of [
