@@ -1,0 +1,25 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ObjectEditorialPage from '@/components/pages/ObjectEditorialPage.astro';
+import type { ContentRecord } from '@/lib/types';
+const content: ContentRecord = {
+  path: "/obekty/kvartiry-i-doma/",title: "Монтаж вентиляции квартир и домов — AEROVENTA",h1:"Монтаж вентиляции квартир и домов",
+  content_type:'landing',business_role:'CORE_SERVICE_HUB',status:'fixture_stub',
+  robots_index:false,robots_follow:true,sitemap_include:false,knowledge_allowed:true,ai_origin:false,
+  seo_title:"Монтаж вентиляции квартир и домов в СПб и Ленобласти — AEROVENTA",
+  seo_description:"Работаем по проекту и учитываем планировку, размещение оборудования и будущую отделку. В квартирной вентиляции особенно важны маршруты воздуховодов и доступ к обслуживанию.",
+  excerpt:'',body_html:'',body_html_safety_status:'not_applicable',owner_approved_at:null
+};
+const detail={
+  "eyebrow": "Жилые помещения",
+  "lead": "Работаем по проекту и учитываем планировку, размещение оборудования и будущую отделку. В квартирной вентиляции особенно важны маршруты воздуховодов и доступ к обслуживанию.",
+  "proofTitle": "Квартира на Маршала Жукова",
+  "proofText": "Исторический выполненный объект AEROVENTA в Санкт-Петербурге. Приточно-вытяжная вентиляция; сведения о выполненных работах — в оригинальном кейсе.",
+  "photo": "/evidence/zhukov/owner-cover-v43.webp",
+  "photoAlt": "Жилой дом на проспекте Маршала Жукова — реальный объект из портфолио",
+  "link": "/blog/detail/kvartira-na-zhukova/",
+  "linkLabel": "Посмотреть квартирный объект",
+  "description": "Для оценки нужны план помещений, монтажные чертежи, расположение оборудования, возможные места прохода трасс и информация о стадии отделки."
+};
+---
+<BaseLayout content={content}><ObjectEditorialPage content={content} {...detail}/></BaseLayout>
