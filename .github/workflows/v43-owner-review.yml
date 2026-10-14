@@ -103,3 +103,30 @@ jobs:
           if-no-files-found: error
           retention-days: 7
           compression-level: 6
+
+  bitrix-source-recovery:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.number == 12
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+      - name: Capture 29 public Bitrix HTML and indexed PDF (READ ONLY)
+        run: node scripts/capture-bitrix-public-readonly.mjs
+      - name: Upload exact public sources; never publish them automatically
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: aeroventa-public-bitrix-readonly-source-evidence
+          path: AEROVENTA_BITRIX_READONLY_RECOVERY/
+          if-no-files-found: warn
+          retention-days: 7
