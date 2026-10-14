@@ -3923,3 +3923,31 @@ body{font-weight:440;line-height:1.57}
  .objects-hero__copy .objects-hero__lede,.portfolio-hero__copy .portfolio-hero__lede{margin-top:14px}
  .objects-hero__copy .home-geo{font-size:.8rem}
 }
+
+/* 2026-10-14 Owner fold review: restore sitewide editorial gutters.
+   Previous late .*-hero__grid width:100% mistakenly overrode .home-shell.
+   Keep natural content height; do not hide overflow to mask the defect. */
+.home-shell:is(
+  .objects-hero__grid,
+  .portfolio-hero__grid,
+  .about-hero__grid,
+  .engagement-hero__grid,
+  .object-detail__hero-grid,
+  .object-editorial__grid
+){
+  width:min(1380px,calc(100% - 48px));
+  margin-inline:auto;
+}
+@media(max-width:760px){
+  .home-shell:is(
+    .objects-hero__grid,
+    .portfolio-hero__grid,
+    .about-hero__grid,
+    .engagement-hero__grid,
+    .object-detail__hero-grid,
+    .object-editorial__grid
+  ){
+    width:min(calc(100% - 28px),680px);
+    margin-inline:auto;
+  }
+}
