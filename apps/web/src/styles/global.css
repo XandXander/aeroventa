@@ -4182,3 +4182,38 @@ form[data-submitting="true"] button[type="submit"]::after{
  .object-context-card--editorial .object-context-card__no-photo{grid-column:2;grid-row:2}
  .object-context-card--editorial b{grid-column:3;grid-row:1}
 }
+
+/* 2026-10-14 Owner amendment: PONSSE as measured industrial proof, not a prize banner. */
+.home-ponsse{background:#eaf0f2;padding-block:clamp(58px,6vw,92px)}
+.home-ponsse__grid{align-items:center;gap:clamp(38px,6vw,96px)}
+.home-ponsse__copy .section-index{color:#58717d!important;text-transform:none;letter-spacing:.015em!important;font-size:clamp(.78rem,.88vw,.94rem)!important;font-weight:550!important;max-width:54ch}
+.home-ponsse .home-ponsse__copy h2{font-size:clamp(1.9rem,2.75vw,2.7rem)!important;font-weight:595!important;letter-spacing:-.018em!important;line-height:1.17;max-width:22ch;margin-bottom:18px}
+.home-ponsse .home-ponsse__copy>p:not(.section-index){font-size:clamp(.97rem,1.15vw,1.1rem)!important;max-width:55ch;line-height:1.7;color:#365263}
+.home-ponsse__actions{margin-top:26px;gap:14px 25px}
+.home-ponsse__case{background:transparent!important;color:#173748!important;padding:0!important;min-height:44px;font-weight:620!important;text-decoration:underline!important;text-underline-offset:5px}
+.home-ponsse__letter-link{font-size:.91rem!important;font-weight:540!important;color:#234657}
+.home-ponsse__document{width:min(100%,290px);justify-self:center}
+.home-ponsse__document>button{background:#fff;padding:8px;box-shadow:0 9px 38px rgba(13,42,60,.1);transition:box-shadow .2s ease, transform .2s ease}
+.home-ponsse__document>button:hover{box-shadow:0 12px 42px rgba(13,42,60,.15)}
+.home-ponsse__document figcaption{font-size:.79rem;letter-spacing:0;color:#516879}
+.ponsse-recognition h2{font-size:clamp(1.8rem,2.5vw,2.7rem)!important;font-weight:595!important}
+@media(max-width:760px){
+ .home-ponsse{padding-block:52px}
+ .home-ponsse__document{width:min(100%,280px);justify-self:center}
+ .home-ponsse__grid{gap:34px}
+}
+/* Team: portrait-led art direction, no decorative cards or reuse of dated team shots. */
+.about-premium .about-hero__team--group{background:transparent;box-shadow:none}
+.about-premium .about-hero__team--group img{aspect-ratio:4/3;object-fit:contain;object-position:center;width:100%;height:auto}
+.about-premium .about-team__photos--owners{grid-template-columns:1.16fr repeat(3,minmax(0,1fr));gap:clamp(17px,2vw,32px);align-items:start}
+.about-premium .about-team__photos--owners .about-team__photo--lead{margin-top:0}
+.about-premium .about-team__photos--owners .about-team__photo--lead img{aspect-ratio:3/4;object-fit:cover;object-position:center 25%}
+.about-premium .about-team__photos--owners .about-team__photo:not(.about-team__photo--lead) img{object-fit:cover;object-position:center 25%}
+.about-premium .about-team__photos--owners figcaption{background:transparent}
+@media(max-width:960px){
+ .about-premium .about-team__photos--owners{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:520px){
+ .about-premium .about-team__photos--owners{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 14px}
+}
+@media(prefers-reduced-motion:reduce){.home-ponsse__document>button{transition:none;transform:none}}

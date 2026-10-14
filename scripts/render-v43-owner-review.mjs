@@ -174,10 +174,37 @@ try {
               await recognition.locator('a[href="/blog/detail/montazh-ventilyatsii-v-karelii/"]').count() !== 1) {
             report.fail.push({route,view,reason:'PONSSE historical proof placement and direct case path',orderCorrect});
           }
+          // New Owner requirement: low-key international industrial context, not a trophy claim.
+          if (view === 'desktop_1440' || view === 'mobile_390') {
+            const txt = await recognition.innerText();
+            const h2 = await recognition.locator('h2').innerText();
+            if (!txt.includes('международная промышленная компания') ||
+                !txt.includes('профессионализм') || !txt.includes('рабочую этику') ||
+                h2 !== 'Письмо PONSSE' ||
+                /международное признание|европейское качество|мировой уровень|финская компания/i.test(txt)) {
+              report.fail.push({route,view,reason:'Owner PONSSE factual calm editorial copy',h2,txt:txt.slice(0,360)});
+            }
+          }
           const opened = await page.locator('dialog[open]').count();
           if (opened) report.fail.push({route,view,reason:'Surprise modal on initial page load',opened});
         }
         if (id === 'about') {
+          if (view === 'desktop_1440' || view === 'mobile_390') {
+            const group = page.locator('.about-hero__team--group img');
+            const panov = page.locator('.about-team__photo--lead img');
+            const expectedGroup = '/evidence/team/owner-team-group-20261013.webp';
+            const expectedPanov = '/evidence/team/owner-evgeniy-panov-20261013.webp';
+            const media = await Promise.all([group,panov].map(async img => ({
+              count:await img.count(),
+              src:await img.first().getAttribute('src').catch(()=>null),
+              loaded:await img.first().evaluate(el=>el.complete && el.naturalWidth>0).catch(()=>false)
+            })));
+            if(media[0].count!==1 || media[0].src!==expectedGroup || !media[0].loaded ||
+               media[1].count!==1 || media[1].src!==expectedPanov || !media[1].loaded ||
+               await page.locator('.about-hero__team img[src*="img_4170"]').count()) {
+              report.fail.push({route,view,reason:'Owner team and Panov image bindings',media});
+            }
+          }
           const optical = await page.evaluate(() => {
             const h = document.querySelector('.about-hero h1')?.getBoundingClientRect();
             const i = document.querySelector('.about-hero__team img');

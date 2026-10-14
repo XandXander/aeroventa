@@ -5,15 +5,9 @@ import { resolve } from 'node:path';
 interface Props { content: ContentRecord; fixture: boolean; }
 const { content } = Astro.props;
 
-// Owner-authored installation images; never emit absent asset URLs in the published HTML.
-const teamPhotoChoices = [
-  { src:'/evidence/team/img_4170.webp', alt:'Специалист в каске на инженерном объекте AEROVENTA', caption:'Команда AEROVENTA · кадр 1 из 4' },
-  { src:'/evidence/team/img_4166.webp', alt:'Специалист в каске на объекте с вентиляционными коммуникациями', caption:'Команда AEROVENTA · кадр 2 из 4' },
-  { src:'/evidence/team/img_4168.webp', alt:'Специалист в каске рядом со смонтированными воздуховодами', caption:'Команда AEROVENTA · кадр 3 из 4' },
-  { src:'/evidence/team/img_4169.webp', alt:'Специалист в рабочей одежде и каске на объекте', caption:'Команда AEROVENTA · кадр 4 из 4' },
-];
+// Owner-confirmed team photography. Older technical shots are kept as historical assets,
+// but are never silently substituted into the public team HERO.
 const assetExists = (src: string) => ['apps/web/public' + src, 'public' + src].some(p => existsSync(resolve(p)));
-const teamPhotos = teamPhotoChoices.filter(({src}) => assetExists(src));
 // Exact Owner-mapped individual portraits. Show no guessed name/face association if the
 // source asset has not yet been committed. No remote URL or invented substitute is used.
 const ownerTeam = [
@@ -25,6 +19,10 @@ const ownerTeam = [
 const teamGroupSrc = '/evidence/team/owner-team-group-20261013.webp';
 const hasOwnerGroup = assetExists(teamGroupSrc);
 const hasAllOwnerPortraits = ownerTeam.every(({src}) => assetExists(src));
+// Fail closed: the site must not fall back to old installation photos or mismatched portraits.
+if (!hasOwnerGroup || !hasAllOwnerPortraits) {
+  throw new Error('Owner team photography incomplete — approved group and all four exact portraits required');
+}
 
 const timeline = [
   { year:'2017–2018', title:'НТФФ «Полисан»', text:'Монтаж приточно-вытяжной вентиляции и оборудования на фармацевтическом объекте.', href:'/blog/detail/ntff-polisan/' },
@@ -43,11 +41,10 @@ const timeline = [
         <h1>AEROVENTA — команда по монтажу вентиляции</h1>
       </div>
       <div>
-        {hasOwnerGroup ? (
-          <figure class="about-hero__team about-hero__team--group"><img src={teamGroupSrc} alt="Четыре участника команды AEROVENTA" width="1448" height="1086" loading="eager" decoding="async" /><figcaption>Команда AEROVENTA</figcaption></figure>
-        ) : teamPhotos.length > 0 && (
-          <figure class="about-hero__team"><img src={teamPhotos[0].src} alt={teamPhotos[0].alt} width="600" height="800" loading="eager" decoding="async" /><figcaption>Команда AEROVENTA</figcaption></figure>
-        )}
+        <figure class="about-hero__team about-hero__team--group">
+          <img src={teamGroupSrc} alt="Четыре участника команды AEROVENTA на фоне вентиляционного оборудования" width="1448" height="1086" loading="eager" decoding="async" fetchpriority="high" />
+          <figcaption>Команда AEROVENTA · монтаж вентиляции</figcaption>
+        </figure>
         <p class="about-hero__lede">
           Постоянное ядро команды держит технический и организационный контроль объекта.
           Когда объём или график требуют усиления, подключаем проверенных профильных специалистов.
@@ -91,7 +88,7 @@ const timeline = [
       {hasAllOwnerPortraits ? (
         <div class="about-team__photos about-team__photos--owners">
           {ownerTeam.map(person => (
-            <figure class="about-team__photo">
+            <figure class:list={["about-team__photo", person.name === "Евгений Панов" && "about-team__photo--lead"]}>
               <img src={person.src} alt={`${person.name} — ${person.role}`} width="720" height="960" loading="lazy" decoding="async" />
               <figcaption><strong>{person.name}</strong><span>{person.role}</span></figcaption>
             </figure>
