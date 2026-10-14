@@ -4,6 +4,7 @@ import Footer from '@/components/Footer.astro';
 import AirflowTracePulse from '@/components/AirflowTracePulse.astro';
 import Telemetry from '@/components/Telemetry.astro';
 import PremiumExperience from '@/components/PremiumExperience.astro';
+import PonsseDocumentExperience from '@/components/PonsseDocumentExperience.astro';
 import { canonicalUrl, jsonLd, robotsValue, serializeJsonLd } from '@/lib/seo';
 import type { ContentRecord } from '@/lib/types';
 import globalCssUrl from '@/styles/global.css?url';
@@ -92,5 +93,6 @@ const googleVerification = (import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION || '
     </main>
     <Footer />
     <PremiumExperience pagePath={content.path} />
+    <PonsseDocumentExperience />
   </body>
 </html>

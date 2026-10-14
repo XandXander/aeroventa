@@ -61,31 +61,6 @@ const timeline = [
     </div>
   </header>
 
-  <section class="about-proof home-section" aria-labelledby="about-proof-title">
-    <div class="home-shell">
-      <div class="section-heading">
-        <div>
-          <p class="section-index section-index--orange">Фактическая работа</p>
-          <h2 id="about-proof-title">Вентиляция, которую можно увидеть на объектах.</h2>
-        </div>
-        <a href="/portfolio/">Все шесть объектов →</a>
-      </div>
-      <div class="about-proof__grid">
-        <a href="/blog/detail/kak-my-sdali-7-domov/">
-          <img src="/evidence/7park/object-exterior-day.jpg" alt="Жилой квартал 7 PARK в Павловске — реализованный объект AEROVENTA" width="800" height="450" loading="lazy" decoding="async"/>
-          <span><small>Павловск · семь домов</small><strong>7 PARK</strong><em>Монтаж и история работ ↗</em></span>
-        </a>
-        <a href="/blog/detail/ntff-polisan/">
-          <img src="/evidence/polisan/owner-cover-v43.webp" alt="Монтаж вентиляции на фармацевтическом объекте НТФФ «Полисан»" width="800" height="520" loading="lazy" decoding="async"/>
-          <span><small>Производственный объект</small><strong>НТФФ «Полисан»</strong><em>Фотографии и факты ↗</em></span>
-        </a>
-        <a href="/blog/detail/montazh-ventilyatsii-v-karelii/">
-          <img src="/evidence/karelia/owner-cover-v43.webp" alt="Монтажная фотодокументация объекта PONSSE в Питкяранте" width="800" height="520" loading="lazy" decoding="async"/>
-          <span><small>Питкяранта · Карелия</small><strong>PONSSE</strong><em>Работы и оригинал письма ↗</em></span>
-        </a>
-      </div>
-    </div>
-  </section>
   <section class="about-principle" aria-labelledby="about-principle-title">
     <div class="home-shell about-principle__grid">
       <div>
@@ -130,28 +105,21 @@ const timeline = [
     </div>
   </section>
 
-  <section class="about-history" aria-labelledby="about-history-title">
-    <div class="home-shell">
-      <div class="section-heading">
-        <div>
-          <p class="section-index section-index--orange">03 / Опыт через объекты</p>
-          <h2 id="about-history-title">Наш опыт — в реализованных объектах.</h2>
-        </div>
-        <a href="/portfolio/">Все объекты →</a>
-      </div>
-      <div class="about-timeline">
-        {timeline.map((item) => (
-          <a href={item.href}>
-            <span>{item.year}</span>
-            <h3>{item.title}</h3>
-            <p>{item.text}</p>
-            <b>Открыть кейс →</b>
-          </a>
-        ))}
+  <section class="about-case-highlight" aria-labelledby="about-case-highlight-title">
+    <div class="home-shell about-case-highlight__grid">
+      <figure>
+        <img src="/evidence/7park/object-exterior-day.jpg" alt="Жилой квартал 7 PARK в Павловске: реальный объект AEROVENTA" width="800" height="450" loading="lazy" decoding="async"/>
+        <figcaption>7 PARK · Павловск · семь домов</figcaption>
+      </figure>
+      <div>
+        <p class="section-index">Опыт на объектах</p>
+        <h2 id="about-case-highlight-title">От частных помещений до жилых кварталов</h2>
+        <p>В 7 PARK команда выполняла монтаж приточно-вытяжной вентиляции в семи домах. Сведения о работах и настоящие фотографии собраны в кейсе.</p>
+        <a href="/blog/detail/kak-my-sdali-7-domov/">Посмотреть 7 PARK ↗</a>
+        <a href="/portfolio/">Все шесть объектов →</a>
       </div>
     </div>
   </section>
-
   <section class="conversion-close" aria-labelledby="about-close-title">
     <div class="home-shell">
       <p class="section-index section-index--orange">04 / Обсудить объект</p>

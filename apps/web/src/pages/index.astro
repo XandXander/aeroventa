@@ -182,8 +182,8 @@ const questions = [
     <div class="home-shell home-ponsse__grid">
       <div class="home-ponsse__copy">
         <p class="section-index section-index--orange">PONSSE · Питкяранта · 2022</p>
-        <h2 id="home-ponsse-title">Благодарственное письмо PONSSE</h2>
-        <p>Международная компания PONSSE выразила благодарность команде AEROVENTA за деликатную, эстетически аккуратную работу и высокий профессионализм в течение двух лет сотрудничества. В оригинальном письме от 5 апреля 2022 года особо отмечены профессиональная этика и соблюдение сроков.</p>
+        <h2 id="home-ponsse-title">Благодарность PONSSE</h2>
+        <p>В письме от 5 апреля 2022 года PONSSE благодарит команду AEROVENTA за профессионализм, рабочую этику и своевременное выполнение задач.</p>
         <div class="home-ponsse__actions">
           <a class="home-ponsse__case" href="/blog/detail/montazh-ventilyatsii-v-karelii/">Посмотреть объект PONSSE <span aria-hidden="true">↗</span></a>
           <button type="button" class="home-ponsse__letter-link" data-home-ponsse-open aria-haspopup="dialog" aria-controls="home-ponsse-letter-dialog">Прочитать оригинал письма <span aria-hidden="true">↗</span></button>
@@ -198,11 +198,20 @@ const questions = [
     </div>
   </section>
 
-  <dialog class="ponsse-letter-dialog" id="home-ponsse-letter-dialog" aria-label="Благодарственное письмо PONSSE от 5 апреля 2022 года">
-    <form method="dialog" class="ponsse-letter-dialog__actions"><button class="ponsse-letter-dialog__close" type="submit" aria-label="Закрыть письмо">Закрыть ×</button></form>
-    <div class="ponsse-letter-dialog__sheet"><img src="/evidence/karelia/ponsse-letter-20220405.png" width="1481" height="2048" alt="Полное благодарственное письмо PONSSE от 5 апреля 2022 года" decoding="async" /></div>
-    <a href="/evidence/karelia/ponsse-letter-20220405.png" class="ponsse-letter-dialog__link" target="_blank" rel="noopener noreferrer">Открыть оригинал в полном разрешении ↗</a>
-  </dialog>
+  <dialog class="ponsse-letter-dialog" id="home-ponsse-letter-dialog" data-document-viewer aria-label="Благодарственное письмо PONSSE от 5 апреля 2022 года">
+  <div class="ponsse-letter-dialog__actions" role="toolbar" aria-label="Управление документом">
+  <strong>Благодарность PONSSE · 05.04.2022</strong>
+  <div class="ponsse-letter-dialog__tools">
+    <button type="button" data-document-fit aria-pressed="true">Вся страница</button>
+    <button type="button" data-document-zoom-out aria-label="Уменьшить документ">−</button>
+    <button type="button" data-document-zoom-in aria-label="Увеличить документ">+</button>
+    <button type="button" class="ponsse-letter-dialog__close" onclick="this.closest('dialog').close()" aria-label="Закрыть письмо">Закрыть ×</button>
+  </div>
+</div>
+  <div class="ponsse-letter-dialog__sheet" data-document-stage tabindex="0" aria-label="Документ: прокрутка увеличенного изображения">
+    <img src="/evidence/karelia/ponsse-letter-20220405.png" width="1481" height="2048" alt="Подлинное письмо PONSSE от 05.04.2022" decoding="async" />
+  </div>
+</dialog>
 
   <section class="home-section decision-preview" aria-labelledby="decisions-title">
     <div class="home-shell decision-preview__grid">
@@ -249,20 +258,4 @@ const questions = [
     </div>
   </section>
 
-  <script>
-    const ponsseHomeDialog = document.getElementById('home-ponsse-letter-dialog');
-    if (ponsseHomeDialog instanceof HTMLDialogElement) {
-      let opener: HTMLButtonElement | null = null;
-      document.querySelectorAll<HTMLButtonElement>('[data-home-ponsse-open]').forEach(button => {
-        button.addEventListener('click', () => {
-          opener = button;
-          if (!ponsseHomeDialog.open) ponsseHomeDialog.showModal();
-        });
-      });
-      ponsseHomeDialog.addEventListener('click', event => {
-        if (event.target === ponsseHomeDialog) ponsseHomeDialog.close();
-      });
-      ponsseHomeDialog.addEventListener('close', () => opener?.focus({ preventScroll: true }));
-    }
-  </script>
 </BaseLayout>

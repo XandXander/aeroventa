@@ -49,28 +49,56 @@ const objectLinks = [
   </nav>
   <a class="services-consultant-inline" href="/contact/" data-consultant-open data-source="services_inline_mobile" aria-controls="aeroventa-consultant-dialog" aria-haspopup="dialog">Инженерный консультант <span aria-hidden="true">↗</span></a>
 
-  <section class="services-editorial" aria-labelledby="services-editorial-title">
-    <div class="home-shell services-editorial__grid services-editorial__grid--text">
-      <div class="services-editorial__copy">
-        <p class="section-index section-index--orange">Инженерная компетенция</p>
-        <h2 id="services-editorial-title">Монтаж воздуховодов и вентиляционного оборудования.</h2>
-        <p>От прокладки трасс и монтажа оборудования до согласования сложных узлов на площадке. Состав работ определяется проектом и фактическими условиями конкретного объекта.</p>
-        <a href="/montazh-ventiliacii/">Что входит в монтаж <span aria-hidden="true">→</span></a>
+  <section class="services-competence" aria-labelledby="services-competence-title">
+    <div class="home-shell services-competence__layout">
+      <div class="services-competence__intro">
+        <p class="section-index">Монтаж и оснащение</p>
+        <h2 id="services-competence-title">Что входит в работу</h2>
+        <p>Монтируем воздуховоды, фасонные элементы, крепления и вентиляционное оборудование. Состав зависит от проекта, назначения помещений и условий доступа на объекте.</p>
+        <p>При большом повторяемом объёме можем усилить постоянную команду проверенными профильными специалистами.</p>
+        <a class="services-competence__link" href="/montazh-ventiliacii/">Подробнее о монтаже вентиляции →</a>
+      </div>
+      <div class="services-competence__detail">
+        <h3>До начала работ</h3>
+        <p>По готовой документации проверяем трассы, оборудование, монтажные узлы и состав сметы. Когда проекта нет, сначала уточняем назначение системы и исходные данные для корректного решения.</p>
+        <div class="services-competence__routes">
+          <a href="/montazh-po-proektu/">Есть проект <span aria-hidden="true">↗</span></a>
+          <a href="/obekt-bez-gotovogo-proekta/">Нет проекта <span aria-hidden="true">↗</span></a>
+        </div>
+        <h3>Что согласовывается отдельно</h3>
+        <p>Проектирование, пусконаладка, балансировка, автоматика и смежные работы не включаются автоматически: их объём согласовывается для конкретного объекта. Алмазное бурение при необходимости выполняется как партнёрская или смежная работа.</p>
       </div>
     </div>
   </section>
 
-  <section class="home-section hub-capabilities" aria-labelledby="capabilities-title">
+  <section class="services-directions" aria-labelledby="services-directions-title">
     <div class="home-shell">
-      <p class="section-index">01 / Возможности</p>
-      <h2 id="capabilities-title">Монтажные работы и сопутствующие задачи.</h2>
-      <div class="hub-capability-grid">
-        {capabilities.map(([number,title,text]) => (
-          <article>
-            <span>{number}</span>
-            <h3>{title}</h3>
+      <div class="services-directions__heading">
+        <p class="section-index">Объекты</p>
+        <h2 id="services-directions-title">Где мы работаем</h2>
+        <p>Требования к монтажу зависят от назначения помещений, режима работы и существующей инженерной инфраструктуры.</p>
+      </div>
+      <div class="services-directions__list">
+        {objectLinks.map(([title,text,href],index) => (
+          <a href={href} class="services-directions__item">
+            <span>{String(index+1).padStart(2,'0')}</span>
+            <strong>{title}</strong>
             <p>{text}</p>
-          </article>
+            <b aria-hidden="true">↗</b>
+          </a>
+        ))}
+      </div>
+      <p class="services-directions__proof">Подтверждённые объекты, фотографии и объём работ — в <a href="/portfolio/">разделе «Наши работы»</a>.</p>
+    </div>
+  </section>
+
+  <section class="services-final-contact" aria-label="Обсудить монтаж">
+    <div class="home-shell services-final-contact__inner">
+      <p>Есть готовая документация или задача, которую нужно уточнить?</p>
+      <a href="/contact/" data-contact-open data-source="services_final" aria-haspopup="dialog">Обсудить объект ↗</a>
+    </div>
+  </section>
+</article>
         ))}
       </div>
     </div>

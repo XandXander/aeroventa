@@ -1,0 +1,38 @@
+<script>
+  // One in-page document interaction for both HOME and PONSSE case; no new tabs.
+  for (const dialog of document.querySelectorAll<HTMLDialogElement>('dialog[data-document-viewer]')) {
+    const stage = dialog.querySelector<HTMLElement>('[data-document-stage]');
+    let opener: HTMLElement | null = null;
+    let scale = 1;
+    const fit = () => {
+      scale = 1;
+      dialog.classList.remove('is-document-zoomed');
+      dialog.style.setProperty('--document-scale', '1');
+      stage?.scrollTo({top: 0, left: 0});
+      dialog.querySelector<HTMLButtonElement>('[data-document-fit]')?.setAttribute('aria-pressed','true');
+    };
+    document.querySelectorAll<HTMLElement>('[aria-controls="' + dialog.id + '"]').forEach(trigger => {
+      trigger.addEventListener('click', event => {
+        event.preventDefault();
+        opener = trigger;
+        fit();
+        if (!dialog.open) dialog.showModal();
+        dialog.querySelector<HTMLButtonElement>('.ponsse-letter-dialog__close')?.focus({preventScroll:true});
+      });
+    });
+    dialog.querySelector<HTMLButtonElement>('[data-document-zoom-in]')?.addEventListener('click', () => {
+      scale = Math.min(3, Math.round((scale + .4)*10)/10);
+      dialog.classList.add('is-document-zoomed');
+      dialog.style.setProperty('--document-scale', String(scale));
+      dialog.querySelector<HTMLButtonElement>('[data-document-fit]')?.setAttribute('aria-pressed','false');
+    });
+    dialog.querySelector<HTMLButtonElement>('[data-document-zoom-out]')?.addEventListener('click', () => {
+      scale = Math.max(1, Math.round((scale - .4)*10)/10);
+      if (scale === 1) fit();
+      else dialog.style.setProperty('--document-scale', String(scale));
+    });
+    dialog.querySelector<HTMLButtonElement>('[data-document-fit]')?.addEventListener('click',fit);
+    dialog.addEventListener('click',event=>{ if (event.target===dialog) dialog.close(); });
+    dialog.addEventListener('close',()=>{ fit(); opener?.focus({preventScroll:true}); });
+  }
+</script>

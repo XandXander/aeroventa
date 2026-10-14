@@ -478,13 +478,13 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
       <div class="home-shell ponsse-recognition__grid">
         <div>
           <p class="section-index section-index--orange">02 / Отзыв о сотрудничестве</p>
-          <h2 id="ponsse-recognition-title">Два года профессиональной и деликатной работы.</h2>
-          <p>В письме от 5 апреля 2022 года PONSSE отмечает профессионализм, качество работ и соблюдение сроков. Подлинный документ представлен здесь полностью.</p>
+          <h2 id="ponsse-recognition-title">Благодарность PONSSE</h2>
+          <p>Письмо от 5 апреля 2022 года отмечает профессионализм, рабочую этику и выполнение задач в срок. Подлинный документ доступен для просмотра целиком.</p>
         </div>
         <aside class="ponsse-recognition__citation">
           <span>Благодарственное письмо · 2022</span>
           <strong>05.04.2022</strong>
-          <p>За два года сотрудничества — профессионализм, внимательное исполнение и соблюдение сроков.</p>
+          <p>PONSSE благодарит команду за профессионализм, рабочую этику и соблюдение сроков.</p>
           {hasLetter && (
             <button type="button" class="ponsse-letter-preview" data-ponsse-open aria-haspopup="dialog" aria-controls="ponsse-letter-dialog" aria-label="Увеличить подлинное благодарственное письмо PONSSE">
               <img src={letterSrc} alt="Письмо PONSSE с датой 5 апреля 2022 года и подписью" width="1481" height="2048" loading="lazy" decoding="async" />
@@ -504,13 +504,20 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
     </section>
   )}
   {content.path === '/blog/detail/montazh-ventilyatsii-v-karelii/' && hasLetter && (
-    <dialog class="ponsse-letter-dialog" id="ponsse-letter-dialog" aria-label="Благодарственное письмо PONSSE">
-      <form method="dialog" class="ponsse-letter-dialog__actions">
-        <button type="submit" class="ponsse-letter-dialog__close" aria-label="Закрыть письмо">Закрыть ×</button>
-      </form>
-      <div class="ponsse-letter-dialog__sheet"><img src={letterSrc} width="1481" height="2048" alt="Полноразмерное благодарственное письмо PONSSE от 5 апреля 2022 года" decoding="async" /></div>
-      <button type="button" class="ponsse-letter-dialog__zoom" data-letter-zoom aria-pressed="false">Увеличить письмо +</button>
-    </dialog>
+    <dialog class="ponsse-letter-dialog" id="ponsse-letter-dialog" data-document-viewer aria-label="Благодарственное письмо PONSSE от 5 апреля 2022 года">
+  <div class="ponsse-letter-dialog__actions" role="toolbar" aria-label="Управление документом">
+  <strong>Благодарность PONSSE · 05.04.2022</strong>
+  <div class="ponsse-letter-dialog__tools">
+    <button type="button" data-document-fit aria-pressed="true">Вся страница</button>
+    <button type="button" data-document-zoom-out aria-label="Уменьшить документ">−</button>
+    <button type="button" data-document-zoom-in aria-label="Увеличить документ">+</button>
+    <button type="button" class="ponsse-letter-dialog__close" onclick="this.closest('dialog').close()" aria-label="Закрыть письмо">Закрыть ×</button>
+  </div>
+</div>
+  <div class="ponsse-letter-dialog__sheet" data-document-stage tabindex="0" aria-label="Документ: прокрутка увеличенного изображения">
+    <img src="/evidence/karelia/ponsse-letter-20220405.png" width="1481" height="2048" alt="Оригинальное письмо PONSSE от 5 апреля 2022 года" decoding="async" />
+  </div>
+</dialog>
   )}
   <section class="home-section case-story" aria-label="Задача, выполненные работы и результат">
     <div class="home-shell case-story__grid">
@@ -542,24 +549,6 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
 </article>
 
 <script>
-  document.querySelectorAll<HTMLButtonElement>('[data-ponsse-open]').forEach(button => {
-    button.addEventListener('click', () => {
-      const dialog = document.getElementById('ponsse-letter-dialog');
-      if (dialog instanceof HTMLDialogElement && !dialog.open) dialog.showModal();
-    });
-  });
-  const documentDialog = document.getElementById('ponsse-letter-dialog');
-  const letterZoom = documentDialog?.querySelector<HTMLButtonElement>('[data-letter-zoom]');
-  letterZoom?.addEventListener('click', () => {
-    const active = documentDialog?.classList.toggle('ponsse-letter-dialog--zoomed') || false;
-    letterZoom.setAttribute('aria-pressed', String(active));
-    letterZoom.textContent = active ? 'Показать страницу целиком −' : 'Увеличить письмо +';
-  });
-  if (documentDialog instanceof HTMLDialogElement) {
-    documentDialog.addEventListener('click', event => {
-      if (event.target === documentDialog) documentDialog.close();
-    });
-  }
   const photos = [...document.querySelectorAll<HTMLButtonElement>('[data-case-photo]')];
   const viewer = document.getElementById('case-photo-viewer');
   if (viewer instanceof HTMLDialogElement && photos.length) {
