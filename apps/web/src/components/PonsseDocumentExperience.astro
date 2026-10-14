@@ -32,6 +32,7 @@
       else dialog.style.setProperty('--document-scale', String(scale));
     });
     dialog.querySelector<HTMLButtonElement>('[data-document-fit]')?.addEventListener('click',fit);
+    dialog.querySelector<HTMLButtonElement>('[data-document-close]')?.addEventListener('click',()=>dialog.close());
     dialog.addEventListener('click',event=>{ if (event.target===dialog) dialog.close(); });
     dialog.addEventListener('close',()=>{ fit(); opener?.focus({preventScroll:true}); });
   }

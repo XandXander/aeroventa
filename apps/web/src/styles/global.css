@@ -4112,3 +4112,38 @@ dialog.ponsse-letter-dialog[open]{display:grid;grid-template-rows:auto minmax(0,
 .practice-index-footer a{white-space:nowrap}
 @media(max-width:760px){.practice-article-index__item{grid-template-columns:25px minmax(0,1fr) 20px;gap:10px}.practice-index-footer{flex-direction:column;gap:5px}.practice-index-footer a{white-space:normal}}
 @media(prefers-reduced-motion:reduce){.portfolio-card__media img,.button{transition:none!important;transform:none!important}}
+
+/* OWNER 2026-10-14 browser regression: DOM order of photo/text on small screens.
+   The mobile two-stage composition must not inherit desktop grid placement. */
+@media(max-width:760px){
+  header.services-hero--owner-editorial{display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-areas:"copy" "photo";align-items:stretch;min-height:0!important}
+  header.services-hero--owner-editorial>.services-hero__grid{grid-area:copy!important;display:block!important;grid-column:auto!important;grid-row:auto!important;position:relative;order:0;min-height:0;max-width:100%}
+  header.services-hero--owner-editorial>figure.services-hero__backdrop--single{grid-area:photo!important;grid-column:auto!important;grid-row:auto!important;position:relative;order:1;min-height:0;aspect-ratio:1.7;width:100%;margin:0}
+}
+@media(min-width:761px) and (max-width:1100px){
+  header.services-hero--owner-editorial{min-height:max(620px,calc(100svh - 65px - 115px))!important}
+}
+/* Trace is a visible but restrained brand element, not a blocking loader. */
+.airflow-header-trace{height:3px;opacity:1}
+.airflow-header-trace__route{height:2px}
+.airflow-header-trace__route::before{opacity:.28}
+.airflow-header-trace__route i{height:3px;box-shadow:none}
+.airflow-trace-section.is-airflow-active::before{background:#93aab6}
+.airflow-trace-section.is-airflow-active::after{box-shadow:none}
+/* DUCT PULSE only during an actual asynchronous contact submission. The existing
+   data-submitting attribute is raised before fetch and cleared in finally. */
+form[data-submitting="true"] button[type="submit"]{position:relative;gap:14px}
+form[data-submitting="true"] button[type="submit"]::after{
+  content:"";display:block;width:25px;height:2px;flex:none;
+  background:linear-gradient(90deg,transparent,currentColor,transparent);
+  animation:aeroventa-real-submit-pulse 1.1s ease-in-out infinite;
+}
+@keyframes aeroventa-real-submit-pulse{0%,100%{opacity:.2;transform:translateX(-6px)}50%{opacity:1;transform:translateX(6px)}}
+@media(prefers-reduced-motion:reduce){
+  form[data-submitting="true"] button[type="submit"]::after{animation:none;opacity:.75;transform:none}
+}
+/* Document control labels stay fully legible at 320px without covering the sheet. */
+@media(max-width:390px){
+ .ponsse-letter-dialog__actions{align-items:flex-start;flex-direction:column}
+ .ponsse-letter-dialog__sheet img{max-height:calc(100dvh - 148px)}
+}

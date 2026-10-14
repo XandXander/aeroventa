@@ -408,6 +408,87 @@ try {
       }
     }
   }
+  // OWNER-sensitive geometry regression. Adds diverse viewport heights, browser
+  // text scaling, first-fold finishing, real document interactions and motion.
+  for (const [route, width, height] of [
+    ['/',1440,600], ['/',1440,768], ['/',1440,900],
+    ['/services/',1440,600], ['/services/',1440,768], ['/services/',1440,900],
+    ['/services/',1024,600], ['/services/',1024,768],
+    ['/portfolio/',1440,768], ['/blog/',1440,768],
+    ['/services/',390,680]
+  ]) {
+    const context = await browser.newContext({viewport:{width,height},reducedMotion:'no-preference'});
+    const page = await context.newPage();
+    try {
+      await page.goto(baseUrl+route,{waitUntil:'load',timeout:25000});
+      await page.evaluate(()=>document.fonts.ready);
+      for (const zoom of [1,1.25]) {
+        const result = await page.evaluate((z) => {
+          document.body.style.zoom=String(z);
+          const home=document.querySelector('.home-hero');
+          const service=document.querySelector('header.services-hero--owner-editorial');
+          const routes=document.querySelector('.services-hero__routes');
+          const fold=(home||routes||service)?.getBoundingClientRect().bottom;
+          const firstArticle=document.querySelector('.practice-article-index__item');
+          const mark=document.querySelector('.airflow-header-trace__route');
+          const markStyle=mark ? getComputedStyle(mark) : null;
+          return {
+            horizontal:Math.max(0,document.documentElement.scrollWidth-innerWidth),
+            firstFoldBottom:fold??null,
+            firstArticleTop:firstArticle?.getBoundingClientRect().top??null,
+            traceVisible:!!mark&&markStyle.display!=='none'&&mark.getBoundingClientRect().height>=1,
+            pageHeight:innerHeight
+          };
+        },zoom);
+        if (result.horizontal>1 ||
+            (width>=1024&&zoom===1&&['/','/services/'].includes(route)&&result.firstFoldBottom!==null&&result.firstFoldBottom<height-5) ||
+            (route==='/blog/'&&zoom===1&&(result.firstArticleTop===null||result.firstArticleTop>height)) ||
+            (zoom===1&&!result.traceVisible)) {
+          report.fail.push({reason:'Owner height/zoom/real TRACE gate',route,width,height,zoom,result});
+        }
+      }
+      if(route==='/services/'&&width===390){
+        const placement=await page.evaluate(()=>{
+          const a=document.querySelector('.services-hero__intro')?.getBoundingClientRect();
+          const b=document.querySelector('.services-hero__backdrop--single')?.getBoundingClientRect();
+          return {introBottom:a?.bottom,photoTop:b?.top};
+        });
+        if(!placement.introBottom||!placement.photoTop||placement.photoTop<placement.introBottom-2){
+          report.fail.push({reason:'Services mobile reading order',placement});
+        }
+      }
+      if(route==='/portfolio/'&&width===1440){
+        const grid=await page.locator('.portfolio-card').evaluateAll(nodes=>nodes.map(n=>Math.round(n.getBoundingClientRect().top)));
+        if(grid.length!==5||new Set(grid.slice(0,2)).size!==1||new Set(grid.slice(2)).size!==1||grid[2]<=grid[0])
+          report.fail.push({reason:'Portfolio intentional 2+3 editorial rows',grid});
+      }
+    } catch(e){report.fail.push({reason:'Owner additional QA exception',route,width,height,error:String(e)})}
+    finally{await context.close()}
+  }
+  // Same-page PONSSE document must zoom, fit, Escape and restore focus.
+  {
+    const context=await browser.newContext({viewport:{width:1440,height:900}});
+    const page=await context.newPage();
+    try{
+      await page.goto(baseUrl+'/',{waitUntil:'load'});
+      const opener=page.locator('[data-home-ponsse-open]').first();
+      await opener.click();
+      const dialog=page.locator('#home-ponsse-letter-dialog');
+      await dialog.waitFor({state:'visible'});
+      const initial=await dialog.locator('img').evaluate(x=>x.getBoundingClientRect().width);
+      await dialog.locator('[data-document-zoom-in]').click();
+      const expanded=await dialog.locator('img').evaluate(x=>x.getBoundingClientRect().width);
+      await dialog.locator('[data-document-fit]').click();
+      const fitted=await dialog.locator('img').evaluate(x=>x.getBoundingClientRect().width);
+      await page.keyboard.press('Escape');
+      await dialog.waitFor({state:'hidden'});
+      const restored=await opener.evaluate(x=>x===document.activeElement);
+      if(expanded<=initial+2||Math.abs(fitted-initial)>2||!restored||await page.locator('a[target="_blank"][href*="ponsse-letter"]').count()){
+        report.fail.push({reason:'Owner PONSSE document zoom/fit/Escape/focus',initial,expanded,fitted,restored});
+      }
+    }catch(e){report.fail.push({reason:'PONSSE document full interaction exception',error:String(e)})}
+    finally{await context.close()}
+  }
 } finally {
   await browser.close();
 }
