@@ -538,6 +538,25 @@ try {
     }catch(e){report.fail.push({reason:'Services editorial geometry exception',width,height,error:String(e)})}
     finally{await context.close()}
   }
+  // The persistent consultant must not overlap the six home categories.
+  {
+    const context=await browser.newContext({viewport:{width:1440,height:900}});
+    const page=await context.newPage();
+    try{
+      await page.goto(baseUrl+'/',{waitUntil:'load'});
+      const before=await page.locator('.consultant-launcher').evaluate(el=>{
+        const css=getComputedStyle(el);return {visibility:css.visibility,opacity:Number(css.opacity)};
+      });
+      await page.locator('.home-hero--owner-airflow .object-ribbon').scrollIntoViewIfNeeded();
+      const under=await page.locator('.consultant-launcher').evaluate(el=>getComputedStyle(el).visibility);
+      await page.locator('.decision-preview').scrollIntoViewIfNeeded();
+      await page.waitForFunction(()=>document.documentElement.classList.contains('is-past-first-fold'),null,{timeout:4000});
+      const after=await page.locator('.consultant-launcher').evaluate(el=>getComputedStyle(el).visibility);
+      if(before.visibility!=='hidden'||under!=='hidden'||after!=='visible')
+        report.fail.push({reason:'Consultant launcher must not overlap first-fold categories',before,under,after});
+    }catch(e){report.fail.push({reason:'Consultant first-fold overlap QA failed',error:String(e)})}
+    finally{await context.close()}
+  }
   // OWNER-sensitive geometry regression. Adds diverse viewport heights, browser
   // text scaling, first-fold finishing, real document interactions and motion.
   for (const [route, width, height] of [

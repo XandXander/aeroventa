@@ -94,6 +94,9 @@ const tel = SITE.phone.replace(/[^+\d]/g, '');
     sections.forEach((section) => section.classList.add('is-airflow-active'));
   }
 
+  // Do not cover first-fold object routes with a fixed consultant launcher.
+  // Discovery is deferred until the entire page has rendered.
+  let entryBoundary = null;
   let ticking = false;
   const updateScrollState = () => {
     const y = window.scrollY || 0;
@@ -102,6 +105,9 @@ const tel = SITE.phone.replace(/[^+\d]/g, '');
     root.style.setProperty('--airflow-scroll', String(progress));
 
     if (header) header.classList.toggle('is-compact', y > 28);
+    if (entryBoundary) {
+      root.classList.toggle('is-past-first-fold', entryBoundary.getBoundingClientRect().bottom < 80);
+    }
     if (mobileDock) mobileDock.classList.toggle('is-visible', y > Math.min(280, window.innerHeight * 0.42));
     ticking = false;
   };
@@ -112,6 +118,10 @@ const tel = SITE.phone.replace(/[^+\d]/g, '');
     }
   };
   window.addEventListener('scroll', onScroll, { passive: true });
+  document.addEventListener('DOMContentLoaded', () => {
+    entryBoundary = document.querySelector('.home-hero--owner-airflow .object-ribbon, .services-hero__routes');
+    updateScrollState();
+  }, {once:true});
   updateScrollState();
 })();
 </script>
