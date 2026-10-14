@@ -199,6 +199,11 @@ check(files.restaurants.includes("heroMedia={{ src:'/evidence/leont/owner-cover-
       !files.restaurants.includes("heroMedia={{ src:'/evidence/leont/duct-installation-02.jpg'"), 'Restaurant direction uses authentic architectural context, retains montage only as case evidence');
 const acceptedScene = await fs.stat(path.join(root, 'apps/web/public/evidence/hero/engineering-scene-accepted-v43.webp')).catch(() => null);
 check(Boolean(acceptedScene?.isFile() && acceptedScene.size > 20000), 'Original accepted engineering-scene visual exists physically in build sources');
+
+check(!/\/obekty\/#(?:private|commercial|warehouses|production)/.test(files.home + files.services), 'Owner: homepage/services never route categories through fragment detours');
+for(const directRoute of ['/obekty/kvartiry-i-doma/','/obekty/ofisy-i-kommercheskie-pomeshcheniya/','/obekty/magaziny-i-sklady/','/obekty/proizvodstvo/']) {
+  check(files.home.includes(directRoute) && files.services.includes(directRoute), 'Owner: category directly addresses destination '+directRoute);
+}
 check(files.home.includes('owner-luxury-airflow-20261010.png') && files.home.includes('hasOwnerHeroMedia') && files.home.includes('if (!hasOwnerHeroMedia) throw') && !files.home.includes('home-owner-editorial-1672.webp'), 'Current Owner-approved original blue-airflow HERO is fail-closed and not substituted');
 check(files.airflow.includes('airflow-header-trace__route--supply') && files.airflow.includes('airflow-header-trace__route--exhaust') && !files.home.includes('solution-overlay-label'), 'Independent supply/exhaust TRACE remains; removed diagram does not assert a false connection');
 check(!files.home.includes('РЕАЛЬНЫЙ МОНТАЖ · 7 PARK · ПАВЛОВСК') && files.home.includes('Реальный монтаж AEROVENTA на объекте 7 PARK'), 'Rejected visual caption gone, accessible attribution preserved');
@@ -217,7 +222,7 @@ const mediaStats = await Promise.all(ownerMediaVariants.map(async name => {
 }));
 check(mediaStats.every(stat => stat?.isFile() && stat.size > 20000), 'All six optimized Owner source image variants exist as nonempty files');
 // 2026-10-14 Owner re-rejection supersedes the former two-photo services HERO gate.
-check(files.services.includes('/evidence/cafe/owner-cover-v43.webp') &&
+check(files.services.includes('/evidence/cafe/owner-interior-v43.webp') &&
       !files.services.includes('/evidence/7park/duct-route.jpg') &&
       files.services.includes('services-hero__backdrop--single') &&
       files.services.includes('Кафе на Римского-Корсакова, 3 · выполненный объект') &&
