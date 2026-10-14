@@ -222,7 +222,7 @@ const mediaStats = await Promise.all(ownerMediaVariants.map(async name => {
 }));
 check(mediaStats.every(stat => stat?.isFile() && stat.size > 20000), 'All six optimized Owner source image variants exist as nonempty files');
 // 2026-10-14 Owner re-rejection supersedes the former two-photo services HERO gate.
-check(files.services.includes('/evidence/cafe/owner-interior-v43.webp') &&
+check(files.services.includes('/evidence/cafe/owner-cover-v43.webp') &&
       !files.services.includes('/evidence/7park/duct-route.jpg') &&
       files.services.includes('services-hero__backdrop--single') &&
       files.services.includes('Кафе на Римского-Корсакова, 3 · выполненный объект') &&
