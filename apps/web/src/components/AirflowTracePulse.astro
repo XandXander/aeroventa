@@ -42,20 +42,17 @@ const tel = SITE.phone.replace(/[^+\d]/g, '');
   const mobileDock = document.querySelector('[data-mobile-contact-dock]');
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  let seen = false;
-  try { seen = sessionStorage.getItem('aeroventa-airflow-entry') === '1'; } catch {}
-
-  if (entry) {
-    if (prefersReduced || seen) {
-      entry.remove();
-    } else {
-      requestAnimationFrame(() => entry.classList.add('is-running'));
-      entry.addEventListener('animationend', (event) => {
-        if (event.animationName === 'airflow-entry-fade') entry.remove();
-      });
-      window.setTimeout(() => entry.remove(), 1100);
-      try { sessionStorage.setItem('aeroventa-airflow-entry', '1'); } catch {}
-    }
+  // Never simulate loading on navigation. PULSE is attached to real network activity only.
+  entry?.remove();
+  const pendingForms = [...document.querySelectorAll('form[data-contact-form]')];
+  const reflectProcessing = () => {
+    const processing = pendingForms.some(form => form.getAttribute('data-submitting') === 'true');
+    root.toggleAttribute('data-airflow-processing', processing);
+  };
+  if (pendingForms.length) {
+    const observer = new MutationObserver(reflectProcessing);
+    pendingForms.forEach(form => observer.observe(form,{attributes:true,attributeFilter:['data-submitting']}));
+    reflectProcessing();
   }
 
   const sections = [...document.querySelectorAll('main > section, main article > section')]

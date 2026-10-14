@@ -4217,3 +4217,14 @@ form[data-submitting="true"] button[type="submit"]::after{
  .about-premium .about-team__photos--owners{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 14px}
 }
 @media(prefers-reduced-motion:reduce){.home-ponsse__document>button{transition:none;transform:none}}
+
+/* AEROVENTA: static scroll TRACE; animated PULSE exclusively during actual POST. */
+.airflow-header-trace{opacity:.92;height:4px}
+.airflow-header-trace__route{height:3px}
+.airflow-header-trace__route::before{opacity:.40}
+.airflow-header-trace__route i{height:4px;opacity:.85;box-shadow:none}
+html[data-airflow-processing] .airflow-header-trace__route--supply i{animation:av-active-supply .9s ease-in-out infinite alternate}
+html[data-airflow-processing] .airflow-header-trace__route--exhaust i{animation:av-active-exhaust .9s ease-in-out infinite alternate}
+@keyframes av-active-supply{from{left:0;opacity:.5}to{left:calc(100% - 52px);opacity:1}}
+@keyframes av-active-exhaust{from{right:0;opacity:.5}to{right:calc(100% - 52px);opacity:1}}
+@media(prefers-reduced-motion:reduce){html[data-airflow-processing] .airflow-header-trace__route i{animation:none}}
