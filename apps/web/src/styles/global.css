@@ -3894,3 +3894,32 @@ body{font-weight:440;line-height:1.57}
  .services-hero--owner-editorial .services-hero__backdrop--single img{position:absolute;inset:0;width:100%;height:100%}
  .hub-limits__grid h2{font-size:clamp(1.72rem,6.1vw,2.15rem);max-width:100%;line-height:1.15}
 }
+
+/* Owner 14 October: editorial evidence must fill the first fold, not empty air. */
+.objects-hero__grid,.portfolio-hero__grid{grid-template-columns:minmax(0,.94fr) minmax(0,1.06fr);align-items:center;gap:clamp(22px,4vw,80px)}
+.objects-hero__copy,.portfolio-hero__copy{max-width:620px}
+.objects-hero__photo,.portfolio-hero__photo{margin:0;min-width:0;position:relative}
+.objects-hero__photo img,.portfolio-hero__photo img{
+ display:block;width:100%;height:auto;aspect-ratio:1.5;object-fit:cover;object-position:center;
+ border-radius:0;filter:none
+}
+.objects-hero__photo figcaption,.portfolio-hero__photo figcaption{
+ font-size:.78rem;color:#586b78;padding-top:9px
+}
+.objects-hero__copy h1{max-width:18ch}
+.objects-hero__copy .objects-hero__lede{font-size:clamp(1.05rem,1.35vw,1.23rem);line-height:1.6;margin-top:22px;max-width:48ch}
+.portfolio-hero__copy h1{font-size:clamp(2.75rem,4.4vw,4.9rem)}
+.portfolio-hero__copy .portfolio-hero__lede{font-size:clamp(1.05rem,1.35vw,1.23rem);line-height:1.6;margin-top:22px;max-width:48ch}
+.engagement-hero__contact-note{display:block;margin-top:10px;font-size:.81rem;color:#586b78}
+@media(min-width:761px) and (max-width:1024px){
+ .objects-hero__grid,.portfolio-hero__grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+ .objects-hero__copy h1,.portfolio-hero__copy h1{font-size:clamp(2.2rem,4.4vw,3.55rem)}
+}
+@media(max-width:760px){
+ .objects-hero__grid,.portfolio-hero__grid{display:flex;flex-direction:column;align-items:stretch;gap:22px}
+ .objects-hero__photo,.portfolio-hero__photo{align-self:stretch}
+ .objects-hero__photo img,.portfolio-hero__photo img{aspect-ratio:1.65;object-fit:cover}
+ .objects-hero__copy h1,.portfolio-hero__copy h1{font-size:clamp(2.15rem,8vw,2.9rem);line-height:1.12}
+ .objects-hero__copy .objects-hero__lede,.portfolio-hero__copy .portfolio-hero__lede{margin-top:14px}
+ .objects-hero__copy .home-geo{font-size:.8rem}
+}
