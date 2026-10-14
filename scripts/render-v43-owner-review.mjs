@@ -468,6 +468,44 @@ try {
       }
     }
   }
+  // Contact UI: mock POST, never reach an inbox. Verify a pending-only PULSE,
+  // accessible error path and no fabricated delivery confirmation.
+  {
+    const context=await browser.newContext({viewport:{width:1440,height:900},reducedMotion:'no-preference'});
+    const page=await context.newPage();
+    try{
+      await page.goto(baseUrl+'/',{waitUntil:'load'});
+      const atRest=await page.evaluate(()=>({pending:document.documentElement.hasAttribute('data-airflow-processing'),trace:!!document.querySelector('.airflow-header-trace'),entry:!!document.querySelector('[data-airflow-entry]')}));
+      if(atRest.pending||!atRest.trace||atRest.entry) report.fail.push({reason:'No fake load animation at rest',atRest});
+      await page.locator('.header-project').click();
+      const form=page.locator('[data-contact-dialog] form[data-contact-form]');
+      await form.locator('input[name="name"]').fill('Owner QA fixture');
+      await form.locator('input[name="contact"]').fill('qa@example.org');
+      await form.locator('textarea[name="task"]').fill('Тест исключительно в изолированной сборке');
+      await form.locator('input[name="consent"]').check();
+      await form.locator('input[name="started_at"]').evaluate(x=>x.value=String(Date.now()-3000));
+      let called=0;let resolveRequest;
+      const release=new Promise(r=>resolveRequest=r);
+      await page.route('**/api/lead.php',async route=>{
+        called++;
+        await release;
+        await route.fulfill({status:503,contentType:'application/json',body:'{"ok":false,"error":"mock_only"}'});
+      });
+      await form.locator('button[type="submit"]').click();
+      await page.waitForFunction(()=>document.documentElement.hasAttribute('data-airflow-processing'),{timeout:4500});
+      const during=await page.evaluate(()=>({
+        pending:document.documentElement.hasAttribute('data-airflow-processing'),
+        pulse:getComputedStyle(document.querySelector('.airflow-header-trace__route--supply i')).animationName,
+        realFetch:document.querySelector('[data-contact-form][data-submitting="true"]')!==null
+      }));
+      resolveRequest();
+      await page.waitForFunction(()=>!document.documentElement.hasAttribute('data-airflow-processing'));
+      const status=await form.locator('[data-form-status]').innerText();
+      if(called!==1||!during.pending||!during.realFetch||during.pulse==='none'||!status.includes('Не удалось передать'))
+        report.fail.push({reason:'Mocked lead response/pulse/fallback',called,during,status});
+    }catch(error){report.fail.push({reason:'Lead and true Pulse interaction test failed',error:String(error)})}
+    finally{await context.close()}
+  }
   // OWNER-sensitive geometry regression. Adds diverse viewport heights, browser
   // text scaling, first-fold finishing, real document interactions and motion.
   for (const [route, width, height] of [

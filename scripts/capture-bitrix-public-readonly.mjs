@@ -58,6 +58,20 @@ const grab=async(item,i)=>{
   }catch(e){rec.error=String(e.message||e).slice(0,300)}
   return rec;
 };
+// Bounded early host reachability probe. A GitHub runner may have no egress
+// to Beget: stop after one failed GET instead of retrying all 30 routes.
+try{
+ const probe=await fetch(origin+'/',{redirect:'follow',signal:AbortSignal.timeout(7000),headers:{'User-Agent':'AEROVENTA-ReadOnly-Content-Restoration/1.0'}});
+ if(!probe.ok || new URL(probe.url).origin!==origin)throw Error('origin not safely reachable');
+ await probe.arrayBuffer();
+}catch(error){
+ const record={status:'BLOCKED_ORIGIN_UNREACHABLE_FROM_GITHUB_RUNNER',expected:urls.length,retrieved:0,
+  source:'https://aeroventa.ru',reason:String(error.message||error),routes:urls.map(x=>x.path),
+  publication_status:'NOT_AUTHORIZED_FROM_FORENSIC_CAPTURE'};
+ await fs.writeFile(path.join(out,'source_parity.json'),JSON.stringify(record,null,2));
+ console.error('BITRIX_SOURCE_BLOCKED',record.status,record.reason);
+ process.exit(2);
+}
 const results=Array(urls.length);let cursor=0;
 await Promise.all(Array.from({length:2},async()=>{while(cursor<urls.length){const i=cursor++;results[i]=await grab(urls[i],i)}}));
 const manifest={
@@ -73,3 +87,5 @@ const manifest={
 };
 await fs.writeFile(path.join(out,'source_parity.json'),JSON.stringify(manifest,null,2));
 console.log('BITRIX_READONLY',JSON.stringify({retrieved:manifest.retrieved,expected:manifest.expected,failures:manifest.failed,missing_headings:manifest.old_headings_missing_in_candidate,unlinked_media:manifest.media_not_relinked}));
+
+if(manifest.retrieved!==manifest.expected){console.error('BITRIX_SOURCE_INCOMPLETE',manifest.retrieved,manifest.expected);process.exitCode=2;}
