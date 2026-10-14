@@ -509,7 +509,7 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
         <button type="submit" class="ponsse-letter-dialog__close" aria-label="Закрыть письмо">Закрыть ×</button>
       </form>
       <div class="ponsse-letter-dialog__sheet"><img src={letterSrc} width="1481" height="2048" alt="Полноразмерное благодарственное письмо PONSSE от 5 апреля 2022 года" decoding="async" /></div>
-      <a href={letterSrc} class="ponsse-letter-dialog__link" target="_blank" rel="noopener noreferrer">Открыть изображение в полном размере ↗</a>
+      <button type="button" class="ponsse-letter-dialog__zoom" data-letter-zoom aria-pressed="false">Увеличить письмо +</button>
     </dialog>
   )}
   <section class="home-section case-story" aria-label="Задача, выполненные работы и результат">
@@ -549,6 +549,12 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
     });
   });
   const documentDialog = document.getElementById('ponsse-letter-dialog');
+  const letterZoom = documentDialog?.querySelector<HTMLButtonElement>('[data-letter-zoom]');
+  letterZoom?.addEventListener('click', () => {
+    const active = documentDialog?.classList.toggle('ponsse-letter-dialog--zoomed') || false;
+    letterZoom.setAttribute('aria-pressed', String(active));
+    letterZoom.textContent = active ? 'Показать страницу целиком −' : 'Увеличить письмо +';
+  });
   if (documentDialog instanceof HTMLDialogElement) {
     documentDialog.addEventListener('click', event => {
       if (event.target === documentDialog) documentDialog.close();

@@ -3687,3 +3687,49 @@ html::-webkit-scrollbar-thumb:hover {background:#7c93a2;}
  filter:contrast(1.2) saturate(1.08) brightness(.97);
 }
 .home-hero--owner-airflow ~ .home-solution .solution-diagram{background:#dce7e9}
+
+/* PR12 consolidated owner P0: typographic restraint and direct evidence. */
+.conversion-close{padding-block:clamp(40px,5.6vw,78px)}
+.conversion-close h2{font-size:clamp(1.85rem,3.3vw,3.5rem);line-height:1.14;letter-spacing:-.035em;font-weight:650;max-width:24ch;text-wrap:balance;overflow-wrap:normal}
+.section-heading h2,.engagement-section h2{font-size:clamp(1.9rem,3.2vw,3.35rem);line-height:1.13;letter-spacing:-.038em;font-weight:670;text-wrap:balance}
+.about-premium .about-hero h1{font-size:clamp(2.2rem,4.35vw,4.35rem);line-height:1.09;font-weight:690;letter-spacing:-.04em;max-width:21ch}
+.about-proof__grid img{aspect-ratio:1.5;object-fit:cover;object-position:center}
+.engagement--project .engagement-hero__media img{object-fit:cover;object-position:center}
+.engagement--project .engagement-hero__media figcaption a{color:inherit;text-underline-offset:3px}
+.project-brief,.project-method{padding-block:clamp(36px,4vw,64px)}
+.project-brief .engagement-section__grid,.project-method .engagement-section__grid{gap:clamp(22px,4vw,68px)}
+.project-brief__body,.project-method__body{max-width:65ch;font-size:clamp(1rem,1.25vw,1.16rem);line-height:1.7}
+.project-method__body p+p{margin-top:18px}
+.project-brief__link{display:inline-block;margin-top:18px;color:#173d53;font-weight:730;text-underline-offset:4px}
+.engagement--project .engagement-evidence__grid{gap:12px;background:transparent;border:0}
+.engagement--project .engagement-evidence__grid a{min-height:220px;padding:24px;border:1px solid #dae3e9}
+.engagement--project .engagement-evidence__grid h3{font-size:clamp(1.3rem,1.65vw,1.75rem)}
+/* Do not bleach the low-resolution legacy scene or crop engineering annotations. */
+.home-hero--owner-airflow ~ .home-solution .solution-diagram{background:transparent;min-height:0;height:auto;aspect-ratio:1036/338}
+.home-hero--owner-airflow ~ .home-solution .solution-diagram::before,
+.home-hero--owner-airflow ~ .home-solution .solution-diagram::after{display:none!important}
+.home-hero--owner-airflow ~ .home-solution .solution-diagram img{position:static;width:100%;height:auto;object-fit:contain;filter:none;transform:none}
+/* Gallery image occupies the available plane; side navigation never displaces it. */
+.case-photo-dialog{position:relative;width:min(98vw,1550px);height:min(95dvh,1050px);background:#0b1823}
+.case-photo-dialog__panel{position:relative}
+.case-photo-dialog__top{position:absolute;top:0;left:0;right:0;z-index:3;background:linear-gradient(180deg,rgba(5,15,22,.8),transparent);border:0}
+.case-photo-dialog__top button{border:0;font-size:1.8rem;min-width:44px;min-height:44px}
+.case-photo-dialog__figure{padding:49px 54px 14px}
+.case-photo-dialog__figure img{max-height:calc(100% - 35px)}
+.case-photo-dialog__nav{position:absolute;inset:45px 0 34px;display:flex;justify-content:space-between;pointer-events:none;z-index:2;padding:0 5px}
+.case-photo-dialog__nav button{pointer-events:auto;align-self:center;border:0;border-radius:50%;width:42px;height:56px;font-size:2rem;background:rgba(7,23,34,.52)}
+.ponsse-letter-dialog__zoom{display:block;margin:12px auto 18px;padding:10px 18px;border:1px solid #80919a;border-radius:6px;background:#fff;color:#173044;font:inherit;cursor:pointer}
+.ponsse-letter-dialog--zoomed .ponsse-letter-dialog__sheet{overflow:auto;max-height:80dvh}
+.ponsse-letter-dialog--zoomed .ponsse-letter-dialog__sheet img{max-width:none;width:auto;height:auto;min-width:min(100%,900px);object-fit:contain}
+@media(max-width:760px){
+  .conversion-close h2{font-size:clamp(1.75rem,7.4vw,2.5rem);max-width:100%}
+  .engagement--project .engagement-evidence__grid a{min-height:160px}
+  .case-photo-dialog{width:100vw;height:100dvh}
+  .case-photo-dialog__figure{padding:60px 37px max(24px,env(safe-area-inset-bottom,24px))}
+  .case-photo-dialog__nav{inset:54px 0 40px;padding:0 3px}
+  .case-photo-dialog__nav button{width:36px;height:52px;padding:4px}
+}
+@media(max-width:360px){
+  .about-premium .about-hero h1{font-size:1.9rem}
+  .conversion-close h2{font-size:1.75rem}
+}
