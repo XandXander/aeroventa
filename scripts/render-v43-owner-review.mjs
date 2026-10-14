@@ -219,12 +219,13 @@ try {
           }
         }
         if (id === 'services') {
-          const photographicProof = page.locator('.services-hero__backdrop--evidence img');
-          const expected = ['/evidence/cafe/owner-cover-v43.webp','/evidence/7park/duct-route.jpg'];
+          // 14 Oct Owner explicitly rejected the old two-photo services HERO.
+          const photographicProof = page.locator('.services-hero__backdrop--single img');
+          const expected = ['/evidence/cafe/owner-cover-v43.webp'];
           const actual = await photographicProof.evaluateAll(nodes=>nodes.map(n=>new URL(n.src).pathname));
           const wrong = await page.locator('.services-hero img[src="/evidence/hero/engineering-ductwork.jpg"], .services-hero img[src="/evidence/hero/services-owner-editorial-1774.webp"]').count();
           const servicesOptical = await page.evaluate(() => {
-            const pics=[...document.querySelectorAll('.services-hero__backdrop--evidence img')];
+            const pics=[...document.querySelectorAll('.services-hero__backdrop--single img')];
             const intro=document.querySelector('.services-hero__intro');
             const picture = pics[0]?.getBoundingClientRect();
             const text = intro?.getBoundingClientRect();
@@ -241,12 +242,12 @@ try {
           });
           const mobile=width<=760;
           if (JSON.stringify(actual)!==JSON.stringify(expected) || wrong ||
-              servicesOptical.natural_widths.length!==2 ||
+              servicesOptical.natural_widths.length!==1 ||
               servicesOptical.natural_widths.some(n=>n<400) ||
               servicesOptical.object_fits.some(n=>n!=='cover') ||
               (mobile && (servicesOptical.photo_top<servicesOptical.intro_bottom-3 ||
                   !servicesOptical.inline_visible || servicesOptical.floating_visible))) {
-            report.fail.push({route,view,reason:'Owner Services source-evidenced diptych and mobile placement',wrong,actual,servicesOptical});
+            report.fail.push({route,view,reason:'Owner Services single authentic image and mobile placement',wrong,actual,servicesOptical});
           }
         }
         if (id === 'ventilation') {
