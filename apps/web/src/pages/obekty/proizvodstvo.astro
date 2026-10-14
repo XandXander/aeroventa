@@ -1,0 +1,25 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ObjectEditorialPage from '@/components/pages/ObjectEditorialPage.astro';
+import type { ContentRecord } from '@/lib/types';
+const content: ContentRecord = {
+  path: "/obekty/proizvodstvo/",title: "Монтаж вентиляции на производственных объектах — AEROVENTA",h1:"Монтаж вентиляции на производственных объектах",
+  content_type:'landing',business_role:'CORE_SERVICE_HUB',status:'fixture_stub',
+  robots_index:false,robots_follow:true,sitemap_include:false,knowledge_allowed:true,ai_origin:false,
+  seo_title:"Монтаж вентиляции на производственных объектах в СПб и Ленобласти — AEROVENTA",
+  seo_description:"Монтаж вентиляции на действующем или строящемся производстве ведём по проекту с учётом доступа к оборудованию и условий объекта.",
+  excerpt:'',body_html:'',body_html_safety_status:'not_applicable',owner_approved_at:null
+};
+const detail={
+  "eyebrow": "Производственные помещения",
+  "lead": "Монтаж вентиляции на действующем или строящемся производстве ведём по проекту с учётом доступа к оборудованию и условий объекта.",
+  "proofTitle": "НТФФ «Полисан»",
+  "proofText": "Исторический производственный объект AEROVENTA в Санкт-Петербурге: монтаж приточно-вытяжной вентиляции и оборудования. Технические фотографии находятся в кейсе.",
+  "photo": "/evidence/polisan/owner-cover-v43.webp",
+  "photoAlt": "Здание НТФФ «Полисан» — подтверждённый объект AEROVENTA",
+  "link": "/blog/detail/ntff-polisan/",
+  "linkLabel": "Открыть производственный кейс",
+  "description": "Нужны чертежи, спецификация, сведения о доступе к производственным помещениям и режим работы объекта на предполагаемый период монтажа."
+};
+---
+<BaseLayout content={content}><ObjectEditorialPage content={content} {...detail}/></BaseLayout>
