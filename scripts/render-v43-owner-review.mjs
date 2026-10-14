@@ -6,16 +6,26 @@ import { createHash } from 'node:crypto';
 const root = path.resolve('V43_OWNER_BROWSER_REVIEW');
 const baseUrl = 'http://127.0.0.1:4178';
 const views = [
-  ['desktop_1440', 1440, 900],
-  ['tablet_834', 834, 1100],
-  ['mobile_390', 390, 844],
   ['mobile_320', 320, 720],
+  ['mobile_360', 360, 780],
+  ['mobile_390', 390, 844],
+  ['mobile_430', 430, 932],
+  ['tablet_768', 768, 1024],
+  ['tablet_834', 834, 1100],
+  ['tablet_1024', 1024, 768],
+  ['laptop_1280', 1280, 800],
+  ['desktop_1440', 1440, 900],
+  ['desktop_1920', 1920, 1080],
 ];
 const routes = [
   ['home', '/'],
   ['ventilation', '/montazh-ventiliacii/'],
   ['services', '/services/'],
   ['newbuilds', '/obekty/novostroyki-i-zhilye-kompleksy/'],
+  ['private_objects','/obekty/kvartiry-i-doma/'],
+  ['commercial_objects','/obekty/ofisy-i-kommercheskie-pomeshcheniya/'],
+  ['warehouse_objects','/obekty/magaziny-i-sklady/'],
+  ['production_objects','/obekty/proizvodstvo/'],
   ['restaurants', '/obekty/restorany-i-kafe/'],
   ['portfolio', '/portfolio/'],
   ['seven_park', '/blog/detail/kak-my-sdali-7-domov/'],
@@ -278,6 +288,30 @@ try {
           const actualPortrait = await page.locator('.ponsse-recognition__portrait img').count();
           if (actualLetter !== Number(expectedLetter) || actualPortrait !== Number(expectedPortrait)) {
             report.fail.push({route,view,reason:'PONSSE original image binding',actualLetter,actualPortrait,expectedLetter,expectedPortrait});
+          }
+        }
+        if (['home','services','objects'].includes(id) && ['desktop_1440','mobile_390'].includes(view)) {
+          const misleadingAnchors = await page.locator('a[href^="/obekty/#"]').count();
+          if (misleadingAnchors) report.fail.push({route,view,reason:'Owner prohibits object-category fragment detours',misleadingAnchors});
+          const directLinks = await page.locator('a[href^="/obekty/"]').evaluateAll(els => [...new Set(els.map(el=>el.getAttribute('href')).filter(Boolean))]);
+          for (const href of directLinks) {
+            if (href.includes('#')) report.fail.push({route,view,reason:'Fragment navigation in object category',href});
+            const response = await page.request.get(baseUrl + href);
+            if (response.status() !== 200) report.fail.push({route,view,reason:'Direct category destination not 200',href,status:response.status()});
+          }
+        }
+        if (['home','services','objects','portfolio'].includes(id) && ['desktop_1440','laptop_1280'].includes(view)) {
+          const firstFold = await page.evaluate((routeId) => {
+            const root = routeId==='home'?document.querySelector('.home-hero'):
+              routeId==='services'?document.querySelector('.services-hero__routes'):
+              routeId==='objects'?document.querySelector('.objects-hero'):
+              document.querySelector('.portfolio-hero');
+            const rect=root?.getBoundingClientRect();
+            return rect?{bottom:Math.round(rect.bottom),viewport:innerHeight}:null;
+          },id);
+          entry.first_fold = firstFold;
+          if (firstFold && firstFold.bottom < firstFold.viewport-24) {
+            report.fail.push({route,view,reason:'Owner first fold leaks next section',...firstFold});
           }
         }
         if (entry.status !== 200 || entry.overflow_px > 1 || entry.broken_images.length || pageErrors.length) {
