@@ -412,11 +412,9 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
 <article class="evidence-case">
   <header class="case-detail-hero">
     <div class="home-shell case-detail-hero__grid">
-      <div>
+      <div class="case-detail-hero__copy">
         <p class="home-kicker">{spec.eyebrow}</p>
         <h1>{content.h1}</h1>
-      </div>
-      <div>
         <p class="case-detail-hero__location">{spec.location}</p>
         <p class="case-detail-hero__lede">{spec.lede}</p>
         <div class="home-actions">
@@ -424,6 +422,14 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
           <a class="button button--ghost" href="/portfolio/">Все объекты</a>
         </div>
       </div>
+      <figure class="case-detail-hero__photograph">
+        <button type="button" class="case-detail-hero__photo-open" data-case-photo
+          data-photo-src={spec.media[0][0]} data-photo-alt={spec.media[0][1]}
+          data-photo-caption={spec.media[0][2]} aria-label={`Увеличить фотографию объекта: ${spec.media[0][1]}`}>
+          <img src={spec.media[0][0]} alt={spec.media[0][1]} width="1200" height="760" loading="eager" fetchpriority="high" decoding="async" />
+        </button>
+        <figcaption><span>Документальный кадр</span>{spec.media[0][2]}</figcaption>
+      </figure>
     </div>
   </header>
 
@@ -432,8 +438,8 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
       <p class="section-index section-index--orange">Реальные фотографии</p>
       <h2 id="case-gallery-title">{documentary.gallery}</h2>
       <p class="case-gallery__intro">Фотографии объекта и выполненных работ.</p>
-      <div class="case-gallery__grid case-gallery__grid--featured">
-        {spec.media.map(([src, alt, caption]) => (
+      {spec.media.length > 1 && <div class="case-gallery__grid case-gallery__grid--featured">
+        {spec.media.slice(1).map(([src, alt, caption]) => (
           <figure class="case-gallery__item">
             <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={alt} data-photo-caption={caption} aria-label={`Увеличить фотографию: ${caption}`}>
               <img src={src} alt={alt} width="800" height="520" loading="lazy" decoding="async" />
@@ -441,10 +447,10 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
             <figcaption>{caption}</figcaption>
           </figure>
         ))}
-      </div>
+      </div>}
       {Boolean(spec.archiveMedia?.length) && (
-        <section class="case-gallery__archive" aria-labelledby="case-photo-archive-title">
-          <h3 id="case-photo-archive-title">Все фотографии монтажных работ</h3>
+        <section class="case-gallery__archive" data-case-archive aria-labelledby="case-photo-archive-title">
+          <h3 id="case-photo-archive-title">Документальные кадры монтажа</h3>
           <div class="case-gallery__thumbs">
             {(spec.archiveMedia || []).map(([src, alt, caption]) => (
               <figure class="case-gallery__item case-gallery__item--thumb">
@@ -454,7 +460,11 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
               </figure>
             ))}
           </div>
-          <p class="case-gallery__archive-note">Исходная фотодокументация монтажных работ. Нажмите на снимок, чтобы открыть его целиком; порядок фотографий сохранён.</p>
+          {(spec.archiveMedia || []).length > 6 && (
+            <button type="button" class="case-gallery__expand" data-case-gallery-expand
+              aria-expanded="false">Показать все фотографии · {(spec.archiveMedia || []).length} <span aria-hidden="true">↓</span></button>
+          )}
+          <p class="case-gallery__archive-note">Подлинные снимки доступны в полном размере. При увеличении можно перелистывать всю галерею.</p>
         </section>
       )}
       {fullOriginalGallery.length>0 && (
@@ -597,6 +607,15 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
 </article>
 
 <script>
+  document.querySelectorAll<HTMLElement>('[data-case-archive]').forEach(section => {
+    const button=section.querySelector<HTMLButtonElement>('[data-case-gallery-expand]');
+    button?.addEventListener('click', () => {
+      const expanded=section.classList.toggle('is-expanded');
+      button.setAttribute('aria-expanded', String(expanded));
+      button.innerHTML=expanded ? 'Свернуть фотоархив <span aria-hidden="true">↑</span>' :
+        'Показать все фотографии · ' + section.querySelectorAll('[data-case-photo]').length + ' <span aria-hidden="true">↓</span>';
+    });
+  });
   const photos = [...document.querySelectorAll<HTMLButtonElement>('[data-case-photo]')];
   const viewer = document.getElementById('case-photo-viewer');
   if (viewer instanceof HTMLDialogElement && photos.length) {
