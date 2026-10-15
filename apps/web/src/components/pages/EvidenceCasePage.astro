@@ -1,6 +1,7 @@
 ---
 import type { ContentRecord } from '@/lib/types';
 import verifiedArchive from '../../../../../migration/bitrix-verified-articles-20260817.json';
+import legacySourceIndex from '../../../../../migration/legacy-page-source-index.json';
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 
@@ -14,6 +15,10 @@ const verifiedOriginal = verifiedArchive.articles.find(item => item.route === co
 const verifiedArchiveHtml = verifiedOriginal
   ? verifiedOriginal.source_article_html_sanitized.replace(/<img\b[^>]*>/gi, '')
   : '';
+const oldCaseExcerpt = ['/blog/detail/restoran-v-zhk-leontevskiy-mys/','/blog/detail/kafe-rimskogo-korsakova-3/'].includes(content.path)
+  ? (legacySourceIndex.find(x=>x.path===content.path)?.legacy_text_excerpt || '').replace('kgh7q3hdwjoqbkg3','').trim()
+  : '';
+
 
 type CaseSpec = {
   eyebrow: string;
@@ -556,14 +561,14 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
       <div><span>Подтверждение</span><h2>Известные сведения</h2><p>{spec.result}</p></div>
     </div>
   </section>
-  {verifiedOriginal && (
+  {(verifiedOriginal || oldCaseExcerpt) && (
     <section class="case-original-record" aria-label="Оригинальный текст архивной публикации">
       <div class="home-shell">
         <details class="case-original-record__details">
           <summary>Первоначальное описание объекта · архив</summary>
           <div class="case-original-record__body">
-            <p class="case-original-record__note">Слова оригинальной публикации сохранены. Указанные в ней сроки и условия являются историческими.</p>
-            <div set:html={verifiedArchiveHtml} />
+            <p class="case-original-record__note">{verifiedOriginal ? 'Текст восстановлен по оригинальному HTML, совпавшему с контрольным SHA-256 августа 2026 года.' : 'Текст сохранён в архивном индексе исходной публикации. Сроки и объёмы относятся к историческому объекту, не к действующему коммерческому предложению.'}</p>
+            {verifiedOriginal ? <div set:html={verifiedArchiveHtml} /> : <p>{oldCaseExcerpt}</p>}
           </div>
         </details>
       </div>
