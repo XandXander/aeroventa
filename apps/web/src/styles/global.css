@@ -4332,16 +4332,19 @@ header.services-hero--owner-editorial>figure.services-hero__backdrop--single fig
 /* Fixed launcher must never overlap the primary category/service navigation.
    It becomes available after the opening route index scrolls off-screen. */
 html:not(.is-past-first-fold) body:has(.home-hero--owner-airflow) .consultant-launcher,
-html:not(.is-past-first-fold) body:has(.services-hero--owner-editorial) .consultant-launcher{
+html:not(.is-past-first-fold) body:has(.services-hero--owner-editorial) .consultant-launcher,
+html:not(.is-past-first-fold) body:has(.about-hero) .consultant-launcher{
   opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s ease,visibility .18s;
 }
 html.is-past-first-fold body:has(.home-hero--owner-airflow) .consultant-launcher,
-html.is-past-first-fold body:has(.services-hero--owner-editorial) .consultant-launcher{
+html.is-past-first-fold body:has(.services-hero--owner-editorial) .consultant-launcher,
+html.is-past-first-fold body:has(.about-hero) .consultant-launcher{
   opacity:1;visibility:visible;pointer-events:auto;
 }
 @media(prefers-reduced-motion:reduce){
   html:not(.is-past-first-fold) body:has(.home-hero--owner-airflow) .consultant-launcher,
-  html:not(.is-past-first-fold) body:has(.services-hero--owner-editorial) .consultant-launcher{transition:none}
+  html:not(.is-past-first-fold) body:has(.services-hero--owner-editorial) .consultant-launcher,
+  html:not(.is-past-first-fold) body:has(.about-hero) .consultant-launcher{transition:none}
 }
 
 

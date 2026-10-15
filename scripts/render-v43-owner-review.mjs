@@ -761,6 +761,24 @@ try {
     }catch(e){report.fail.push({reason:'Sports UI regression error',width,error:String(e)})}
     finally{await context.close()}
   }
+  // Owner artistic rejection: fixed launcher covers /about/ intro text and CTA
+  // in actual compiled screenshot. Suppress until past hero while retaining CTA.
+  {
+    const ctx=await browser.newContext({viewport:{width:1440,height:900}});
+    const page=await ctx.newPage();
+    try{
+      await page.goto(baseUrl+'/about/',{waitUntil:'load'});
+      const before=await page.locator('.consultant-launcher').evaluate(el=>getComputedStyle(el).visibility);
+      const hero=page.locator('.about-hero');
+      await hero.scrollIntoViewIfNeeded();
+      await page.locator('.about-team').scrollIntoViewIfNeeded();
+      await page.waitForFunction(()=>document.documentElement.classList.contains('is-past-first-fold'),null,{timeout:4000});
+      const after=await page.locator('.consultant-launcher').evaluate(el=>getComputedStyle(el).visibility);
+      if(before!=='hidden'||after!=='visible')
+        report.fail.push({reason:'About intro must not be covered by floating consultant',before,after});
+    }catch(e){report.fail.push({reason:'About first-fold consultant regression',error:String(e)})}
+    finally{await ctx.close()}
+  }
   // Same-page PONSSE document must zoom, fit, Escape and restore focus.
   {
     const context=await browser.newContext({viewport:{width:1440,height:900}});

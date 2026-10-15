@@ -119,7 +119,7 @@ const tel = SITE.phone.replace(/[^+\d]/g, '');
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   document.addEventListener('DOMContentLoaded', () => {
-    entryBoundary = document.querySelector('.home-hero--owner-airflow .object-ribbon, .services-hero__routes');
+    entryBoundary = document.querySelector('.home-hero--owner-airflow .object-ribbon, .services-hero__routes, .about-hero');
     updateScrollState();
   }, {once:true});
   updateScrollState();
