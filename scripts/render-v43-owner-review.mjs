@@ -721,6 +721,39 @@ try {
     } catch(e){report.fail.push({reason:'Owner additional QA exception',route,width,height,error:String(e)})}
     finally{await context.close()}
   }
+  // Owner separate sport feature, never included in 12-card index. The exact
+  // label 'Центр адаптивного спорта' is source-unverified and must not be asserted.
+  for(const [width,height] of [[1440,900],[390,844]]){
+    const context=await browser.newContext({viewport:{width,height}});
+    const page=await context.newPage();
+    try{
+      await page.goto(baseUrl+'/portfolio/',{waitUntil:'load'});
+      const sport=page.locator('section.portfolio-sport');
+      const sportCount=await sport.count();
+      const gridCount=await page.locator('.portfolio-grid>.portfolio-card').count();
+      const media=await sport.locator('img').evaluateAll(nodes=>nodes.map(n=>({
+        natural:n.complete&&n.naturalWidth>0,
+        src:n.getAttribute('src')
+      })));
+      if(sportCount!==1||gridCount!==12||media.length!==2||media.some(x=>!x.natural) ||
+        await page.getByRole('heading',{name:'Центр адаптивного спорта'}).count()) {
+        report.fail.push({reason:'Separate owner sports feature: 12+1 and source identity gate',width,sportCount,gridCount,media});
+      }
+      const open=sport.locator('button[data-archive-open]');
+      await open.click();
+      const modal=page.locator('#portfolio-archive-viewer');
+      await modal.waitFor({state:'visible',timeout:2500});
+      const first=await modal.locator('[data-gallery-photo]').getAttribute('src');
+      const originalCount=await modal.locator('[data-gallery-count]').textContent();
+      await modal.locator('[data-gallery-next]').click();
+      const second=await modal.locator('[data-gallery-photo]').getAttribute('src');
+      await page.keyboard.press('Escape');
+      const restored=await open.evaluate(el=>document.activeElement===el);
+      if(originalCount?.trim()!=='1 / 4'||first===second||!restored||await modal.isVisible())
+        report.fail.push({reason:'Sports gallery navigation / Escape / focus',width,originalCount,first,second,restored});
+    }catch(e){report.fail.push({reason:'Sports UI regression error',width,error:String(e)})}
+    finally{await context.close()}
+  }
   // Same-page PONSSE document must zoom, fit, Escape and restore focus.
   {
     const context=await browser.newContext({viewport:{width:1440,height:900}});
