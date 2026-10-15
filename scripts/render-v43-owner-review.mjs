@@ -577,6 +577,59 @@ try {
     }catch(e){report.fail.push({reason:'Consultant first-fold overlap QA failed',error:String(e)})}
     finally{await context.close()}
   }
+  // ART RED TEAM DELTA: compiled DOM checks for the six confirmed source defects.
+  // This is a focused addition to the established 400-capture suite, not a new audit.
+  for (const [route, width] of [
+    ['/services/',320],['/services/',390],['/services/',768],
+    ['/services/',1440],['/services/',1920],
+    ['/about/',390],['/about/',1440],
+    ['/portfolio/',390],['/portfolio/',1440],
+    ['/blog/detail/ntff-polisan/',390],
+    ['/blog/detail/ntff-polisan/',1440],
+    ['/blog/detail/kafe-rimskogo-korsakova-3/',390],
+    ['/blog/detail/kafe-rimskogo-korsakova-3/',1440]
+  ]) {
+    const context=await browser.newContext({viewport:{width,height:850}});
+    const page=await context.newPage();
+    try{
+      await page.goto(baseUrl+route,{waitUntil:'load'});
+      const dom=await page.evaluate(()=>{
+        const headings=[...document.querySelectorAll('.section-index')].map(n=>n.textContent.trim());
+        return {
+          articles:document.querySelectorAll('main article.hub-page').length,
+          orphan:/(?:^|\n)\s*\)\)\}\s*(?:\n|$)/m.test(document.querySelector('main')?.innerText||''),
+          hubSplit:document.querySelectorAll('main .hub-split,main .hub-objects,main .hub-limits').length,
+          serviceRoutes:document.querySelectorAll('main .services-hero__routes-inner>a').length,
+          labels:headings,
+          image:document.querySelector('meta[property="og:image"]')?.getAttribute('content')||'',
+          articleTitle:document.querySelector('#case-gallery-title')?.textContent?.trim()||'',
+          archiveThumbs:document.querySelectorAll('.case-gallery__archive .case-gallery__thumbs button[data-case-photo]').length,
+          archiveCaptions:document.querySelectorAll('.case-gallery__archive .case-gallery__thumbs figcaption').length,
+          archiveNote:!!document.querySelector('.case-gallery__archive .case-gallery__archive-note'),
+          numberedCaseSubsteps:[...document.querySelectorAll('.case-story__grid>div>span')].some(el=>/^0[1-9]\s*\//.test(el.textContent.trim()))
+        };
+      });
+      if(route==='/services/'&&
+        (dom.articles!==1||dom.orphan||dom.hubSplit!==0||dom.serviceRoutes!==3||
+        !dom.image.endsWith('/evidence/hero/services-owner-editorial-1774.webp')))
+        report.fail.push({reason:'ART-DELTA-01/06 compiled services article and social preview',route,width,dom});
+      if(route==='/about/'&&!dom.labels.some(x=>x.startsWith('03 / Опыт на объектах')))
+        report.fail.push({reason:'ART-DELTA-02 about numbering',width,labels:dom.labels});
+      if(route==='/portfolio/'&&!dom.labels.some(x=>x.startsWith('03 / Ваш объект')))
+        report.fail.push({reason:'ART-DELTA-02 portfolio numbering',width,labels:dom.labels});
+      if(route.includes('/blog/detail/')&&
+        (dom.archiveThumbs<1||dom.archiveCaptions!==0||!dom.archiveNote||dom.numberedCaseSubsteps))
+        report.fail.push({reason:'ART-DELTA-02/03 gallery and inner section semantics',route,width,dom});
+      if(route.includes('/kafe-rimskogo-korsakova-3/')&&!dom.articleTitle.includes('Кафе на Римского-Корсакова, 3'))
+        report.fail.push({reason:'ART-DELTA-04 actual cafe editorial title',route,width,dom});
+      if(route==='/portfolio/'){
+        const tags=await page.locator('.portfolio-card__top b').allTextContents();
+        if(tags.includes('География')||!tags.includes('Сервисно-образовательный центр'))
+          report.fail.push({reason:'ART-DELTA-05 portfolio object type',width,tags});
+      }
+    }catch(e){report.fail.push({reason:'ART-DELTA compiled browser exception',route,width,error:String(e)})}
+    finally{await context.close()}
+  }
   // OWNER-sensitive geometry regression. Adds diverse viewport heights, browser
   // text scaling, first-fold finishing, real document interactions and motion.
   for (const [route, width, height] of [
