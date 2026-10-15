@@ -271,7 +271,7 @@ const servicesPage = files.services.slice(0, files.services.indexOf('<style>'));
 check((servicesPage.match(/<article\b/g) || []).length === 1 &&
       (servicesPage.match(/<\/article>/g) || []).length === 1 &&
       !servicesPage.includes('hub-split') && !servicesPage.includes('hub-objects') &&
-      !servicesPage.includes('))}'), 'ART-DELTA-01: one semantic services article, no abandoned sections');
+      servicesPage.trimEnd().endsWith('</article>'), 'ART-DELTA-01: one semantic services article, no abandoned sections');
 check(files.about.includes('03 / Опыт на объектах') &&
       portfolioSource.includes('03 / Ваш объект') &&
       !caseSource.includes('<span>01 / Задача</span>'), 'ART-DELTA-02: consistent section counting');
