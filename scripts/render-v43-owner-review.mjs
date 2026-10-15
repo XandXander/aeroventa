@@ -721,8 +721,8 @@ try {
     } catch(e){report.fail.push({reason:'Owner additional QA exception',route,width,height,error:String(e)})}
     finally{await context.close()}
   }
-  // Owner separate sport feature, never included in 12-card index. The exact
-  // label 'Центр адаптивного спорта' is source-unverified and must not be asserted.
+  // Owner separate sport feature with source-corroborated exterior;
+  // no unsupported project scope, never a 13th grid card.
   for(const [width,height] of [[1440,900],[390,844]]){
     const context=await browser.newContext({viewport:{width,height}});
     const page=await context.newPage();
@@ -743,7 +743,7 @@ try {
         src:n.getAttribute('src')
       })));
       if(sportCount!==1||gridCount!==12||media.length!==2||media.some(x=>!x.natural) ||
-        await page.getByRole('heading',{name:'Центр адаптивного спорта'}).count()) {
+        await page.getByRole('heading',{name:'Центр адаптивного спорта'}).count()!==1) {
         report.fail.push({reason:'Separate owner sports feature: 12+1 and source identity gate',width,sportCount,gridCount,media});
       }
       const open=sport.locator('button[data-archive-open]');

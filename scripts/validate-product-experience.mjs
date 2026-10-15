@@ -264,8 +264,8 @@ check(files.css.includes('@media (prefers-reduced-motion: reduce)'), 'Premium ex
 check(files.css.includes(':focus-visible'), 'Premium experience includes visible focus treatment');
 check(!/exit-intent|timer-popup|auto-open|setInterval\(/i.test(files.premium + files.telemetry), 'No intrusive popup trigger pattern');
 
-// Owner sports source stage: distinct editorial feature, gallery uses 4 exact
-// photos, but do not label as Центр адаптивного спорта until Owner identity proof.
+// Owner sports dossier: exterior matches public architecture of the
+// Яхтенная 39 Centre. Exact scope of engineering works remains unverified.
 // ART RED TEAM 2026-10-15: verified owner P0/P1/P2 source corrections.
 const caseSource = await read('apps/web/src/components/pages/EvidenceCasePage.astro');
 const portfolioSource = await read('apps/web/src/components/pages/PortfolioHubPage.astro');
@@ -291,7 +291,7 @@ check(files.layout.includes("'/services/': '/evidence/hero/services-owner-editor
 check(portfolioSource.includes('class="portfolio-sport"') &&
       portfolioSource.includes('04 / Ваш объект') &&
       ['cover','02','03','04'].every(name=>portfolioSource.includes('/evidence/owner-portfolio/sport-komendantskiy/'+name+'.webp')) &&
-      !portfolioSource.includes('<h2 id="portfolio-sport-title">Центр адаптивного спорта</h2>'),
+      portfolioSource.includes('<h2 id="portfolio-sport-title">Центр адаптивного спорта</h2>'),
       'Sport: independent, photo-backed feature; unverified exact identity not asserted');
 for(const name of ['cover','02','03','04']){
   const img=await fs.stat(path.join(root,'apps/web/public/evidence/owner-portfolio/sport-komendantskiy',name+'.webp')).catch(()=>null);

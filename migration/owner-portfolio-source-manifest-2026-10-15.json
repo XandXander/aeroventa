@@ -239,7 +239,14 @@
     "width": 937,
     "height": 428,
     "bytes": 38206,
-    "status": "CANDIDATE_ONLY_IDENTITY_UNVERIFIED"
+    "status": "PHOTO_ARCHITECTURAL_MATCH_PUBLIC_2024_SCOPE_UNVERIFIED",
+    "attribution": {
+      "basis": "Owner-named centre + matching unique exterior of source photo and public Jan/Aug 2024 centre facade",
+      "public_reference": "https://kanoner.com/2024/01/19/179699/",
+      "official_location": "Санкт-Петербург, Яхтенная улица, 39",
+      "scope_of_work": "NOT_VERIFIED",
+      "caption_policy": "ARCHIVAL_PHOTOS_ONLY"
+    }
   },
   {
     "path": "apps/web/public/evidence/owner-portfolio/sport-komendantskiy/02.webp",
@@ -250,7 +257,14 @@
     "width": 1200,
     "height": 900,
     "bytes": 124636,
-    "status": "CANDIDATE_ONLY_IDENTITY_UNVERIFIED"
+    "status": "PHOTO_ARCHITECTURAL_MATCH_PUBLIC_2024_SCOPE_UNVERIFIED",
+    "attribution": {
+      "basis": "Owner-named centre + matching unique exterior of source photo and public Jan/Aug 2024 centre facade",
+      "public_reference": "https://kanoner.com/2024/01/19/179699/",
+      "official_location": "Санкт-Петербург, Яхтенная улица, 39",
+      "scope_of_work": "NOT_VERIFIED",
+      "caption_policy": "ARCHIVAL_PHOTOS_ONLY"
+    }
   },
   {
     "path": "apps/web/public/evidence/owner-portfolio/sport-komendantskiy/03.webp",
@@ -261,7 +275,14 @@
     "width": 1200,
     "height": 900,
     "bytes": 47064,
-    "status": "CANDIDATE_ONLY_IDENTITY_UNVERIFIED"
+    "status": "PHOTO_ARCHITECTURAL_MATCH_PUBLIC_2024_SCOPE_UNVERIFIED",
+    "attribution": {
+      "basis": "Owner-named centre + matching unique exterior of source photo and public Jan/Aug 2024 centre facade",
+      "public_reference": "https://kanoner.com/2024/01/19/179699/",
+      "official_location": "Санкт-Петербург, Яхтенная улица, 39",
+      "scope_of_work": "NOT_VERIFIED",
+      "caption_policy": "ARCHIVAL_PHOTOS_ONLY"
+    }
   },
   {
     "path": "apps/web/public/evidence/owner-portfolio/sport-komendantskiy/04.webp",
@@ -272,6 +293,13 @@
     "width": 1200,
     "height": 900,
     "bytes": 297496,
-    "status": "CANDIDATE_ONLY_IDENTITY_UNVERIFIED"
+    "status": "PHOTO_ARCHITECTURAL_MATCH_PUBLIC_2024_SCOPE_UNVERIFIED",
+    "attribution": {
+      "basis": "Owner-named centre + matching unique exterior of source photo and public Jan/Aug 2024 centre facade",
+      "public_reference": "https://kanoner.com/2024/01/19/179699/",
+      "official_location": "Санкт-Петербург, Яхтенная улица, 39",
+      "scope_of_work": "NOT_VERIFIED",
+      "caption_policy": "ARCHIVAL_PHOTOS_ONLY"
+    }
   }
 ]
