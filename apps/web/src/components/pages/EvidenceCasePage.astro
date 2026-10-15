@@ -388,7 +388,7 @@ const documentaryTitles: Record<string, {gallery:string;facts:string}> = {
   '/blog/detail/ntff-polisan/': {gallery:'«Полисан»: фотографии производственного объекта',facts:'Вентиляция фармацевтического предприятия'},
   '/blog/detail/montazh-ventilyatsii-v-karelii/': {gallery:'PONSSE: инженерные работы в Питкяранте',facts:'Сервисно-образовательный центр в Карелии'},
   '/blog/detail/kvartira-na-zhukova/': {gallery:'Квартира на Маршала Жукова: выполненные работы',facts:'Объём вентиляции в квартире'},
-  '/blog/detail/kafe-na-rimskogo-korsakova/': {gallery:'Кафе на Римского-Корсакова: фотодокументация',facts:'Работы в помещении кафе'},
+  '/blog/detail/kafe-rimskogo-korsakova-3/': {gallery:'Кафе на Римского-Корсакова, 3: фотодокументация',facts:'Монтаж вентиляции в помещении кафе'},
 };
 const documentary = documentaryTitles[content.path] || {gallery:'Фотографии объекта и выполненных работ',facts:'Состав работ на объекте'};
 
@@ -435,13 +435,13 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
           <div class="case-gallery__thumbs">
             {(spec.archiveMedia || []).map(([src, alt, caption]) => (
               <figure class="case-gallery__item case-gallery__item--thumb">
-                <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={alt} data-photo-caption={caption} aria-label={`Увеличить фотографию: ${caption}`}>
+                <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={alt} data-photo-archival="true" data-photo-caption="Исходная фотография работ" aria-label={`Увеличить архивную фотографию: ${alt}`}>
                   <img src={src} alt={alt} width="460" height="300" loading="lazy" decoding="async" />
                 </button>
-                <figcaption>{caption}</figcaption>
               </figure>
             ))}
           </div>
+          <p class="case-gallery__archive-note">Исходная фотодокументация монтажных работ. Нажмите на снимок, чтобы открыть его целиком; порядок фотографий сохранён.</p>
         </section>
       )}
     </div>
@@ -526,14 +526,14 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
   )}
   <section class="home-section case-story" aria-label="Задача, выполненные работы и результат">
     <div class="home-shell case-story__grid">
-      <div><span>01 / Задача</span><h2>Что требовалось на объекте</h2><p>{spec.task}</p></div>
-      <div><span>02 / Выполненные работы</span><h2>Что смонтировано</h2><p>{spec.works}</p></div>
-      <div><span>03 / Подтверждение</span><h2>Известные сведения</h2><p>{spec.result}</p></div>
+      <div><span>Задача</span><h2>Что требовалось на объекте</h2><p>{spec.task}</p></div>
+      <div><span>Выполненные работы</span><h2>Что смонтировано</h2><p>{spec.works}</p></div>
+      <div><span>Подтверждение</span><h2>Известные сведения</h2><p>{spec.result}</p></div>
     </div>
   </section>
   <section class="home-section case-detail-related" aria-labelledby="case-related-title">
     <div class="home-shell">
-      <p class="section-index">04 / Продолжить</p>
+      <p class="section-index">{content.path === '/blog/detail/montazh-ventilyatsii-v-karelii/' ? '03 / Продолжить' : '02 / Продолжить'}</p>
       <h2 id="case-related-title">Другие выполненные работы и ваша задача</h2>
       <div class="case-detail-related__grid">
         {spec.related.map(([title,href,text],index) => <a href={href}><span>{String(index+1).padStart(2,'0')}</span><h3>{title}</h3><p>{text}</p><b>Открыть →</b></a>)}
@@ -543,7 +543,7 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
 
   <section class="conversion-close">
     <div class="home-shell">
-      <p class="section-index section-index--orange">05 / Ваш объект</p>
+      <p class="section-index section-index--orange">{content.path === '/blog/detail/montazh-ventilyatsii-v-karelii/' ? '04 / Ваш объект' : '03 / Ваш объект'}</p>
       <h2>Есть похожая задача — начните с исходных данных.</h2>
       <div class="home-actions">
         <a class="button button--light" href="/montazh-po-proektu/">Монтаж по готовому проекту →</a>
@@ -585,7 +585,7 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
       activeIndex = (index + photos.length) % photos.length;
       const photo = photos[activeIndex];
       if (large) { large.src = photo.dataset.photoSrc || ''; large.alt = photo.dataset.photoAlt || ''; }
-      if (description) description.textContent = photo.dataset.photoCaption || '';
+      if (description) description.textContent = photo.dataset.photoArchival === 'true' ? 'Исходная фотография монтажных работ' : (photo.dataset.photoCaption || photo.dataset.photoAlt || '');
       if (counter) counter.textContent = `${activeIndex + 1} / ${photos.length}`;
     };
     photos.forEach((button, index) => button.addEventListener('click', () => {

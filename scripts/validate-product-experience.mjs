@@ -264,6 +264,26 @@ check(files.css.includes('@media (prefers-reduced-motion: reduce)'), 'Premium ex
 check(files.css.includes(':focus-visible'), 'Premium experience includes visible focus treatment');
 check(!/exit-intent|timer-popup|auto-open|setInterval\(/i.test(files.premium + files.telemetry), 'No intrusive popup trigger pattern');
 
+// ART RED TEAM 2026-10-15: verified owner P0/P1/P2 source corrections.
+const caseSource = await read('apps/web/src/components/pages/EvidenceCasePage.astro');
+const portfolioSource = await read('apps/web/src/components/pages/PortfolioHubPage.astro');
+const servicesPage = files.services.slice(0, files.services.indexOf('<style>'));
+check((servicesPage.match(/<article\b/g) || []).length === 1 &&
+      (servicesPage.match(/<\/article>/g) || []).length === 1 &&
+      !servicesPage.includes('hub-split') && !servicesPage.includes('hub-objects') &&
+      !servicesPage.includes('))}'), 'ART-DELTA-01: one semantic services article, no abandoned sections');
+check(files.about.includes('03 / Опыт на объектах') &&
+      portfolioSource.includes('03 / Ваш объект') &&
+      !caseSource.includes('<span>01 / Задача</span>'), 'ART-DELTA-02: consistent section counting');
+check(caseSource.includes('case-gallery__archive-note') &&
+      !caseSource.includes('<figcaption>{caption}</figcaption>\n              </figure>\\n            ))}'), 'ART-DELTA-03: no repetitive archive thumbnail captions');
+check(caseSource.includes("'/blog/detail/kafe-rimskogo-korsakova-3/': {gallery:") &&
+      !caseSource.includes("'/blog/detail/kafe-na-rimskogo-korsakova/':"), 'ART-DELTA-04: cafe documentary key correct');
+check(portfolioSource.includes("kind:'Сервисно-образовательный центр'") &&
+      !portfolioSource.includes("kind:'География'"), 'ART-DELTA-05: kind means object type');
+check(files.layout.includes("'/services/': '/evidence/hero/services-owner-editorial-1774.webp'") &&
+      files.layout.includes('rejectedServicesImage'), 'ART-DELTA-06: approved services social preview and rejected-cover protection');
+
 const result = {
   generated_at: new Date().toISOString(),
   verdict: failures.length ? 'FAIL' : 'PASS',
