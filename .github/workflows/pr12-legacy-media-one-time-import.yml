@@ -46,7 +46,7 @@ jobs:
           for entry in declared['files']:
               name=entry['path'];record=records.get(name)
               assert record and record['raw_file'] and not record['error']
-              assert re.fullmatch(r'/upload/[a-zA-Z0-9_./%-]+\.(jpg|jpeg|png)',name) and '..' not in name
+              assert re.fullmatch(r'/upload/[a-zA-Z0-9_./%-]+\.(jpg|jpeg|png)',name,re.IGNORECASE) and '..' not in name
               body=(base/record['raw_file']).read_bytes()
               assert len(body)==entry['size']==record['bytes']
               digest=hashlib.sha256(body).hexdigest()
