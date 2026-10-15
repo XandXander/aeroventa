@@ -8,7 +8,7 @@ const originalCovidText = oldCovid?.legacy_text_excerpt || '';
 const retainedMarker = 'Коронавирус COVID-19 и приточно вытяжная вентиляция, предупреждение';
 const originalStart = originalCovidText.lastIndexOf(retainedMarker);
 const originalCovidReading = originalStart>=0 ? originalCovidText.slice(originalStart) : originalCovidText;
-const originalCovidParagraphs = originalCovidReading.split(/\\n\\s*\\n/u).map(x=>x.trim()).filter(Boolean);
+const originalCovidParagraphs = originalCovidReading.split(/\n\s*\n/u).map(x=>x.trim()).filter(Boolean);
 const originalCovidHeadings = oldCovid?.h2 || [];
 if (!originalCovidReading || !originalCovidHeadings.length) throw new Error('Original REHVA 2020 article source missing');
 
