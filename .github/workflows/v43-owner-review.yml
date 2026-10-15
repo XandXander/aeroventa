@@ -107,7 +107,7 @@ jobs:
   bitrix-source-recovery:
     if: github.event_name == 'workflow_dispatch' || github.event.pull_request.number == 12
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 15
     permissions:
       contents: read
     steps:
@@ -157,7 +157,11 @@ jobs:
           path: AEROVENTA_BITRIX_PUBLIC_CAPTURE_ONE_CLICK_V2.zip
           if-no-files-found: error
           retention-days: 7
-      - name: Capture 29 public Bitrix HTML and indexed PDF (READ ONLY)
+      - name: Capture 29 public Bitrix HTML / PDF + legacy media (READ ONLY)
+        env:
+          # Public GET only: old Bitrix wildcard TLS expired 2026-09-10.
+          # Never pass secrets or publish recovered forensic bytes directly.
+          AEROVENTA_BITRIX_PUBLIC_TLS_BYPASS: PUBLIC_READONLY_EXPIRED_CERT
         run: node scripts/capture-bitrix-public-readonly.mjs
       - name: Upload exact public sources; never publish them automatically
         if: always()
