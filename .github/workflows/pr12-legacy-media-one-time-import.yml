@@ -1,0 +1,91 @@
+name: PR12 — one-time 500 original Bitrix images import (no deployment)
+on:
+  push:
+    branches:
+      - aeroventa/hiend-seo-owner-recovery-2026-10-13
+    paths:
+      - '.github/workflows/pr12-legacy-media-one-time-import.yml'
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  import-original-media:
+    if: github.repository == 'XandXander/aeroventa' && github.ref == 'refs/heads/aeroventa/hiend-seo-owner-recovery-2026-10-13'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout the exact authorized PR12 branch
+        uses: actions/checkout@v5
+        with:
+          ref: aeroventa/hiend-seo-owner-recovery-2026-10-13
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Read exact previously captured public-source evidence (no server mutations)
+        uses: actions/download-artifact@v4
+        with:
+          name: aeroventa-public-bitrix-readonly-source-evidence
+          run-id: 38780505948
+          github-token: ${{ github.token }}
+          path: /tmp/aeroventa-bitrix-evidence
+      - name: Verify provenance and exact bytes before touching repository assets
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,pathlib,re
+          base=pathlib.Path('/tmp/aeroventa-bitrix-evidence')
+          proof=json.loads((base/'source_parity.json').read_text('utf-8'))
+          declared=json.loads(pathlib.Path('migration/bitrix-public-media-500-sha-map.json').read_text('utf-8'))
+          assert proof['tls_validation']=='UNVERIFIED_EXPIRED_CERT'
+          assert proof['legacy_media_captured']==proof['legacy_media_total_discovered']==500
+          assert len(declared['files'])==declared['record_count']==500
+          records={r['path']:r for r in proof['media_results']}
+          assert len(records)==500
+          stage=[]
+          for entry in declared['files']:
+              name=entry['path'];record=records.get(name)
+              assert record and record['raw_file'] and not record['error']
+              assert re.fullmatch(r'/upload/[a-zA-Z0-9_./%-]+\.(jpg|jpeg|png)',name) and '..' not in name
+              body=(base/record['raw_file']).read_bytes()
+              assert len(body)==entry['size']==record['bytes']
+              digest=hashlib.sha256(body).hexdigest()
+              assert digest==entry['sha256']==record['sha256']
+              if name.lower().endswith('.png'): assert body.startswith(b'\x89PNG\r\n\x1a\n')
+              else: assert body.startswith(b'\xff\xd8\xff')
+              dst=pathlib.Path('apps/web/public')/name.lstrip('/')
+              for part in [dst,*dst.parents]:
+                  if part.is_symlink(): raise RuntimeError('Symlink is forbidden: '+str(part))
+              if dst.exists():
+                  assert dst.read_bytes()==body,'Legacy path already exists with different bytes: '+name
+              else:
+                  stage.append((dst,body))
+          assert len(stage)>0 and len(stage)<=500
+          # All 500 source hashes and target conflicts checked before any write.
+          for dst,body in stage:
+              dst.parent.mkdir(parents=True,exist_ok=True)
+              dst.write_bytes(body)
+          print('PR12_LEGACY_MEDIA_IMPORT_VALIDATED all=500 new='+str(len(stage))+
+                ' verified_identity=5 TLS_UNVERIFIED_SRC=YES')
+          PY
+      - name: Commit only verified image bytes to SAME PR12 head, fail on drift
+        shell: bash
+        run: |
+          git add -- apps/web/public/upload/
+          if git diff --cached --quiet; then
+            echo 'Media were already present (idempotent).'
+            exit 0
+          fi
+          if git diff --cached --name-only | grep -v '^apps/web/public/upload/' ; then
+            echo 'Unexpected staged source file' >&2
+            exit 1
+          fi
+          LIVE_SHA=$(git ls-remote origin refs/heads/aeroventa/hiend-seo-owner-recovery-2026-10-13 | cut -f1)
+          if [ "$LIVE_SHA" != "$GITHUB_SHA" ]; then
+            echo 'PR12 drift. STOP; refusing push.' >&2
+            exit 1
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'PR12: restore 500 original Bitrix image bytes at exact legacy paths'
+          git push origin HEAD:refs/heads/aeroventa/hiend-seo-owner-recovery-2026-10-13
