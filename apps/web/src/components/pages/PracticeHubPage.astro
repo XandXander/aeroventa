@@ -4,10 +4,10 @@ interface Props { content: ContentRecord; fixture: boolean; }
 const { content } = Astro.props;
 
 const p0 = [
-  { tag:'Полевой опыт', title:'Как вытащить застрявшую алмазную коронку из бетона', text:'Почему коронку заклинивает, что делать сначала и где заканчивается универсальный совет.', href:'/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/' },
-  { tag:'Реальный объект', title:'Бурение в стяжке под стояки отопления', text:'Слоистое перекрытие, крепление установки, готовая отделка и исходные данные.', href:'/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/' },
-  { tag:'Стоимость', title:'От чего зависит стоимость алмазного бурения', text:'Диаметр — только один фактор. Разбираем геометрию, материал, доступ и состав работ.', href:'/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/' },
-  { tag:'Вентиляция + проходка', title:'Алмазное бурение стены под вентиляцию', text:'Почему сначала определяют трассу и узел, а уже потом точку и геометрию отверстия.', href:'/blog/detail/gorizontalnoe-almaznoe-burenie/' },
+  { tag:'Полевой опыт', title:'Как вытащить застрявшую алмазную коронку из бетона', text:'Почему коронку заклинивает, что делать сначала и где заканчивается универсальный совет.', href:'/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/', image:'/upload/medialibrary/1e0/1e03a5c54309ab78f133df9068a70b33.jpg', imageAlt:'Исходная иллюстрация из архивных материалов алмазного бурения' },
+  { tag:'Реальный объект', title:'Бурение в стяжке под стояки отопления', text:'Слоистое перекрытие, крепление установки, готовая отделка и исходные данные.', href:'/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/', image:'/evidence/zhukov/duct-installation-01.jpg', imageAlt:'Архивная фотография монтажных работ AEROVENTA, тематическая иллюстрация' },
+  { tag:'Стоимость', title:'От чего зависит стоимость алмазного бурения', text:'Диаметр — только один фактор. Разбираем геометрию, материал, доступ и состав работ.', href:'/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/', image:'/upload/kraken/327/327cf2dfaba564b13c7ff355d144de5d.jpg', imageAlt:'Иллюстрация к теме алмазного бурения из архива старого сайта' },
+  { tag:'Вентиляция + проходка', title:'Алмазное бурение стены под вентиляцию', text:'Почему сначала определяют трассу и узел, а уже потом точку и геометрию отверстия.', href:'/blog/detail/gorizontalnoe-almaznoe-burenie/', image:'/upload/kraken/e99/e99136800119b55d4c6029caefa21b6b.jpg', imageAlt:'Иллюстрация к теме горизонтального бурения из архивных материалов' },
 ];
 
 const cases = [
@@ -42,6 +42,7 @@ const isStories = content.path === '/blog/istorii-proektov/';
         {p0.map((item,index) => (
           <a class="practice-article-index__item" href={item.href}>
             <span class="practice-article-index__number">{String(index+1).padStart(2,'0')}</span>
+            <figure class="practice-article-index__media"><img src={item.image} width="720" height="480" loading="lazy" decoding="async" alt={item.imageAlt}/></figure>
             <div>
               <span class="practice-article-index__tag">{item.tag}</span>
               <h2>{item.title}</h2>

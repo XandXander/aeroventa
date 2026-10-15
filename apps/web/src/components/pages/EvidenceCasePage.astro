@@ -268,7 +268,7 @@ const specs: Record<string, CaseSpec> = {
     lede:'Исторический объект AEROVENTA в Питкяранте: монтаж приточно-вытяжной вентиляции и оборудования в контексте сервисно-образовательного центра PONSSE.',
     task:"Выполнить вентиляционные работы в сервисно-образовательном центре в Питкяранте.",
     works:"Монтаж приточно-вытяжной вентиляции и оборудования.",
-    result:"Первоначальная публикация сообщает о двух неделях монтажа составом трёх специалистов; благодарственное письмо от апреля 2022 года отдельно отмечает соблюдение сроков сотрудничества.",
+    result:"Для объекта в Питкяранте архивная публикация указывает две недели монтажа силами трёх специалистов. Отдельное письмо PONSSE от апреля 2022 года относится к двум годам сотрудничества, а не к сроку работ на одном объекте.",
     facts:[
       ['Локация','Питкяранта · Республика Карелия'],
       ['Объект','Сервисно-образовательный центр'],
@@ -450,7 +450,12 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
     <div class="case-photo-dialog__panel">
       <div class="case-photo-dialog__top">
         <span>Фотографии объекта <span data-photo-count></span></span>
-        <button type="button" class="case-photo-dialog__close" data-photo-close aria-label="Закрыть просмотр">×</button>
+        <div class="case-photo-dialog__tools" role="toolbar" aria-label="Просмотр фотографии">
+          <button type="button" data-photo-fit aria-label="Показать фотографию целиком" aria-pressed="true">Вся фотография</button>
+          <button type="button" data-photo-zoom-out aria-label="Уменьшить фотографию">−</button>
+          <button type="button" data-photo-zoom-in aria-label="Увеличить фотографию">+</button>
+          <button type="button" class="case-photo-dialog__close" data-photo-close aria-label="Закрыть просмотр">×</button>
+        </div>
       </div>
       <figure class="case-photo-dialog__figure">
         <img data-photo-large src={spec.media[0][0]} alt={spec.media[0][1]} loading="lazy" />
@@ -479,7 +484,7 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
         <div>
           <p class="section-index section-index--orange">02 / Документ сотрудничества</p>
           <h2 id="ponsse-recognition-title">Письмо PONSSE</h2>
-          <p>В письме от 5 апреля 2022 года компания отмечает профессионализм, рабочую этику и своевременное исполнение задач. Подлинный документ можно рассмотреть целиком.</p>
+          <p>Письмо от 5 апреля 2022 года отмечает два года сотрудничества с PONSSE — международной промышленной компанией. В письме благодарят команду за профессионализм, рабочую этику и своевременное исполнение задач. Работы в Питкяранте — один из объектов этого сотрудничества.</p>
         </div>
         <aside class="ponsse-recognition__citation">
           <span>Благодарственное письмо · 2022</span>
@@ -523,7 +528,7 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
     <div class="home-shell case-story__grid">
       <div><span>01 / Задача</span><h2>Что требовалось на объекте</h2><p>{spec.task}</p></div>
       <div><span>02 / Выполненные работы</span><h2>Что смонтировано</h2><p>{spec.works}</p></div>
-      <div><span>03 / Результат</span><h2>Результат в документах</h2><p>{spec.result}</p></div>
+      <div><span>03 / Подтверждение</span><h2>Известные сведения</h2><p>{spec.result}</p></div>
     </div>
   </section>
   <section class="home-section case-detail-related" aria-labelledby="case-related-title">
@@ -557,7 +562,26 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
     const large = viewer.querySelector<HTMLImageElement>('[data-photo-large]');
     const description = viewer.querySelector<HTMLElement>('[data-photo-description]');
     const counter = viewer.querySelector<HTMLElement>('[data-photo-count]');
+    const frame = viewer.querySelector<HTMLElement>('.case-photo-dialog__figure');
+    let zoom = 1;
+    const fit = () => {
+      zoom = 1;
+      viewer.style.setProperty('--photo-zoom', '1');
+      viewer.classList.remove('is-photo-zoomed');
+      viewer.querySelector<HTMLButtonElement>('[data-photo-fit]')?.setAttribute('aria-pressed','true');
+      frame?.scrollTo({left:0,top:0});
+    };
+    const changeZoom = (step: number) => {
+      zoom = Math.min(3, Math.max(1, Math.round((zoom + step) * 10) / 10));
+      viewer.style.setProperty('--photo-zoom', String(zoom));
+      viewer.classList.toggle('is-photo-zoomed',zoom>1);
+      viewer.querySelector<HTMLButtonElement>('[data-photo-fit]')?.setAttribute('aria-pressed',zoom===1?'true':'false');
+    };
+    viewer.querySelector('[data-photo-fit]')?.addEventListener('click',fit);
+    viewer.querySelector('[data-photo-zoom-in]')?.addEventListener('click',()=>changeZoom(.5));
+    viewer.querySelector('[data-photo-zoom-out]')?.addEventListener('click',()=>changeZoom(-.5));
     const show = (index: number) => {
+      fit();
       activeIndex = (index + photos.length) % photos.length;
       const photo = photos[activeIndex];
       if (large) { large.src = photo.dataset.photoSrc || ''; large.alt = photo.dataset.photoAlt || ''; }
@@ -585,6 +609,7 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
       startX = null;
     }, { passive: true });
     viewer.addEventListener('close', () => {
+      fit();
       if (large) large.removeAttribute('src');
       activeTrigger?.focus({ preventScroll: true });
     });
