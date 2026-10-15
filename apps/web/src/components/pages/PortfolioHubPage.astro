@@ -43,7 +43,7 @@ const newOwnerCases = [
     "title": "EUROSPAR · Сестрорецк",
     "kind": "Торговый объект",
     "location": "Сестрорецк",
-    "cover": "/evidence/owner-portfolio/eurospar-sestroretsk/cover.webp",
+    "cover": "/evidence/owner-portfolio/eurospar-sestroretsk/03.webp",
     "photos": [
       "/evidence/owner-portfolio/eurospar-sestroretsk/cover.webp",
       "/evidence/owner-portfolio/eurospar-sestroretsk/02.webp",
@@ -55,7 +55,7 @@ const newOwnerCases = [
     "title": "Колледж туризма и гостиничного сервиса",
     "kind": "Образовательный объект",
     "location": "Санкт-Петербург",
-    "cover": "/evidence/owner-portfolio/college-obvodny/cover.webp",
+    "cover": "/evidence/owner-portfolio/college-obvodny/02.webp",
     "photos": [
       "/evidence/owner-portfolio/college-obvodny/cover.webp",
       "/evidence/owner-portfolio/college-obvodny/02.webp",
@@ -67,7 +67,7 @@ const newOwnerCases = [
     "title": "Новатех",
     "kind": "Производственный объект",
     "location": "Московская область",
-    "cover": "/evidence/owner-portfolio/novatech/cover.webp",
+    "cover": "/evidence/owner-portfolio/novatech/03.webp",
     "photos": [
       "/evidence/owner-portfolio/novatech/cover.webp",
       "/evidence/owner-portfolio/novatech/02.webp",
@@ -197,7 +197,7 @@ const newOwnerCases = [
       <button type="button" data-gallery-zoom-in aria-label="Увеличить">+</button>
       <button type="button" data-gallery-close>Закрыть ×</button>
     </div>
-    <div class="portfolio-archive-viewer__stage" tabindex="0"><img data-gallery-photo width="1200" height="800" alt="Исходная фотография объекта"/></div>
+    <div class="portfolio-archive-viewer__stage" tabindex="0"><img data-gallery-photo src="/evidence/owner-portfolio/apart-hotel/cover.webp" width="1200" height="800" loading="lazy" alt="Исходная фотография объекта"/></div>
     <div class="portfolio-archive-viewer__nav">
       <button type="button" data-gallery-prev aria-label="Предыдущая фотография">←</button>
       <span>Фотодокументация объекта</span>
@@ -248,7 +248,7 @@ const newOwnerCases = [
     dialog.addEventListener('touchstart',e=>{touchStart=e.changedTouches[0]?.clientX??null;},{passive:true});
     dialog.addEventListener('touchend',e=>{if(touchStart===null)return;const x=e.changedTouches[0]?.clientX;if(x!==undefined&&Math.abs(x-touchStart)>55)show(index+(x<touchStart?1:-1));touchStart=null;},{passive:true});
     dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});
-    dialog.addEventListener('close',()=>{fit();if(image)image.removeAttribute('src');opener?.focus({preventScroll:true});});
+    dialog.addEventListener('close',()=>{fit();if(image)image.src='/evidence/owner-portfolio/apart-hotel/cover.webp';opener?.focus({preventScroll:true});});
   }
 </script>
 

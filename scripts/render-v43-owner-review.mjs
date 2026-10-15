@@ -282,12 +282,18 @@ try {
             const count = await page.locator(`.portfolio-card:has-text("${name}") img[src="${src}"]`).count();
             if (count !== 1) report.fail.push({route,view,reason:'Owner authentic cover mismatch',name,src,count});
           }
-          if (count !== 5 || photos !== 5 || ponsse !== 1 || await page.locator('.portfolio-feature a[href="/blog/detail/kak-my-sdali-7-domov/"]').count() !== 1) {
-            report.fail.push({route,view,reason:'Five distinct case cards plus featured 7 PARK',count,photos,ponsse});
-          }
-          for (const card of await cards.all()) {
-            const href = await card.getAttribute('href');
-            if (!href?.startsWith('/blog/detail/')) report.fail.push({route,view,reason:'Case must link directly to historic case URL',href});
+          const historical = page.locator('a.portfolio-card[href^="/blog/detail/"]');
+          const archives = page.locator('button.portfolio-card[data-archive-open][aria-controls="portfolio-archive-viewer"]');
+          const historicUrls = await historical.evaluateAll(nodes=>nodes.map(n=>n.getAttribute('href')));
+          const sourceValid = await archives.evaluateAll(nodes=>nodes.every(n=>{
+            const urls=JSON.parse(n.getAttribute('data-gallery-images')||'[]');
+            return urls.length===3 && urls.every(u=>/^\/evidence\/owner-portfolio\/[a-z0-9-]+\/(?:cover|0[234])\.webp$/.test(u));
+          }));
+          if (count !== 12 || photos !== 12 || ponsse !== 1 ||
+              await historical.count() !== 5 || await archives.count() !== 7 ||
+              !sourceValid || historical && !historicUrls.every(h=>h?.startsWith('/blog/detail/')) ||
+              await page.locator('.portfolio-feature a[href="/blog/detail/kak-my-sdali-7-domov/"]').count() !== 1) {
+            report.fail.push({route,view,reason:'Owner 12 source-locked objects plus leading 7 PARK',count,photos,ponsse,historic:historicUrls,archiveCount:await archives.count(),sourceValid});
           }
         }
         if (['drill_crown', 'drill_screed', 'drill_cost', 'drill_horizontal'].includes(id)) {
@@ -628,6 +634,34 @@ try {
           report.fail.push({reason:'ART-DELTA-05 portfolio object type',width,tags});
       }
     }catch(e){report.fail.push({reason:'ART-DELTA compiled browser exception',route,width,error:String(e)})}
+    finally{await context.close()}
+  }
+  // ARCHIVE CASE INTERACTION: real in-page gallery, zoom, next and restored focus.
+  {
+    const context=await browser.newContext({viewport:{width:1440,height:900}});
+    const page=await context.newPage();
+    try{
+      await page.goto(baseUrl+'/portfolio/',{waitUntil:'load'});
+      const opener=page.locator('button[data-archive-open]').first();
+      await opener.click();
+      const viewer=page.locator('#portfolio-archive-viewer');
+      await viewer.waitFor({state:'visible'});
+      const img=viewer.locator('[data-gallery-photo]');
+      const original=await img.getAttribute('src');
+      const photoOk=await img.evaluate(async el=>{try{await el.decode();return el.naturalWidth>0;}catch{return false}});
+      await viewer.locator('[data-gallery-next]').click();
+      const second=await img.getAttribute('src');
+      await viewer.locator('[data-gallery-zoom-in]').click();
+      const zoomed=await viewer.evaluate(el=>el.classList.contains('is-zoomed'));
+      await viewer.locator('[data-gallery-fit]').click();
+      const fitted=await viewer.evaluate(el=>!el.classList.contains('is-zoomed'));
+      await page.keyboard.press('Escape');
+      await viewer.waitFor({state:'hidden'});
+      const restored=await opener.evaluate(el=>el===document.activeElement);
+      if(!photoOk||!original||!second||original===second||!zoomed||!fitted||!restored){
+        report.fail.push({reason:'Owner portfolio photo gallery interaction',photoOk,original,second,zoomed,fitted,restored});
+      }
+    }catch(error){report.fail.push({reason:'Owner portfolio gallery interaction exception',error:String(error)})}
     finally{await context.close()}
   }
   // OWNER-sensitive geometry regression. Adds diverse viewport heights, browser
