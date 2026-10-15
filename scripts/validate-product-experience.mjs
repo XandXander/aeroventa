@@ -284,6 +284,14 @@ check(portfolioSource.includes("kind:'Сервисно-образователь�
 check(files.layout.includes("'/services/': '/evidence/hero/services-owner-editorial-1774.webp'") &&
       files.layout.includes('rejectedServicesImage'), 'ART-DELTA-06: approved services social preview and rejected-cover protection');
 
+const ownerPhotoManifest=JSON.parse(await read('migration/owner-portfolio-source-manifest-2026-10-15.json'));
+check(ownerPhotoManifest.length===25 &&
+  ownerPhotoManifest.filter(x=>x.status==='OWNER_PHOTO_ARCHIVE_SCOPE_FACTS_UNVERIFIED').length===21,
+  'Owner photo provenance: 21 for seven object archives and four distinct sports candidates');
+check(portfolioSource.includes('newOwnerCases.map') && portfolioSource.includes('portfolio-archive-viewer'),
+  'Seven archive source cards plus five legacy portfolio cards with same-page accessible galleries');
+check(files.globalCss.includes('.portfolio-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))'),
+  'Portfolio uses 4/3/2 editorial grid');
 const result = {
   generated_at: new Date().toISOString(),
   verdict: failures.length ? 'FAIL' : 'PASS',

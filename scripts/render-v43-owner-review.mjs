@@ -681,8 +681,8 @@ try {
       }
       if(route==='/portfolio/'&&width===1440){
         const grid=await page.locator('.portfolio-card').evaluateAll(nodes=>nodes.map(n=>Math.round(n.getBoundingClientRect().top)));
-        if(grid.length!==5||new Set(grid.slice(0,2)).size!==1||new Set(grid.slice(2)).size!==1||grid[2]<=grid[0])
-          report.fail.push({reason:'Portfolio intentional 2+3 editorial rows',grid});
+        if(grid.length!==12||new Set(grid.slice(0,4)).size!==1||new Set(grid.slice(4,8)).size!==1||new Set(grid.slice(8,12)).size!==1||grid[4]<=grid[0]||grid[8]<=grid[4])
+          report.fail.push({reason:'Portfolio 12 verified cards, 4+4+4 editorial rows',grid});
       }
     } catch(e){report.fail.push({reason:'Owner additional QA exception',route,width,height,error:String(e)})}
     finally{await context.close()}

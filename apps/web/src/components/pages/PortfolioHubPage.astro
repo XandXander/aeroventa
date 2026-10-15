@@ -11,6 +11,94 @@ const cases = [
   { index:'05', title:'PONSSE — Питкяранта', image:'/evidence/karelia/owner-cover-v43.webp', location:'Республика Карелия', scope:'Сервисно-образовательный центр · вентиляция + оборудование', detail:'Исторический срок: 2 недели', href:'/blog/detail/montazh-ventilyatsii-v-karelii/', kind:'Сервисно-образовательный центр' },
   { index:'06', title:'Кафе на Римского-Корсакова, 3', image:'/evidence/cafe/owner-cover-v43.webp', location:'Санкт-Петербург', scope:'Кафе · приточно-вытяжная вентиляция + оборудование', detail:'Исторический источник: 200 м², 5 дней', href:'/blog/detail/kafe-rimskogo-korsakova-3/', kind:'Рестораны' }
 ];
+
+// Seven distinct Owner-archive objects, photo backed; no fabricated scope or URLs.
+const newOwnerCases = [
+  {
+    "index": "07",
+    "title": "Апарт-отель и коворкинг · Бумажный",
+    "kind": "Апарт-отель и коворкинг",
+    "location": "Санкт-Петербург",
+    "cover": "/evidence/owner-portfolio/apart-hotel/cover.webp",
+    "photos": [
+      "/evidence/owner-portfolio/apart-hotel/cover.webp",
+      "/evidence/owner-portfolio/apart-hotel/02.webp",
+      "/evidence/owner-portfolio/apart-hotel/03.webp"
+    ]
+  },
+  {
+    "index": "08",
+    "title": "EUROSPAR · Васильевский остров",
+    "kind": "Торговый объект",
+    "location": "Санкт-Петербург",
+    "cover": "/evidence/owner-portfolio/eurospar-vo/cover.webp",
+    "photos": [
+      "/evidence/owner-portfolio/eurospar-vo/cover.webp",
+      "/evidence/owner-portfolio/eurospar-vo/02.webp",
+      "/evidence/owner-portfolio/eurospar-vo/03.webp"
+    ]
+  },
+  {
+    "index": "09",
+    "title": "EUROSPAR · Сестрорецк",
+    "kind": "Торговый объект",
+    "location": "Сестрорецк",
+    "cover": "/evidence/owner-portfolio/eurospar-sestroretsk/cover.webp",
+    "photos": [
+      "/evidence/owner-portfolio/eurospar-sestroretsk/cover.webp",
+      "/evidence/owner-portfolio/eurospar-sestroretsk/02.webp",
+      "/evidence/owner-portfolio/eurospar-sestroretsk/03.webp"
+    ]
+  },
+  {
+    "index": "10",
+    "title": "Колледж туризма и гостиничного сервиса",
+    "kind": "Образовательный объект",
+    "location": "Санкт-Петербург",
+    "cover": "/evidence/owner-portfolio/college-obvodny/cover.webp",
+    "photos": [
+      "/evidence/owner-portfolio/college-obvodny/cover.webp",
+      "/evidence/owner-portfolio/college-obvodny/02.webp",
+      "/evidence/owner-portfolio/college-obvodny/03.webp"
+    ]
+  },
+  {
+    "index": "11",
+    "title": "Новатех",
+    "kind": "Производственный объект",
+    "location": "Московская область",
+    "cover": "/evidence/owner-portfolio/novatech/cover.webp",
+    "photos": [
+      "/evidence/owner-portfolio/novatech/cover.webp",
+      "/evidence/owner-portfolio/novatech/02.webp",
+      "/evidence/owner-portfolio/novatech/03.webp"
+    ]
+  },
+  {
+    "index": "12",
+    "title": "Жилой комплекс «Аквилон» · Янино",
+    "kind": "Жилой комплекс",
+    "location": "Янино, Ленинградская область",
+    "cover": "/evidence/owner-portfolio/akvilon-yanino/cover.webp",
+    "photos": [
+      "/evidence/owner-portfolio/akvilon-yanino/cover.webp",
+      "/evidence/owner-portfolio/akvilon-yanino/02.webp",
+      "/evidence/owner-portfolio/akvilon-yanino/03.webp"
+    ]
+  },
+  {
+    "index": "13",
+    "title": "Химпром",
+    "kind": "Промышленный объект",
+    "location": "Санкт-Петербург",
+    "cover": "/evidence/owner-portfolio/himprom/cover.webp",
+    "photos": [
+      "/evidence/owner-portfolio/himprom/cover.webp",
+      "/evidence/owner-portfolio/himprom/02.webp",
+      "/evidence/owner-portfolio/himprom/03.webp"
+    ]
+  }
+];
 ---
 
 <article class="portfolio-hub">
@@ -84,9 +172,38 @@ const cases = [
             </div>
           </a>
         ))}
+        {newOwnerCases.map(item => (
+          <button type="button" class="portfolio-card portfolio-card--archive" data-archive-open
+            data-gallery-images={JSON.stringify(item.photos)} data-gallery-title={item.title}
+            aria-haspopup="dialog" aria-controls="portfolio-archive-viewer"
+            aria-label={`Открыть фотографии: ${item.title}`}>
+            <div class="portfolio-card__media"><img src={item.cover} width="1200" height="800" loading="lazy" decoding="async" alt={`Фотография объекта: ${item.title}`}/></div>
+            <div class="portfolio-card__body">
+              <div class="portfolio-card__top"><span>{item.index}</span><b>{item.kind}</b></div>
+              <div><p>{item.location}</p><h3>{item.title}</h3></div>
+              <div class="portfolio-card__bottom"><span>Исходный фотоархив объекта</span><b>Смотреть фотографии →</b></div>
+            </div>
+          </button>
+        ))}
       </div>
     </div>
   </section>
+
+  <dialog id="portfolio-archive-viewer" class="portfolio-archive-viewer" aria-label="Фотографии объекта">
+    <div class="portfolio-archive-viewer__top">
+      <strong data-gallery-title></strong><span data-gallery-count></span>
+      <button type="button" data-gallery-fit>Вся фотография</button>
+      <button type="button" data-gallery-zoom-out aria-label="Уменьшить">−</button>
+      <button type="button" data-gallery-zoom-in aria-label="Увеличить">+</button>
+      <button type="button" data-gallery-close>Закрыть ×</button>
+    </div>
+    <div class="portfolio-archive-viewer__stage" tabindex="0"><img data-gallery-photo width="1200" height="800" alt="Исходная фотография объекта"/></div>
+    <div class="portfolio-archive-viewer__nav">
+      <button type="button" data-gallery-prev aria-label="Предыдущая фотография">←</button>
+      <span>Фотодокументация объекта</span>
+      <button type="button" data-gallery-next aria-label="Следующая фотография">→</button>
+    </div>
+  </dialog>
 
   <section class="conversion-close" aria-labelledby="portfolio-close-title">
     <div class="home-shell">
@@ -100,6 +217,40 @@ const cases = [
     </div>
   </section>
 </article>
+
+<script>
+  const dialog=document.querySelector<HTMLDialogElement>('#portfolio-archive-viewer');
+  if(dialog){
+    const image=dialog.querySelector<HTMLImageElement>('[data-gallery-photo]');
+    const stage=dialog.querySelector<HTMLElement>('.portfolio-archive-viewer__stage');
+    const count=dialog.querySelector<HTMLElement>('[data-gallery-count]');
+    const title=dialog.querySelector<HTMLElement>('[data-gallery-title]');
+    let photos:string[]=[],index=0,zoom=1,opener:HTMLButtonElement|null=null;
+    const fit=()=>{zoom=1;dialog.style.setProperty('--gallery-scale','1');dialog.classList.remove('is-zoomed');stage?.scrollTo({top:0,left:0});};
+    const show=(n:number)=>{if(!photos.length)return;index=(n+photos.length)%photos.length;fit();if(image){image.src=photos[index];image.alt=(title?.textContent||'Объект')+' — фотография '+(index+1);}if(count)count.textContent=(index+1)+' / '+photos.length;};
+    for(const button of document.querySelectorAll<HTMLButtonElement>('[data-archive-open]')){
+      button.addEventListener('click',()=>{
+        try{
+          const value=JSON.parse(button.dataset.galleryImages||'[]');
+          if(!Array.isArray(value)||!value.length||!value.every((x:unknown)=>typeof x==='string'&&/^\/evidence\/owner-portfolio\/[a-z0-9-]+\/(?:cover|0[234])\.webp$/.test(x)))return;
+          photos=value;opener=button;if(title)title.textContent=button.dataset.galleryTitle||'Объект';show(0);dialog.showModal();dialog.querySelector<HTMLButtonElement>('[data-gallery-close]')?.focus({preventScroll:true});
+        }catch{return;}
+      });
+    }
+    dialog.querySelector('[data-gallery-close]')?.addEventListener('click',()=>dialog.close());
+    dialog.querySelector('[data-gallery-prev]')?.addEventListener('click',()=>show(index-1));
+    dialog.querySelector('[data-gallery-next]')?.addEventListener('click',()=>show(index+1));
+    dialog.querySelector('[data-gallery-fit]')?.addEventListener('click',fit);
+    for(const [selector,delta] of [['[data-gallery-zoom-in]',.4],['[data-gallery-zoom-out]',-.4]] as const)
+      dialog.querySelector(selector)?.addEventListener('click',()=>{zoom=Math.max(1,Math.min(3,Math.round((zoom+delta)*10)/10));dialog.style.setProperty('--gallery-scale',String(zoom));dialog.classList.toggle('is-zoomed',zoom>1);});
+    dialog.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'){e.preventDefault();show(index-1);}if(e.key==='ArrowRight'){e.preventDefault();show(index+1);}});
+    let touchStart:number|null=null;
+    dialog.addEventListener('touchstart',e=>{touchStart=e.changedTouches[0]?.clientX??null;},{passive:true});
+    dialog.addEventListener('touchend',e=>{if(touchStart===null)return;const x=e.changedTouches[0]?.clientX;if(x!==undefined&&Math.abs(x-touchStart)>55)show(index+(x<touchStart?1:-1));touchStart=null;},{passive:true});
+    dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});
+    dialog.addEventListener('close',()=>{fit();if(image)image.removeAttribute('src');opener?.focus({preventScroll:true});});
+  }
+</script>
 
 <style>
 /* Photography leads; typography and evidence are deliberately restrained. */
