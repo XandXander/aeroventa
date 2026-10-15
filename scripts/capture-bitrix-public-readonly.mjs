@@ -104,7 +104,7 @@ const results=Array(urls.length);let cursor=0;
 await Promise.all(Array.from({length:2},async()=>{while(cursor<urls.length){const i=cursor++;results[i]=await grab(urls[i],i)}}));
 // Preserve referenced /upload/ images alongside original article source, with
 // bounded evidence capture. Never claim total media parity if the cap is hit.
-const MAX_UPLOAD_MEDIA=120;
+const MAX_UPLOAD_MEDIA=600;
 const MEDIA_WORKERS=4;
 const sourceMedia=[...new Set(results.flatMap(x=>x.media_paths||[]))]
  .filter(p=>p.startsWith('/upload/') && !p.includes('..') && /\.(?:jpe?g|png|webp|gif|svg)$/i.test(p))
