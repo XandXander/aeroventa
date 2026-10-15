@@ -11,12 +11,12 @@ const assetExists = (src: string) => ['apps/web/public' + src, 'public' + src].s
 // Exact Owner-mapped individual portraits. Show no guessed name/face association if the
 // source asset has not yet been committed. No remote URL or invented substitute is used.
 const ownerTeam = [
-  { name:'Евгений Панов', role:'Технический директор', src:'/evidence/team/owner-evgeniy-panov-20261013.webp' },
+  { name:'Евгений Панов', role:'Технический директор', src:'/evidence/team/owner-evgeniy-panov-20261015.webp' },
   { name:'Александр Тарасов', role:'Операционный директор', src:'/evidence/team/owner-aleksandr-tarasov-20261013.webp' },
   { name:'Денис Иванов', role:'Руководитель проектов', src:'/evidence/team/owner-denis-ivanov-20261013.webp' },
   { name:'Александр Шаламов', role:'Инженер-проектировщик', src:'/evidence/team/owner-aleksandr-shalamov-20261013.webp' },
 ];
-const teamGroupSrc = '/evidence/team/owner-team-group-20261013.webp';
+const teamGroupSrc = '/evidence/team/owner-team-group-20261015.webp';
 const hasOwnerGroup = assetExists(teamGroupSrc);
 const hasAllOwnerPortraits = ownerTeam.every(({src}) => assetExists(src));
 // Fail closed: the site must not fall back to old installation photos or mismatched portraits.
@@ -42,7 +42,7 @@ const timeline = [
       </div>
       <div>
         <figure class="about-hero__team about-hero__team--group">
-          <img src={teamGroupSrc} alt="Четыре участника команды AEROVENTA на фоне вентиляционного оборудования" width="1448" height="1086" loading="eager" decoding="async" fetchpriority="high" />
+          <img src={teamGroupSrc} alt="Четыре участника команды AEROVENTA на фоне вентиляционного оборудования" width="1024" height="768" loading="eager" decoding="async" fetchpriority="high" />
           <figcaption>Команда AEROVENTA · монтаж вентиляции</figcaption>
         </figure>
         <p class="about-hero__lede">

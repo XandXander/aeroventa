@@ -171,11 +171,11 @@ check(!files.home.includes('object-ribbon__number') && (files.home.match(/\['(?:
 // 2026-10-13 Owner supersession: one group frame + four individually named source portraits.
 // Fixture can render identity-safe text while binary uploads are pending; PUBLICATION is fail-closed.
 const ownerTeamNames = ['Евгений Панов','Александр Тарасов','Денис Иванов','Александр Шаламов'];
-const ownerTeamMedia = ['owner-team-group-20261013.webp','owner-evgeniy-panov-20261013.webp',
+const ownerTeamMedia = ['owner-team-group-20261015.webp','owner-evgeniy-panov-20261015.webp',
   'owner-aleksandr-tarasov-20261013.webp','owner-denis-ivanov-20261013.webp','owner-aleksandr-shalamov-20261013.webp'];
 const ownerTeamSHA256 = {
-  "owner-team-group-20261013.webp": "f9474e25485aebfe753a05fd3dcc5c5689395b28ddd6938fa5159fc186872266",
-  "owner-evgeniy-panov-20261013.webp": "94e2f478060147981f3fce3a9740c2439641cf30dbdaf64c5ee25d6565a0888b",
+  "owner-team-group-20261015.webp": "0a507849d6d8b54688779af5fab086e228272908310ff1c408b93c6afdaebb3a",
+  "owner-evgeniy-panov-20261015.webp": "6227996e36b7c4b0a9cfb889f447b9dba6569a5d6a4154e628cf323aefec2f09",
   "owner-aleksandr-tarasov-20261013.webp": "9215087532eef31a03f3af4bc35ef062855ab0a22ac003b5e5bd4fdbf29e2a4a",
   "owner-denis-ivanov-20261013.webp": "c72222ae1090d94955e2d6824a125f7adffd8bfead4e6d050903c369b2e93362",
   "owner-aleksandr-shalamov-20261013.webp": "c2057be1490d987b82b237c1f728093831e8afe87b2b634da22a8257a1a0817a"

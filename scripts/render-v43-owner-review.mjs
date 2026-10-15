@@ -192,14 +192,28 @@ try {
           if (view === 'desktop_1440' || view === 'mobile_390') {
             const group = page.locator('.about-hero__team--group img');
             const panov = page.locator('.about-team__photo--lead img');
-            const expectedGroup = '/evidence/team/owner-team-group-20261013.webp';
-            const expectedPanov = '/evidence/team/owner-evgeniy-panov-20261013.webp';
+            const expectedGroup = '/evidence/team/owner-team-group-20261015.webp';
+            const expectedPanov = '/evidence/team/owner-evgeniy-panov-20261015.webp';
             // Compare displayed WebP subjects against the two PNG originals supplied
             // by Owner on 14 October. 8x8 grayscale fingerprints tolerate WebP coding
             // but detect the wrong group/person. No raw PNG reaches webroot.
             // Group source SHA256 c6659ec091b93c37f3f6eb9a48284fd429e68032d82288839e63677aaf8eae83
             // Panov source SHA256 64f0eaab5fa18abd878bb0e175f55827c6e73ba79ab72dea0579bcd635652207
             const expectedFps = ['ffffff0100000021','e0c1cfedc1c18100'];
+            // Perceptual grayscale hashes alone falsely PASSED the orange jacket.
+            // The build also checks SHA256 of these exact Owner media assets.
+            const originalAssetDigests = ['0a507849d6d8b54688779af5fab086e228272908310ff1c408b93c6afdaebb3a',
+              '6227996e36b7c4b0a9cfb889f447b9dba6569a5d6a4154e628cf323aefec2f09'];
+            const actualAssetDigests = await Promise.all([expectedGroup,expectedPanov].map(async asset => {
+              const bytes = await page.evaluate(async src=>{
+                const response=await fetch(src,{cache:'no-store'});
+                if(!response.ok)throw new Error('Missing Owner asset: '+src);
+                const buf=await response.arrayBuffer();
+                const hash=await crypto.subtle.digest('SHA-256',buf);
+                return Array.from(new Uint8Array(hash)).map(x=>x.toString(16).padStart(2,'0')).join('');
+              },asset);
+              return bytes;
+            }));
             const diffBits = (s,t) => {
               let count=0;
               for(let k=0;k<16;k++){
@@ -233,7 +247,7 @@ try {
             }));
             if(media[0].count!==1 || media[0].src!==expectedGroup || !media[0].loaded ||
                media[1].count!==1 || media[1].src!==expectedPanov || !media[1].loaded ||
-               media.some(x=>x.distance>12) ||
+               media.some(x=>x.distance>12) || actualAssetDigests.some((digest,i)=>digest!==originalAssetDigests[i]) ||
                await page.locator('.about-hero__team img[src*="img_4170"]').count()) {
               report.fail.push({route,view,reason:'Owner original group and Panov perceptual source match',media});
             }
