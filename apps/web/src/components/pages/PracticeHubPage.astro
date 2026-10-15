@@ -4,19 +4,19 @@ interface Props { content: ContentRecord; fixture: boolean; }
 const { content } = Astro.props;
 
 const p0 = [
-  { tag:'Полевой опыт', title:'Как вытащить застрявшую алмазную коронку из бетона', text:'Почему коронку заклинивает, что делать сначала и где заканчивается универсальный совет.', href:'/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/', image:'/upload/medialibrary/1e0/1e03a5c54309ab78f133df9068a70b33.jpg', imageAlt:'Исходная иллюстрация из архивных материалов алмазного бурения' },
-  { tag:'Реальный объект', title:'Бурение в стяжке под стояки отопления', text:'Слоистое перекрытие, крепление установки, готовая отделка и исходные данные.', href:'/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/', image:'/evidence/zhukov/duct-installation-01.jpg', imageAlt:'Архивная фотография монтажных работ AEROVENTA, тематическая иллюстрация' },
-  { tag:'Стоимость', title:'От чего зависит стоимость алмазного бурения', text:'Диаметр — только один фактор. Разбираем геометрию, материал, доступ и состав работ.', href:'/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/', image:'/upload/kraken/327/327cf2dfaba564b13c7ff355d144de5d.jpg', imageAlt:'Иллюстрация к теме алмазного бурения из архива старого сайта' },
-  { tag:'Вентиляция + проходка', title:'Алмазное бурение стены под вентиляцию', text:'Почему сначала определяют трассу и узел, а уже потом точку и геометрию отверстия.', href:'/blog/detail/gorizontalnoe-almaznoe-burenie/', image:'/upload/kraken/e99/e99136800119b55d4c6029caefa21b6b.jpg', imageAlt:'Иллюстрация к теме горизонтального бурения из архивных материалов' },
+  { tag:'Полевой опыт', title:'Как вытащить застрявшую алмазную коронку из бетона', text:'Почему коронку заклинивает, что делать сначала и где заканчивается универсальный совет.', href:'/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/', image:'/upload/medialibrary/548/5488fb415056eee52ac63ff9d4850c63.jpg', imageAlt:'Керн после алмазного бурения бетона — оригинальная фотография из статьи' },
+  { tag:'Реальный объект', title:'Бурение в стяжке под стояки отопления', text:'Слоистое перекрытие, крепление установки, готовая отделка и исходные данные.', href:'/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/', image:'/upload/medialibrary/0a2/0a2f0d1be2900e0a1fe74bcd9604e3f8.jpg', imageAlt:'Бурение отверстий в стяжке под отопление — исходная фотография из статьи' },
+  { tag:'Стоимость', title:'От чего зависит стоимость алмазного бурения', text:'Диаметр — только один фактор. Разбираем геометрию, материал, доступ и состав работ.', href:'/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/', image:'/upload/medialibrary/fb3/fb3d693282a8085971dd4e2fe87bf28e.jpg', imageAlt:'Алмазное бурение отверстий — оригинальная фотография к статье о расчёте стоимости' },
+  { tag:'Вентиляция + проходка', title:'Алмазное бурение стены под вентиляцию', text:'Почему сначала определяют трассу и узел, а уже потом точку и геометрию отверстия.', href:'/blog/detail/gorizontalnoe-almaznoe-burenie/', image:'/upload/medialibrary/e1c/e1cd51110183f9c6b2e704b70664eba1.jpg', imageAlt:'Разметка отверстия под вентиляцию — оригинальная фотография из статьи' },
 ];
 
 const cases = [
   {tag:'Новостройки',title:'7 PARK',meta:'Павловск · 7 домов',image:'/evidence/7park/object-exterior-day.jpg',imageAlt:'Реальный дневной вид 7 PARK в Павловске',href:'/blog/detail/kak-my-sdali-7-domov/'},
-  {tag:'Ресторан',title:'ЖК «Леонтьевский Мыс»',meta:'Санкт-Петербург · приточно-вытяжная вентиляция + оборудование',href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/'},
+  {tag:'Ресторан',title:'ЖК «Леонтьевский Мыс»',image:'/evidence/leont/owner-cover-v43.webp',imageAlt:'Выполненный объект AEROVENTA — ресторан в ЖК Леонтьевский Мыс',meta:'Санкт-Петербург · приточно-вытяжная вентиляция + оборудование',href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/'},
   {tag:'Производство',title:'НТФФ «Полисан»',meta:'Санкт-Петербург · монтаж на фармацевтическом объекте',image:'/evidence/polisan/owner-cover-v43.webp',imageAlt:'Архивный фотокадр работ на объекте НТФФ Полисан',href:'/blog/detail/ntff-polisan/'},
-  {tag:'Квартира',title:'Маршала Жукова',meta:'Санкт-Петербург · приточно-вытяжная вентиляция',href:'/blog/detail/kvartira-na-zhukova/'},
+  {tag:'Квартира',title:'Маршала Жукова',image:'/evidence/zhukov/duct-installation-01.jpg',imageAlt:'Монтаж вентиляции в квартире на Маршала Жукова',meta:'Санкт-Петербург · приточно-вытяжная вентиляция',href:'/blog/detail/kvartira-na-zhukova/'},
   {tag:'Карелия',title:'Питкяранта / PONSSE',meta:'Сервисно-образовательный центр · вентиляция + оборудование',image:'/evidence/karelia/owner-cover-v43.webp',imageAlt:'Фотография сервисного центра PONSSE в Питкяранте',href:'/blog/detail/montazh-ventilyatsii-v-karelii/'},
-  {tag:'Кафе',title:'Римского-Корсакова, 3',meta:'Санкт-Петербург · приточно-вытяжная вентиляция + оборудование',href:'/blog/detail/kafe-rimskogo-korsakova-3/'},
+  {tag:'Кафе',title:'Римского-Корсакова, 3',image:'/evidence/cafe/owner-cover-v43.webp',imageAlt:'Выполненный объект AEROVENTA — кафе на Римского-Корсакова, 3',meta:'Санкт-Петербург · приточно-вытяжная вентиляция + оборудование',href:'/blog/detail/kafe-rimskogo-korsakova-3/'},
 ];
 
 const isRoot = content.path === '/blog/';
@@ -70,7 +70,7 @@ const isStories = content.path === '/blog/istorii-proektov/';
     <section class="home-section practical-index">
       <div class="home-shell"><p class="section-index">01 / Сильные архивные материалы</p><h2>Четыре материала о реальных технических задачах.</h2>
         <div class="practical-index__grid">
-          {p0.map((item,index) => <a href={item.href}><div class="practical-index__top"><span>{String(index+1).padStart(2,'0')}</span><b>{item.tag}</b></div><h3>{item.title}</h3><p>{item.text}</p><strong>Читать материал →</strong></a>)}
+          {p0.map((item,index) => <a href={item.href}><img class="practical-index__photo" src={item.image} alt={item.imageAlt} width="720" height="480" loading="lazy" decoding="async"/><div class="practical-index__top"><span>{String(index+1).padStart(2,'0')}</span><b>{item.tag}</b></div><h3>{item.title}</h3><p>{item.text}</p><strong>Читать материал →</strong></a>)}
         </div>
       </div>
     </section>
@@ -123,3 +123,9 @@ const isStories = content.path === '/blog/istorii-proektov/';
     </section>
   </article>
 ) : null}
+
+<style>
+.practical-index__photo{display:block;width:100%;height:auto;aspect-ratio:1.65;object-fit:cover;margin-bottom:18px;filter:saturate(.9)}
+.practical-index__grid a{overflow:hidden}
+.story-index__photo{object-fit:cover}
+</style>
