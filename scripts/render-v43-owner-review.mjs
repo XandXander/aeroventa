@@ -731,6 +731,13 @@ try {
       const sport=page.locator('section.portfolio-sport');
       const sportCount=await sport.count();
       const gridCount=await page.locator('.portfolio-grid>.portfolio-card').count();
+      await sport.scrollIntoViewIfNeeded();
+      await sport.locator('img').evaluateAll(async nodes=>{
+        await Promise.all(nodes.map(async img=>{
+          img.loading='eager';
+          try { await img.decode(); } catch { /* failure reported below */ }
+        }));
+      });
       const media=await sport.locator('img').evaluateAll(nodes=>nodes.map(n=>({
         natural:n.complete&&n.naturalWidth>0,
         src:n.getAttribute('src')

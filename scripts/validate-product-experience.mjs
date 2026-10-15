@@ -289,7 +289,7 @@ check(files.layout.includes("'/services/': '/evidence/hero/services-owner-editor
 
 check(portfolioSource.includes('class="portfolio-sport"') &&
       portfolioSource.includes('04 / Ваш объект') &&
-      (portfolioSource.match(/sport-komendantskiy\\/(?:cover|0[234])\\.webp/g)||[]).length >= 4 &&
+      ['cover','02','03','04'].every(name=>portfolioSource.includes('/evidence/owner-portfolio/sport-komendantskiy/'+name+'.webp')) &&
       !portfolioSource.includes('<h2 id="portfolio-sport-title">Центр адаптивного спорта</h2>'),
       'Sport: independent, photo-backed feature; unverified exact identity not asserted');
 for(const name of ['cover','02','03','04']){
