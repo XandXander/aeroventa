@@ -104,70 +104,60 @@ jobs:
           retention-days: 7
           compression-level: 6
 
-  bitrix-source-recovery:
+
+  bitrix-preserved-sources:
     if: github.event_name == 'workflow_dispatch' || github.event.pull_request.number == 12
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 3
     permissions:
       contents: read
     steps:
-      - name: Checkout source
+      - name: Checkout exact PR12 for OFFLINE verified media proof
         uses: actions/checkout@v5
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
-      - name: Set up Node
-        uses: actions/setup-node@v6
-        with:
-          node-version-file: .nvmrc
-      - name: Build repaired Windows one-click public source capture ZIP
+      - name: Validate recovered legacy source bytes already in PR (NO BITRIX FETCH)
+        shell: bash
         run: |
           python3 - <<'PY'
-          from pathlib import Path
-          import json, zipfile
-          routes=json.loads(Path('migration/route-contract.json').read_text(encoding='utf-8'))
-          html=[r['path'] for r in routes if r.get('http_outcome')==200 and not r['path'].startswith('/upload/')]
-          assert len(html)==29 and len(set(html))==29 and '/' in html
-          root=Path('AEROVENTA_BITRIX_PUBLIC_CAPTURE_ONE_CLICK_V2')
-          root.mkdir(exist_ok=True)
-          for name in ['CAPTURE_BITRIX_PUBLIC.ps1','START_CAPTURE_BITRIX.cmd','README_RU.md']:
-              src=Path('scripts/windows-bitrix-capture-v2')/name
-              assert src.is_file()
-              data=src.read_bytes()
-              if name.endswith('.ps1'):
-                  data=b'\xef\xbb\xbf'+data.lstrip(b'\xef\xbb\xbf')
-              (root/name).write_bytes(data)
-          (root/'routes.txt').write_bytes(('\r\n'.join(html)+'\r\n').encode('utf-8-sig'))
-          output=Path('AEROVENTA_BITRIX_PUBLIC_CAPTURE_ONE_CLICK_V2.zip')
-          with zipfile.ZipFile(output,'w',compression=zipfile.ZIP_DEFLATED) as f:
-              for p in sorted(root.iterdir()):
-                  f.write(p,p.name)
-          with zipfile.ZipFile(output) as f:
-              assert len(f.namelist())==4 and f.testzip() is None
-          print('WINDOWS_ONE_CLICK_V2_READY',output,len(html))
+          import hashlib,json,pathlib
+          root=pathlib.Path('apps/web/public')
+          source=json.loads(pathlib.Path('migration/bitrix-public-media-500-sha-map.json').read_text(encoding='utf8'))
+          records=source['files']
+          assert source['record_count']==len(records)==500
+          for item in records:
+              name=item['path']
+              assert name.startswith('/upload/') and '..' not in name and '\\' not in name
+              f=root/name.lstrip('/')
+              assert f.is_file() and f.stat().st_size==item['size'],name
+              assert hashlib.sha256(f.read_bytes()).hexdigest()==item['sha256'],name
+          verified=json.loads(pathlib.Path('migration/bitrix-verified-articles-20260817.json').read_text(encoding='utf8'))
+          old=json.loads(pathlib.Path('migration/legacy-page-source-index.json').read_text(encoding='utf8'))
+          original={x['path']:x for x in old}
+          assert verified['count']==len(verified['articles'])==9
+          assert all(original[a['route']]['sha256']==a['source_sha256'] for a in verified['articles'])
+          pdf=json.loads(pathlib.Path('migration/indexed-pdf.json').read_text(encoding='utf8'))
+          p=root/pdf['path'].lstrip('/')
+          assert p.is_file() and p.stat().st_size==pdf['source_bytes']
+          assert hashlib.sha256(p.read_bytes()).hexdigest()==pdf['source_sha256']
+          faq=original.get('/faq/')
+          assert faq and faq['source_state']=='SOURCE_404' and faq['status']==404
+          pathlib.Path('BITRIX_OFFLINE_SOURCE_PROOF.json').write_text(json.dumps({
+              'verified':'500_IMAGE_FILES_SHA256_AND_9_AUGUST_SOURCE_BODIES_AND_INDEXED_PDF',
+              'origin_fetch':'NOT_PERFORMED; CAPTURED_ALREADY',
+              'historical_faq':'SOURCE_404_IN_AUGUST_AND_OCTOBER',
+              'source_parity_29_original_html':'NOT_PROVEN',
+              'publication_authorized':False
+          },ensure_ascii=False,indent=2),encoding='utf8')
+          print('BITRIX_OFFLINE_SOURCE_PROOF PASS: 500 images, 9 historical article bodies, one indexed PDF')
+          print('RELEASE_BLOCKER: historical /faq/ original returned 404; do not claim 29 old HTML 200')
+          print('NO BITRIX SOURCE REQUESTS EXECUTED')
           PY
-      - name: Offline PowerShell parse and route self-test (NO network)
-        run: |
-          command -v pwsh
-          pwsh -NoProfile -File AEROVENTA_BITRIX_PUBLIC_CAPTURE_ONE_CLICK_V2/CAPTURE_BITRIX_PUBLIC.ps1 -SelfTest
-      - name: Upload repaired Bitrix Windows owner-capture package
+      - name: Upload audited immutable source proof (not production acceptance)
         uses: actions/upload-artifact@v6
         with:
-          name: AEROVENTA_BITRIX_PUBLIC_CAPTURE_ONE_CLICK_V2
-          path: AEROVENTA_BITRIX_PUBLIC_CAPTURE_ONE_CLICK_V2.zip
+          name: AEROVENTA_PR12_BITRIX_OFFLINE_SHA256_PROOF
+          path: BITRIX_OFFLINE_SOURCE_PROOF.json
           if-no-files-found: error
-          retention-days: 7
-      - name: Capture 29 public Bitrix HTML / PDF + legacy media (READ ONLY)
-        env:
-          # Public GET only: old Bitrix wildcard TLS expired 2026-09-10.
-          # Never pass secrets or publish recovered forensic bytes directly.
-          AEROVENTA_BITRIX_PUBLIC_TLS_BYPASS: PUBLIC_READONLY_EXPIRED_CERT
-        run: node scripts/capture-bitrix-public-readonly.mjs
-      - name: Upload exact public sources; never publish them automatically
-        if: always()
-        uses: actions/upload-artifact@v6
-        with:
-          name: aeroventa-public-bitrix-readonly-source-evidence
-          path: AEROVENTA_BITRIX_READONLY_RECOVERY/
-          if-no-files-found: warn
           retention-days: 7
