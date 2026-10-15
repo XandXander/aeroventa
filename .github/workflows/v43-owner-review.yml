@@ -120,6 +120,39 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
+      - name: Build repaired Windows one-click public source capture ZIP
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json, zipfile
+          routes=json.loads(Path('migration/route-contract.json').read_text(encoding='utf-8'))
+          html=[r['path'] for r in routes if r.get('http_outcome')==200 and not r['path'].startswith('/upload/')]
+          assert len(html)==29 and len(set(html))==29 and '/' in html
+          root=Path('AEROVENTA_BITRIX_PUBLIC_CAPTURE_ONE_CLICK_V2')
+          root.mkdir(exist_ok=True)
+          for name in ['CAPTURE_BITRIX_PUBLIC.ps1','START_CAPTURE_BITRIX.cmd','README_RU.md']:
+              src=Path('scripts/windows-bitrix-capture-v2')/name
+              assert src.is_file()
+              data=src.read_bytes()
+              if name.endswith('.ps1'):
+                  data=b'\xef\xbb\xbf'+data.lstrip(b'\xef\xbb\xbf')
+              (root/name).write_bytes(data)
+          (root/'routes.txt').write_bytes(('\r\n'.join(html)+'\r\n').encode('utf-8-sig'))
+          output=Path('AEROVENTA_BITRIX_PUBLIC_CAPTURE_ONE_CLICK_V2.zip')
+          with zipfile.ZipFile(output,'w',compression=zipfile.ZIP_DEFLATED) as f:
+              for p in sorted(root.iterdir()):
+                  f.write(p,p.name)
+          with zipfile.ZipFile(output) as f:
+              assert len(f.namelist())==4 and f.testzip() is None
+          print('WINDOWS_ONE_CLICK_V2_READY',output,len(html))
+          PY
+      - name: Upload repaired Bitrix Windows owner-capture package
+        uses: actions/upload-artifact@v6
+        with:
+          name: AEROVENTA_BITRIX_PUBLIC_CAPTURE_ONE_CLICK_V2
+          path: AEROVENTA_BITRIX_PUBLIC_CAPTURE_ONE_CLICK_V2.zip
+          if-no-files-found: error
+          retention-days: 7
       - name: Capture 29 public Bitrix HTML and indexed PDF (READ ONLY)
         run: node scripts/capture-bitrix-public-readonly.mjs
       - name: Upload exact public sources; never publish them automatically
