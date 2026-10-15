@@ -275,7 +275,8 @@ check((servicesPage.match(/<article\b/g) || []).length === 1 &&
       !servicesPage.includes('hub-split') && !servicesPage.includes('hub-objects') &&
       servicesPage.trimEnd().endsWith('</article>'), 'ART-DELTA-01: one semantic services article, no abandoned sections');
 check(files.about.includes('03 / Опыт на объектах') &&
-      portfolioSource.includes('03 / Ваш объект') &&
+      portfolioSource.includes('03 / Спортивный объект') &&
+      portfolioSource.includes('04 / Ваш объект') &&
       !caseSource.includes('<span>01 / Задача</span>'), 'ART-DELTA-02: consistent section counting');
 check(caseSource.includes('case-gallery__archive-note') &&
       !caseSource.includes('<figcaption>{caption}</figcaption>\n              </figure>\\n            ))}'), 'ART-DELTA-03: no repetitive archive thumbnail captions');
