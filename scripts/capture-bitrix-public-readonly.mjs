@@ -26,7 +26,7 @@ async function getPublic(url,kind='html',index=-1){
   let stdout;
   try{({stdout}=await runCommand('curl',args,{timeout:20000,maxBuffer:2048}));}
   catch(error){await fs.rm(fn,{force:true}).catch(()=>{});throw new Error('PUBLIC_GET_'+String(error.message||error).slice(0,180))}
-  const fields=stdout.trim().split('\\n');
+  const fields=stdout.trim().split('\n');
   const code=Number(fields[0]);
   const mime=fields[1]||'';
   const final=fields[2]||'';
@@ -107,7 +107,7 @@ await Promise.all(Array.from({length:2},async()=>{while(cursor<urls.length){cons
 const MAX_UPLOAD_MEDIA=120;
 const MEDIA_WORKERS=4;
 const sourceMedia=[...new Set(results.flatMap(x=>x.media_paths||[]))]
- .filter(p=>/^\\/upload\\/[A-Za-z0-9_./%-]+\\.(?:jpe?g|png|webp|gif|svg)$/i.test(p))
+ .filter(p=>p.startsWith('/upload/') && !p.includes('..') && /\.(?:jpe?g|png|webp|gif|svg)$/i.test(p))
  .sort();
 const mediaCandidates=sourceMedia.slice(0,MAX_UPLOAD_MEDIA);
 const mediaResults=Array(mediaCandidates.length);
