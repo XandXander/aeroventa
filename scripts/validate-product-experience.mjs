@@ -305,6 +305,16 @@ check(portfolioSource.includes('newOwnerCases.map') && portfolioSource.includes(
   'Seven archive source cards plus five legacy portfolio cards with same-page accessible galleries');
 check(files.globalCss.includes('.portfolio-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))'),
   'Portfolio uses 4/3/2 editorial grid');
+const verifiedBitrix=JSON.parse(await read('migration/bitrix-verified-articles-20260817.json'));
+const archivedIndex=JSON.parse(await read('migration/legacy-page-source-index.json'));
+check(verifiedBitrix.count===9 && verifiedBitrix.articles.length===9 &&
+  verifiedBitrix.articles.every(x=>archivedIndex.some(y=>y.path===x.route&&y.sha256===x.source_sha256)),
+  'Nine full historical Bitrix texts anchored to August 2026 source SHA256');
+const p0Actual=await read('apps/web/src/components/pages/P0LegacyArticlePage.astro');
+const casesActual=await read('apps/web/src/components/pages/EvidenceCasePage.astro');
+check(p0Actual.includes('verifiedArchiveHtml') && casesActual.includes('verifiedArchiveHtml') &&
+  p0Actual.includes('set:html={verifiedArchiveHtml}') && casesActual.includes('set:html={verifiedArchiveHtml}'),
+  'Original SEO article bodies integrated in existing four technical and five case URLs');
 const result = {
   generated_at: new Date().toISOString(),
   verdict: failures.length ? 'FAIL' : 'PASS',
