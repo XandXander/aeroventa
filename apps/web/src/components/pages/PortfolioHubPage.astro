@@ -111,8 +111,8 @@ const newOwnerCases = [
       </div>
       <div class="portfolio-hero__mosaic" aria-label="Три подлинных объекта AEROVENTA">
         <figure>
-          <img src="/evidence/7park/object-exterior-day.jpg" width="800" height="450" alt="7 PARK — жилой квартал в Павловске" loading="eager" decoding="async"/>
-          <figcaption>7 PARK · жилой квартал</figcaption>
+          <img src="/evidence/owner-portfolio/apart-hotel/cover.webp" width="1200" height="800" alt="Апарт-отель и коворкинг на Бумажном — оригинальная фотография интерьера и открытых инженерных систем" loading="eager" decoding="async"/>
+          <figcaption>Апарт-отель / коворкинг · Бумажный</figcaption>
         </figure>
         <figure>
           <img src="/evidence/polisan/owner-cover-v43.webp" width="1600" height="903" alt="НТФФ Полисан — фармацевтический объект" loading="eager" decoding="async"/>
@@ -314,4 +314,21 @@ const newOwnerCases = [
 .portfolio-sport__photo--detail{aspect-ratio:.7}
 @media(max-width:900px){.portfolio-sport__inner{grid-template-columns:1fr;gap:25px}.portfolio-sport__intro h2{max-width:24ch}}
 @media(max-width:520px){.portfolio-sport{padding-block:52px}.portfolio-sport__photography{min-height:210px}.portfolio-sport__intro h2{font-size:clamp(1.7rem,7vw,2.4rem)}}
+/* Owner P0: the portfolio first fold is photographic, not an empty 100svh
+   slab. Different-height views flow naturally; 7 PARK remains a distinct case. */
+.portfolio-hero__mosaic{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:minmax(0,1.65fr) minmax(0,.85fr)}
+.portfolio-hero__mosaic figure:first-child{grid-column:1/-1;grid-row:1}
+.portfolio-hero__mosaic figure:nth-child(2){grid-column:1;grid-row:2}
+.portfolio-hero__mosaic figure:nth-child(3){grid-column:2;grid-row:2}
+@media(min-width:1025px){
+  .portfolio-hero{padding-block:clamp(40px,4.7vw,76px)}
+  .portfolio-hero__mosaic{height:clamp(445px,56svh,620px);min-height:0}
+}
+@media(min-width:761px) and (max-width:1024px){
+  .portfolio-hero__mosaic{min-height:380px}
+}
+@media(max-width:760px){
+  .portfolio-hero__mosaic{grid-template-rows:190px 126px}
+}
+
 </style>
