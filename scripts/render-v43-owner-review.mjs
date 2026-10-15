@@ -621,7 +621,7 @@ try {
         report.fail.push({reason:'ART-DELTA-01/06 compiled services article and social preview',route,width,dom});
       if(route==='/about/'&&!dom.labels.some(x=>x.startsWith('03 / Опыт на объектах')))
         report.fail.push({reason:'ART-DELTA-02 about numbering',width,labels:dom.labels});
-      if(route==='/portfolio/'&&!dom.labels.some(x=>x.startsWith('03 / Ваш объект')))
+      if(route==='/portfolio/'&&(!dom.labels.some(x=>x.startsWith('03 / Спортивный объект')) || !dom.labels.some(x=>x.startsWith('04 / Ваш объект'))))
         report.fail.push({reason:'ART-DELTA-02 portfolio numbering',width,labels:dom.labels});
       if(route.includes('/blog/detail/')&&
         (dom.archiveThumbs<1||dom.archiveCaptions!==0||!dom.archiveNote||dom.numberedCaseSubsteps))
