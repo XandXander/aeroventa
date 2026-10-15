@@ -25,7 +25,7 @@ $limitMedia=12582912
 $maxMedia=400
 $exitCode=0
 $connectOkay=$false
-$rootHtmlFile=Join-Path $work 'raw\html\002.html'
+$rootHtmlFile=Join-Path $diag 'probe-root.html'
 function Save-Fetch {
   param([string]$Url,[string]$Dest,[int]$MaxSize,[string]$Code)
   $parentDir=Split-Path -Parent $Dest

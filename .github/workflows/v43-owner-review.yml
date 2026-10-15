@@ -146,6 +146,10 @@ jobs:
               assert len(f.namelist())==4 and f.testzip() is None
           print('WINDOWS_ONE_CLICK_V2_READY',output,len(html))
           PY
+      - name: Offline PowerShell parse and route self-test (NO network)
+        run: |
+          command -v pwsh
+          pwsh -NoProfile -File AEROVENTA_BITRIX_PUBLIC_CAPTURE_ONE_CLICK_V2/CAPTURE_BITRIX_PUBLIC.ps1 -SelfTest
       - name: Upload repaired Bitrix Windows owner-capture package
         uses: actions/upload-artifact@v6
         with:
