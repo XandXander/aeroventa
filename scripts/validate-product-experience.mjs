@@ -315,6 +315,15 @@ const casesActual=await read('apps/web/src/components/pages/EvidenceCasePage.ast
 check(p0Actual.includes('verifiedArchiveHtml') && casesActual.includes('verifiedArchiveHtml') &&
   p0Actual.includes('set:html={verifiedArchiveHtml}') && casesActual.includes('set:html={verifiedArchiveHtml}'),
   'Original SEO article bodies integrated in existing four technical and five case URLs');
+const restoredMediaMap=JSON.parse(await read('migration/bitrix-public-media-500-sha-map.json'));
+const restoredMediaSet=new Set(restoredMediaMap.files.map(x=>x.path));
+check(restoredMediaMap.record_count===500 &&
+  restoredMediaMap.files.every(x=>/^\/upload\//.test(x.path)&&x.sha256?.length===64),
+  'Bitrix 500 original media exact paths and SHA256 source manifest');
+check(verifiedBitrix.articles.every(article=>article.original_media_paths.every(src=>restoredMediaSet.has(src))),
+  'Nine exact article images and schemas route to recovered assets');
+check(p0Actual.includes('p0-source-photo-gallery') && casesActual.includes('case-gallery__verified-originals'),
+  'Original photos exposed in native article and case galleries rather than omitted');
 const result = {
   generated_at: new Date().toISOString(),
   verdict: failures.length ? 'FAIL' : 'PASS',

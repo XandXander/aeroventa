@@ -398,6 +398,9 @@ const documentaryTitles: Record<string, {gallery:string;facts:string}> = {
 const documentary = documentaryTitles[content.path] || {gallery:'Фотографии объекта и выполненных работ',facts:'Состав работ на объекте'};
 
 const spec=specs[content.path];
+const existingPhotoSet=new Set([...spec.media,...(spec.archiveMedia||[])].map(x=>x[0]));
+const fullOriginalGallery=verifiedOriginal?.original_media_paths.filter(src=>!existingPhotoSet.has(src))||[];
+
 if(!spec) throw new Error('Case spec missing: '+content.path);
 ---
 
@@ -448,6 +451,23 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
           </div>
           <p class="case-gallery__archive-note">Исходная фотодокументация монтажных работ. Нажмите на снимок, чтобы открыть его целиком; порядок фотографий сохранён.</p>
         </section>
+      )}
+      {fullOriginalGallery.length>0 && (
+        <details class="case-gallery__verified-originals">
+          <summary>Полный оригинальный фотоархив ({fullOriginalGallery.length})</summary>
+          <div class="case-gallery__verified-grid">
+            {fullOriginalGallery.map((src,index)=>(
+              <button class="case-gallery__open" type="button" data-case-photo
+                data-photo-src={src} data-photo-archival="true"
+                data-photo-alt={`Исходный кадр ${index+1}`}
+                data-photo-caption="Оригинал из исторической публикации"
+                aria-label={`Открыть исходную фотографию ${index+1}`}>
+                <img src={src} width="800" height="600" loading="lazy" decoding="async"
+                  alt={`Фотография монтажа из оригинальной публикации, ${index+1}`}/>
+              </button>
+            ))}
+          </div>
+        </details>
       )}
     </div>
   </section>
@@ -668,5 +688,14 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
 .case-original-record__note{font-size:.81rem;color:#547084}
 .case-original-record__body h2,.case-original-record__body h3{font-size:1.1rem;line-height:1.35;font-weight:600;margin:1.2em 0 .4em}
 .case-original-record__body a{color:#236789;text-underline-offset:3px}
+
+.case-gallery__verified-originals{margin-top:clamp(22px,3vw,48px);border-top:1px solid #c4d3da;padding-top:20px}
+.case-gallery__verified-originals summary{min-height:52px;display:flex;align-items:center;cursor:pointer;font-weight:570;font-size:.92rem;color:#36576a}
+.case-gallery__verified-originals summary:focus-visible{outline:2px solid #ac653e;outline-offset:3px}
+.case-gallery__verified-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(8px,1.3vw,18px);padding-block:24px}
+.case-gallery__verified-grid button{padding:0;border:0;display:block;min-width:0;cursor:zoom-in;background:#e4eaee}
+.case-gallery__verified-grid img{display:block;width:100%;height:auto;aspect-ratio:1.45;object-fit:cover}
+@media(max-width:900px){.case-gallery__verified-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:620px){.case-gallery__verified-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 </style>
