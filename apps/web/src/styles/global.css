@@ -4559,3 +4559,29 @@ html.is-past-first-fold body:has(.about-hero) .consultant-launcher{
 .ponsse-letter-dialog__close{display:grid;place-items:center;min-width:44px;min-height:44px;padding:0;background:transparent;color:#1b3344;font-size:2rem;font-weight:300}
 .ponsse-letter-dialog__sheet{max-height:calc(94dvh - 64px)}
 @media(max-width:760px){.site-footer .footer-phone{font-size:1.35rem}.object-detail__hero-media img{height:auto;aspect-ratio:1.66}}
+
+/* F01/F05 exact modal cascade resolution; retained premium typography and no extra controls. */
+.portfolio-archive-viewer.is-zoomed .portfolio-archive-viewer__stage{
+  display:block;overflow:auto;align-items:unset;justify-content:unset;
+}
+.portfolio-archive-viewer.is-zoomed .portfolio-archive-viewer__stage img{
+  max-width:none;max-height:none;width:auto;height:auto;object-fit:contain;
+}
+dialog.ponsse-letter-dialog[open]{display:grid;grid-template-rows:auto minmax(0,1fr)}
+dialog.ponsse-letter-dialog .ponsse-letter-dialog__actions{
+  display:flex;flex-direction:row;align-items:center;justify-content:space-between;flex-wrap:nowrap;gap:12px;
+}
+dialog.ponsse-letter-dialog .ponsse-letter-dialog__actions>strong{font-size:clamp(.75rem,1.1vw,.88rem);font-weight:480;}
+dialog.ponsse-letter-dialog .ponsse-letter-dialog__close{flex:none;border:0;border-radius:0;box-shadow:none;min-width:44px;min-height:44px;padding:0;background:transparent;color:#173347;font-size:2rem;font-weight:300;}
+dialog.ponsse-letter-dialog .ponsse-letter-dialog__sheet{min-height:0;overflow:auto;align-items:center;justify-content:center;overscroll-behavior:contain;padding:12px;}
+dialog.ponsse-letter-dialog .ponsse-letter-dialog__sheet img{display:block;max-width:100%;max-height:calc(94dvh - 86px);width:auto;height:auto;object-fit:contain;flex:none;}
+dialog.ponsse-letter-dialog.is-document-zoomed .ponsse-letter-dialog__sheet{
+  display:block;overflow:auto;justify-content:unset;align-items:unset;
+}
+dialog.ponsse-letter-dialog.is-document-zoomed .ponsse-letter-dialog__sheet img{
+  max-width:none;max-height:none;width:auto;height:auto;min-width:0;
+}
+@media(max-width:760px){
+  dialog.ponsse-letter-dialog .ponsse-letter-dialog__actions{padding:8px 12px;flex-direction:row;}
+  dialog.ponsse-letter-dialog .ponsse-letter-dialog__sheet img{max-height:calc(100dvh - 80px);}
+}

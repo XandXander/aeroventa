@@ -1,39 +1,50 @@
 <script>
-  // One in-page document interaction for both HOME and PONSSE case; no new tabs.
-  for (const dialog of document.querySelectorAll<HTMLDialogElement>('dialog[data-document-viewer]')) {
-    const stage = dialog.querySelector<HTMLElement>('[data-document-stage]');
-    let opener: HTMLElement | null = null;
-    let scale = 1;
-    const fit = () => {
-      scale = 1;
-      dialog.classList.remove('is-document-zoomed');
-      dialog.style.setProperty('--document-scale', '1');
-      stage?.scrollTo({top: 0, left: 0});
-      dialog.querySelector<HTMLButtonElement>('[data-document-fit]')?.setAttribute('aria-pressed','true');
+  // No visible zoom toolbar. Keyboard (+/-/0), double-click, Ctrl+wheel,
+  // touch pinch, Escape and close are available without adding UI noise.
+  for(const dialog of document.querySelectorAll<HTMLDialogElement>('dialog[data-document-viewer]')){
+    const stage=dialog.querySelector<HTMLElement>('[data-document-stage]');
+    const img=stage?.querySelector<HTMLImageElement>('img');
+    const close=dialog.querySelector<HTMLButtonElement>('[data-document-close]');
+    let opener:HTMLElement|null=null, zoom=1;
+    const setZoom=(value:number)=>{
+      if(!stage||!img)return;
+      zoom=Math.max(1,Math.min(4,Math.round(value*100)/100));
+      if(zoom===1){
+        dialog.classList.remove('is-document-zoomed');
+        img.style.removeProperty('width');
+        stage.scrollTo({left:0,top:0});
+      }else{
+        const ratio=img.naturalWidth>0&&img.naturalHeight>0?img.naturalWidth/img.naturalHeight:.72;
+        const base=Math.min(stage.clientWidth-24,(stage.clientHeight-18)*ratio,img.naturalWidth||1481);
+        img.style.width=Math.round(Math.max(120,base)*zoom)+'px';
+        dialog.classList.add('is-document-zoomed');
+      }
     };
-    document.querySelectorAll<HTMLElement>('[aria-controls="' + dialog.id + '"]').forEach(trigger => {
-      trigger.addEventListener('click', event => {
-        event.preventDefault();
-        opener = trigger;
-        fit();
-        if (!dialog.open) dialog.showModal();
-        dialog.querySelector<HTMLButtonElement>('.ponsse-letter-dialog__close')?.focus({preventScroll:true});
+    document.querySelectorAll<HTMLElement>('[aria-controls="'+dialog.id+'"]').forEach(trigger=>{
+      trigger.addEventListener('click',e=>{
+        e.preventDefault();opener=trigger;setZoom(1);
+        if(!dialog.open)dialog.showModal();
+        close?.focus({preventScroll:true});
       });
     });
-    dialog.querySelector<HTMLButtonElement>('[data-document-zoom-in]')?.addEventListener('click', () => {
-      scale = Math.min(3, Math.round((scale + .4)*10)/10);
-      dialog.classList.add('is-document-zoomed');
-      dialog.style.setProperty('--document-scale', String(scale));
-      dialog.querySelector<HTMLButtonElement>('[data-document-fit]')?.setAttribute('aria-pressed','false');
+    close?.addEventListener('click',()=>dialog.close());
+    stage?.addEventListener('dblclick',e=>{e.preventDefault();setZoom(zoom>1?1:2.2);});
+    stage?.addEventListener('wheel',e=>{if(!e.ctrlKey)return;e.preventDefault();setZoom(zoom*(e.deltaY<0?1.15:1/1.15));},{passive:false});
+    let begin=0,baseZoom=1;
+    const length=(a:Touch,b:Touch)=>Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);
+    stage?.addEventListener('touchstart',e=>{
+      if(e.touches.length===2){begin=length(e.touches[0],e.touches[1]);baseZoom=zoom;e.preventDefault();}
+    },{passive:false});
+    stage?.addEventListener('touchmove',e=>{
+      if(e.touches.length===2&&begin>0){setZoom(baseZoom*length(e.touches[0],e.touches[1])/begin);e.preventDefault();}
+    },{passive:false});
+    stage?.addEventListener('touchend',e=>{if(e.touches.length<2)begin=0;},{passive:true});
+    dialog.addEventListener('keydown',e=>{
+      if(e.key==='+'||e.key==='='){e.preventDefault();setZoom(zoom+.35);}
+      if(e.key==='-'||e.key==='_'){e.preventDefault();setZoom(zoom-.35);}
+      if(e.key==='0'){e.preventDefault();setZoom(1);}
     });
-    dialog.querySelector<HTMLButtonElement>('[data-document-zoom-out]')?.addEventListener('click', () => {
-      scale = Math.max(1, Math.round((scale - .4)*10)/10);
-      if (scale === 1) fit();
-      else dialog.style.setProperty('--document-scale', String(scale));
-    });
-    dialog.querySelector<HTMLButtonElement>('[data-document-fit]')?.addEventListener('click',fit);
-    dialog.querySelector<HTMLButtonElement>('[data-document-close]')?.addEventListener('click',()=>dialog.close());
-    dialog.addEventListener('click',event=>{ if (event.target===dialog) dialog.close(); });
-    dialog.addEventListener('close',()=>{ fit(); opener?.focus({preventScroll:true}); });
+    dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});
+    dialog.addEventListener('close',()=>{setZoom(1);opener?.focus({preventScroll:true});opener=null;});
   }
 </script>

@@ -30,6 +30,11 @@ for (const r of redirects) {
   lines.push(`RedirectMatch 301 ^${source}$ ${destination}`);
 }
 
+// Later-created editorial alias: do not create an indexable duplicate of the
+// single Owner-selected category route. Historical Bitrix routing is untouched.
+lines.push('', '# Owner F06: canonical newbuild category');
+lines.push('RedirectMatch 301 ^/obekty/novostroyki-i-zhilye-kompleksy/?$ https://aeroventa.ru/obekty/novostroyki/');
+
 lines.push('', '# Exact 410 Gone routes');
 const gone = routes.filter((r) => Number(r.http_outcome) === 410);
 for (const r of gone) {

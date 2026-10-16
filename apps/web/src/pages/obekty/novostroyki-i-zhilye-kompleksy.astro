@@ -1,71 +1,16 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import ObjectDetailPage from '@/components/pages/ObjectDetailPage.astro';
-import type { ContentRecord } from '@/lib/types';
-
-const content: ContentRecord = {
-  path:'/obekty/novostroyki-i-zhilye-kompleksy/',
-  title:'Вентиляция новостроек и жилых комплексов — AEROVENTA',
-  h1:'Монтаж вентиляции в новостройках и жилых комплексах',
-  content_type:'landing',
-  business_role:'CORE_VENTILATION',
-  status:'fixture_stub',
-  robots_index:false,
-  robots_follow:true,
-  sitemap_include:false,
-  knowledge_allowed:true,
-  ai_origin:false,
-  seo_title:'Монтаж вентиляции в новостройках и жилых комплексах — AEROVENTA',
-  seo_description:'Монтаж вентиляции для новостроек и жилых комплексов: работа по проекту, повторяемые объёмы, координация и реальный кейс семи домов в Павловске.',
-  excerpt:'',
-  body_html:'',
-  body_html_safety_status:'not_applicable',
-  owner_approved_at:null,
-};
-
-const constraints = [
-  ['01','Повторяемый объём','Для повторяющихся монтажных узлов заранее согласовываем единое техническое решение и порядок контроля.'],
-  ['02','Последовательность по корпусам','Готовность помещений, потолков и смежных работ влияет на то, где бригада реально может работать без простоев.'],
-  ['03','Логистика','Материалы, подъём, хранение и перемещение между секциями/домами становятся частью монтажной организации.'],
-  ['04','Усиление команды','Большой график требует не просто “больше людей”, а управляемого усиления без потери контроля качества и изменений.'],
-];
-
-const drivers = [
-  'Проект, спецификация и повторяемость узлов',
-  'Количество корпусов / секций / повторяемых зон',
-  'Готовность фронта работ по каждому участку',
-  'Объём воздуховодов и оборудования',
-  'Высота, доступ и подъём материалов',
-  'Последовательность со смежными работами',
-  'Сроки и допустимое параллельное выполнение',
-  'Количество и влияние проектных изменений',
-];
-
-const evidence = [
-  {title:'7 PARK',meta:'Павловск · 7 домов',detail:'Монтаж приточно-вытяжной вентиляции. Подтверждённый исторический период интенсивных работ: 18.11.2020 — 10.12.2020.',href:'/blog/detail/kak-my-sdali-7-domov/',image:'/evidence/7park/object-courtyard-night.jpg',imageAlt:'7 PARK — вечерний вид жилого комплекса'},
-];
-
-const questions = [
-  'Какие исходные данные нужны для расчёта большого повторяемого объёма?',
-  'Как согласовать повторяющиеся монтажные узлы?',
-  'Что влияет на срок кроме количества монтажников?',
-  'Что должно быть согласовано до начала работ по корпусу?',
-  'Какие участки стоит принимать до закрытия?',
-];
+// Legacy on-site category alias only. The deployed server uses an exact 301 rule.
+// Static local previews get a noindex canonical + client fallback.
+const target='/obekty/novostroyki/';
 ---
-
-<BaseLayout content={content}>
-  <ObjectDetailPage
-    content={content}
-    eyebrow="Новостройки и жилые комплексы"
-    lede="На жилом квартале важны последовательность работ по корпусам, проверенные решения для повторяющихся узлов и согласованный график монтажа."
-    constraints={constraints}
-    drivers={drivers}
-    evidence={evidence}
-    questions={questions}
-    proofTitle="7 PARK — реальный кейс повторяемого объёма."
-    visualVariant="residential"
-    heroMedia={{ src:'/evidence/7park/object-exterior-day.jpg', alt:'Фактический дневной вид жилого квартала 7 PARK в Павловске', caption:'7 PARK · дневной вид объекта из архива AEROVENTA' }}
-    secondaryMedia={{ src:'/evidence/7park/duct-route.jpg', alt:'Реальный фрагмент монтажа воздуховодов на 7 PARK', caption:'7 PARK / Фрагмент монтажа вентиляции на объекте' }}
-  />
-</BaseLayout>
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="robots" content="noindex,follow"/>
+    <link rel="canonical" href="https://aeroventa.ru/obekty/novostroyki/"/>
+    <meta http-equiv="refresh" content="0;url=/obekty/novostroyki/"/>
+    <title>Новостройки — AEROVENTA</title>
+  </head>
+  <body><a href={target}>Новостройки и жилые комплексы →</a></body>
+</html>
