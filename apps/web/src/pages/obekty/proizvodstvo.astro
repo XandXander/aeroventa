@@ -1,25 +1,22 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import ObjectEditorialPage from '@/components/pages/ObjectEditorialPage.astro';
+import ObjectDetailPage from '@/components/pages/ObjectDetailPage.astro';
 import type { ContentRecord } from '@/lib/types';
 const content: ContentRecord = {
-  path: "/obekty/proizvodstvo/",title: "Монтаж вентиляции на производственных объектах — AEROVENTA",h1:"Монтаж вентиляции на производственных объектах",
-  content_type:'landing',business_role:'CORE_SERVICE_HUB',status:'fixture_stub',
-  robots_index:false,robots_follow:true,sitemap_include:false,knowledge_allowed:true,ai_origin:false,
-  seo_title:"Монтаж вентиляции на производственных объектах в СПб и Ленобласти — AEROVENTA",
-  seo_description:"Монтаж вентиляции на действующем или строящемся производстве ведём по проекту с учётом доступа к оборудованию и условий объекта.",
-  excerpt:'',body_html:'',body_html_safety_status:'not_applicable',owner_approved_at:null
+ path:'/obekty/proizvodstvo/',title:'Монтаж вентиляции на производственных объектах — AEROVENTA',h1:'Монтаж вентиляции на производственных объектах',
+ content_type:'landing',business_role:'CORE_SERVICE_HUB',status:'fixture_stub',
+ robots_index:false,robots_follow:true,sitemap_include:false,knowledge_allowed:true,ai_origin:false,
+ seo_title:'Монтаж вентиляции на производственных объектах — AEROVENTA',seo_description:'Производственные системы вентиляции. Полисан и промышленный объект «Химпром».',
+ excerpt:'',body_html:'',body_html_safety_status:'not_applicable',owner_approved_at:null
 };
-const detail={
-  "eyebrow": "Производственные помещения",
-  "lead": "Монтаж вентиляции на действующем или строящемся производстве ведём по проекту с учётом доступа к оборудованию и условий объекта.",
-  "proofTitle": "НТФФ «Полисан»",
-  "proofText": "Исторический производственный объект AEROVENTA в Санкт-Петербурге: монтаж приточно-вытяжной вентиляции и оборудования. Технические фотографии находятся в кейсе.",
-  "photo": "/evidence/polisan/owner-cover-v43.webp",
-  "photoAlt": "Здание НТФФ «Полисан» — подтверждённый объект AEROVENTA",
-  "link": "/blog/detail/ntff-polisan/",
-  "linkLabel": "Открыть производственный кейс",
-  "description": "Нужны чертежи, спецификация, сведения о доступе к производственным помещениям и режим работы объекта на предполагаемый период монтажа."
-};
+const constraints = [["01","Режим производства","Очередность работ учитывает условия технологических участков."],["02","Трассы","Рабочие чертежи и спецификация определяют состав."],["03","Доступ","Монтажные зоны и оборудование согласовывают заранее."],["04","Сроки","Работы координируют со смежными подрядчиками."]];
+const evidence = [{"title":"НТФФ «Полисан»","meta":"Санкт-Петербург · фармацевтическое производство","detail":"Реальный кейс монтажа приточно-вытяжной вентиляции и оборудования.","href":"/blog/detail/ntff-polisan/","image":"/evidence/polisan/owner-cover-v43.webp","imageAlt":"Фармацевтический объект «Полисан»"},{"title":"Химпром","meta":"Промышленный объект","detail":"Снимки объекта доступны в оригинальной архивной галерее.","href":"/portfolio/#owner-13","image":"/evidence/owner-portfolio/himprom/03.webp","imageAlt":"Промышленная площадка «Химпром»"}];
+const drivers = ['Рабочая проектная документация и спецификация','Монтажные зоны и условия доступа','Стадия объекта и смежные инженерные системы','Оборудование, трассы и рабочие сроки'];
+const questions = ['Какие документы передать для расчёта монтажа?','Что согласовать до начала работ?','Какие ограничения объекта влияют на организацию монтажа?'];
 ---
-<BaseLayout content={content}><ObjectEditorialPage content={content} {...detail}/></BaseLayout>
+<BaseLayout content={content}>
+ <ObjectDetailPage content={content} eyebrow="Производственные объекты"
+  lede="Монтаж по проекту с учётом рабочего режима площадки, доступа к оборудованию и требований смежных систем." constraints={constraints} drivers={drivers} evidence={evidence} questions={questions}
+  proofTitle="Подлинные производственные объекты."
+  heroMedia={{src:'/evidence/polisan/owner-cover-v43.webp',alt:'Предприятие НТФФ «Полисан»',caption:'НТФФ «Полисан» · Санкт-Петербург'}}/>
+</BaseLayout>

@@ -17,7 +17,7 @@ const { pagePath = '' } = Astro.props;
     <div class="experience-dialog__head">
       <div>
         <p class="section-index">Инженерный консультант</p>
-        <h2 id="consultant-title">Расскажите о вашем объекте.</h2>
+        <h2 id="consultant-title">Чем помочь?</h2>
       </div>
       <button type="button" class="dialog-close" data-dialog-close aria-label="Закрыть консультанта">×</button>
     </div>
@@ -26,7 +26,7 @@ const { pagePath = '' } = Astro.props;
       <ol class="consultant-conversation__history" data-consultant-chat-messages aria-live="polite" aria-relevant="additions">
         <li class="consultant-message consultant-message--guide">
           <span class="consultant-message__author">AEROVENTA / Навигатор</span>
-          <p>Опишите объект или задайте вопрос. Этот навигатор поможет найти подходящий раздел сайта. Для инженерного решения можно обратиться к специалисту.</p>
+          <p>Опишите задачу — найдём нужный материал или передадим вопрос инженеру.</p>
         </li>
       </ol>
       <form class="consultant-conversation__composer" data-consultant-chat-form>
@@ -37,13 +37,13 @@ const { pagePath = '' } = Astro.props;
         </div>
       </form>
       <div class="consultant-conversation__foot">
-        <span>Подберём подходящий материал или передадим вопрос специалисту.</span>
+        <span>По материалам AEROVENTA</span>
         <button type="button" data-consultant-chat-handoff>Передать вопрос специалисту →</button>
       </div>
     </section>
 
     <details class="consultant-structured">
-      <summary>Уточнить параметры объекта <span>необязательно</span></summary>
+      <summary>Параметры объекта <span>по желанию</span></summary>
     <form class="consultant-form" data-consultant-form>
       <div class="consultant-form__grid">
         <div class="field">
@@ -98,7 +98,7 @@ const { pagePath = '' } = Astro.props;
 
       <div class="consultant-form__actions">
         <button class="button button--primary" type="submit">Показать следующий шаг →</button>
-        <span>Не является сметой, проектом или гарантией соответствия нормам.</span>
+        
       </div>
     </form>
 

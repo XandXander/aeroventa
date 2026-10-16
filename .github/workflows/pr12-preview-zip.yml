@@ -71,7 +71,7 @@ jobs:
           assert len(re.findall(r'^RedirectMatch gone ',rule,re.M))==54
           assert (dist/'robots.txt').read_text().strip()=='User-agent: *\nDisallow: /'
           htmls=list(dist.rglob('*.html'))
-          assert len(htmls)==36, f'Expected exactly 36 HTML routes; got {len(htmls)}'
+          assert len(htmls)==39, f'Expected exactly 39 HTML routes; got {len(htmls)}'
           for h in htmls:
             body=h.read_text()
             assert re.search(r'<meta[^>]+name=["\']robots["\'][^>]*noindex',body,re.I), f'Not noindex: {h}'

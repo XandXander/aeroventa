@@ -378,14 +378,14 @@ if (paragraph) legacyParagraphs.push(paragraph.trim());
     </div>
   </section>
         {verifiedOriginal && verifiedOriginal.original_media_paths.length>0 && (
-          <details class="p0-source-photo-gallery">
-            <summary>Оригинальные фотографии и схемы ({verifiedOriginal.original_media_paths.length})</summary>
+          <section class="p0-source-photo-gallery" aria-label="Оригинальные изображения статьи">
+            <h2>Оригинальные фотографии и схемы · {verifiedOriginal.original_media_paths.length}</h2>
             <div class="p0-source-photo-gallery__grid">
               {verifiedOriginal.original_media_paths.map((src,index)=>(
                 <figure><img src={src} width="1200" height="800" loading="lazy" decoding="async" alt={`Архив AEROVENTA, исходный снимок ${index+1}`}/></figure>
               ))}
             </div>
-          </details>
+          </section>
         )}
   <section class="home-section p0-related" aria-labelledby="p0-related-title">
     <div class="home-shell">
@@ -475,4 +475,5 @@ if (paragraph) legacyParagraphs.push(paragraph.trim());
 @media(max-width:900px){.p0-source-photo-gallery__grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:520px){.p0-source-photo-gallery__grid{grid-template-columns:1fr}}
 
+.p0-source-photo-gallery h2{font-size:clamp(1.4rem,2.5vw,2.05rem);font-weight:550;letter-spacing:-.025em;margin:0 0 20px}
 </style>

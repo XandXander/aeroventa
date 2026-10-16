@@ -489,21 +489,16 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
   <dialog id="case-photo-viewer" class="case-photo-dialog" aria-label="Просмотр фотографий объекта">
     <div class="case-photo-dialog__panel">
       <div class="case-photo-dialog__top">
-        <span>Фотографии объекта <span data-photo-count></span></span>
-        <div class="case-photo-dialog__tools" role="toolbar" aria-label="Просмотр фотографии">
-          <button type="button" data-photo-fit aria-label="Показать фотографию целиком" aria-pressed="true">Вся фотография</button>
-          <button type="button" data-photo-zoom-out aria-label="Уменьшить фотографию">−</button>
-          <button type="button" data-photo-zoom-in aria-label="Увеличить фотографию">+</button>
-          <button type="button" class="case-photo-dialog__close" data-photo-close aria-label="Закрыть просмотр">×</button>
-        </div>
+        <span>{content.h1}</span>
+        <button type="button" class="case-photo-dialog__close" data-photo-close aria-label="Закрыть">×</button>
       </div>
       <figure class="case-photo-dialog__figure">
         <img data-photo-large src={spec.media[0][0]} alt={spec.media[0][1]} loading="lazy" />
-        <figcaption data-photo-description></figcaption>
+        <figcaption>Фотодокументация объекта</figcaption>
       </figure>
-      <nav class="case-photo-dialog__nav" aria-label="Навигация по фотографиям">
-        <button type="button" data-photo-previous aria-label="Предыдущая фотография">‹</button>
-        <button type="button" data-photo-next aria-label="Следующая фотография">›</button>
+      <nav class="case-photo-dialog__nav" aria-label="Перелистывание фотографий">
+        <button type="button" data-photo-previous aria-label="Предыдущее фото">‹</button>
+        <button type="button" data-photo-next aria-label="Следующее фото">›</button>
       </nav>
     </div>
   </dialog>
@@ -552,12 +547,7 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
     <dialog class="ponsse-letter-dialog" id="ponsse-letter-dialog" data-document-viewer aria-label="Благодарственное письмо PONSSE от 5 апреля 2022 года">
   <div class="ponsse-letter-dialog__actions" role="toolbar" aria-label="Управление документом">
   <strong>Благодарность PONSSE · 05.04.2022</strong>
-  <div class="ponsse-letter-dialog__tools">
-    <button type="button" data-document-fit aria-pressed="true">Вся страница</button>
-    <button type="button" data-document-zoom-out aria-label="Уменьшить документ">−</button>
-    <button type="button" data-document-zoom-in aria-label="Увеличить документ">+</button>
-    <button type="button" class="ponsse-letter-dialog__close" data-document-close aria-label="Закрыть письмо">Закрыть ×</button>
-  </div>
+  <button type="button" class="ponsse-letter-dialog__close" data-document-close aria-label="Закрыть письмо">×</button>
 </div>
   <div class="ponsse-letter-dialog__sheet" data-document-stage tabindex="0" aria-label="Документ: прокрутка увеличенного изображения">
     <img src="/evidence/karelia/ponsse-letter-20220405.png" width="1481" height="2048" alt="Оригинальное письмо PONSSE от 5 апреля 2022 года" decoding="async" />
@@ -693,6 +683,16 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
 .case-photo-dialog__nav button{pointer-events:auto;display:grid;place-items:center;width:clamp(38px,4vw,54px);height:clamp(38px,4vw,54px);padding:0;border:0;border-radius:50%;background:rgba(28,47,61,.68);color:#fff;font-size:2.35rem;line-height:1;cursor:pointer}
 .case-photo-dialog button:focus-visible{outline:2px solid #fff;outline-offset:3px}
 @media(max-width:600px){.case-photo-dialog__figure{padding:52px 8px 44px}.case-photo-dialog__figure img{max-height:calc(100dvh - 120px)}.case-photo-dialog__nav{inset-inline:7px}}
+
+.case-photo-dialog__top{inset:0 0 auto;justify-content:center;min-height:66px;padding:18px 60px;background:linear-gradient(#07131bd5,transparent)}
+.case-photo-dialog__top>span{font-weight:440;text-align:center;letter-spacing:.025em;font-size:.82rem}
+.case-photo-dialog__close{position:absolute;top:10px;right:12px;border-radius:0;background:transparent;font-size:2.1rem;font-weight:300}
+.case-photo-dialog__figure{padding:68px clamp(38px,6vw,96px) 58px;gap:0}
+.case-photo-dialog__figure img{max-height:calc(100dvh - 132px)}
+.case-photo-dialog__figure figcaption{position:absolute;bottom:18px;left:0;right:0;font-size:.73rem;font-weight:400;color:#d5e0e6;letter-spacing:.035em}
+.case-photo-dialog__nav{inset-inline:4px}
+.case-photo-dialog__nav button{background:transparent;border-radius:0;font-weight:300}
+@media(max-width:600px){.case-photo-dialog__figure{padding:65px 34px 55px}}
 </style>
 <style>
 .case-detail-hero h1{font-size:clamp(2.4rem,4.6vw,5rem);line-height:1.07;letter-spacing:-.042em;text-wrap:balance;overflow-wrap:normal;word-break:normal}
