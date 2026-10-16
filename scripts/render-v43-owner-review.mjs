@@ -134,10 +134,11 @@ try {
             const p = rect(photo),c=rect(copy),r=rect(strip);
             return {
               natural_width:image?.naturalWidth??0,photo_fit:image?getComputedStyle(image).objectFit:null,
+              copy_background:copy?getComputedStyle(copy).backgroundColor:null,
               photo_left:p?.left??0,photo_right:p?.right??0,photo_top:p?.top??0,photo_bottom:p?.bottom??0,
               copy_left:c?.left??0,copy_top:c?.top??0,copy_right:c?.right??0,copy_bottom:c?.bottom??0,
               strip_top:r?.top??0,inline_visible:inline?getComputedStyle(inline).display!=='none':false,
-              floating_visible:fixed?getComputedStyle(fixed).display!=='none':false,
+              floating_visible:fixed?getComputedStyle(fixed).display!=='none' && getComputedStyle(fixed).visibility!=='hidden' && parseFloat(getComputedStyle(fixed).opacity)>.01:false,
               diagram_count:document.querySelectorAll('.home-solution .solution-diagram,.home-solution .solution-mobile-pair').length,
               desktop_diagram_visible:!!document.querySelector('.home-solution .solution-diagram') && getComputedStyle(document.querySelector('.home-solution .solution-diagram')).display !== 'none',
               mobile_pair_visible:!!document.querySelector('.home-solution .solution-mobile-pair') && getComputedStyle(document.querySelector('.home-solution .solution-mobile-pair')).display !== 'none',
@@ -145,18 +146,21 @@ try {
             };
           });
           const isMobile = width <= 760;
-          const isTablet = width > 760 && width <= 1100;
-          const photoBeforeCopy = optical.photo_bottom <= optical.copy_top + 3;
-          const desktopColumns = optical.copy_right <= optical.photo_left + 3 && optical.photo_right >= width*.8;
-          const ownerScenePass = optical.natural_width > 0 &&
+          // P0 2026-10-16 full-bleed HOME: copy overlays source photo on desktop;
+          // mobile preserves independent reading order before the contained image.
+          const mobileReadingOrder = optical.photo_top >= optical.copy_bottom - 3 &&
+            optical.photo_fit === 'contain' && optical.strip_top >= optical.photo_bottom - 3;
+          const desktopBleed = optical.photo_fit === 'cover' &&
+            optical.photo_left <= 3 && optical.photo_right >= width - 3 &&
+            optical.copy_left >= -1 && optical.copy_right <= width + 3 &&
+            optical.photo_bottom > optical.copy_top + 100 &&
+            optical.copy_background === 'rgba(0, 0, 0, 0)';
+          const ownerScenePass = optical.natural_width >= 1200 &&
             optical.diagram_count === 2 && optical.process_stages === 4 &&
             (isMobile ? (!optical.desktop_diagram_visible && optical.mobile_pair_visible) :
                         (optical.desktop_diagram_visible && !optical.mobile_pair_visible)) &&
-            (isMobile || isTablet ?
-              (optical.photo_fit === 'contain' && photoBeforeCopy) :
-              (optical.photo_fit === 'contain' && desktopColumns)) &&
-            (!isMobile || (optical.inline_visible && !optical.floating_visible &&
-             optical.strip_top >= optical.copy_bottom - 2));
+            (isMobile ? mobileReadingOrder : desktopBleed) &&
+            (!isMobile || (optical.inline_visible && !optical.floating_visible));
           if (!ownerScenePass) report.fail.push({route,view,reason:'Approved Owner airflow HERO scene/adaptation contract',optical});
           const recognition = page.locator('.home-ponsse');
           const orderCorrect = await page.evaluate(() => {
@@ -259,7 +263,7 @@ try {
             const l = document.querySelector('.consultant-launcher')?.getBoundingClientRect();
             const overlaps = !!p && !!l && Math.max(p.left,l.left)<Math.min(p.right,l.right) &&
               Math.max(p.top,l.top)<Math.min(p.bottom,l.bottom);
-            return {headingTop:h?.top,photoTop:p?.top,photoWidth:i?.naturalWidth,photoHeight:p?.height,photoBottom:p?.bottom,launcherOverlap:overlaps,launcherVisible:!!l && getComputedStyle(document.querySelector('.consultant-launcher')).display!=='none',inlineConsultant:!!document.querySelector('.about-hero a[data-consultant-open][data-source="about_inline"]')};
+            return {headingTop:h?.top,photoTop:p?.top,photoWidth:i?.naturalWidth,photoHeight:p?.height,photoBottom:p?.bottom,launcherOverlap:overlaps,launcherVisible:!!l && getComputedStyle(document.querySelector('.consultant-launcher')).display!=='none' && getComputedStyle(document.querySelector('.consultant-launcher')).visibility!=='hidden' && parseFloat(getComputedStyle(document.querySelector('.consultant-launcher')).opacity)>.01,inlineConsultant:!!document.querySelector('.about-hero a[data-consultant-open][data-source="about_inline"]')};
           });
           if (!optical.photoWidth || optical.headingTop == null || optical.headingTop >= height*.55 ||
               (width<=760 && (optical.photoHeight < 250 || optical.photoHeight > height*.85 || optical.photoTop >= height*.7 || optical.launcherOverlap || optical.launcherVisible || !optical.inlineConsultant))) {
@@ -316,21 +320,26 @@ try {
           }
         }
         if (['drill_crown', 'drill_screed', 'drill_cost', 'drill_horizontal'].includes(id)) {
-          const reading = page.locator('.p0-historic-reading__body');
+          // Exact original photograph locations remain in the source article DOM.
+          const reading = page.locator('.p0-story__body');
           const restoredText = await reading.innerText();
-          if (restoredText.trim().length < 350 || await reading.locator('p').count() < 1) {
-            report.fail.push({route,view,reason:'Historical technical content not presented as readable main page text',chars:restoredText.length});
-          }
-          const figures = await page.locator('.p0-historic-reading figure, .p0-article figure').count();
-          report.open_media_debt ||= [];
-          if (figures === 0 && view === 'desktop_1440') {
-            report.open_media_debt.push({route,reason:'Original illustrated instruction still lacks historical media; source restore required before release'});
+          const inlineCount = await reading.locator('img[src^="/upload/medialibrary/"]').count();
+          const required = {drill_crown:10,drill_screed:21,drill_cost:4,drill_horizontal:29}[id];
+          const detached = await page.locator('.p0-source-photo-gallery, .p0-historic-reading').count();
+          const imagesValid = await reading.evaluate(node =>
+            [...node.querySelectorAll('img')].every(img =>
+              img.getAttribute('src')?.startsWith('/upload/medialibrary/') &&
+              img.closest('p,li,div') && img.complete && img.naturalWidth > 0));
+          if (restoredText.trim().length < 350 || inlineCount !== required ||
+              detached !== 0 || !imagesValid) {
+            report.fail.push({route,view,reason:'Exact inline historical photo-instruction',
+              chars:restoredText.length,inlineCount,required,detached,imagesValid});
           }
         }
         if (id === 'services') {
           // 14 Oct Owner explicitly rejected the old two-photo services HERO.
           const photographicProof = page.locator('.services-hero__backdrop--single img');
-          const expected = ['/evidence/hero/services-owner-editorial-1774.webp'];
+          const expected = ['/evidence/hero/home-owner-editorial-1672.webp'];
           const actual = await photographicProof.evaluateAll(nodes=>nodes.map(n=>new URL(n.src).pathname));
           const wrong = await page.locator('.services-hero img[src="/evidence/hero/engineering-ductwork.jpg"],.services-hero img[src="/evidence/cafe/owner-cover-v43.webp"]').count();
           const servicesOptical = await page.evaluate(() => {
@@ -346,7 +355,7 @@ try {
               photo_top:picture?.top??0,
               intro_bottom:text?.bottom??0,
               inline_visible:inline?getComputedStyle(inline).display!=='none':false,
-              floating_visible:floating?getComputedStyle(floating).display!=='none':false
+              floating_visible:floating?getComputedStyle(floating).display!=='none' && getComputedStyle(floating).visibility!=='hidden' && parseFloat(getComputedStyle(floating).opacity)>.01:false
             };
           });
           const mobile=width<=760;
@@ -523,6 +532,8 @@ try {
     const page=await context.newPage();
     try{
       await page.goto(baseUrl+'/',{waitUntil:'load'});
+      // Let the real first-visit signature animation finish before evaluating the idle state.
+      await page.locator('[data-airflow-entry]').waitFor({state:'detached',timeout:2500}).catch(()=>{});
       const atRest=await page.evaluate(()=>({pending:document.documentElement.hasAttribute('data-airflow-processing'),trace:!!document.querySelector('.airflow-header-trace'),entry:!!document.querySelector('[data-airflow-entry]')}));
       if(atRest.pending||!atRest.trace||atRest.entry) report.fail.push({reason:'No fake load animation at rest',atRest});
       await page.locator('.header-project').click();

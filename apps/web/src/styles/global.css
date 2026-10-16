@@ -4620,3 +4620,12 @@ dialog.ponsse-letter-dialog.is-document-zoomed .ponsse-letter-dialog__sheet img{
 .about-premium .about-hero h1{font-weight:560;line-height:1.1}
 .about-premium .about-hero__team--group img{max-height:none}
 .about-premium .about-hero .home-actions{flex-wrap:wrap;gap:10px}
+
+
+/* 2026-10-16 exact SHA P0: fully readable full-width HERO without 100vw zoom overflow. */
+@media(min-width:761px){
+ .home-hero--owner-airflow>.home-hero__grid{width:100%!important;max-width:none;margin-inline:0}
+ .home-hero--owner-airflow .hero-engineering{width:100%;max-width:none;min-width:0;margin:0;align-self:stretch}
+ .home-hero--owner-airflow .hero-engineering__photo{object-fit:cover!important;object-position:56% 49%}
+ .home-hero--owner-airflow .home-hero__copy{background:transparent!important;padding-left:clamp(24px,calc((100% - 1360px)/2),280px)}
+}
