@@ -285,10 +285,29 @@ try {
           const historical = page.locator('a.portfolio-card[href^="/blog/detail/"]');
           const archives = page.locator('button.portfolio-card[data-archive-open][aria-controls="portfolio-archive-viewer"]');
           const historicUrls = await historical.evaluateAll(nodes=>nodes.map(n=>n.getAttribute('href')));
-          const sourceValid = await archives.evaluateAll(nodes=>nodes.every(n=>{
-            const urls=JSON.parse(n.getAttribute('data-gallery-images')||'[]');
-            return urls.length===3 && urls.every(u=>/^\/evidence\/owner-portfolio\/[a-z0-9-]+\/(?:cover|0[234])\.webp$/.test(u));
-          }));
+          const sourceValid = await archives.evaluateAll(nodes=>{
+            // The original three photos stay source-locked; the 68 SHA-verified
+            // gallery photographs are now committed at their canonical paths.
+            const expected = new Map([
+              ['apart-hotel',13], ['eurospar-vo',9],
+              ['eurospar-sestroretsk',11], ['college-obvodny',15],
+              ['novatech',10], ['akvilon-yanino',19], ['himprom',11],
+            ]);
+            return nodes.length === expected.size && nodes.every(n=>{
+              const cover = n.querySelector('img')?.getAttribute('src') || '';
+              const slug = cover.match(/^\/evidence\/owner-portfolio\/([a-z0-9-]+)\//)?.[1];
+              if (!expected.has(slug)) return false;
+              const prefix = '/evidence/owner-portfolio/' + slug + '/';
+              const urls = JSON.parse(n.getAttribute('data-gallery-images')||'[]');
+              const valid = urls.length === expected.get(slug) &&
+                urls[0] === prefix + 'cover.webp' &&
+                new Set(urls).size === urls.length &&
+                urls.every(u=>u.startsWith(prefix) &&
+                  /^(?:cover|0[2-9]|[1-9][0-9]|gallery-[0-9]{2,3})\.webp$/.test(u.slice(prefix.length)));
+              expected.delete(slug);
+              return valid;
+            }) && expected.size === 0;
+          });
           if (count !== 12 || photos !== 12 || ponsse !== 1 ||
               await historical.count() !== 5 || await archives.count() !== 7 ||
               !sourceValid || historical && !historicUrls.every(h=>h?.startsWith('/blog/detail/')) ||
