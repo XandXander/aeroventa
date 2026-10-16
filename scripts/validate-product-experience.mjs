@@ -301,6 +301,7 @@ const ownerPhotoManifest=JSON.parse(await read('migration/owner-portfolio-source
 check(ownerPhotoManifest.length===25 &&
   ownerPhotoManifest.filter(x=>x.status==='OWNER_PHOTO_ARCHIVE_SCOPE_FACTS_UNVERIFIED').length===21,
   'Owner photo provenance: 21 for seven object archives and four distinct sports candidates');
+check(portfolioSource.includes('.portfolio-archive-viewer__nav{position:absolute;inset:0;background:transparent;'), 'F07: full-screen photo navigation cannot paint opaque over gallery image');
 check(portfolioSource.includes('newOwnerCases.map') && portfolioSource.includes('portfolio-archive-viewer'),
   'Seven archive source cards plus five legacy portfolio cards with same-page accessible galleries');
 check(files.globalCss.includes('.portfolio-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))'),
