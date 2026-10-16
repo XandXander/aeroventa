@@ -221,16 +221,17 @@ const mediaStats = await Promise.all(ownerMediaVariants.map(async name => {
   catch { return null; }
 }));
 check(mediaStats.every(stat => stat?.isFile() && stat.size > 20000), 'All six optimized Owner source image variants exist as nonempty files');
-// 2026-10-14 Owner re-rejection supersedes the former two-photo services HERO gate.
-// 2026-10-15 Owner P0: café photograph was expressly rejected as the
-// services entry visual. Engineering integration illustration must be clearly
-// identified as conceptual, never presented as a photographed AEROVENTA job.
-check(files.services.includes('/evidence/hero/services-owner-editorial-1774.webp') &&
+// 2026-10-16 Owner P0: HOME and SERVICES must not repeat the same rendered HERO.
+// Conceptual nature stays in meaningful alternative text, not a developer QA caption.
+// Rejected construction/café images must never become the services lead image.
+check(files.home.includes("const ownerHeroMedia = '/evidence/hero/owner-luxury-airflow-20261010.png'") &&
+      files.services.includes('/evidence/hero/home-owner-editorial-1672.webp') &&
+      files.services.includes('alt="Архитектурная концепция интегрированной вентиляции в интерьере"') &&
       !files.services.includes('<img src="/evidence/cafe/owner-cover-v43.webp"') &&
       !files.services.includes('/evidence/7park/duct-route.jpg') &&
       files.services.includes('services-hero__backdrop--single') &&
-      files.services.includes('концептуальная иллюстрация'),
-      'Services HERO uses one purposeful engineering illustration with truthful attribution and no rejected café photo');
+      !files.services.includes('концептуальная иллюстрация'),
+      'Distinct HOME/SERVICES HERO media; truthful alt and no public QA caption or rejected café');
 for(const p of ['evidence/cafe/owner-cover-v43.webp']){
   const stat=await fs.stat(path.join(root,'apps/web/public',p)).catch(()=>null);
   check(Boolean(stat?.isFile() && stat.size>20000), 'Source-valid Services evidence asset exists: '+p);
