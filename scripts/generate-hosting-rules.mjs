@@ -30,11 +30,6 @@ for (const r of redirects) {
   lines.push(`RedirectMatch 301 ^${source}$ ${destination}`);
 }
 
-// Later-created editorial alias: do not create an indexable duplicate of the
-// single Owner-selected category route. Historical Bitrix routing is untouched.
-lines.push('', '# Owner F06: canonical newbuild category');
-lines.push('RedirectMatch 301 ^/obekty/novostroyki-i-zhilye-kompleksy/?$ https://aeroventa.ru/obekty/novostroyki/');
-
 lines.push('', '# Exact 410 Gone routes');
 const gone = routes.filter((r) => Number(r.http_outcome) === 410);
 for (const r of gone) {
@@ -43,6 +38,8 @@ for (const r of gone) {
 
 lines.push('', '# Legacy Bitrix 404 endpoint: do not migrate as PHP; force branded 404.');
 lines.push('RewriteEngine On');
+// On-site category alias (not a historical Bitrix route); keep 13 preserved 301 contract rules.
+lines.push('RewriteRule ^obekty/novostroyki-i-zhilye-kompleksy/?$ /obekty/novostroyki/ [R=301,L]');
 lines.push('RewriteRule ^404\\.php$ - [R=404,L]');
 lines.push('');
 
