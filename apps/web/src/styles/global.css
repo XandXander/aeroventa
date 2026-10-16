@@ -4574,7 +4574,7 @@ dialog.ponsse-letter-dialog .ponsse-letter-dialog__actions{
 dialog.ponsse-letter-dialog .ponsse-letter-dialog__actions>strong{font-size:clamp(.75rem,1.1vw,.88rem);font-weight:480;}
 dialog.ponsse-letter-dialog .ponsse-letter-dialog__close{flex:none;border:0;border-radius:0;box-shadow:none;min-width:44px;min-height:44px;padding:0;background:transparent;color:#173347;font-size:2rem;font-weight:300;}
 dialog.ponsse-letter-dialog .ponsse-letter-dialog__sheet{min-height:0;overflow:auto;align-items:center;justify-content:center;overscroll-behavior:contain;padding:12px;}
-dialog.ponsse-letter-dialog .ponsse-letter-dialog__sheet img{display:block;max-width:100%;max-height:calc(94dvh - 86px);width:auto;height:auto;object-fit:contain;flex:none;}
+dialog.ponsse-letter-dialog .ponsse-letter-dialog__sheet img{display:block;max-width:100%;max-height:min(72dvh,785px);width:auto;height:auto;object-fit:contain;flex:none;}
 dialog.ponsse-letter-dialog.is-document-zoomed .ponsse-letter-dialog__sheet{
   display:block;overflow:auto;justify-content:unset;align-items:unset;
 }
@@ -4583,5 +4583,5 @@ dialog.ponsse-letter-dialog.is-document-zoomed .ponsse-letter-dialog__sheet img{
 }
 @media(max-width:760px){
   dialog.ponsse-letter-dialog .ponsse-letter-dialog__actions{padding:8px 12px;flex-direction:row;}
-  dialog.ponsse-letter-dialog .ponsse-letter-dialog__sheet img{max-height:calc(100dvh - 80px);}
+  dialog.ponsse-letter-dialog .ponsse-letter-dialog__sheet img{max-height:72dvh;}
 }

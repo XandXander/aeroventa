@@ -172,6 +172,11 @@ const sportPhotos = ownerGallery('sport-komendantskiy');
           <h2 id="cases-title">Объекты разного масштаба</h2>
         </div>
       </div>
+      <div class="portfolio-archive__intro">
+        <p class="section-index">Архив компании</p>
+        <h3>Объекты в фотографиях</h3>
+        <p>Подлинные фотографии объектов, без неподтверждённых объёмов, сроков или перечней выполненных работ. Документированные кейсы представлены выше.</p>
+      </div>
       <div class="portfolio-grid">
         {cases.filter((item) => item.index !== '01').map((item) => (
           <a href={item.href} class="portfolio-card">
@@ -189,13 +194,6 @@ const sportPhotos = ownerGallery('sport-komendantskiy');
             </div>
           </a>
         ))}
-      </div>
-      <div class="portfolio-archive__intro">
-        <p class="section-index">Архив компании</p>
-        <h3>Объекты в фотографиях</h3>
-        <p>Подлинные фотографии объектов, без неподтверждённых объёмов, сроков или перечней выполненных работ. Документированные кейсы представлены выше.</p>
-      </div>
-      <div class="portfolio-grid portfolio-grid--archive">
         {archiveCases.map(item => (
           <button type="button" id={`owner-${item.index}`} class="portfolio-card portfolio-card--archive" data-archive-open
             data-gallery-images={JSON.stringify(item.photos)} data-gallery-title={item.title}
