@@ -199,19 +199,14 @@ const questions = [
   </section>
 
   <dialog class="ponsse-letter-dialog" id="home-ponsse-letter-dialog" data-document-viewer aria-label="Благодарственное письмо PONSSE от 5 апреля 2022 года">
-  <div class="ponsse-letter-dialog__actions" role="toolbar" aria-label="Управление документом">
-  <strong>Письмо PONSSE · 05.04.2022</strong>
-  <div class="ponsse-letter-dialog__tools">
-    <button type="button" data-document-fit aria-pressed="true">Вся страница</button>
-    <button type="button" data-document-zoom-out aria-label="Уменьшить документ">−</button>
-    <button type="button" data-document-zoom-in aria-label="Увеличить документ">+</button>
-    <button type="button" class="ponsse-letter-dialog__close" data-document-close aria-label="Закрыть письмо">Закрыть ×</button>
-  </div>
-</div>
-  <div class="ponsse-letter-dialog__sheet" data-document-stage tabindex="0" aria-label="Документ: прокрутка увеличенного изображения">
-    <img src="/evidence/karelia/ponsse-letter-20220405.png" width="1481" height="2048" alt="Подлинное письмо PONSSE от 05.04.2022" decoding="async" />
-  </div>
-</dialog>
+    <div class="ponsse-letter-dialog__actions">
+      <strong>Письмо PONSSE · 05.04.2022</strong>
+      <button type="button" class="ponsse-letter-dialog__close" data-document-close aria-label="Закрыть письмо">×</button>
+    </div>
+    <div class="ponsse-letter-dialog__sheet" data-document-stage tabindex="0" aria-label="Оригинал благодарственного письма">
+      <img src="/evidence/karelia/ponsse-letter-20220405.png" width="1481" height="2048" alt="Подлинное письмо PONSSE от 05.04.2022" decoding="async" />
+    </div>
+  </dialog>
 
   <section class="home-section decision-preview" aria-labelledby="decisions-title">
     <div class="home-shell decision-preview__grid">

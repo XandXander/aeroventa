@@ -407,8 +407,11 @@ try {
           const shown = await viewer.locator('[data-photo-large]').getAttribute('src');
           if (shown !== firstSrc) report.fail.push({route,view,reason:'Case viewer selected image mismatch',firstSrc,shown});
           await viewer.locator('[data-photo-next]').click();
-          const secondCount = await viewer.locator('[data-photo-count]').innerText();
-          if (!secondCount.startsWith('2 / ')) report.fail.push({route,view,reason:'Case viewer next navigation failed',secondCount});
+          const secondSrc = await viewer.locator('[data-photo-large]').getAttribute('src');
+          const clean = await viewer.locator('button').count() === 3 &&
+            await viewer.locator('.case-photo-dialog__figure figcaption').innerText() === 'Фотодокументация объекта' &&
+            (await viewer.locator('.case-photo-dialog__top>span').innerText()).trim().length > 0;
+          if (!secondSrc || secondSrc === shown || !clean) report.fail.push({route,view,reason:'Case viewer navigation / minimal photo UI',shown,secondSrc,clean});
           await page.keyboard.press('Escape');
           await viewer.waitFor({state:'hidden'});
           const returned = await firstPhoto.evaluate(el => el === document.activeElement);
@@ -651,15 +654,14 @@ try {
       const photoOk=await img.evaluate(async el=>{try{await el.decode();return el.naturalWidth>0;}catch{return false}});
       await viewer.locator('[data-gallery-next]').click();
       const second=await img.getAttribute('src');
-      await viewer.locator('[data-gallery-zoom-in]').click();
-      const zoomed=await viewer.evaluate(el=>el.classList.contains('is-zoomed'));
-      await viewer.locator('[data-gallery-fit]').click();
-      const fitted=await viewer.evaluate(el=>!el.classList.contains('is-zoomed'));
+      const minimal = await viewer.locator('button').count() === 3 &&
+        await viewer.locator('.portfolio-archive-viewer__nav span').innerText() === 'Фотодокументация объекта' &&
+        (await viewer.locator('[data-gallery-title]').innerText()).trim().length > 0;
       await page.keyboard.press('Escape');
       await viewer.waitFor({state:'hidden'});
       const restored=await opener.evaluate(el=>el===document.activeElement);
-      if(!photoOk||!original||!second||original===second||!zoomed||!fitted||!restored){
-        report.fail.push({reason:'Owner portfolio photo gallery interaction',photoOk,original,second,zoomed,fitted,restored});
+      if(!photoOk||!original||!second||original===second||!minimal||!restored){
+        report.fail.push({reason:'Owner portfolio minimalist gallery interaction',photoOk,original,second,minimal,restored});
       }
     }catch(error){report.fail.push({reason:'Owner portfolio gallery interaction exception',error:String(error)})}
     finally{await context.close()}
@@ -751,13 +753,13 @@ try {
       const modal=page.locator('#portfolio-archive-viewer');
       await modal.waitFor({state:'visible',timeout:2500});
       const first=await modal.locator('[data-gallery-photo]').getAttribute('src');
-      const originalCount=await modal.locator('[data-gallery-count]').textContent();
+      const minimalControls=await modal.locator('button').count()===3;
       await modal.locator('[data-gallery-next]').click();
       const second=await modal.locator('[data-gallery-photo]').getAttribute('src');
       await page.keyboard.press('Escape');
       const restored=await open.evaluate(el=>document.activeElement===el);
-      if(originalCount?.trim()!=='1 / 4'||first===second||!restored||await modal.isVisible())
-        report.fail.push({reason:'Sports gallery navigation / Escape / focus',width,originalCount,first,second,restored});
+      if(!minimalControls||first===second||!restored||await modal.isVisible())
+        report.fail.push({reason:'Sports minimalist gallery navigation / Escape / focus',width,minimalControls,first,second,restored});
     }catch(e){report.fail.push({reason:'Sports UI regression error',width,error:String(e)})}
     finally{await context.close()}
   }
@@ -789,16 +791,14 @@ try {
       await opener.click();
       const dialog=page.locator('#home-ponsse-letter-dialog');
       await dialog.waitFor({state:'visible'});
-      const initial=await dialog.locator('img').evaluate(x=>x.getBoundingClientRect().width);
-      await dialog.locator('[data-document-zoom-in]').click();
-      const expanded=await dialog.locator('img').evaluate(x=>x.getBoundingClientRect().width);
-      await dialog.locator('[data-document-fit]').click();
-      const fitted=await dialog.locator('img').evaluate(x=>x.getBoundingClientRect().width);
+      const validOriginal=(await dialog.locator('img').getAttribute('src'))==='/evidence/karelia/ponsse-letter-20220405.png';
+      const minimal=await dialog.locator('button').count()===1 &&
+        (await dialog.locator('.ponsse-letter-dialog__actions strong').innerText()).includes('PONSSE');
       await page.keyboard.press('Escape');
       await dialog.waitFor({state:'hidden'});
       const restored=await opener.evaluate(x=>x===document.activeElement);
-      if(expanded<=initial+2||Math.abs(fitted-initial)>2||!restored||await page.locator('a[target="_blank"][href*="ponsse-letter"]').count()){
-        report.fail.push({reason:'Owner PONSSE document zoom/fit/Escape/focus',initial,expanded,fitted,restored});
+      if(!validOriginal||!minimal||!restored||await page.locator('a[target="_blank"][href*="ponsse-letter"]').count()){
+        report.fail.push({reason:'Owner PONSSE minimal document original / Escape / focus',validOriginal,minimal,restored});
       }
     }catch(e){report.fail.push({reason:'PONSSE document full interaction exception',error:String(e)})}
     finally{await context.close()}
