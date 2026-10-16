@@ -42,8 +42,22 @@ const tel = SITE.phone.replace(/[^+\d]/g, '');
   const mobileDock = document.querySelector('[data-mobile-contact-dock]');
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // Never simulate loading on navigation. PULSE is attached to real network activity only.
-  entry?.remove();
+  // Non-blocking identity cue on first real document view. It never masks content.
+  // Request PULSE below remains correlated with actual form submission.
+  if (entry) {
+    let alreadyShown = false;
+    try {
+      alreadyShown = sessionStorage.getItem('aeroventa-entry-shown') === '1';
+      if (!alreadyShown && !prefersReduced) sessionStorage.setItem('aeroventa-entry-shown','1');
+    } catch { /* private-storage denied */ }
+    if (prefersReduced || alreadyShown) entry.remove();
+    else {
+      entry.classList.add('is-running');
+      entry.addEventListener('animationend', (event) => {
+        if (event.target === entry) entry.remove();
+      }, {once:true});
+    }
+  }
   // AirflowTracePulse renders before PremiumExperience. Wait for the form DOM:
   // binding before DOMContentLoaded silently misses all submission states.
   const bindRequestPulse = () => {

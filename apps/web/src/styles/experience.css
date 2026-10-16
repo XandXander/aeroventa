@@ -614,3 +614,21 @@
 @media(prefers-reduced-motion:reduce){
  .experience-dialog--contact,.experience-dialog--consultant,.experience-dialog--contact::backdrop,.experience-dialog--consultant::backdrop{animation:none}
 }
+
+/* Quiet, truthful engineering helper: no dummy opening bubble or fake model processing. */
+.consultant-conversation__history:empty{display:none;min-height:0}
+.consultant-conversation__history:not(:empty){min-height:0;max-height:35dvh;padding:18px;scrollbar-width:thin}
+.experience-dialog--consultant .experience-dialog__head h2{font-size:clamp(1.45rem,2.4vw,2rem);font-weight:580;letter-spacing:-.028em}
+.consultant-conversation{border:1px solid #e2eaf0;border-radius:17px}
+.consultant-conversation__composer{padding:16px;border:0}
+.consultant-conversation__foot{padding:0 16px 15px}
+.consultant-conversation__foot span{font-weight:450}
+.consultant-structured{margin-top:10px;border:0;border-top:1px solid #dce6ec;border-radius:0}
+.consultant-structured summary{padding:13px 5px;font-weight:570}
+.consultant-launcher{font-weight:660}
+@media(max-width:760px){
+ body:has(.home-hero--owner-airflow) .consultant-launcher,
+ body:has(.services-hero--owner-editorial) .consultant-launcher,
+ body:has(.about-premium) .consultant-launcher{display:inline-flex}
+ .consultant-conversation__history:not(:empty){max-height:32dvh}
+}

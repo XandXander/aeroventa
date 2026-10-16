@@ -173,9 +173,9 @@ const sportPhotos = ownerGallery('sport-komendantskiy');
         </div>
       </div>
       <div class="portfolio-archive__intro">
-        <p class="section-index">Архив компании</p>
+        <p class="section-index">Наши объекты</p>
         <h3>Объекты в фотографиях</h3>
-        <p>Подлинные фотографии объектов, без неподтверждённых объёмов, сроков или перечней выполненных работ. Документированные кейсы представлены выше.</p>
+        <p>Квартиры, коммерческие помещения, производства и объекты общественного назначения. Фотографии помогают оценить разнообразие задач.</p>
       </div>
       <div class="portfolio-grid">
         {cases.filter((item) => item.index !== '01').map((item) => (
@@ -203,7 +203,7 @@ const sportPhotos = ownerGallery('sport-komendantskiy');
             <div class="portfolio-card__body">
               <div class="portfolio-card__top"><span>{item.index}</span><b>{item.kind}</b></div>
               <div><p>{item.location}</p><h3>{item.title}</h3></div>
-              <div class="portfolio-card__bottom"><span>Исходный фотоархив объекта</span><b>Смотреть фотографии →</b></div>
+              <div class="portfolio-card__bottom"><span>Фотографии объекта</span><b>Смотреть фотографии →</b></div>
             </div>
           </button>
         ))}
@@ -234,8 +234,8 @@ const sportPhotos = ownerGallery('sport-komendantskiy');
             alt="Здание Центра адаптивного спорта из исходного фотоархива"/>
         </figure>
         <figure class="portfolio-sport__photo portfolio-sport__photo--detail">
-          <img src="/evidence/owner-portfolio/sport-komendantskiy/02.webp" width="1200" height="900" loading="lazy" decoding="async"
-            alt="Инженерные системы Центра адаптивного спорта во время монтажа"/>
+          <img src="/evidence/owner-portfolio/sport-komendantskiy/gallery-01.webp" width="1600" height="1200" loading="lazy" decoding="async"
+            alt="Инженерный диффузор в Центре адаптивного спорта"/>
         </figure>
       </div>
     </div>
@@ -415,4 +415,15 @@ const sportPhotos = ownerGallery('sport-komendantskiy');
 .portfolio-archive-viewer.is-zoomed .portfolio-archive-viewer__stage{display:block;overflow:auto;overscroll-behavior:contain}
 .portfolio-archive-viewer.is-zoomed .portfolio-archive-viewer__stage img{width:auto;max-width:none;max-height:none;height:auto;object-fit:contain}
 .portfolio-archive-viewer__stage{overscroll-behavior:contain}
+
+/* Fullscreen archival viewer, no accidental scrollbars at fit scale. */
+:global(html:has(#portfolio-archive-viewer[open])){overflow:hidden}
+.portfolio-archive-viewer[open]{box-sizing:border-box;position:fixed;inset:0;margin:0;width:100vw;max-width:100vw;height:100dvh;max-height:100dvh;padding:0;border:0;overflow:hidden;scrollbar-width:none}
+.portfolio-archive-viewer__stage{box-sizing:border-box;min-width:0;min-height:0;overflow:hidden;scrollbar-width:none}
+.portfolio-archive-viewer__stage::-webkit-scrollbar,.portfolio-archive-viewer::-webkit-scrollbar{display:none}
+.portfolio-archive-viewer__nav{z-index:3}
+.portfolio-archive-viewer__top{pointer-events:none}
+.portfolio-archive-viewer__top [data-gallery-close]{pointer-events:auto}
+.portfolio-archive-viewer.is-zoomed .portfolio-archive-viewer__stage{overflow:auto;scrollbar-width:none}
+@media(max-width:600px){.portfolio-archive-viewer__stage{padding-inline:42px}.portfolio-archive-viewer__nav{padding-inline:0}}
 </style>
