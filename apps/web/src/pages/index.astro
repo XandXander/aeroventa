@@ -1,0 +1,256 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getByPath } from '@/lib/content-source';
+import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+
+const ownerHeroMedia = '/evidence/hero/owner-luxury-airflow-20261010.png';
+const hasOwnerHeroMedia = [
+  'apps/web/public/evidence/hero/owner-luxury-airflow-20261010.png',
+  'public/evidence/hero/owner-luxury-airflow-20261010.png',
+].some(p => existsSync(resolve(p)));
+if (!hasOwnerHeroMedia) throw new Error('Approved Owner HOME HERO original missing; refusing image substitution');
+
+const content = await getByPath('/');
+if (!content) throw new Error('Home content is missing');
+
+const page = {
+  ...content,
+  h1: 'Инженерная вентиляция без лишнего.',
+  seo_title: 'AEROVENTA — инженерные системы вентиляции в СПб и Ленобласти',
+  seo_description: 'AEROVENTA — монтаж вентиляции для квартир, домов, ресторанов, коммерческих, производственных и крупных объектов. Санкт-Петербург и Ленинградская область; берём объекты в Москве и Карелии.',
+};
+
+const objects = [
+  ['Квартиры и дома', '/obekty/kvartiry-i-doma/'],
+  ['Офисы и коммерция', '/obekty/ofisy-i-kommerciya/'],
+  ['Рестораны и кафе', '/obekty/restorany-i-kafe/'],
+  ['Магазины и склады', '/obekty/sklady/'],
+  ['Производства', '/obekty/proizvodstvo/'],
+  ['Новостройки', '/obekty/novostroyki/'],
+];
+
+const questions = [
+  ['Можно ли понять бюджет без проекта?', 'Да, предварительный ориентир возможен при наличии сопоставимого сценария. Для сметы нужны сведения об объекте, трассах, оборудовании и условиях монтажа.'],
+  ['Как сравнивать две сметы на вентиляцию?', 'Сравните состав системы, оборудование, объёмы, включённые и исключённые работы, доступ и порядок изменений. Только после этого сопоставляйте суммы.'],
+  ['Что должно быть решено до выхода монтажников?', 'Нужны проект либо согласованный состав работ, расположение ключевых трасс и оборудования, доступ, поставка материалов и порядок согласования изменений.'],
+  ['Что делать, если проект не совпадает с реальным объектом?', 'Зафиксировать расхождение, оценить влияние на монтаж, предложить варианты и согласовать существенное изменение до выполнения работ.'],
+  ['Что проверить до закрытия потолков?', 'Проверить скрываемые трассы, соединения, крепления, сервисный доступ и соответствие согласованному решению; конкретный перечень зависит от объекта.'],
+];
+---
+
+<BaseLayout content={page}>
+  <section class:list={['home-hero', 'home-hero--v43', hasOwnerHeroMedia && 'home-hero--owner-interior', hasOwnerHeroMedia && 'home-hero--owner-airflow']} aria-labelledby="home-title">
+    <div class="home-shell home-hero__grid">
+      <div class="home-hero__copy">
+        <p class="home-kicker">Монтаж вентиляции под ключ</p>
+        <h1 id="home-title">Инженерная вентиляция без лишнего.</h1>
+        <p class="home-lede">
+          От квартиры и дома до ресторана, склада и производства. Работаем по готовому проекту.
+          Если проекта нет — определим, какие исходные данные нужны для корректной сметы и монтажа.
+        </p>
+        <p class="home-geo">Санкт-Петербург · Ленинградская область · Москва · Карелия</p>
+        <div class="home-actions" aria-label="Основные действия">
+          <a class="button button--primary" href="/contact/" data-contact-open data-source="home_primary" data-aeroventa-event="primary_cta" aria-haspopup="dialog">Обсудить задачу <span aria-hidden="true">→</span></a>
+          <a class="button button--ghost" href="/montazh-po-proektu/" data-contact-open data-project-status="ready" data-source="home_estimate" aria-haspopup="dialog">Есть проект — запросить смету</a>
+        </div>
+      </div>
+
+      <figure class="hero-engineering">
+        <img
+          class="hero-engineering__photo"
+          src={ownerHeroMedia}
+          width={hasOwnerHeroMedia ? 1774 : 800}
+          height={hasOwnerHeroMedia ? 887 : 600}
+          alt="Утверждённая архитектурная визуализация интерьера с синими воздушными потоками. Не фотография объекта AEROVENTA"
+          fetchpriority="high"
+          decoding="async"
+        />
+        <div class="hero-engineering__veil" aria-hidden="true"></div>
+        <div class="hero-engineering__frame" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <figcaption class="sr-only">{hasOwnerHeroMedia ? 'Архитектурная концепция вентиляции. Реальные фотографии выполненных работ на 7 PARK показаны ниже.' : 'Реальный монтаж AEROVENTA на объекте 7 PARK в Павловске. Сведения о работах — в кейсе.'}</figcaption>
+      </figure>
+    </div>
+
+    <nav class="object-ribbon home-shell" aria-label="Типы объектов">
+      {objects.map(([label, href]) => (
+        <a href={href} class="object-ribbon__item">
+          <span>{label}</span>
+        </a>
+      ))}
+    </nav>
+    <a class="home-consultant-inline" href="/contact/" data-consultant-open data-source="home_inline_mobile" aria-controls="aeroventa-consultant-dialog" aria-haspopup="dialog">Инженерный консультант <span aria-hidden="true">↗</span></a>
+  </section>
+
+  <section class="home-section home-solution" id="process" aria-labelledby="solution-title">
+    <div class="home-shell solution-grid">
+      <div class="section-copy">
+        <p class="section-index">Как это работает</p>
+        <h2 id="solution-title">Комплексный подход к вентиляции</h2>
+        <p>
+          Уточняем исходные данные, подбираем оборудование, монтируем и запускаем вентиляцию.
+          Учитываем особенности объекта и ваши задачи.
+        </p>
+        <a class="button button--ghost solution-cta" href="/montazh-ventiliacii/">Подробнее о процессе <span aria-hidden="true">→</span></a>
+      </div>
+      <figure class="solution-diagram" role="img" aria-label="Визуализация независимых приточного и вытяжного потоков воздуха">
+        <img src="/evidence/hero/engineering-scene-accepted-v43.webp" width="1036" height="338" alt="" loading="lazy" decoding="async" />
+        
+      </figure>
+      <div class="solution-mobile-pair" aria-label="Два фрагмента утверждённой инженерной иллюстрации">
+        <figure class="solution-mobile-pair__panel solution-mobile-pair__panel--supply">
+          <div class="solution-mobile-pair__crop"><img src="/evidence/hero/engineering-scene-accepted-v43.webp" width="1036" height="338" alt="" loading="lazy" decoding="async" /></div>
+          <figcaption>Приток · подача воздуха в помещение</figcaption>
+        </figure>
+        <figure class="solution-mobile-pair__panel solution-mobile-pair__panel--exhaust">
+          <div class="solution-mobile-pair__crop"><img src="/evidence/hero/engineering-scene-accepted-v43.webp" width="1036" height="338" alt="" loading="lazy" decoding="async" /></div>
+          <figcaption>Вытяжка · удаление воздуха из помещения</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="home-shell process-strip" aria-label="Этапы работы">
+      <div><b>01</b><span>Задача</span></div>
+      <div><b>02</b><span>Исходные данные</span></div>
+      <div><b>03</b><span>Монтаж</span></div>
+      <div><b>04</b><span>Результат</span></div>
+    </div>
+  </section>
+
+  <section class="case-feature" aria-labelledby="case-title">
+    <div class="home-shell case-dossier">
+      <header class="case-dossier__intro">
+        <p class="section-index section-index--orange">02 / Реализованный объект</p>
+        <h2 id="case-title">7 PARK</h2>
+        <p class="case-feature__subtitle">Павловск · жилой квартал</p>
+        <p class="case-dossier__statement">
+          Монтаж приточно-вытяжной вентиляции в семи домах жилого квартала. Посмотрите фотографии работ и сведения об объекте.
+        </p>
+      </header>
+
+      <figure class="case-dossier__primary">
+        <img src="/evidence/7park/object-exterior-day.jpg" width="800" height="450" loading="lazy" decoding="async" alt="Жилой квартал 7 PARK в Павловске, дневной вид" />
+        <figcaption><span>Объект</span><strong>7 PARK · Павловск</strong></figcaption>
+      </figure>
+
+      <dl class="case-dossier__facts case-dossier__facts--primary">
+        <div><dt>Система</dt><dd>Приточно-вытяжная вентиляция</dd></div>
+        <div><dt>Период</dt><dd>18.11.2020 — 10.12.2020</dd></div>
+        <div><dt>Роль AEROVENTA</dt><dd>Монтаж</dd></div>
+      </dl>
+
+      <figure class="case-dossier__secondary">
+        <img src="/evidence/7park/duct-route.jpg" width="600" height="600" loading="lazy" decoding="async" alt="Смонтированные воздуховоды и инженерные трассы на объекте 7 PARK" />
+        <figcaption><span>Монтаж</span><strong>Фрагмент работ на объекте 7 PARK</strong></figcaption>
+      </figure>
+
+      <dl class="case-dossier__facts case-dossier__facts--secondary">
+        <div><dt>Объём</dt><dd>7 домов</dd></div>
+        <div><dt>Локация</dt><dd>Павловск, Санкт-Петербург</dd></div>
+      </dl>
+
+      <a class="case-dossier__cta" href="/blog/detail/kak-my-sdali-7-domov/">Смотреть объект <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
+
+  <section class="home-section" id="objects" aria-labelledby="objects-title">
+    <div class="home-shell">
+      <div class="section-heading">
+        <div>
+          <p class="section-index">03 / Под конкретный объект</p>
+          <h2 id="objects-title">Разные объекты — разные инженерные задачи.</h2>
+        </div>
+        <a href="/obekty/">Смотреть все типы объектов →</a>
+      </div>
+
+      <div class="object-grid">
+        <a class="object-link" href="/blog/detail/ntff-polisan/"><h3>Производство</h3><p>Проект, действующий режим, трассы, доступ и границы состава монтажных работ.</p></a>
+        <a class="object-link" href="/obekty/restorany-i-kafe/"><h3>Рестораны и кафе</h3><p>Кухня, зал, оборудование, потолки и координация с отделкой.</p></a>
+        <a class="object-link" href="/obekty/novostroyki/"><h3>Новостройки</h3><p>Повторяемый объём, график по корпусам и управляемое усиление команды.</p></a>
+        <a class="object-link" href="/obekty/kvartiry-i-doma/"><h3>Квартиры и дома</h3><p>Шум, пространство, отделка и аккуратная прокладка трасс.</p></a>
+        <a class="object-link" href="/obekty/sklady/"><h3>Склады</h3><p>Высота помещений, доступ к местам установки и условия проведения работ.</p></a>
+        <a class="object-link" href="/obekty/ofisy-i-kommerciya/"><h3>Офисы и коммерция</h3><p>Стадия отделки, потолки, сроки открытия и смежные подрядчики.</p></a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Historic recognition from original letter dated 05.04.2022. -->
+  <section class="home-ponsse" aria-labelledby="home-ponsse-title">
+    <div class="home-shell home-ponsse__grid">
+      <div class="home-ponsse__copy">
+        <p class="section-index section-index--orange">PONSSE · международная промышленная компания · 2022</p>
+        <h2 id="home-ponsse-title">Письмо PONSSE</h2>
+        <p>Команда AEROVENTA выполняла работы по вентиляции на объектах PONSSE, в том числе в Питкяранте. Письмо от 5 апреля 2022 года относится к двум годам сотрудничества и отмечает профессионализм, рабочую этику и своевременное исполнение задач.</p>
+        <div class="home-ponsse__actions">
+          <a class="home-ponsse__case" href="/blog/detail/montazh-ventilyatsii-v-karelii/">Смотреть объект <span aria-hidden="true">↗</span></a>
+          <button type="button" class="home-ponsse__letter-link" data-home-ponsse-open aria-haspopup="dialog" aria-controls="home-ponsse-letter-dialog">Открыть письмо <span aria-hidden="true">↗</span></button>
+        </div>
+      </div>
+      <figure class="home-ponsse__document">
+        <button type="button" data-home-ponsse-open aria-haspopup="dialog" aria-controls="home-ponsse-letter-dialog" aria-label="Посмотреть благодарственное письмо PONSSE во всплывающем окне">
+          <img src="/evidence/karelia/ponsse-letter-20220405.png" width="1481" height="2048" loading="lazy" decoding="async" alt="Оригинальное благодарственное письмо PONSSE от 5 апреля 2022 года с подписью" />
+        </button>
+        <figcaption>Оригинал документа · 05.04.2022</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <dialog class="ponsse-letter-dialog" id="home-ponsse-letter-dialog" data-document-viewer aria-label="Благодарственное письмо PONSSE от 5 апреля 2022 года">
+    <div class="ponsse-letter-dialog__actions">
+      <strong>Письмо PONSSE · 05.04.2022</strong>
+      <button type="button" class="ponsse-letter-dialog__close" data-document-close aria-label="Закрыть письмо">×</button>
+    </div>
+    <div class="ponsse-letter-dialog__sheet" data-document-stage tabindex="0" aria-label="Оригинал благодарственного письма">
+      <img src="/evidence/karelia/ponsse-letter-20220405.png" width="1481" height="2048" alt="Подлинное письмо PONSSE от 05.04.2022" decoding="async" />
+    </div>
+  </dialog>
+
+  <section class="home-section decision-preview" aria-labelledby="decisions-title">
+    <div class="home-shell decision-preview__grid">
+      <div class="section-copy">
+        <p class="section-index">04 / До монтажа</p>
+        <h2 id="decisions-title">Что важно решить до монтажа вентиляции</h2>
+        <p>
+          Здесь собраны вопросы, которые влияют на смету, подготовку и монтаж:
+          что можно оценить сейчас, какие данные действительно нужны и где обычно возникают риски.
+        </p>
+        <a class="button button--ghost" href="/faq/">Разобрать вопросы по объекту →</a>
+      </div>
+      <div class="question-list">
+        {questions.map(([question, answer], index) => (
+          <details class="home-faq-item">
+            <summary><span>{String(index + 1).padStart(2, '0')}</span><strong>{question}</strong><b aria-hidden="true">+</b></summary>
+            <div class="home-faq-item__answer"><p>{answer}</p></div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="conversion-close" aria-labelledby="close-title">
+    <div class="home-shell">
+      <p class="section-index section-index--orange">05 / Следующий шаг</p>
+      <h2 id="close-title">Продолжите с той стадии, на которой находится объект сейчас.</h2>
+      <div class="engagement-index engagement-index--dark engagement-index--close">
+        <a href="/montazh-po-proektu/">
+          <span>01</span>
+          <div><strong>Есть готовый проект</strong><p>Передать комплект и запросить смету на монтаж.</p></div>
+          <b aria-hidden="true">→</b>
+        </a>
+        <a href="/obekt-bez-gotovogo-proekta/">
+          <span>02</span>
+          <div><strong>Проекта пока нет</strong><p>Понять, какие данные нужны до корректной сметы.</p></div>
+          <b aria-hidden="true">→</b>
+        </a>
+      </div>
+      <div class="conversion-close__assist" aria-label="Помощь с выбором следующего шага">
+        <button class="button button--ghost" type="button" data-consultant-open data-source="home_close">Разобрать задачу с консультантом</button>
+        <button class="button button--ghost" type="button" data-contact-open data-source="home_close">Обсудить объект</button>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>

@@ -1,0 +1,20 @@
+---
+import LeadCTA from '@/components/LeadCTA.astro';
+import type { ContentRecord } from '@/lib/types';
+interface Props { content: ContentRecord; fixture: boolean; }
+const { content, fixture } = Astro.props;
+---
+<article class="page article-page">
+  <header class="article-header">
+    <div class="container prose">
+      <p class="eyebrow">{content.content_type === 'news' ? 'Новости AEROVENTA' : 'Материал AEROVENTA'}</p>
+      <h1>{content.h1}</h1>
+      {content.excerpt && <p class="lede">{content.excerpt}</p>}
+      {fixture && <div class="notice"><strong>Implementation fixture:</strong> текст ещё не прошёл полный migration/fact-check/Owner approval. Эта сборка noindex.</div>}
+    </div>
+  </header>
+  <div class="container prose article-body">
+    <Fragment set:html={content.body_html} />
+    <LeadCTA intent={content.lead_intent || 'VENTILATION_PROJECT'} />
+  </div>
+</article>

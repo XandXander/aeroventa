@@ -1,0 +1,292 @@
+[
+  {
+    "priority_band": 0,
+    "path": "/montazh-ventiliacii/",
+    "source_url": "https://aeroventa.ru/montazh-ventiliacii/",
+    "strategic_role": "PRIMARY_COMMERCIAL",
+    "source_title": "Монтаж вентиляции под ключ СПб",
+    "required_action": "extract_and_migrate_then_improve_for_target_role",
+    "owner_review_required_before_publish": true,
+    "sequence": 1
+  },
+  {
+    "priority_band": 1,
+    "path": "/",
+    "source_url": "https://aeroventa.ru/",
+    "strategic_role": "PRIMARY_BRAND_HOME",
+    "source_title": "Официальный сайт AEROVENTA.RU - алмазное бурение и вентиляция в СПб и Ленобласти",
+    "required_action": "extract_and_migrate_then_improve_for_target_role",
+    "owner_review_required_before_publish": true,
+    "sequence": 2
+  },
+  {
+    "priority_band": 2,
+    "path": "/services/",
+    "source_url": "https://aeroventa.ru/services/",
+    "strategic_role": "CORE_SERVICE_HUB",
+    "source_title": "Услуги AEROVENTA.RU в СПб и ЛО",
+    "required_action": "extract_and_migrate_then_improve_for_target_role",
+    "owner_review_required_before_publish": true,
+    "sequence": 3
+  },
+  {
+    "priority_band": 3,
+    "path": "/blog/detail/kafe-rimskogo-korsakova-3/",
+    "source_url": "https://aeroventa.ru/blog/detail/kafe-rimskogo-korsakova-3/",
+    "strategic_role": "CORE_VENTILATION_CASE",
+    "source_title": "Кафе на Римского-Корсакова объект AEROVENTA.RU",
+    "required_action": "extract_and_migrate_then_improve_for_target_role",
+    "owner_review_required_before_publish": true,
+    "sequence": 4
+  },
+  {
+    "priority_band": 3,
+    "path": "/blog/detail/kak-my-sdali-7-domov/",
+    "source_url": "https://aeroventa.ru/blog/detail/kak-my-sdali-7-domov/",
+    "strategic_role": "CORE_VENTILATION_CASE",
+    "source_title": "Как мы выполнили и сдали 7 домов за 3 недели небольшим составом",
+    "required_action": "extract_and_migrate_then_improve_for_target_role",
+    "owner_review_required_before_publish": true,
+    "sequence": 5
+  },
+  {
+    "priority_band": 3,
+    "path": "/blog/detail/kvartira-na-zhukova/",
+    "source_url": "https://aeroventa.ru/blog/detail/kvartira-na-zhukova/",
+    "strategic_role": "CORE_VENTILATION_CASE",
+    "source_title": "Квартира на Жукова СПб",
+    "required_action": "extract_and_migrate_then_improve_for_target_role",
+    "owner_review_required_before_publish": true,
+    "sequence": 6
+  },
+  {
+    "priority_band": 3,
+    "path": "/blog/detail/montazh-ventilyatsii-v-karelii/",
+    "source_url": "https://aeroventa.ru/blog/detail/montazh-ventilyatsii-v-karelii/",
+    "strategic_role": "CORE_VENTILATION_CASE",
+    "source_title": "Монтаж вентиляции в Республике Карелия",
+    "required_action": "extract_and_migrate_then_improve_for_target_role",
+    "owner_review_required_before_publish": true,
+    "sequence": 7
+  },
+  {
+    "priority_band": 3,
+    "path": "/blog/detail/ntff-polisan/",
+    "source_url": "https://aeroventa.ru/blog/detail/ntff-polisan/",
+    "strategic_role": "CORE_VENTILATION_CASE",
+    "source_title": "Монтаж вентиляции Нтфф Полисан",
+    "required_action": "extract_and_migrate_then_improve_for_target_role",
+    "owner_review_required_before_publish": true,
+    "sequence": 8
+  },
+  {
+    "priority_band": 3,
+    "path": "/blog/detail/restoran-v-zhk-leontevskiy-mys/",
+    "source_url": "https://aeroventa.ru/blog/detail/restoran-v-zhk-leontevskiy-mys/",
+    "strategic_role": "CORE_VENTILATION_CASE",
+    "source_title": "Ресторан в ЖК Леонтьевский Мыс, Ждановская 45 ПС СПб",
+    "required_action": "extract_and_migrate_then_improve_for_target_role",
+    "owner_review_required_before_publish": true,
+    "sequence": 9
+  },
+  {
+    "priority_band": 4,
+    "path": "/blog/istorii-proektov/",
+    "source_url": "https://aeroventa.ru/blog/istorii-proektov/",
+    "strategic_role": "CORE_VENTILATION_CASE_HUB",
+    "source_title": "Истории проектов AEROVENTA.RU",
+    "required_action": "extract_and_migrate_then_improve_for_target_role",
+    "owner_review_required_before_publish": true,
+    "sequence": 10
+  },
+  {
+    "priority_band": 5,
+    "path": "/portfolio/",
+    "source_url": "https://aeroventa.ru/portfolio/",
+    "strategic_role": "CORE_TRUST_CASE_HUB",
+    "source_title": "Портфолио",
+    "required_action": "extract_and_migrate_then_improve_for_target_role",
+    "owner_review_required_before_publish": true,
+    "sequence": 11
+  },
+  {
+    "priority_band": 6,
+    "path": "/covid-pritochnaya-ventilacia/",
+    "source_url": "https://aeroventa.ru/covid-pritochnaya-ventilacia/",
+    "strategic_role": "VENTILATION_AUTHORITY",
+    "source_title": "Коронавирус и правильная приточно-вытяжная вентиляция, руководство REHVA",
+    "required_action": "extract_and_migrate_then_improve_for_target_role",
+    "owner_review_required_before_publish": true,
+    "sequence": 12
+  },
+  {
+    "priority_band": 7,
+    "path": "/about/",
+    "source_url": "https://aeroventa.ru/about/",
+    "strategic_role": "CORE_TRUST",
+    "source_title": "О Компании",
+    "required_action": "extract_and_migrate_then_improve_for_target_role",
+    "owner_review_required_before_publish": true,
+    "sequence": 13
+  },
+  {
+    "priority_band": 7,
+    "path": "/contact/",
+    "source_url": "https://aeroventa.ru/contact/",
+    "strategic_role": "CORE_TRUST",
+    "source_title": "Контактная информация AEROVENTA.RU в Санкт-Петербурге",
+    "required_action": "extract_and_migrate_then_improve_for_target_role",
+    "owner_review_required_before_publish": true,
+    "sequence": 14
+  },
+  {
+    "priority_band": 7,
+    "path": "/faq/",
+    "source_url": "https://aeroventa.ru/faq/",
+    "strategic_role": "CORE_TRUST",
+    "source_title": null,
+    "required_action": "extract_and_migrate_then_improve_for_target_role",
+    "owner_review_required_before_publish": true,
+    "sequence": 15
+  },
+  {
+    "priority_band": 7,
+    "path": "/news/",
+    "source_url": "https://aeroventa.ru/news/",
+    "strategic_role": "CORE_TRUST",
+    "source_title": "Новости AEROVENTA.RU",
+    "required_action": "extract_and_migrate_then_improve_for_target_role",
+    "owner_review_required_before_publish": true,
+    "sequence": 16
+  },
+  {
+    "priority_band": 7,
+    "path": "/news/istoriya-kompanii/",
+    "source_url": "https://aeroventa.ru/news/istoriya-kompanii/",
+    "strategic_role": "CORE_TRUST",
+    "source_title": "AEROVENTA.RU история с самого начала",
+    "required_action": "extract_and_migrate_then_improve_for_target_role",
+    "owner_review_required_before_publish": true,
+    "sequence": 17
+  },
+  {
+    "priority_band": 7,
+    "path": "/news/korporativnaya-zhizn/",
+    "source_url": "https://aeroventa.ru/news/korporativnaya-zhizn/",
+    "strategic_role": "CORE_TRUST",
+    "source_title": "Корпоративная жизнь AEROVENTA.RU",
+    "required_action": "extract_and_migrate_then_improve_for_target_role",
+    "owner_review_required_before_publish": true,
+    "sequence": 18
+  },
+  {
+    "priority_band": 7,
+    "path": "/news/znachimye-sobytiya/",
+    "source_url": "https://aeroventa.ru/news/znachimye-sobytiya/",
+    "strategic_role": "CORE_TRUST",
+    "source_title": "Значимые события и достижения",
+    "required_action": "extract_and_migrate_then_improve_for_target_role",
+    "owner_review_required_before_publish": true,
+    "sequence": 19
+  },
+  {
+    "priority_band": 7,
+    "path": "/vakansii/",
+    "source_url": "https://aeroventa.ru/vakansii/",
+    "strategic_role": "CORE_TRUST",
+    "source_title": "Вакансии строительство СПб",
+    "required_action": "extract_and_migrate_then_improve_for_target_role",
+    "owner_review_required_before_publish": true,
+    "sequence": 20
+  },
+  {
+    "priority_band": 8,
+    "path": "/blog/poleznye-stati/",
+    "source_url": "https://aeroventa.ru/blog/poleznye-stati/",
+    "strategic_role": "VENTILATION_CONTENT_HUB",
+    "source_title": "Полезные статьи, инструкции, лайфхаки",
+    "required_action": "extract_and_migrate_then_improve_for_target_role",
+    "owner_review_required_before_publish": true,
+    "sequence": 21
+  },
+  {
+    "priority_band": 9,
+    "path": "/blog/",
+    "source_url": "https://aeroventa.ru/blog/",
+    "strategic_role": "CONTENT_HUB",
+    "source_title": "Блог AEROVENTA.RU",
+    "required_action": "extract_and_migrate_then_improve_for_target_role",
+    "owner_review_required_before_publish": true,
+    "sequence": 22
+  },
+  {
+    "priority_band": 10,
+    "path": "/almaznoe-burenie/",
+    "source_url": "https://aeroventa.ru/almaznoe-burenie/",
+    "strategic_role": "LEGACY_ACQUISITION",
+    "source_title": "Алмазное бурение цены и скидки",
+    "required_action": "extract_preserve_information_then_rewrite_current_operating_claims_truthfully",
+    "owner_review_required_before_publish": true,
+    "sequence": 23
+  },
+  {
+    "priority_band": 10,
+    "path": "/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/",
+    "source_url": "https://aeroventa.ru/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/",
+    "strategic_role": "LEGACY_ACQUISITION",
+    "source_title": "Алмазное бурение в стяжке под стояки отопления - как это делается",
+    "required_action": "extract_preserve_information_then_rewrite_current_operating_claims_truthfully",
+    "owner_review_required_before_publish": true,
+    "sequence": 24
+  },
+  {
+    "priority_band": 10,
+    "path": "/blog/detail/gorizontalnoe-almaznoe-burenie/",
+    "source_url": "https://aeroventa.ru/blog/detail/gorizontalnoe-almaznoe-burenie/",
+    "strategic_role": "LEGACY_ACQUISITION",
+    "source_title": "Горизонтальное алмазное бурение в стене под вентиляцию",
+    "required_action": "extract_preserve_information_then_rewrite_current_operating_claims_truthfully",
+    "owner_review_required_before_publish": true,
+    "sequence": 25
+  },
+  {
+    "priority_band": 10,
+    "path": "/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/",
+    "source_url": "https://aeroventa.ru/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/",
+    "strategic_role": "LEGACY_ACQUISITION",
+    "source_title": "Как вытащить алмазную коронку из бетона подручными средствами",
+    "required_action": "extract_preserve_information_then_rewrite_current_operating_claims_truthfully",
+    "owner_review_required_before_publish": true,
+    "sequence": 26
+  },
+  {
+    "priority_band": 10,
+    "path": "/blog/detail/novoe-almaznoe-burenie/",
+    "source_url": "https://aeroventa.ru/blog/detail/novoe-almaznoe-burenie/",
+    "strategic_role": "LEGACY_ACQUISITION",
+    "source_title": "Алмазное бурение в Санкт-Петербурге - новое направление AEROVENTA.RU",
+    "required_action": "extract_preserve_information_then_rewrite_current_operating_claims_truthfully",
+    "owner_review_required_before_publish": true,
+    "sequence": 27
+  },
+  {
+    "priority_band": 10,
+    "path": "/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/",
+    "source_url": "https://aeroventa.ru/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/",
+    "strategic_role": "LEGACY_ACQUISITION",
+    "source_title": "Стоимость алмазного бурения - как рассчитать цену за работы",
+    "required_action": "extract_preserve_information_then_rewrite_current_operating_claims_truthfully",
+    "owner_review_required_before_publish": true,
+    "sequence": 28
+  },
+  {
+    "priority_band": 10,
+    "path": "/blog/obzory-i-intervyu/",
+    "source_url": "https://aeroventa.ru/blog/obzory-i-intervyu/",
+    "strategic_role": "LEGACY_ACQUISITION",
+    "source_title": "Обзоры и интервью, презентации, руководства",
+    "required_action": "extract_preserve_information_then_rewrite_current_operating_claims_truthfully",
+    "owner_review_required_before_publish": true,
+    "sequence": 29
+  }
+]

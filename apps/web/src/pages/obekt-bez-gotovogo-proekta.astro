@@ -1,0 +1,30 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ProjectNotReadyPage from '@/components/pages/ProjectNotReadyPage.astro';
+import type { ContentRecord } from '@/lib/types';
+
+const content: ContentRecord = {
+  path: '/obekt-bez-gotovogo-proekta/',
+  title: 'Объект без готового проекта',
+  h1: 'Подготовка исходных данных до оценки монтажа вентиляции',
+  content_type: 'service',
+  business_role: 'CORE_VENTILATION',
+  status: 'fixture_stub',
+  robots_index: false,
+  robots_follow: false,
+  sitemap_include: false,
+  knowledge_allowed: false,
+  ai_origin: false,
+  seo_title: 'Объект без готового проекта — следующий шаг по вентиляции | AEROVENTA',
+  seo_description: 'Что нужно определить до сметы на монтаж вентиляции, если готовой проектной документации ещё нет: исходные данные, границы задачи и следующий технический шаг.',
+  schema_type: 'Service',
+  excerpt: 'Исходные данные и следующий технический шаг до оценки монтажа.',
+  body_html: '',
+  body_html_safety_status: 'fixture',
+  lead_intent: 'VENTILATION_PROJECT',
+  owner_approved_at: null,
+};
+---
+<BaseLayout content={content}>
+  <ProjectNotReadyPage />
+</BaseLayout>

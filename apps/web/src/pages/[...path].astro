@@ -1,0 +1,204 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageRenderer from '@/components/PageRenderer.astro';
+import { getAllContent } from '@/lib/content-source';
+import type { ContentRecord } from '@/lib/types';
+import legacySources from '../../../../migration/legacy-page-source-index.json';
+
+export async function getStaticPaths() {
+  const all = await getAllContent();
+  return all
+    .filter((item) => item.path !== '/')
+    .map((item) => ({
+      params: { path: item.path.replace(/^\//, '').replace(/\/$/, '') },
+      props: { content: item },
+    }));
+}
+
+interface Props { content: ContentRecord; }
+const { content } = Astro.props;
+
+const overrides: Record<string, Partial<ContentRecord>> = {
+  '/montazh-ventiliacii/': {
+    h1: 'Монтаж вентиляции в Санкт-Петербурге и Ленинградской области',
+    seo_title: 'Монтаж вентиляции в Санкт-Петербурге и Ленинградской области — AEROVENTA',
+    seo_description: 'Монтаж систем вентиляции для квартир, домов, ресторанов, коммерческих, производственных и крупных объектов. Работа по проекту или первичная оценка исходных данных, реальные кейсы AEROVENTA.',
+  },
+  '/services/': {
+    h1: 'Что мы делаем по вентиляции',
+    seo_title: 'Работы по вентиляции — AEROVENTA',
+    seo_description: 'Монтаж вентиляции по готовому проекту, монтаж воздуховодов и оборудования, работа с объектами без проекта и координация смежных проходок.',
+  },
+  '/portfolio/': {
+    h1: 'Реальные объекты и выполненные работы',
+    seo_title: 'Объекты и проекты AEROVENTA — монтаж вентиляции',
+    seo_description: 'Реальные объекты AEROVENTA: жилые комплексы, рестораны, производство, квартиры и работа в Карелии. Задачи, состав работ и подтверждённые исторические факты.',
+  },
+  '/faq/': {
+    h1: 'Что важно решить до монтажа вентиляции',
+    seo_title: 'Что важно решить до монтажа вентиляции — AEROVENTA',
+    seo_description: 'Инженерные вопросы до расчёта, выбора системы, начала монтажа, сравнения смет и приёмки вентиляции. Конкретные ответы без шаблонного FAQ.',
+  },
+  '/about/': {
+    h1: 'AEROVENTA — команда по монтажу вентиляции',
+    seo_title: 'О компании AEROVENTA — монтаж вентиляции',
+    seo_description: 'AEROVENTA — команда по монтажу вентиляции: личный контроль, усиление профильными специалистами под масштаб объекта, реальные проекты в Санкт-Петербурге, Ленобласти и Карелии.',
+    schema_type: 'AboutPage',
+  },
+  '/contact/': {
+    h1: 'Связаться с AEROVENTA',
+    seo_title: 'Контакты AEROVENTA — монтаж вентиляции',
+    seo_description: 'Связаться с AEROVENTA по монтажу вентиляции. Санкт-Петербург и Ленинградская область — основная зона работы; берём объекты в Москве и Карелии. Отправить проект или описать задачу.',
+    schema_type: 'ContactPage',
+  },
+  '/almaznoe-burenie/': {
+    h1: 'Алмазное бурение — смежная работа к вентиляции',
+    seo_title: 'Алмазное бурение для вентиляции — текущая модель AEROVENTA',
+    seo_description: 'Алмазное бурение в контексте вентиляции: какие исходные данные нужны, как увязать отверстие с трассой и как AEROVENTA работает со смежной буровой задачей сегодня.',
+    schema_type: 'Service',
+  },
+  '/blog/detail/novoe-almaznoe-burenie/': {
+    h1: 'Как алмазное бурение появилось в истории AEROVENTA',
+    seo_title: 'Алмазное бурение в истории AEROVENTA — архивный материал',
+    seo_description: 'Исторический контекст собственного алмазного бурения AEROVENTA и практические материалы, которые сохранили ценность. Текущая модель услуги отделена от старого направления.',
+    schema_type: 'Article',
+  },
+  '/vakansii/': {
+    h1: 'Работа и сотрудничество с AEROVENTA',
+    seo_title: 'Работа и сотрудничество — AEROVENTA',
+    seo_description: 'Страница для актуальных вакансий и предложений о профессиональном сотрудничестве в монтаже вентиляции. Старые условия и объявления не выдаются за текущие.',
+    schema_type: 'WebPage',
+  },
+  '/news/': {
+    h1: 'Архив AEROVENTA',
+    seo_title: 'Архив и история AEROVENTA',
+    seo_description: 'Архив AEROVENTA: история компании, реальные объекты и практические материалы. Без искусственного новостного потока и неподтверждённых событий.',
+    schema_type: 'WebPage',
+  },
+  '/news/korporativnaya-zhizn/': {
+    h1: 'Корпоративная жизнь — архивный маршрут',
+    seo_title: 'Корпоративная жизнь AEROVENTA — архив',
+    seo_description: 'Архивный маршрут AEROVENTA. Реальный способ работы компании показан через командную модель, объекты и практические материалы без выдуманного корпоративного контента.',
+    schema_type: 'WebPage',
+  },
+  '/news/istoriya-kompanii/': {
+    h1: 'История AEROVENTA через реальные объекты',
+    seo_title: 'История компании AEROVENTA — реальные объекты',
+    seo_description: 'Фактическая история AEROVENTA через подтверждённые объекты: производство, жилые дома, ресторан, квартира и работа в Карелии.',
+    schema_type: 'AboutPage',
+  },
+  '/news/znachimye-sobytiya/': {
+    h1: 'Значимые события AEROVENTA — только подтверждённые факты',
+    seo_title: 'Значимые события AEROVENTA — архив',
+    seo_description: 'Архив значимых событий AEROVENTA, основанный на подтверждённых объектах и датах. Без переноса устаревших health/news утверждений.',
+    schema_type: 'WebPage',
+  },
+  '/covid-pritochnaya-ventilacia/': {
+    h1: 'COVID-19 и вентиляция: что из рекомендаций осталось актуальным',
+    seo_title: 'COVID-19 и вентиляция: что осталось актуальным — AEROVENTA',
+    seo_description: 'Обновлённый материал AEROVENTA: исторические рекомендации REHVA 2020 года и современный контекст вентиляции, качества воздуха и контроля инфекционных аэрозолей по CDC, ASHRAE и REHVA.',
+    schema_type: 'Article',
+  },
+  '/blog/obzory-i-intervyu/': {
+    h1: 'Практические материалы из архивного раздела',
+    seo_title: 'Практические материалы AEROVENTA — архивный раздел',
+    seo_description: 'Сильные практические статьи AEROVENTA из старого раздела обзоров и интервью: полевой опыт, стоимость и проходки под вентиляцию.',
+    schema_type: 'WebPage',
+  },
+  '/blog/detail/kak-my-sdali-7-domov/': {
+    h1: 'Монтаж вентиляции в 7 домах жилого квартала в Павловске',
+    seo_title: 'Монтаж вентиляции в 7 домах в Павловске — кейс AEROVENTA',
+    seo_description: 'Исторический объект AEROVENTA: монтаж приточно-вытяжной вентиляции в семи домах жилого квартала в Павловске. Период интенсивных работ — 18 ноября–10 декабря 2020 года по исходной публикации.',
+    schema_type: 'WebPage',
+  },
+  '/blog/detail/restoran-v-zhk-leontevskiy-mys/': {
+    h1: 'Приточно-вытяжная вентиляция ресторана в ЖК «Леонтьевский Мыс»',
+    seo_title: 'Вентиляция ресторана в ЖК «Леонтьевский Мыс» — кейс AEROVENTA',
+    seo_description: 'Исторический кейс AEROVENTA в Санкт-Петербурге: монтаж приточно-вытяжной вентиляции и вентиляционного оборудования в ресторане ЖК «Леонтьевский Мыс».',
+    schema_type: 'WebPage',
+  },
+  '/blog/detail/ntff-polisan/': {
+    h1: 'Монтаж вентиляции на объекте НТФФ «Полисан»',
+    seo_title: 'Монтаж вентиляции НТФФ «Полисан» — кейс AEROVENTA',
+    seo_description: 'Исторический объект AEROVENTA в Санкт-Петербурге: монтаж приточно-вытяжной вентиляции и оборудования на объекте НТФФ «Полисан», ул. Салова, 72.',
+    schema_type: 'WebPage',
+  },
+  '/blog/detail/kvartira-na-zhukova/': {
+    h1: 'Приточно-вытяжная вентиляция в квартире на Маршала Жукова',
+    seo_title: 'Вентиляция квартиры на Маршала Жукова — кейс AEROVENTA',
+    seo_description: 'Исторический квартирный объект AEROVENTA в Санкт-Петербурге: приточно-вытяжная вентиляция, около 100 погонных метров с оборудованием и срок 5 дней по исходной публикации.',
+    schema_type: 'WebPage',
+  },
+  '/blog/detail/montazh-ventilyatsii-v-karelii/': {
+    h1: 'Монтаж вентиляции на объекте PONSSE в Питкяранте',
+    seo_title: 'Монтаж вентиляции в Карелии — кейс AEROVENTA, Питкяранта',
+    seo_description: 'Исторический объект AEROVENTA в Питкяранте: монтаж приточно-вытяжной вентиляции и оборудования в сервисно-образовательном центре.',
+    schema_type: 'WebPage',
+  },
+  '/blog/detail/kafe-rimskogo-korsakova-3/': {
+    h1: 'Приточно-вытяжная вентиляция кафе на Римского-Корсакова',
+    seo_title: 'Монтаж вентиляции кафе на Римского-Корсакова — кейс AEROVENTA',
+    seo_description: 'Исторический кейс AEROVENTA: монтаж приточно-вытяжной вентиляции и вентиляционного оборудования в кафе на проспекте Римского-Корсакова, 3 в Санкт-Петербурге.',
+    schema_type: 'WebPage',
+  },
+  '/blog/': {
+    h1: 'Практика',
+    seo_title: 'Практика AEROVENTA — инженерные материалы и реальные объекты',
+    seo_description: 'Практические материалы AEROVENTA: инженерные вопросы, опыт с площадки и реальные объекты. Конкретные задачи вместо корпоративного блога.',
+    schema_type: 'WebPage',
+  },
+  '/blog/poleznye-stati/': {
+    h1: 'Практические материалы',
+    seo_title: 'Практические материалы по вентиляции и смежным работам — AEROVENTA',
+    seo_description: 'Практические разборы AEROVENTA: реальные полевые задачи, факторы стоимости, подготовка исходных данных и инженерные решения без SEO-шаблонов.',
+    schema_type: 'WebPage',
+  },
+  '/blog/istorii-proektov/': {
+    h1: 'Истории объектов',
+    seo_title: 'Истории объектов AEROVENTA — реальные проекты вентиляции',
+    seo_description: 'Истории реальных объектов AEROVENTA: жилые комплексы, ресторан, производство, квартира, кафе и работа в Карелии. Ссылки на канонические кейсы.',
+    schema_type: 'WebPage',
+  },
+  '/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/': {
+    h1: 'Как вытащить застрявшую алмазную коронку из бетона',
+    seo_title: 'Как вытащить застрявшую алмазную коронку из бетона — причины и порядок действий',
+    seo_description: 'Почему алмазная коронка заклинивает в бетоне, что делать сначала, когда нужен штатный съёмник или обратный молоток и какие ошибки могут повредить оборудование. Практический опыт AEROVENTA.',
+    schema_type: 'Article',
+  },
+  '/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/': {
+    h1: 'Алмазное бурение отверстий в стяжке под стояки отопления',
+    seo_title: 'Алмазное бурение в стяжке под стояки отопления — реальный пример работ',
+    seo_description: 'Как выполнялись отверстия под стояки отопления через стяжку, утепляющий слой и перекрытие на реальном объекте: разметка, крепление установки, защита отделки и работа с армирующей сеткой.',
+    schema_type: 'Article',
+  },
+  '/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/': {
+    h1: 'От чего зависит стоимость алмазного бурения',
+    seo_title: 'Стоимость алмазного бурения: от чего зависит цена и что нужно для расчёта',
+    seo_description: 'Диаметр, глубина, материал, армирование, доступ, высота, защита отделки и объём работ: какие данные реально влияют на стоимость алмазного бурения и что прислать для расчёта.',
+    schema_type: 'Article',
+  },
+  '/blog/detail/gorizontalnoe-almaznoe-burenie/': {
+    h1: 'Алмазное бурение стены под вентиляцию',
+    seo_title: 'Алмазное бурение стены под вентиляцию — что учесть до отверстия',
+    seo_description: 'Что нужно проверить перед отверстием под воздуховод: диаметр, толщина и материал стены, трасса, коммуникации, доступ и защита отделки. Реальный исторический пример AEROVENTA.',
+    schema_type: 'Article',
+  },
+};
+
+// SEO source lock: the retained article URL, H1 and title remain linked to the legacy primary index.
+// Historical on-page procedures and prices are NOT restored by this metadata-only safeguard.
+const legacyArticle = content.path.startsWith('/blog/detail/')
+  ? legacySources.find(row => row.path === content.path && row.status === 200)
+  : undefined;
+if (content.path.startsWith('/blog/detail/') && (!legacyArticle?.h1 || !legacyArticle?.title)) {
+  throw new Error(`Legacy indexed heading/title evidence missing for ${content.path}`);
+}
+const pageContent: ContentRecord = {
+  ...content,
+  ...(overrides[content.path] ?? {}),
+  ...(legacyArticle ? { h1: legacyArticle.h1, seo_title: legacyArticle.title } : {}),
+};
+---
+<BaseLayout content={pageContent}>
+  <PageRenderer content={pageContent} />
+</BaseLayout>

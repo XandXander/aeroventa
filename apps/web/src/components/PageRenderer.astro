@@ -1,0 +1,77 @@
+---
+import GenericPage from '@/components/pages/GenericPage.astro';
+import ServicePage from '@/components/pages/ServicePage.astro';
+import VentilationServicePage from '@/components/pages/VentilationServicePage.astro';
+import ServicesHubPage from '@/components/pages/ServicesHubPage.astro';
+import PortfolioHubPage from '@/components/pages/PortfolioHubPage.astro';
+import FaqDecisionPage from '@/components/pages/FaqDecisionPage.astro';
+import AboutPage from '@/components/pages/AboutPage.astro';
+import ContactPage from '@/components/pages/ContactPage.astro';
+import P0LegacyArticlePage from '@/components/pages/P0LegacyArticlePage.astro';
+import PracticeHubPage from '@/components/pages/PracticeHubPage.astro';
+import EvidenceCasePage from '@/components/pages/EvidenceCasePage.astro';
+import LegacySupportPage from '@/components/pages/LegacySupportPage.astro';
+import CovidVentilationPage from '@/components/pages/CovidVentilationPage.astro';
+import ArticlePage from '@/components/pages/ArticlePage.astro';
+import ProjectPage from '@/components/pages/ProjectPage.astro';
+import type { ContentRecord } from '@/lib/types';
+interface Props { content: ContentRecord; }
+const { content } = Astro.props;
+const fixture = content.status === 'fixture_stub';
+const practiceHubPaths = new Set(['/blog/', '/blog/poleznye-stati/', '/blog/istorii-proektov/']);
+const evidenceCasePaths = new Set([
+  '/blog/detail/kak-my-sdali-7-domov/',
+  '/blog/detail/restoran-v-zhk-leontevskiy-mys/',
+  '/blog/detail/ntff-polisan/',
+  '/blog/detail/kvartira-na-zhukova/',
+  '/blog/detail/montazh-ventilyatsii-v-karelii/',
+  '/blog/detail/kafe-rimskogo-korsakova-3/',
+]);
+const supportPaths = new Set([
+  '/almaznoe-burenie/',
+  '/blog/detail/novoe-almaznoe-burenie/',
+  '/vakansii/',
+  '/news/',
+  '/news/korporativnaya-zhizn/',
+  '/news/istoriya-kompanii/',
+  '/news/znachimye-sobytiya/',
+  '/blog/obzory-i-intervyu/',
+]);
+const p0LegacyPaths = new Set([
+  '/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/',
+  '/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/',
+  '/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/',
+  '/blog/detail/gorizontalnoe-almaznoe-burenie/',
+]);
+---
+{content.path === '/montazh-ventiliacii/' ? (
+  <VentilationServicePage content={content} fixture={fixture} />
+) : content.path === '/services/' ? (
+  <ServicesHubPage content={content} fixture={fixture} />
+) : content.path === '/portfolio/' ? (
+  <PortfolioHubPage content={content} fixture={fixture} />
+) : content.path === '/faq/' ? (
+  <FaqDecisionPage content={content} fixture={fixture} />
+) : content.path === '/about/' ? (
+  <AboutPage content={content} fixture={fixture} />
+) : content.path === '/contact/' ? (
+  <ContactPage content={content} fixture={fixture} />
+) : content.path === '/covid-pritochnaya-ventilacia/' ? (
+  <CovidVentilationPage content={content} fixture={fixture} />
+) : supportPaths.has(content.path) ? (
+  <LegacySupportPage content={content} fixture={fixture} />
+) : evidenceCasePaths.has(content.path) ? (
+  <EvidenceCasePage content={content} fixture={fixture} />
+) : practiceHubPaths.has(content.path) ? (
+  <PracticeHubPage content={content} fixture={fixture} />
+) : p0LegacyPaths.has(content.path) ? (
+  <P0LegacyArticlePage content={content} fixture={fixture} />
+) : content.content_type === 'service' ? (
+  <ServicePage content={content} fixture={fixture} />
+) : content.content_type === 'project' ? (
+  <ProjectPage content={content} fixture={fixture} />
+) : ['article', 'news'].includes(content.content_type) ? (
+  <ArticlePage content={content} fixture={fixture} />
+) : (
+  <GenericPage content={content} fixture={fixture} />
+)}

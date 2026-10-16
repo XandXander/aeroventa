@@ -1,0 +1,28 @@
+---
+import { SITE } from '@/lib/site';
+import ContactForm from '@/components/ContactForm.astro';
+import type { ContentRecord } from '@/lib/types';
+interface Props { content: ContentRecord; fixture: boolean; }
+const { content } = Astro.props;
+const tel = SITE.phone.replace(/[^+\d]/g, '');
+---
+
+<article class="contact-premium contact-premium--direct">
+  <header class="contact-hero">
+    <div class="home-shell contact-hero__grid">
+      <div class="contact-hero__direct">
+        <p class="home-kicker">Контакты</p>
+        <h1>Связаться с AEROVENTA</h1>
+        <p class="contact-hero__lede">Монтаж вентиляции в Санкт-Петербурге и Ленинградской области. Рассматриваем объекты в Москве и Карелии. Позвоните, напишите или оставьте короткую заявку — начнём с вашей задачи.</p>
+        <div class="contact-direct">
+          <a href={`tel:${tel}`}><span>Позвонить</span><strong>{SITE.phone}</strong></a>
+          <a href={`mailto:${SITE.email}`}><span>Написать</span><strong>{SITE.email}</strong></a>
+        </div>
+        <p class="contact-hero__support">Есть проект, план, фото или только описание? Для первого обращения достаточно того, что уже есть. Недостающие данные уточним отдельно.</p>
+      </div>
+      <div class="contact-hero__form">
+        <ContactForm idPrefix="contact-page" sourcePath={content.path} />
+      </div>
+    </div>
+  </header>
+</article>

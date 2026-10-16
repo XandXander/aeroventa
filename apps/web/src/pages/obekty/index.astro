@@ -1,0 +1,122 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import type { ContentRecord } from '@/lib/types';
+
+const content: ContentRecord = {
+  path: '/obekty/',
+  title: 'Объекты — AEROVENTA',
+  h1: 'Вентиляция под конкретный объект',
+  content_type: 'landing',
+  business_role: 'CORE_SERVICE_HUB',
+  status: 'fixture_stub',
+  robots_index: false,
+  robots_follow: true,
+  sitemap_include: false,
+  knowledge_allowed: true,
+  ai_origin: false,
+  seo_title: 'Монтаж вентиляции по типу объекта — AEROVENTA',
+  seo_description: 'Монтаж вентиляции для ресторанов и кафе, новостроек, производства, квартир, домов, складов и коммерческих помещений. Особенности объектов и подтверждённые кейсы AEROVENTA.',
+  excerpt: '',
+  body_html: '',
+  body_html_safety_status: 'not_applicable',
+  owner_approved_at: null,
+};
+
+const objects = [
+  {
+    id:'production', index:'01', title:'Производство',
+    text:'Проект, действующий режим объекта, трассы, доступ и границы состава монтажных работ.',
+    proof:'НТФФ «Полисан» — исторический производственный кейс.',
+    image:'/evidence/polisan/owner-cover-v43.webp',
+    imageAlt:'Реальный производственный объект НТФФ Полисан', href:'/obekty/proizvodstvo/'
+  },
+  {
+    id:'restaurants', index:'02', title:'Рестораны и кафе',
+    text:'Назначение помещений, проектная документация и стадии монтажа.',
+    proof:'Леонтьевский Мыс + кафе на Римского-Корсакова, 3.',
+    image:'/evidence/leont/owner-cover-v43.webp',
+    imageAlt:'Здание ЖК Леонтьевский Мыс, где расположен ресторанный объект', href:'/obekty/restorany-i-kafe/'
+  },
+  {
+    id:'newbuilds', index:'03', title:'Новостройки и жилые комплексы',
+    text:'Работа по корпусам, повторяющийся объём и контроль исполнения.',
+    proof:'7 PARK — семь домов в Павловске.',
+    image:'/evidence/7park/object-exterior-day.jpg',
+    imageAlt:'Жилой квартал 7 PARK в Павловске', href:'/obekty/novostroyki/'
+  },
+  {
+    id:'private', index:'04', title:'Квартиры и дома',
+    text:'Шум, пространство, отделка, потолки и аккуратная прокладка трасс.',
+    proof:'Квартира на Маршала Жукова — подтверждённый исторический кейс.',
+    image:'/evidence/zhukov/owner-cover-v43.webp',
+    imageAlt:'Жилой дом с квартирным объектом AEROVENTA на Маршала Жукова', href:'/obekty/kvartiry-i-doma/'
+  },
+  {
+    id:'warehouses', index:'05', title:'Склады и базы',
+    text:'Высота помещений, условия доступа и график работ.',
+    proof:'Уточняем условия доступа, доставку оборудования и время работ на действующей площадке.',
+    href:'/obekty/sklady/'
+  },
+  {
+    id:'commercial', index:'06', title:'Офисы и коммерческие помещения',
+    text:'Планировка, доступ к монтажным зонам, график работ и проектная документация.',
+    proof:'Задачу оцениваем по реальному составу монтажных работ, а не по типовой площади.',
+    href:'/obekty/ofisy-i-kommerciya/'
+  },
+];
+---
+
+<BaseLayout content={content}>
+  <article class="objects-hub">
+    <header class="objects-hero">
+      <div class="home-shell objects-hero__grid">
+        <div class="objects-hero__copy">
+          <p class="home-kicker">По типу объекта</p>
+          <h1>Вентиляция под конкретный объект</h1>
+          <p class="objects-hero__lede">Для жилых, коммерческих и производственных помещений — разный объём и условия монтажа. Выберите категорию, чтобы перейти непосредственно к её содержанию.</p>
+          <p class="home-geo">Санкт-Петербург · Ленинградская область · Москва · Карелия</p>
+        </div>
+        <figure class="objects-hero__photo">
+          <img src="/evidence/polisan/owner-cover-v43.webp" width="1600" height="903" alt="Фармацевтический комплекс НТФФ «Полисан» — выполненный объект AEROVENTA" loading="eager" decoding="async"/>
+          <figcaption>НТФФ «Полисан» · реальный объект</figcaption>
+        </figure>
+      </div>
+    </header>
+
+    <section class="objects-editorial-index" aria-labelledby="objects-index-title">
+      <div class="home-shell">
+        <div class="objects-editorial-index__head">
+          <p class="section-index">Направления</p>
+          <h2 id="objects-index-title">По типу объекта</h2>
+          <p>Монтаж начинается с проекта или исходных данных, а его состав зависит от назначения помещений, трасс, оборудования и условий доступа.</p>
+        </div>
+        <div class="objects-index__grid">
+          {objects.map(item => (
+            <a class="object-context-card object-context-card--editorial" href={item.href}>
+              <span class="object-context-card__number">{item.index}</span>
+              <div class="object-context-card__description">
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+                <small>{item.proof}</small>
+              </div>
+              {item.image ? <img src={item.image} alt={item.imageAlt} width="600" height="375" loading="lazy" decoding="async" /> : <span class="object-context-card__no-photo">Инженерный монтаж</span>}
+              <b aria-hidden="true">↗</b>
+            </a>
+          ))}
+        </div>
+        <p class="objects-editorial-index__footer">Фото, сроки и границы подтверждённых работ — в <a href="/portfolio/">«Наших работах»</a>.</p>
+      </div>
+    </section>
+
+    <section class="conversion-close" aria-labelledby="objects-close-title">
+      <div class="home-shell">
+        <p class="section-index section-index--orange">04 / Ваш объект</p>
+        <h2 id="objects-close-title">Обсудим исходные данные</h2>
+        <div class="home-actions">
+          <a class="button button--light" href="/montazh-po-proektu/">Монтаж по готовому проекту →</a>
+          <a class="button button--light" href="/obekt-bez-gotovogo-proekta/">Подготовка исходных данных</a>
+        </div>
+      </div>
+    </section>
+  </article>
+</BaseLayout>

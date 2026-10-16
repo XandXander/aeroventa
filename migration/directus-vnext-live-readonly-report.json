@@ -1,0 +1,49 @@
+{
+  "format": "aeroventa-directus-vnext-live-readonly-report-v1",
+  "observed_at": "2026-09-30",
+  "source": "authenticated_browser_session_readonly",
+  "directus": "12.1.1",
+  "vendor": "postgres",
+  "live_schema": {
+    "collections": [
+      "content",
+      "content_block_map",
+      "content_blocks",
+      "content_categories",
+      "content_category_map",
+      "project_details",
+      "redirects",
+      "service_details",
+      "site_settings"
+    ],
+    "collection_count": 9,
+    "vnext_collections_present": [],
+    "vnext_content_fields_present": []
+  },
+  "expected_vnext_delta": {
+    "add_content_fields": [
+      "page_purpose",
+      "primary_user_intent",
+      "primary_search_intent",
+      "public_facts",
+      "evidence_refs",
+      "limitations",
+      "agent_summary",
+      "last_fact_verified_at"
+    ],
+    "add_collections": [
+      "requests",
+      "publication_jobs"
+    ],
+    "add_relations": [
+      "publication_jobs.target_content_id -> content.id",
+      "publication_jobs.draft_content_id -> content.id"
+    ]
+  },
+  "live_verdict": "VNEXT_ADDITIVE_DELTA_REQUIRED",
+  "conflicts_observed": [],
+  "mutation_performed": false,
+  "schema_diff_post_executed": false,
+  "remaining_gate": "Authenticated POST /schema/diff (or equivalent native dry-run) still required before any apply.",
+  "secret_handling": "No credential, cookie, session token, access token, user id, or password is persisted in this report."
+}

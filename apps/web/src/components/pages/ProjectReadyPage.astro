@@ -1,0 +1,78 @@
+---
+import { SITE } from '@/lib/site';
+const projectMail = `mailto:${SITE.email}?subject=${encodeURIComponent('Монтаж вентиляции по готовому проекту')}`;
+---
+
+<article class="engagement engagement--project">
+  <header class="engagement-hero">
+    <div class="home-shell engagement-hero__grid">
+      <div class="engagement-hero__copy">
+        <p class="home-kicker">Монтаж по проектной документации</p>
+        <h1>Монтаж вентиляции по вашему проекту.</h1>
+        <p class="engagement-hero__lede">
+          Получим рабочую документацию, оценим объём и условия монтажа.
+          Если для расчёта потребуется уточнение, зададим конкретные вопросы по проекту.
+        </p>
+        <div class="home-actions">
+          <a class="button button--primary" href={projectMail} data-aeroventa-event="primary_cta">Передать проект на рассмотрение →</a>
+          <span class="engagement-hero__contact-note">Контакт для вопросов доступен в шапке сайта.</span>
+        </div>
+      </div>
+      <figure class="engagement-hero__media">
+        <img src="/evidence/7park/object-exterior-day.jpg" alt="Жилой квартал 7 PARK, Павловск — реальный объект монтажа вентиляции AEROVENTA" loading="eager" width="800" height="450" />
+        <figcaption>7 PARK · Павловск · <a href="/blog/detail/kak-my-sdali-7-domov/">Смотреть кейс →</a></figcaption>
+      </figure>
+    </div>
+  </header>
+
+  <section class="engagement-section engagement-section--paper project-brief" aria-labelledby="project-input-title">
+    <div class="home-shell engagement-section__grid">
+      <div>
+        <p class="section-index">01 / Для оценки работ</p>
+        <h2 id="project-input-title">Пришлите проект. Остальное уточним по делу.</h2>
+      </div>
+      <div class="project-brief__body">
+        <p>Достаточно рабочих чертежей, спецификации (если она есть), адреса объекта и краткого описания требуемого монтажа. Материалы можно прислать по электронной почте.</p>
+        <a href={projectMail} class="project-brief__link">Отправить документацию →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="engagement-section project-method" aria-labelledby="project-process-title">
+    <div class="home-shell engagement-section__grid">
+      <div>
+        <p class="section-index section-index--orange">02 / Как работаем</p>
+        <h2 id="project-process-title">От документации — к понятному объёму монтажа.</h2>
+      </div>
+      <div class="project-method__body">
+        <p>Сверяем объёмы по проекту с условиями объекта, уточняем состав работ и учитываем доступ к местам монтажа. По результату готовим расчёт либо короткий перечень необходимых уточнений.</p>
+        <p>Если проект расходится с фактическими условиями, обсуждаем техническое решение и согласование изменений до выполнения соответствующих работ.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="engagement-evidence" aria-labelledby="project-evidence-title">
+    <div class="home-shell">
+      <div class="section-heading">
+        <div>
+          <p class="section-index">03 / Реальные объекты</p>
+          <h2 id="project-evidence-title">Смотреть нужно на реальные объекты.</h2>
+        </div>
+        <a href="/portfolio/">Все объекты →</a>
+      </div>
+      <div class="engagement-evidence__grid">
+        <a href="/blog/detail/kak-my-sdali-7-domov/"><span>Павловск</span><h3>7 PARK</h3><p>Монтаж приточно-вытяжной вентиляции в семи домах.</p><b>Открыть кейс →</b></a>
+        <a href="/blog/detail/ntff-polisan/"><span>Санкт-Петербург</span><h3>НТФФ «Полисан»</h3><p>Монтаж вентиляции и оборудования на производственном объекте.</p><b>Открыть кейс →</b></a>
+        <a href="/blog/detail/restoran-v-zhk-leontevskiy-mys/"><span>Санкт-Петербург</span><h3>Леонтьевский Мыс</h3><p>Приточно-вытяжная вентиляция ресторана.</p><b>Открыть кейс →</b></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="engagement-close">
+    <div class="home-shell engagement-close__grid">
+      <p class="section-index section-index--orange">04 / Передача проекта</p>
+      <h2>Передайте рабочий комплект. Вернёмся с конкретикой по монтажу.</h2>
+      <a class="button button--light" href={projectMail}>Передать проект →</a>
+    </div>
+  </section>
+</article>

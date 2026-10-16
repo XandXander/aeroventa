@@ -1,0 +1,131 @@
+---
+import type { ContentRecord } from '@/lib/types';
+interface Props { content: ContentRecord; fixture: boolean; }
+const { content } = Astro.props;
+
+const p0 = [
+  { tag:'Полевой опыт', title:'Как вытащить застрявшую алмазную коронку из бетона', text:'Почему коронку заклинивает, что делать сначала и где заканчивается универсальный совет.', href:'/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/', image:'/upload/medialibrary/548/5488fb415056eee52ac63ff9d4850c63.jpg', imageAlt:'Керн после алмазного бурения бетона — оригинальная фотография из статьи' },
+  { tag:'Реальный объект', title:'Бурение в стяжке под стояки отопления', text:'Слоистое перекрытие, крепление установки, готовая отделка и исходные данные.', href:'/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/', image:'/upload/medialibrary/0a2/0a2f0d1be2900e0a1fe74bcd9604e3f8.jpg', imageAlt:'Бурение отверстий в стяжке под отопление — исходная фотография из статьи' },
+  { tag:'Стоимость', title:'От чего зависит стоимость алмазного бурения', text:'Диаметр — только один фактор. Разбираем геометрию, материал, доступ и состав работ.', href:'/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/', image:'/upload/medialibrary/fb3/fb3d693282a8085971dd4e2fe87bf28e.jpg', imageAlt:'Алмазное бурение отверстий — оригинальная фотография к статье о расчёте стоимости' },
+  { tag:'Вентиляция + проходка', title:'Алмазное бурение стены под вентиляцию', text:'Почему сначала определяют трассу и узел, а уже потом точку и геометрию отверстия.', href:'/blog/detail/gorizontalnoe-almaznoe-burenie/', image:'/upload/medialibrary/e1c/e1cd51110183f9c6b2e704b70664eba1.jpg', imageAlt:'Разметка отверстия под вентиляцию — оригинальная фотография из статьи' },
+];
+
+const cases = [
+  {tag:'Новостройки',title:'7 PARK',meta:'Павловск · 7 домов',image:'/evidence/7park/object-exterior-day.jpg',imageAlt:'Реальный дневной вид 7 PARK в Павловске',href:'/blog/detail/kak-my-sdali-7-domov/'},
+  {tag:'Ресторан',title:'ЖК «Леонтьевский Мыс»',image:'/evidence/leont/owner-cover-v43.webp',imageAlt:'Выполненный объект AEROVENTA — ресторан в ЖК Леонтьевский Мыс',meta:'Санкт-Петербург · приточно-вытяжная вентиляция + оборудование',href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/'},
+  {tag:'Производство',title:'НТФФ «Полисан»',meta:'Санкт-Петербург · монтаж на фармацевтическом объекте',image:'/evidence/polisan/owner-cover-v43.webp',imageAlt:'Архивный фотокадр работ на объекте НТФФ Полисан',href:'/blog/detail/ntff-polisan/'},
+  {tag:'Квартира',title:'Маршала Жукова',image:'/evidence/zhukov/duct-installation-01.jpg',imageAlt:'Монтаж вентиляции в квартире на Маршала Жукова',meta:'Санкт-Петербург · приточно-вытяжная вентиляция',href:'/blog/detail/kvartira-na-zhukova/'},
+  {tag:'Карелия',title:'Питкяранта / PONSSE',meta:'Сервисно-образовательный центр · вентиляция + оборудование',image:'/evidence/karelia/owner-cover-v43.webp',imageAlt:'Фотография сервисного центра PONSSE в Питкяранте',href:'/blog/detail/montazh-ventilyatsii-v-karelii/'},
+  {tag:'Кафе',title:'Римского-Корсакова, 3',image:'/evidence/cafe/owner-cover-v43.webp',imageAlt:'Выполненный объект AEROVENTA — кафе на Римского-Корсакова, 3',meta:'Санкт-Петербург · приточно-вытяжная вентиляция + оборудование',href:'/blog/detail/kafe-rimskogo-korsakova-3/'},
+];
+
+const isRoot = content.path === '/blog/';
+const isPractical = content.path === '/blog/poleznye-stati/';
+const isStories = content.path === '/blog/istorii-proektov/';
+---
+
+{isRoot ? (
+  <article class="practice-hub practice-hub--articles">
+    <header class="practice-index-intro">
+      <div class="home-shell">
+        <p class="home-kicker">Материалы AEROVENTA</p>
+        <h1>Статьи</h1>
+        <p>Практика монтажа и алмазного бурения: конкретные ситуации, исходные условия, технические решения.</p>
+        <nav class="practice-index-nav" aria-label="Разделы статей">
+          <a href="#articles-list">Практические материалы</a>
+          <a href="/blog/istorii-proektov/">Истории объектов</a>
+        </nav>
+      </div>
+    </header>
+    <section class="practice-article-index" id="articles-list" aria-label="Экспертные статьи">
+      <div class="home-shell practice-article-index__list">
+        {p0.map((item,index) => (
+          <a class="practice-article-index__item" href={item.href}>
+            <span class="practice-article-index__number">{String(index+1).padStart(2,'0')}</span>
+            <figure class="practice-article-index__media"><img src={item.image} width="720" height="480" loading="lazy" decoding="async" alt={item.imageAlt}/></figure>
+            <div>
+              <span class="practice-article-index__tag">{item.tag}</span>
+              <h2>{item.title}</h2>
+              <p>{item.text}</p>
+            </div>
+            <span class="practice-article-index__action" aria-hidden="true">↗</span>
+          </a>
+        ))}
+      </div>
+    </section>
+    <div class="home-shell practice-index-footer">
+      <p>Другие исходные статьи сохраняются на исторических адресах. Фотографии и документы выполненных объектов представлены отдельно.</p>
+      <a href="/portfolio/">Наши работы →</a>
+    </div>
+  </article>
+) : isPractical ? (
+  <article class="practice-hub">
+    <header class="practice-hero">
+      <div class="home-shell practice-hero__grid">
+        <div><p class="home-kicker">Статьи / полезные материалы</p><h1>Практические материалы</h1></div>
+        <div><p class="practice-hero__lede">Материалы, в которых есть конкретная задача, непосредственный опыт или понятная инженерная логика. Старые сильные статьи сохраняем на их URL, но не переносим устаревшие цены и коммерческие заявления.</p><a class="practice-back" href="/blog/">← Статьи</a></div>
+      </div>
+    </header>
+
+    <section class="home-section practical-index">
+      <div class="home-shell"><p class="section-index">01 / Сильные архивные материалы</p><h2>Четыре материала о реальных технических задачах.</h2>
+        <div class="practical-index__grid">
+          {p0.map((item,index) => <a href={item.href}><img class="practical-index__photo" src={item.image} alt={item.imageAlt} width="720" height="480" loading="lazy" decoding="async"/><div class="practical-index__top"><span>{String(index+1).padStart(2,'0')}</span><b>{item.tag}</b></div><h3>{item.title}</h3><p>{item.text}</p><strong>Читать материал →</strong></a>)}
+        </div>
+      </div>
+    </section>
+
+    <section class="practical-rules">
+      <div class="home-shell practical-rules__grid">
+        <div><p class="section-index section-index--orange">02 / Подготовка к монтажу</p><h2>Какие вопросы стоит решить до начала работ.</h2></div>
+        <div class="practical-rules__list">
+          <div><span>01</span><p>Что известно о назначении помещений, режиме работы и требуемой системе.</p></div>
+          <div><span>02</span><p>Какие планы, чертежи и фотографии объекта уже доступны.</p></div>
+          <div><span>03</span><p>Где могут возникнуть сложности с трассами, доступом или существующей отделкой.</p></div>
+          <div><span>04</span><p>Какие вопросы необходимо согласовать до выхода монтажников.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-section practical-next">
+      <div class="home-shell practical-next__grid">
+        <a href="/faq/"><span>До монтажа</span><h3>30 инженерных вопросов заказчика</h3><p>Короткий вывод → зависимость → исходные данные → следующий шаг.</p><b>Открыть FAQ →</b></a>
+        <a href="/blog/istorii-proektov/"><span>Доказательства</span><h3>Истории реальных объектов</h3><p>Выполненные работы, инженерные задачи и фотографии объектов.</p><b>Смотреть объекты →</b></a>
+      </div>
+    </section>
+  </article>
+) : isStories ? (
+  <article class="practice-hub">
+    <header class="practice-hero">
+      <div class="home-shell practice-hero__grid">
+        <div><p class="home-kicker">Статьи / истории объектов</p><h1>Истории объектов</h1></div>
+        <div><p class="practice-hero__lede">Здесь собраны истории наших объектов: что требовалось выполнить, какие работы проводились и как выглядел результат на площадке.</p><div class="home-actions"><a class="button button--primary" href="/portfolio/">Все выполненные объекты →</a><a class="button button--ghost" href="/blog/">Статьи</a></div></div>
+      </div>
+    </header>
+
+    <section class="home-section story-index">
+      <div class="home-shell"><p class="section-index">01 / Подтверждённые истории</p><h2>Квартиры, жилые дома, кафе и производство.</h2>
+        <div class="story-index__grid">
+          {cases.map((item,index) => <a href={item.href}>{item.image && <img class="story-index__photo" src={item.image} alt={item.imageAlt} width="800" height="450" loading="lazy" decoding="async" />}<div><span>{String(index+1).padStart(2,'0')}</span><b>{item.tag}</b></div><h3>{item.title}</h3><p>{item.meta}</p><strong>Смотреть объект →</strong></a>)}
+        </div>
+      </div>
+    </section>
+
+    <section class="story-rule">
+      <div class="home-shell story-rule__grid">
+        <div><p class="section-index section-index--orange">02 / Каждый объект</p><h2>Что можно узнать из истории работы.</h2></div>
+        <div><p>Открывайте конкретный объект, чтобы увидеть его назначение, состав выполненных работ, реальные фотографии и известные сроки.</p><p>Для похожей задачи мы учитываем исходные данные именно вашего объекта — даже если пример из портфолио близок по типу помещений.</p></div>
+      </div>
+    </section>
+
+    <section class="conversion-close">
+      <div class="home-shell"><p class="section-index section-index--orange">03 / Похожий объект</p><h2>Ищете опыт именно под свой тип объекта?</h2><div class="home-actions"><a class="button button--light" href="/obekty/">Выбрать тип объекта →</a><a class="button button--light" href="/contact/?intent=project">Показать свой проект</a></div></div>
+    </section>
+  </article>
+) : null}
+
+<style>
+.practical-index__photo{display:block;width:100%;height:auto;aspect-ratio:1.65;object-fit:cover;margin-bottom:18px;filter:saturate(.9)}
+.practical-index__grid a{overflow:hidden}
+.story-index__photo{object-fit:cover}
+</style>

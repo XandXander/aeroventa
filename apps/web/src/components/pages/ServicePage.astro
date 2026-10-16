@@ -1,0 +1,21 @@
+---
+import LeadCTA from '@/components/LeadCTA.astro';
+import type { ContentRecord } from '@/lib/types';
+interface Props { content: ContentRecord; fixture: boolean; }
+const { content, fixture } = Astro.props;
+const isDrilling = content.lead_intent === 'DRILLING_PARTNER';
+---
+<article class:list={['page', 'service-page', { 'service-page--legacy': isDrilling }]}>
+  <header class="service-hero">
+    <div class="container prose">
+      <p class="eyebrow">{isDrilling ? 'Партнёрская заявка' : 'Основное направление AEROVENTA'}</p>
+      <h1>{content.h1}</h1>
+      {content.excerpt && <p class="lede">{content.excerpt}</p>}
+      {fixture && <div class="notice"><strong>Implementation fixture:</strong> production-контент ещё не утверждён; страница noindex.</div>}
+    </div>
+  </header>
+  <div class="container prose service-body">
+    <Fragment set:html={content.body_html} />
+    <LeadCTA intent={content.lead_intent || 'VENTILATION_PROJECT'} />
+  </div>
+</article>

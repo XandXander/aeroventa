@@ -1,0 +1,14 @@
+AEROVENTA V12 — manual GitHub upload
+
+1. Download and extract the V12 ZIP.
+2. Open: https://github.com/XandXander/aeroventa
+3. Make sure branch = main.
+4. Click Add file -> Upload files.
+5. Drag ALL extracted package contents into the upload area, preserving folders.
+   Existing package.json must be replaced by the package.json from V12.
+6. Commit message: Add V12 deterministic Directus draft importer
+7. Choose: Commit directly to the main branch.
+8. Click Commit changes.
+9. Stop. Do not run Directus import or any production command yet.
+
+After the commit, the coordinator must fresh-check HEAD/diff/CI before requesting any Directus data-write approval.

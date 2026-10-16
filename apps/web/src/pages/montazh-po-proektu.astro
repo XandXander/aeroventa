@@ -1,0 +1,30 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ProjectReadyPage from '@/components/pages/ProjectReadyPage.astro';
+import type { ContentRecord } from '@/lib/types';
+
+const content: ContentRecord = {
+  path: '/montazh-po-proektu/',
+  title: 'Монтаж вентиляции по готовому проекту',
+  h1: 'Монтаж вентиляции по готовой проектной документации',
+  content_type: 'service',
+  business_role: 'CORE_VENTILATION',
+  status: 'fixture_stub',
+  robots_index: false,
+  robots_follow: false,
+  sitemap_include: false,
+  knowledge_allowed: false,
+  ai_origin: false,
+  seo_title: 'Монтаж вентиляции по готовому проекту — AEROVENTA',
+  seo_description: 'Работа AEROVENTA по готовой проектной документации: исходные данные, состав монтажных работ, вопросы к проекту и следующий коммерческий шаг.',
+  schema_type: 'Service',
+  excerpt: 'Монтаж вентиляции по готовой проектной документации.',
+  body_html: '',
+  body_html_safety_status: 'fixture',
+  lead_intent: 'VENTILATION_PROJECT',
+  owner_approved_at: null,
+};
+---
+<BaseLayout content={content}>
+  <ProjectReadyPage />
+</BaseLayout>
