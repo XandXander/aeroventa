@@ -132,12 +132,12 @@ const sportPhotos = ['/evidence/owner-portfolio/sport-komendantskiy/owner-select
           <figcaption>Апарт-отель / коворкинг · Бумажный</figcaption>
         </figure>
         <figure>
-          <img src="/evidence/polisan/owner-cover-v43.webp" width="1600" height="903" alt="НТФФ Полисан — фармацевтический объект" loading="eager" decoding="async"/>
-          <figcaption>Полисан · производство</figcaption>
+          <img src="/evidence/polisan/duct-installation-01.jpg" width="1600" height="903" alt="Монтаж воздуховодов на площадке НТФФ «Полисан»" loading="eager" decoding="async"/>
+          <figcaption>Полисан · инженерные трассы</figcaption>
         </figure>
         <figure>
-          <img src="/evidence/leont/owner-cover-v43.webp" width="1349" height="744" alt="ЖК Леонтьевский Мыс — ресторанный объект" loading="eager" decoding="async"/>
-          <figcaption>Леонтьевский Мыс · ресторан</figcaption>
+          <img src="/evidence/leont/duct-installation-01.jpg" width="1349" height="744" alt="Монтаж воздуховодов в ресторане ЖК «Леонтьевский Мыс»" loading="eager" decoding="async"/>
+          <figcaption>Леонтьевский Мыс · монтаж</figcaption>
         </figure>
       </div>
     </div>
@@ -151,10 +151,16 @@ const sportPhotos = ['/evidence/owner-portfolio/sport-komendantskiy/owner-select
         <p class="portfolio-feature__sub">Павловск · 7 домов · приточно-вытяжная вентиляция</p>
         <a class="button button--case" href="/blog/detail/kak-my-sdali-7-domov/">Открыть кейс →</a>
       </div>
-      <figure class="portfolio-feature__visual portfolio-feature__visual--photo">
-        <img src="/evidence/7park/object-exterior-day.jpg" alt="Жилые дома квартала 7 PARK в Павловске" width="800" height="450" loading="lazy" />
-        <figcaption>7 PARK · жилой квартал в Павловске</figcaption>
-      </figure>
+      <div class="portfolio-feature__photography" aria-label="Объект и выполненные монтажные работы">
+        <figure class="portfolio-feature__visual portfolio-feature__visual--photo">
+          <img src="/evidence/7park/object-exterior-day.jpg" alt="Архитектурная визуализация жилого квартала 7 PARK в Павловске" width="800" height="450" loading="lazy" />
+          <figcaption>Архитектурный вид · 7 PARK</figcaption>
+        </figure>
+        <figure class="portfolio-feature__detail">
+          <img src="/evidence/7park/duct-route.jpg" alt="Смонтированные воздуховоды и инженерные трассы на объекте 7 PARK" width="600" height="600" loading="lazy" />
+          <figcaption>Работа AEROVENTA · воздуховоды</figcaption>
+        </figure>
+      </div>
       <dl class="case-facts">
         <div><dt>Объём</dt><dd>7 домов</dd></div>
         <div><dt>Период</dt><dd>18.11.2020 — 10.12.2020</dd></div>
@@ -172,11 +178,7 @@ const sportPhotos = ['/evidence/owner-portfolio/sport-komendantskiy/owner-select
           <h2 id="cases-title">Объекты разного масштаба</h2>
         </div>
       </div>
-      <div class="portfolio-archive__intro">
-        <p class="section-index">Наши объекты</p>
-        <h3>Объекты в фотографиях</h3>
-        <p>Квартиры, коммерческие помещения, производства и объекты общественного назначения. Фотографии помогают оценить разнообразие задач.</p>
-      </div>
+      <p class="portfolio-list__introduction">Квартиры и коммерческие пространства, промышленные площадки и объекты общественного назначения. У части объектов есть подробное описание работ; остальные представлены фотографиями.</p>
       <div class="portfolio-grid">
         {cases.filter((item) => item.index !== '01').map((item) => (
           <a href={item.href} class="portfolio-card">
@@ -220,7 +222,7 @@ const sportPhotos = ['/evidence/owner-portfolio/sport-komendantskiy/owner-select
       <div class="portfolio-sport__intro">
         <p class="section-index">03 / Спортивный объект</p>
         <h2 id="portfolio-sport-title">Центр адаптивного спорта</h2>
-        <p>Санкт-Петербург · Яхтенная, 39. Объект и детали монтажа вентиляции.</p>
+        <p>Санкт-Петербург · Яхтенная, 39. Общий вид комплекса и фотографии инженерных помещений.</p>
         <button type="button" class="portfolio-sport__gallery-link" data-archive-open
           data-gallery-title="Центр адаптивного спорта"
           data-gallery-images={JSON.stringify(sportPhotos)}
@@ -426,4 +428,56 @@ const sportPhotos = ['/evidence/owner-portfolio/sport-komendantskiy/owner-select
 .portfolio-archive-viewer__top [data-gallery-close]{pointer-events:auto}
 .portfolio-archive-viewer.is-zoomed .portfolio-archive-viewer__stage{overflow:auto;scrollbar-width:none}
 @media(max-width:600px){.portfolio-archive-viewer__stage{padding-inline:42px}.portfolio-archive-viewer__nav{padding-inline:0}}
+
+/* Documentary portfolio: one commanding object and its actual installation evidence. */
+.portfolio-hub .portfolio-hero{background:#f3f6f6;padding:clamp(35px,4.3vw,72px) 0}
+.portfolio-hub .portfolio-hero__grid{display:grid;grid-template-columns:minmax(0,.69fr) minmax(0,1.31fr);gap:clamp(27px,4vw,75px);align-items:center}
+.portfolio-hub .portfolio-hero h1{font-weight:540;letter-spacing:-.04em;font-size:clamp(3.1rem,4.3vw,5.25rem);line-height:1.06}
+.portfolio-hub .portfolio-hero__lede{line-height:1.65;max-width:47ch}
+.portfolio-hub .portfolio-hero__mosaic{min-height:0;aspect-ratio:1.6;grid-template-rows:minmax(0,1.65fr) minmax(0,.85fr);gap:clamp(7px,.7vw,12px)}
+.portfolio-hub .portfolio-hero__mosaic figure{min-height:0;overflow:hidden;margin:0}
+.portfolio-hub .portfolio-hero__mosaic img{width:100%;height:100%;object-fit:cover}
+.portfolio-hub .portfolio-hero__mosaic figcaption{font-size:.73rem;font-weight:520}
+.portfolio-hub .portfolio-feature{padding:clamp(38px,4.3vw,66px) 0}
+.portfolio-hub .portfolio-feature__grid{display:grid;grid-template-columns:minmax(0,.58fr) minmax(0,1.42fr);gap:clamp(20px,3.2vw,50px);align-items:start}
+.portfolio-hub .portfolio-feature__grid>div:first-child{grid-column:1;grid-row:1}
+.portfolio-hub .portfolio-feature__photography{grid-column:2;grid-row:1/span 2;display:grid;grid-template-columns:minmax(0,1.34fr) minmax(0,.66fr);align-items:stretch;gap:clamp(9px,1vw,16px);min-width:0}
+.portfolio-hub .portfolio-feature__photography figure{position:relative;margin:0;min-width:0;overflow:hidden;background:#173244;min-height:340px}
+.portfolio-hub .portfolio-feature__photography img{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.portfolio-hub .portfolio-feature__photography figure:last-child img{object-position:50% 50%}
+.portfolio-hub .portfolio-feature__photography figcaption{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(8,24,36,.72));padding:28px 13px 12px;font-size:.72rem;font-weight:500;color:#fff;line-height:1.4}
+.portfolio-hub .portfolio-feature .case-facts{grid-column:1;grid-row:2;display:flex;flex-direction:column;gap:0;margin:0;padding:0;border:0;background:transparent;min-width:0;max-width:100%}
+.portfolio-hub .portfolio-feature .case-facts>div{display:grid;grid-template-columns:minmax(64px,.38fr) minmax(0,1fr);gap:8px 14px;align-items:start;min-width:0;max-width:100%;padding:13px 0;border:0;border-top:1px solid #405968}
+.portfolio-hub .portfolio-feature .case-facts dt{font-size:.72rem;line-height:1.4;font-weight:450;color:#b4c9d3;overflow-wrap:normal}
+.portfolio-hub .portfolio-feature .case-facts dd{margin:0;min-width:0;max-width:100%;font-size:.9rem;line-height:1.43;font-weight:530;overflow-wrap:normal;word-break:normal;hyphens:auto}
+.portfolio-hub .portfolio-list__introduction{max-width:73ch;margin:18px 0 clamp(24px,3vw,40px);font-size:clamp(.97rem,1.18vw,1.12rem);line-height:1.62;color:#516774}
+.portfolio-hub .portfolio-grid .portfolio-card__body{gap:7px}
+.portfolio-hub .portfolio-grid .portfolio-card__top span{font-size:.67rem;font-weight:540;color:#6c8290}
+.portfolio-hub .portfolio-grid .portfolio-card h3{font-weight:570;line-height:1.23}
+@media(max-width:1024px){
+ .portfolio-hub .portfolio-hero__grid{grid-template-columns:minmax(0,.77fr) minmax(0,1.23fr);gap:25px}
+ .portfolio-hub .portfolio-feature__grid{grid-template-columns:minmax(0,.67fr) minmax(0,1.33fr)}
+ .portfolio-hub .portfolio-feature__photography{grid-template-columns:1.15fr .85fr}
+}
+@media(max-width:760px){
+ .portfolio-hub .portfolio-hero{padding:28px 0 33px}
+ .portfolio-hub .portfolio-hero__grid{grid-template-columns:1fr;gap:22px}
+ .portfolio-hub .portfolio-hero h1{font-size:clamp(2.6rem,9vw,3.5rem)}
+ .portfolio-hub .portfolio-hero__mosaic{aspect-ratio:1.65;grid-template-rows:1.55fr .85fr;min-height:0;height:auto}
+ .portfolio-hub .portfolio-feature__grid{grid-template-columns:1fr;gap:22px}
+ .portfolio-hub .portfolio-feature__grid>div:first-child{grid-column:1;grid-row:1}
+ .portfolio-hub .portfolio-feature__photography{grid-column:1;grid-row:2;grid-template-columns:1.2fr .8fr;min-height:0}
+ .portfolio-hub .portfolio-feature__photography figure{min-height:235px}
+ .portfolio-hub .portfolio-feature .case-facts{grid-column:1;grid-row:3;gap:0}
+}
+
+
+/* Prevent intrinsic card strings from widening 125%-zoom grid tracks. */
+.portfolio-hub .portfolio-hero__grid,.portfolio-hub .portfolio-hero__mosaic,.portfolio-hub .portfolio-feature__grid,.portfolio-hub .portfolio-feature__photography,.portfolio-hub .portfolio-grid{min-width:0;max-width:100%;box-sizing:border-box}
+.portfolio-hub .portfolio-grid>.portfolio-card{min-width:0!important;max-width:100%;box-sizing:border-box}
+.portfolio-hub .portfolio-card__body,.portfolio-hub .portfolio-card__top,.portfolio-hub .portfolio-card__bottom{min-width:0;max-width:100%;box-sizing:border-box}
+.portfolio-hub .portfolio-card__top,.portfolio-hub .portfolio-card__bottom{flex-wrap:wrap}
+.portfolio-hub .portfolio-card__top>b,.portfolio-hub .portfolio-card__body h3,.portfolio-hub .portfolio-card__bottom span{min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:normal}
+.portfolio-hub .portfolio-hero__mosaic figcaption{max-width:100%;box-sizing:border-box;overflow-wrap:anywhere}
+
 </style>

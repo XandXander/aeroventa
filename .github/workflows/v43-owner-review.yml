@@ -53,19 +53,55 @@ jobs:
           exit 1
       - name: Render real compiled HTML at four viewports
         run: node scripts/render-v43-owner-review.mjs
+      - name: Emit compact selected real-render previews into CI evidence log
+        if: always()
+        shell: bash
+        run: |
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          const root='V43_OWNER_BROWSER_REVIEW/selected_preview';
+          if (!fs.existsSync(root)) throw new Error('Selected screenshots missing');
+          const files=fs.readdirSync(root).filter(f=>f.endsWith('.jpg')).sort();
+          if(files.length!==12) throw new Error('Expected 12 Owner previews, got '+files.length);
+          for(const file of files){
+            const b64=fs.readFileSync(path.join(root,file)).toString('base64');
+            const size=12000,total=Math.ceil(b64.length/size);
+            console.log('AV_RENDER_START '+file+' '+total);
+            for(let n=0;n<total;n++) console.log('AV_RENDER_PART '+file+' '+n+' '+b64.slice(n*size,(n+1)*size));
+            console.log('AV_RENDER_END '+file);
+          }
+          console.log('AV_OWNER_SELECT_PREVIEWS '+files.length+' EXACT_SHA_RENDER');
+          JS
       - name: Upload browser screenshots and machine report
         if: always()
         uses: actions/upload-artifact@v6
         with:
-          name: v43-final-compiled-browser-owner-review
-          path: V43_OWNER_BROWSER_REVIEW
-          if-no-files-found: warn
+          name: v43-final-selected-owner-review
+          # Preserve 400-route regression locally, upload only 12 Owner-facing real render proofs.
+          # Never emit another 520 MB screenshot archive for this PR.
+          path: |
+            V43_OWNER_BROWSER_REVIEW/manifest.json
+            V43_OWNER_BROWSER_REVIEW/home__desktop_1440.png
+            V43_OWNER_BROWSER_REVIEW/home__mobile_390.png
+            V43_OWNER_BROWSER_REVIEW/services__desktop_1440.png
+            V43_OWNER_BROWSER_REVIEW/services__mobile_390.png
+            V43_OWNER_BROWSER_REVIEW/about__desktop_1440.png
+            V43_OWNER_BROWSER_REVIEW/about__mobile_390.png
+            V43_OWNER_BROWSER_REVIEW/portfolio__desktop_1440.png
+            V43_OWNER_BROWSER_REVIEW/portfolio__mobile_390.png
+            V43_OWNER_BROWSER_REVIEW/polisan__desktop_1440.png
+            V43_OWNER_BROWSER_REVIEW/drill_crown__desktop_1440.png
+            V43_OWNER_BROWSER_REVIEW/ponsse_letter_open__mobile_390.png
+            V43_OWNER_BROWSER_REVIEW/consultant_open__mobile_390.png
+            V43_OWNER_BROWSER_REVIEW/selected_preview/*.jpg
+          if-no-files-found: error
           retention-days: 7
       # This artifact must not replace staging authentication or production Bitrix.
       # Browser QA must PASS first. The archive contains compiled site files
       # at ZIP root. Existing staging .htaccess / Basic Auth MUST be preserved.
       - name: Seal tested staging-only site
-        if: success()
+        if: success() && github.event_name == 'workflow_dispatch'
         env:
           REVIEW_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
@@ -94,7 +130,7 @@ jobs:
           mv apps/web/dist/.htaccess apps/web/dist/STAGING_RULES_REFERENCE_ONLY.txt
           test ! -f apps/web/dist/.htaccess
       - name: Upload exact tested staging-only site
-        if: success()
+        if: success() && github.event_name == 'workflow_dispatch'
         uses: actions/upload-artifact@v6
         with:
           name: AEROVENTA_V43_STAGING_ONLY_SITE_DO_NOT_UPLOAD_TO_PRODUCTION

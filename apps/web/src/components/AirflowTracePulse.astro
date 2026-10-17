@@ -76,37 +76,45 @@ const tel = SITE.phone.replace(/[^+\d]/g, '');
     document.addEventListener('DOMContentLoaded', bindRequestPulse, {once:true});
   } else bindRequestPulse();
 
-  const sections = [...document.querySelectorAll('main > section, main article > section')]
-    .filter((section) => !section.hasAttribute('data-airflow-ignore'));
+  // BaseLayout places this component before <main>. Initialize after parsing
+  // the page content, otherwise the observer receives zero section nodes.
+  const bindSectionTrace = () => {
+    const sections = [...document.querySelectorAll('main > section, main article > section')]
+      .filter((section) => !section.hasAttribute('data-airflow-ignore'));
 
-  sections.forEach((section, index) => {
-    section.classList.add('airflow-trace-section');
-    section.style.setProperty('--airflow-trace-index', String(index));
-  });
+    sections.forEach((section, index) => {
+      section.classList.add('airflow-trace-section');
+      section.style.setProperty('--airflow-trace-index', String(index));
+    });
 
-  if (prefersReduced) {
-    sections.forEach((section) => section.classList.add('is-airflow-active'));
-  } else if ('IntersectionObserver' in window) {
-    let lastPulseAt = 0;
-    const observer = new IntersectionObserver((entries) => {
-      const candidates = entries
-        .filter((entry) => entry.isIntersecting && !entry.target.classList.contains('is-airflow-active'))
-        .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-      if (!candidates.length) return;
+    if (prefersReduced) {
+      sections.forEach((section) => section.classList.add('is-airflow-active'));
+    } else if ('IntersectionObserver' in window) {
+      let lastPulseAt = 0;
+      const observer = new IntersectionObserver((entries) => {
+        const candidates = entries
+          .filter((entry) => entry.isIntersecting && !entry.target.classList.contains('is-airflow-active'))
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+        if (!candidates.length) return;
 
-      const now = performance.now();
-      if (now - lastPulseAt < 280) return;
+        const now = performance.now();
+        if (now - lastPulseAt < 280) return;
 
-      const target = candidates[0].target;
-      target.classList.add('is-airflow-active');
-      lastPulseAt = now;
-      observer.unobserve(target);
-    }, { threshold: [0.22, 0.42], rootMargin: '0px 0px -12% 0px' });
+        const target = candidates[0].target;
+        target.classList.add('is-airflow-active');
+        lastPulseAt = now;
+        observer.unobserve(target);
+      }, { threshold: [0.22, 0.42], rootMargin: '0px 0px -12% 0px' });
 
-    sections.forEach((section) => observer.observe(section));
-  } else {
-    sections.forEach((section) => section.classList.add('is-airflow-active'));
-  }
+      sections.forEach((section) => observer.observe(section));
+    } else {
+      sections.forEach((section) => section.classList.add('is-airflow-active'));
+    }
+
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bindSectionTrace, {once:true});
+  } else bindSectionTrace();
 
   // Do not cover first-fold object routes with a fixed consultant launcher.
   // Discovery is deferred until the entire page has rendered.

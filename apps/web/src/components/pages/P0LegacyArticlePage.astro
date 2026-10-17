@@ -416,4 +416,17 @@ if (paragraph) legacyParagraphs.push(paragraph.trim());
 .p0-story-footer h2{font-size:clamp(1.5rem,2.3vw,2.25rem);font-weight:570;line-height:1.2;max-width:24ch}
 .p0-story-footer p{line-height:1.65;max-width:64ch;color:#4c6471}
 @media(max-width:760px){.p0-story-head{padding-block:30px 26px}.p0-story-head h1{font-size:clamp(2rem,9vw,3rem)}.p0-story-footer__inner{grid-template-columns:1fr}}
+
+/* Longform technical document: original HTML/image order is kept verbatim. */
+.p0-article--reading .p0-story-head{border-bottom:1px solid #dbe3e6;background:#f5f7f7;padding:clamp(35px,5vw,72px) 0 clamp(34px,4vw,60px)}
+.p0-article--reading .p0-story-head h1{font-size:clamp(2.05rem,3.8vw,4.1rem);font-weight:540;line-height:1.14;letter-spacing:-.037em;max-width:23ch}
+.p0-article--reading .p0-story{padding:clamp(30px,4.2vw,64px) 0 clamp(65px,8vw,115px)}
+.p0-article--reading .p0-story__body{max-width:73ch;line-height:1.8;font-weight:415}
+.p0-article--reading .p0-story__body :global(h2){margin:2.1em 0 .65em;max-width:28ch;line-height:1.22;font-weight:580}
+.p0-article--reading .p0-story__body :global(h3){margin:1.75em 0 .55em;max-width:34ch}
+.p0-article--reading .p0-story__body :global(figure){clear:both;margin:clamp(22px,3.6vw,50px) 0 clamp(24px,3vw,44px)}
+.p0-article--reading .p0-story__body :global(img){max-width:100%;height:auto;margin:clamp(17px,2.4vw,31px) auto;object-fit:contain}
+.p0-article--reading .p0-story__body :global(figcaption){max-width:62ch;margin:0 auto;font-size:.83rem;line-height:1.55;color:#516a76}
+@media(max-width:760px){.p0-article--reading .p0-story-head h1{font-size:clamp(2rem,8.9vw,3rem)}.p0-article--reading .p0-story__body{line-height:1.75}}
+
 </style>

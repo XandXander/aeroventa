@@ -525,6 +525,60 @@ try {
       }
     }
   }
+  // Owner's real motion gate: observe first-visit assembly, actual completion,
+  // repeat-navigation suppression and reduced-motion static readiness.
+  // No network calls, artificial delay, or simulated operational activity.
+  {
+    const normal = await browser.newContext({viewport:{width:1440,height:900},reducedMotion:'no-preference'});
+    const page = await normal.newPage();
+    try {
+      await page.goto(baseUrl+'/',{waitUntil:'domcontentloaded'});
+      const first = await page.evaluate(()=>{
+        const entry=document.querySelector('[data-airflow-entry]');
+        const duct=entry?.querySelector('.airflow-entry-trace__duct');
+        const pulse=entry?.querySelector('.airflow-entry-trace__pulse');
+        const supply=document.querySelector('.airflow-header-trace__route--supply')?.getBoundingClientRect();
+        const exhaust=document.querySelector('.airflow-header-trace__route--exhaust')?.getBoundingClientRect();
+        return {
+          running:!!entry?.classList.contains('is-running'),
+          assembly:duct?getComputedStyle(duct).animationName:null,
+          pulse:pulse?getComputedStyle(pulse).animationName:null,
+          nonBlocking:!!entry&&getComputedStyle(entry).pointerEvents==='none',
+          distinctlySeparated:!!supply&&!!exhaust&&supply.right<exhaust.left-1,
+          shown:sessionStorage.getItem('aeroventa-entry-shown')
+        };
+      });
+      await page.waitForFunction(()=>!document.querySelector('[data-airflow-entry]'),null,{timeout:3000});
+      const finished=await page.evaluate(()=>({
+        entryRemoved:!document.querySelector('[data-airflow-entry]'),
+        fakeProcessing:document.documentElement.hasAttribute('data-airflow-processing')
+      }));
+      await page.goto(baseUrl+'/services/',{waitUntil:'domcontentloaded'});
+      const revisited=await page.evaluate(()=>({
+        entryAbsent:!document.querySelector('[data-airflow-entry]'),
+        saved:sessionStorage.getItem('aeroventa-entry-shown')==='1'
+      }));
+      const reducedCtx=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'});
+      try {
+        const reducedPage=await reducedCtx.newPage();
+        await reducedPage.goto(baseUrl+'/',{waitUntil:'domcontentloaded'});
+        const reduced=await reducedPage.evaluate(()=>({
+          reduced:matchMedia('(prefers-reduced-motion: reduce)').matches,
+          entryAbsent:!document.querySelector('[data-airflow-entry]'),
+          sectionsReady:(document.querySelectorAll('.airflow-trace-section').length>0)&&[...document.querySelectorAll('.airflow-trace-section')].every(n=>n.classList.contains('is-airflow-active'))
+        }));
+        report.motion_evidence={first,finished,revisited,reduced};
+        if(!first.running||first.assembly!=='airflow-route-assemble'||
+           first.pulse!=='airflow-route-pulse'||!first.nonBlocking||
+           !first.distinctlySeparated||first.shown!=='1'||
+           !finished.entryRemoved||finished.fakeProcessing||
+           !revisited.entryAbsent||!revisited.saved||
+           !reduced.reduced||!reduced.entryAbsent||!reduced.sectionsReady)
+          report.fail.push({reason:'Actual first visit/revisit/reduced motion lifecycle',first,finished,revisited,reduced});
+      }finally{await reducedCtx.close()}
+    }catch(e){report.fail.push({reason:'Motion browser lifecycle exception',error:String(e)})}
+    finally{await normal.close()}
+  }
   // Contact UI: mock POST, never reach an inbox. Verify a pending-only PULSE,
   // accessible error path and no fabricated delivery confirmation.
   {
@@ -732,6 +786,7 @@ try {
             (width>=1024&&zoom===1&&['/','/services/'].includes(route)&&result.firstFoldBottom!==null&&result.firstFoldBottom<height-5) ||
             (route==='/blog/'&&zoom===1&&(result.firstArticleTop===null||result.firstArticleTop>height)) ||
             (zoom===1&&!result.traceVisible)) {
+          if (result.horizontal>1) result.offenders=await page.evaluate(()=>[...document.querySelectorAll('body *')].map(el=>{const b=el.getBoundingClientRect();return{tag:el.tagName.toLowerCase(),cls:typeof el.className==='string'?el.className.slice(0,90):'',left:Math.round(b.left),right:Math.round(b.right),scroll:el.scrollWidth,client:el.clientWidth}}).filter(x=>x.right>innerWidth+1||x.left < -1).slice(0,15));
           report.fail.push({reason:'Owner height/zoom/real TRACE gate',route,width,height,zoom,result});
         }
       }
@@ -833,6 +888,38 @@ try {
     }catch(e){report.fail.push({reason:'PONSSE document full interaction exception',error:String(e)})}
     finally{await context.close()}
   }
+
+  // Read-only evidence delivery: JPG is an exact captured screenshot re-encoding, not a fabricated mockup.
+  const selectedDelivery = [
+    'home__desktop_1440','home__mobile_390',
+    'services__desktop_1440','services__mobile_390',
+    'about__desktop_1440','about__mobile_390',
+    'portfolio__desktop_1440','portfolio__mobile_390',
+    'polisan__desktop_1440','drill_crown__desktop_1440',
+    'ponsse_letter_open__mobile_390','consultant_open__mobile_390'
+  ];
+  const deliveryDir = path.join(root,'selected_preview');
+  await fs.mkdir(deliveryDir,{recursive:true});
+  const previewContext = await browser.newContext();
+  const previewPage = await previewContext.newPage();
+  try {
+    for(const name of selectedDelivery) {
+      const png = await fs.readFile(path.join(root,name+'.png'));
+      const jpegBase64 = await previewPage.evaluate(async data => {
+        const original = new Image();
+        original.src = 'data:image/png;base64,'+data;
+        await original.decode();
+        const width = Math.min(960,original.naturalWidth);
+        const height = Math.round(original.naturalHeight * width / original.naturalWidth);
+        if (height>32000) throw new Error('Captured page too tall for JPEG preview');
+        const canvas = document.createElement('canvas');
+        canvas.width=width;canvas.height=height;
+        canvas.getContext('2d').drawImage(original,0,0,width,height);
+        return canvas.toDataURL('image/jpeg',.47).split(',')[1];
+      },png.toString('base64'));
+      await fs.writeFile(path.join(deliveryDir,name+'.jpg'),Buffer.from(jpegBase64,'base64'));
+    }
+  } finally { await previewContext.close(); }
 } finally {
   await browser.close();
 }

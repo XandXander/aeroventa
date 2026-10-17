@@ -73,7 +73,6 @@ const objectLinks = [
       <div class="services-directions__list">
         {objectLinks.map(([title,text,href],index) => (
           <a href={href} class="services-directions__item">
-            <span>{String(index+1).padStart(2,'0')}</span>
             <strong>{title}</strong>
             <p>{text}</p>
             <b aria-hidden="true">↗</b>
@@ -135,4 +134,18 @@ const objectLinks = [
     .services-consultant-inline{display:flex;justify-content:space-between;padding:15px;background:#edf4f6;color:#214d64;text-decoration:none;font-weight:700}
   }
   @media(prefers-reduced-motion:reduce){.services-hero__routes a{scroll-behavior:auto}}
+
+/* Services use a photographic study plus a navigable editorial register, not category cards. */
+.services-directions{background:#f6f8f8}
+.services-directions__list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 clamp(25px,4vw,65px);border:0;background:transparent}
+.services-directions__item{position:relative;display:grid!important;grid-template-columns:minmax(0,1fr) 22px;grid-template-rows:auto auto;align-content:start;gap:6px 18px;min-height:0!important;padding:clamp(20px,2.4vw,34px) 7px clamp(20px,2.4vw,34px) 0!important;border:0!important;border-top:1px solid #c4d2d9!important;background:transparent!important}
+.services-directions__item strong{grid-column:1;grid-row:1;font-size:clamp(1.2rem,1.75vw,1.65rem);font-weight:560;line-height:1.24}
+.services-directions__item p{grid-column:1;grid-row:2;max-width:48ch;font-size:.95rem;line-height:1.58}
+.services-directions__item b{grid-column:2;grid-row:1;justify-self:end;font-weight:400}
+.services-directions__item:hover,.services-directions__item:focus-visible{background:#edf2f4!important;color:#15394b}
+.services-competence__layout{gap:clamp(32px,6vw,110px)}
+.services-competence__intro h2{font-size:clamp(1.9rem,3.15vw,3.3rem);font-weight:555;line-height:1.16;letter-spacing:-.036em}
+.services-hero--owner-editorial h1{font-weight:555;line-height:1.09}
+@media(max-width:760px){.services-directions__list{grid-template-columns:1fr;gap:0}.services-directions__item{padding:19px 0!important}}
+
 </style>

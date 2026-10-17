@@ -58,7 +58,7 @@ const specs: Record<string, CaseSpec> = {
       'На исходной странице сохранена отдельная галерея «Фото объекта 7 ПАРК»; показанные ниже файлы взяты именно из неё.'
     ],
     media:[
-      ['/evidence/7park/object-exterior-day.jpg','Дневной вид зданий жилого квартала 7 PARK в Павловске','Жилой квартал · дневной вид'],
+      ['/evidence/7park/object-exterior-day.jpg','Архитектурная визуализация жилого квартала 7 PARK в Павловске','Архитектура квартала 7 PARK'],
       ['/evidence/7park/duct-route.jpg','Смонтированный воздуховод на объекте 7 PARK','Фрагмент монтажных работ'],
       ['/evidence/7park/object-exterior.jpg','Жилой квартал 7 PARK в Павловске','Объект 7 PARK · Павловск'],
       ['/evidence/7park/object-courtyard-night.jpg','Вечерний вид двора жилого квартала 7 PARK в Павловске','Жилой квартал · вечерний вид']
@@ -433,6 +433,19 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
     </div>
   </header>
 
+  <section class="home-section case-story case-story--editorial" aria-labelledby="case-story-title">
+    <div class="home-shell">
+      <header class="case-story__intro">
+        <p class="section-index">Задача и монтаж</p>
+        <h2 id="case-story-title">Работа на объекте</h2>
+      </header>
+      <div class="case-story__grid">
+        <div><span>Задача</span><h3>Что требовалось</h3><p>{spec.task}</p></div>
+        <div><span>Монтаж</span><h3>Что смонтировано</h3><p>{spec.works}</p></div>
+        <div><span>Результат</span><h3>Сведения о работах</h3><p>{spec.result}</p></div>
+      </div>
+    </div>
+  </section>
   <section class="home-section case-gallery case-gallery--lead" aria-labelledby="case-gallery-title">
     <div class="home-shell">
       <p class="section-index section-index--orange">Реальные фотографии</p>
@@ -554,13 +567,6 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
   </div>
 </dialog>
   )}
-  <section class="home-section case-story" aria-label="Задача, выполненные работы и результат">
-    <div class="home-shell case-story__grid">
-      <div><span>Задача</span><h2>Что требовалось на объекте</h2><p>{spec.task}</p></div>
-      <div><span>Выполненные работы</span><h2>Что смонтировано</h2><p>{spec.works}</p></div>
-      <div><span>Подтверждение</span><h2>Известные сведения</h2><p>{spec.result}</p></div>
-    </div>
-  </section>
   {(verifiedOriginal || oldCaseExcerpt) && (
     <section class="case-original-record" aria-label="Подробное описание работ">
       <div class="home-shell">
