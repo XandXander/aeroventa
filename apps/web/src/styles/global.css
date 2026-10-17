@@ -3704,11 +3704,45 @@ html::-webkit-scrollbar-thumb:hover {background:#7c93a2;}
 .engagement--project .engagement-evidence__grid{gap:12px;background:transparent;border:0}
 .engagement--project .engagement-evidence__grid a{min-height:220px;padding:24px;border:1px solid #dae3e9}
 .engagement--project .engagement-evidence__grid h3{font-size:clamp(1.3rem,1.65vw,1.75rem)}
-/* Do not bleach the low-resolution legacy scene or crop engineering annotations. */
-.home-hero--owner-airflow ~ .home-solution .solution-diagram{background:transparent;min-height:0;height:auto;aspect-ratio:1036/338}
+/* Owner P0: full-height editorial scale for the wide process drawing.
+   Keep the original aspect and all baked-in HVAC annotations; fade only the
+   illustration perimeter, not the text or the air-flow routes. */
+.home-hero--owner-airflow ~ .home-solution .solution-diagram{
+  background:transparent;min-height:0;height:auto;aspect-ratio:1036/338;
+}
+.home-hero--owner-airflow ~ .home-solution .solution-diagram img{
+  position:static;display:block;width:100%;height:auto;object-fit:contain;filter:none;transform:none;
+}
 .home-hero--owner-airflow ~ .home-solution .solution-diagram::before,
 .home-hero--owner-airflow ~ .home-solution .solution-diagram::after{display:none!important}
-.home-hero--owner-airflow ~ .home-solution .solution-diagram img{position:static;width:100%;height:auto;object-fit:contain;filter:none;transform:none}
+@media(min-width:1101px){
+  /* The old 520px stage surrounded a naturally shallow 1036:338 scene with
+     empty air; this tighter section visually enlarges the preserved artwork. */
+  .home-hero--owner-airflow ~ .home-solution .home-shell.solution-grid{
+    min-height:390px;grid-template-columns:minmax(0,34%) minmax(0,66%);
+  }
+  .home-hero--owner-airflow ~ .home-solution .solution-grid>.section-copy{
+    padding-block:25px;max-width:465px;
+  }
+  .home-hero--owner-airflow ~ .home-solution .solution-diagram{
+    top:0;bottom:0;left:32%;right:0;height:100%;aspect-ratio:auto;
+    display:flex;align-items:center;justify-content:center;
+    background:transparent;
+  }
+  .home-hero--owner-airflow ~ .home-solution .solution-diagram img{
+    position:relative;inset:auto;width:100%;height:auto;object-fit:contain;
+  }
+  /* A soft blend at the left/bottom boundary removes the hard rectangular
+     seam without bleaching the diagram's supply/exhaust callouts at the top. */
+  .home-hero--owner-airflow ~ .home-solution .solution-diagram::before{
+    content:"";display:block!important;position:absolute;inset:0;z-index:2;
+    pointer-events:none;background:
+      linear-gradient(90deg,#f8fafb 0%,rgba(248,250,251,.58) 5%,transparent 17%),
+      linear-gradient(0deg,rgba(248,250,251,.74) 0%,transparent 11%);
+  }
+  .home-hero--owner-airflow ~ .home-solution .solution-diagram::after{display:none!important}
+}
+
 /* Gallery image occupies the available plane; side navigation never displaces it. */
 .case-photo-dialog{position:relative;width:min(98vw,1550px);height:min(95dvh,1050px);background:#0b1823}
 .case-photo-dialog__panel{position:relative}
@@ -4027,7 +4061,7 @@ dialog.ponsse-letter-dialog[open]{display:grid;grid-template-rows:auto minmax(0,
 .site-footer :is(p,span,strong){color:#d4e0e6}
 .site-footer .footer-brand__name,.site-footer .footer-brand__name :is(span,strong){color:#fff!important}
 .site-footer :is(.footer-phone,.footer-contact a,.footer-nav a){color:#f8fbfc!important;font-weight:540;text-decoration:none;opacity:1!important}
-.site-footer .footer-phone{font-size:clamp(1.12rem,1.35vw,1.4rem)!important;font-weight:550!important;letter-spacing:-.012em!important;line-height:1.4;margin-top:4px}
+.site-footer .footer-phone{font-size:clamp(1rem,1.15vw,1.125rem)!important;font-weight:500!important;letter-spacing:-.005em!important;line-height:1.45;margin-top:2px}
 .site-footer :is(.footer-contact a,.footer-nav a):hover{text-decoration:underline;text-underline-offset:5px;color:#fff!important}
 .site-footer .footer-grid{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr) minmax(0,.65fr);gap:clamp(22px,4vw,80px)}
 .site-footer .footer-nav{display:grid;grid-template-columns:1fr;gap:13px}
