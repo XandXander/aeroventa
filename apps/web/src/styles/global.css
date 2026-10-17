@@ -3725,7 +3725,7 @@ html::-webkit-scrollbar-thumb:hover {background:#7c93a2;}
     padding-block:25px;max-width:465px;
   }
   .home-hero--owner-airflow ~ .home-solution .solution-diagram{
-    top:0;bottom:0;left:32%;right:0;height:100%;aspect-ratio:auto;
+    top:0;bottom:0;left:25%;right:0;height:100%;aspect-ratio:auto;
     display:flex;align-items:center;justify-content:center;
     background:transparent;
   }
