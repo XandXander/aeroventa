@@ -54,8 +54,8 @@ const tel = SITE.phone.replace(/[^+\d]/g, '');
     else {
       entry.classList.add('is-running');
       entry.addEventListener('animationend', (event) => {
-        if (event.target === entry) entry.remove();
-      }, {once:true});
+        if (event.target === entry && event.animationName === 'airflow-entry-fade') entry.remove();
+      });
     }
   }
   // AirflowTracePulse renders before PremiumExperience. Wait for the form DOM:
