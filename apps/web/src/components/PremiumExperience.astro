@@ -16,8 +16,7 @@ const { pagePath = '' } = Astro.props;
   <div class="experience-dialog__shell">
     <div class="experience-dialog__head">
       <div>
-        <p class="section-index">Инженерный консультант</p>
-        <h2 id="consultant-title">Помощь по вашему объекту</h2>
+        <h2 id="consultant-title">Чем помочь с вентиляцией?</h2>
       </div>
       <button type="button" class="dialog-close" data-dialog-close aria-label="Закрыть консультанта">×</button>
     </div>
@@ -25,19 +24,18 @@ const { pagePath = '' } = Astro.props;
     <section class="consultant-conversation" aria-label="Вопросы по вентиляции">
       <ol class="consultant-conversation__history" data-consultant-chat-messages aria-live="polite" aria-relevant="additions"></ol>
       <form class="consultant-conversation__composer" data-consultant-chat-form>
-        <label for="consultant-chat-question">Ваш вопрос</label>
+        <label class="consultant-conversation__accessible-label" for="consultant-chat-question">Вопрос о вентиляции</label>
         <div class="consultant-conversation__input">
-          <textarea id="consultant-chat-question" name="question" maxlength="800" rows="2" placeholder="Например: есть проект вентиляции ресторана, нужен монтаж" required></textarea>
+          <textarea id="consultant-chat-question" name="question" maxlength="800" rows="2" placeholder="Опишите задачу или задайте вопрос" required></textarea>
           <button type="submit" aria-label="Отправить вопрос">→</button>
         </div>
       </form>
       <div class="consultant-conversation__foot">
-        <span>По материалам AEROVENTA</span>
-        <button type="button" data-consultant-chat-handoff>Передать вопрос специалисту →</button>
+        <button type="button" data-consultant-chat-handoff>Передать специалисту →</button>
       </div>
     </section>
 
-    <details class="consultant-structured">
+    <details class="consultant-structured" data-consultant-structured hidden>
       <summary>Параметры объекта <span>по желанию</span></summary>
     <form class="consultant-form" data-consultant-form>
       <div class="consultant-form__grid">
@@ -449,6 +447,8 @@ const { pagePath = '' } = Astro.props;
     const question = String(chatInput?.value || '').trim().slice(0, 800);
     if (!question) return;
     lastChatQuestion = question;
+    const advanced = consultantDialog?.querySelector('[data-consultant-structured]');
+    if (advanced && /параметр|анкета|уточн.*объект|заполн.*данн/i.test(question)) advanced.hidden = false;
     addChatMessage('visitor', 'Ваш вопрос', question);
     const [route, title, explanation] = safeChatRoute(question);
     addChatMessage('guide', 'Материалы AEROVENTA', title + '. ' + explanation, route);
