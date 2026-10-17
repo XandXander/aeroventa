@@ -632,3 +632,13 @@
  body:has(.about-premium) .consultant-launcher{display:inline-flex}
  .consultant-conversation__history:not(:empty){max-height:32dvh}
 }
+
+/* Final consultant sheet: useful question first, no stacked ornamental frames. */
+.experience-dialog--consultant::backdrop{background:rgba(9,25,38,.43)}
+.experience-dialog--consultant .experience-dialog__shell{padding:clamp(18px,2.4vw,29px)}
+.experience-dialog--consultant .consultant-conversation{background:transparent;border:0;border-radius:0;overflow:visible}
+.experience-dialog--consultant .consultant-conversation__composer{padding:12px 0 9px}
+.experience-dialog--consultant .consultant-conversation__foot{padding:0 0 14px}
+.experience-dialog--consultant .consultant-conversation__history:empty{display:none}
+.experience-dialog--consultant .consultant-structured{margin-top:4px;border-top:1px solid #dce6ec}
+@media(max-width:760px){.experience-dialog--consultant .experience-dialog__shell{padding:18px 16px max(20px,env(safe-area-inset-bottom))}}

@@ -428,7 +428,7 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
           data-photo-caption={spec.media[0][2]} aria-label={`Увеличить фотографию объекта: ${spec.media[0][1]}`}>
           <img src={spec.media[0][0]} alt={spec.media[0][1]} width="1200" height="760" loading="eager" fetchpriority="high" decoding="async" />
         </button>
-        <figcaption><span>Документальный кадр</span>{spec.media[0][2]}</figcaption>
+        <figcaption><span>Объект</span>{spec.media[0][2]}</figcaption>
       </figure>
     </div>
   </header>
@@ -450,11 +450,11 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
       </div>}
       {Boolean(spec.archiveMedia?.length) && (
         <section class="case-gallery__archive" data-case-archive aria-labelledby="case-photo-archive-title">
-          <h3 id="case-photo-archive-title">Документальные кадры монтажа</h3>
+          <h3 id="case-photo-archive-title">Монтаж в деталях</h3>
           <div class="case-gallery__thumbs">
             {(spec.archiveMedia || []).map(([src, alt, caption]) => (
               <figure class="case-gallery__item case-gallery__item--thumb">
-                <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={alt} data-photo-archival="true" data-photo-caption="Исходная фотография работ" aria-label={`Увеличить архивную фотографию: ${alt}`}>
+                <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={alt} data-photo-archival="true" data-photo-caption={alt} aria-label={`Увеличить архивную фотографию: ${alt}`}>
                   <img src={src} alt={alt} width="460" height="300" loading="lazy" decoding="async" />
                 </button>
               </figure>
@@ -464,18 +464,18 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
             <button type="button" class="case-gallery__expand" data-case-gallery-expand
               aria-expanded="false">Показать все фотографии · {(spec.archiveMedia || []).length} <span aria-hidden="true">↓</span></button>
           )}
-          <p class="case-gallery__archive-note">Подлинные снимки доступны в полном размере. При увеличении можно перелистывать всю галерею.</p>
+          <p class="case-gallery__archive-note">Нажмите на снимок, чтобы рассмотреть монтаж и перелистать фотографии.</p>
         </section>
       )}
       {fullOriginalGallery.length>0 && (
         <details class="case-gallery__verified-originals">
-          <summary>Полный оригинальный фотоархив ({fullOriginalGallery.length})</summary>
+          <summary>Другие фотографии объекта ({fullOriginalGallery.length})</summary>
           <div class="case-gallery__verified-grid">
             {fullOriginalGallery.map((src,index)=>(
               <button class="case-gallery__open" type="button" data-case-photo
                 data-photo-src={src} data-photo-archival="true"
                 data-photo-alt={`Исходный кадр ${index+1}`}
-                data-photo-caption="Оригинал из исторической публикации"
+                data-photo-caption="Фотография объекта"
                 aria-label={`Открыть исходную фотографию ${index+1}`}>
                 <img src={src} width="800" height="600" loading="lazy" decoding="async"
                   alt={`Фотография монтажа из оригинальной публикации, ${index+1}`}/>
@@ -505,7 +505,7 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
 
   <section class="case-detail-facts" aria-labelledby="case-facts-title">
     <div class="home-shell">
-      <p class="section-index">01 / Сведения из публикации</p>
+      <p class="section-index">Объект и работы</p>
       <h2 id="case-facts-title">{documentary.facts}</h2>
       <dl class="case-detail-facts__grid">
         {spec.facts.map(([label,value]) => <div><dt>{label}</dt><dd>{value}</dd></div>)}
@@ -562,12 +562,12 @@ if(!spec) throw new Error('Case spec missing: '+content.path);
     </div>
   </section>
   {(verifiedOriginal || oldCaseExcerpt) && (
-    <section class="case-original-record" aria-label="Оригинальный текст архивной публикации">
+    <section class="case-original-record" aria-label="Подробное описание работ">
       <div class="home-shell">
         <details class="case-original-record__details">
-          <summary>Первоначальное описание объекта · архив</summary>
+          <summary>Подробности работ</summary>
           <div class="case-original-record__body">
-            <p class="case-original-record__note">{verifiedOriginal ? 'Текст восстановлен по оригинальному HTML, совпавшему с контрольным SHA-256 августа 2026 года.' : 'Текст сохранён в архивном индексе исходной публикации. Сроки и объёмы относятся к историческому объекту, не к действующему коммерческому предложению.'}</p>
+            <p class="case-original-record__note">{verifiedOriginal ? 'Даты и объёмы относятся к указанному объекту.' : 'Сведения о работах относятся к периоду выполнения этого объекта.'}</p>
             {verifiedOriginal ? <div set:html={verifiedArchiveHtml} /> : <p>{oldCaseExcerpt}</p>}
           </div>
         </details>

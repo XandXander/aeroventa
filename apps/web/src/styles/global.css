@@ -4629,3 +4629,73 @@ dialog.ponsse-letter-dialog.is-document-zoomed .ponsse-letter-dialog__sheet img{
  .home-hero--owner-airflow .hero-engineering__photo{object-fit:cover!important;object-position:56% 49%}
  .home-hero--owner-airflow .home-hero__copy{background:transparent!important;padding-left:clamp(24px,calc((100% - 1360px)/2),280px)}
 }
+
+
+/* PR12 · integrated art-direction correction: independently composed page families.
+   Original photography, source article HTML and exact SEO routes remain unchanged. */
+@media (min-width:761px) {
+  .home-hero--owner-airflow .home-hero__copy {max-width:min(740px,64vw);isolation:isolate}
+  .home-hero--owner-airflow .home-hero__copy::before {content:"";position:absolute;z-index:-1;inset:3% -9% 3% -30%;background:radial-gradient(ellipse at 27% 52%,rgba(8,24,36,.43),transparent 72%);pointer-events:none}
+  .home-hero--owner-airflow h1 {max-width:13.8ch;text-wrap:balance;overflow-wrap:normal;hyphens:none}
+  .home-hero--owner-airflow .home-lede {font-size:clamp(1rem,1.22vw,1.17rem);line-height:1.62;max-width:48ch}
+  .home-hero--owner-airflow .home-geo {letter-spacing:.012em;line-height:1.5}
+  .home-hero--owner-airflow .hero-engineering__veil {background:linear-gradient(90deg,rgba(5,21,34,.73) 0%,rgba(5,21,34,.54) 34%,rgba(5,21,34,.08) 68%,transparent 91%)}
+}
+@media(max-width:760px) {
+  .home-hero--owner-airflow .home-hero__grid{background:#f5f7f7;gap:0}
+  .home-hero--owner-airflow .home-hero__copy{width:100%;padding:clamp(25px,6vw,35px) max(16px,5vw) 23px;background:#f5f7f7}
+  .home-hero--owner-airflow h1{max-width:17ch;font-size:clamp(2.05rem,8.5vw,3.4rem);line-height:1.09;letter-spacing:-.036em;text-wrap:balance}
+  .home-hero--owner-airflow .home-lede{max-width:56ch;font-size:clamp(.92rem,3.55vw,1.05rem);line-height:1.54}
+  .home-hero--owner-airflow .home-geo{font-size:.76rem;line-height:1.52}
+  .home-hero--owner-airflow .home-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:20px}
+  .home-hero--owner-airflow .home-actions .button{min-width:0;min-height:44px}
+  .home-hero--owner-airflow .hero-engineering{width:100%;aspect-ratio:1.95;margin:0;overflow:hidden;background:#e0e9ef}
+  .home-hero--owner-airflow .hero-engineering__photo{object-fit:cover;object-position:center center;filter:none}
+  .home-hero--owner-airflow .hero-engineering__veil{display:none}
+  .home-hero--owner-airflow+.object-ribbon{border-top:0}
+  .home-hero--owner-airflow .object-ribbon{background:#f5f7f7;margin:0;padding:4px max(15px,4.4vw) 12px;gap:0}
+  .home-hero--owner-airflow .object-ribbon__item{min-height:45px;padding:9px 5px;font-size:clamp(.73rem,3vw,.84rem)}
+  .home-hero--owner-airflow .home-consultant-inline{background:#e7eef1}
+}
+@media(max-width:360px){.home-hero--owner-airflow h1{font-size:clamp(1.94rem,8.7vw,2.5rem)}.home-hero--owner-airflow .home-actions{align-items:stretch}.home-hero--owner-airflow .home-actions .button{font-size:.82rem;padding-inline:12px}}
+/* Objects: a navigable editorial index, not six empty spreadsheet cells. */
+.objects-index__grid{gap:0!important;background:transparent!important;border:0!important}
+.objects-index__grid .object-context-card{min-height:0!important;padding:clamp(18px,2.1vw,28px) clamp(12px,1.5vw,22px) clamp(23px,2.5vw,34px)!important;border:0!important;border-top:1px solid #b9cbd3!important;background:transparent!important;gap:8px}
+.objects-index__grid .object-context-card h3{margin:clamp(14px,2vw,25px) 0 7px!important;font-size:clamp(1.25rem,1.85vw,1.9rem);line-height:1.16;text-wrap:balance}
+.objects-index__grid .object-context-card p{line-height:1.57}
+.objects-index__grid .object-context-card__proof{margin-top:clamp(14px,2vw,25px);border-top:0;padding-top:0}
+.objects-index__grid .object-context-card:hover,.objects-index__grid .object-context-card:focus-visible{background:#eef3f5!important}
+/* Cases: retain all sourced facts, but treat them as concise metadata, not a giant panel wall. */
+.evidence-case .case-detail-facts{padding:clamp(21px,2.8vw,39px) 0;background:#eef3f5;border-block:1px solid #cfdae0}
+.evidence-case .case-detail-facts .home-shell{display:grid;grid-template-columns:minmax(180px,.34fr) minmax(0,1fr);column-gap:clamp(24px,5vw,80px);align-items:start}
+.evidence-case .case-detail-facts .section-index{grid-column:1;margin:5px 0 10px}
+.evidence-case .case-detail-facts h2{grid-column:1;font-size:clamp(1.18rem,1.65vw,1.62rem);line-height:1.25;margin:0;font-weight:550}
+.evidence-case .case-detail-facts__grid{grid-column:2;grid-row:1/span 2;display:flex;flex-wrap:wrap;column-gap:clamp(19px,2.8vw,45px);row-gap:15px;margin:0;background:transparent;border:0}
+.evidence-case .case-detail-facts__grid>div{flex:0 1 auto;min-width:min(125px,100%);width:auto!important;min-height:0!important;padding:0!important;border:0!important;background:transparent!important}
+.evidence-case .case-detail-facts dt{font-size:.72rem;font-weight:500;color:#617784;line-height:1.4;margin:0 0 4px}
+.evidence-case .case-detail-facts dd{font-size:clamp(.88rem,1.06vw,1rem);font-weight:550;line-height:1.4;margin:0;color:#18374b}
+.evidence-case .case-story__grid>div{min-width:0}
+.evidence-case .case-story h2{font-size:clamp(1.18rem,1.75vw,1.75rem);line-height:1.23;text-wrap:balance}
+/* About: compress the empty first fold without cropping the Owner portraits. */
+.about-premium .about-hero__grid{gap:clamp(24px,3.4vw,55px);align-items:center}
+.about-premium .about-hero h1{font-size:clamp(2.2rem,4.5vw,4.35rem);line-height:1.1;letter-spacing:-.038em;max-width:18ch;text-wrap:balance}
+.about-premium .about-hero__lede{margin-top:clamp(13px,1.7vw,22px);font-size:clamp(.95rem,1.15vw,1.11rem);line-height:1.62}
+.about-premium .about-hero .home-actions{margin-top:clamp(18px,2vw,28px)}
+.about-premium .about-hero__team--group img{display:block;max-height:min(57svh,560px);object-fit:contain;width:100%;height:auto}
+@media(max-width:960px){.about-premium .about-hero__grid{grid-template-columns:1fr;gap:18px}.about-premium .about-hero__team--group img{max-height:none}}
+@media(max-width:760px){.about-premium .about-hero{padding:clamp(23px,6vw,34px) 0 30px}.about-premium .about-hero h1{font-size:clamp(2.1rem,8.1vw,3rem)}.about-premium .about-hero .home-actions{gap:9px}.evidence-case .case-detail-facts .home-shell{display:block}.evidence-case .case-detail-facts__grid{margin-top:18px;gap:16px 21px}.evidence-case .case-detail-facts__grid>div{flex:1 1 135px}}
+/* Modal fit: scrolling belongs to explicit zoom only, not the initial photograph/document. */
+.case-photo-dialog[open],.portfolio-archive-viewer[open],dialog.ponsse-letter-dialog[open]{overflow:hidden;overscroll-behavior:contain}
+.case-photo-dialog:not(.is-zoomed) .case-photo-dialog__figure{overflow:hidden}
+.case-photo-dialog:not(.is-zoomed) .case-photo-dialog__figure img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain}
+.portfolio-archive-viewer:not(.is-zoomed) .portfolio-archive-viewer__stage{overflow:hidden!important}
+.portfolio-archive-viewer:not(.is-zoomed) .portfolio-archive-viewer__stage img{max-height:100%;max-width:100%;object-fit:contain}
+.ponsse-letter-dialog:not(.is-document-zoomed) .ponsse-letter-dialog__sheet{overflow:hidden!important}
+.ponsse-letter-dialog:not(.is-document-zoomed) .ponsse-letter-dialog__sheet img{max-height:100%;max-width:100%;object-fit:contain}
+@media(prefers-reduced-motion:reduce){.home-hero--owner-airflow *{scroll-behavior:auto}}
+
+/* Chromium 400-capture regression: sourced case metadata must wrap at 320–430px. */
+@media(max-width:760px){
+ .evidence-case .case-detail-facts__grid>div{min-width:0!important;max-width:100%;flex:1 1 calc(50% - 12px)!important}
+ .evidence-case .case-detail-facts dd{min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:normal;hyphens:auto}
+}
