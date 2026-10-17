@@ -731,7 +731,9 @@ try {
         report.fail.push({reason:'ART-DELTA-02 about numbering',width,labels:dom.labels});
       if(route==='/portfolio/'&&(!dom.labels.some(x=>x.startsWith('03 / Спортивный объект')) || !dom.labels.some(x=>x.startsWith('04 / Ваш объект'))))
         report.fail.push({reason:'ART-DELTA-02 portfolio numbering',width,labels:dom.labels});
-      if(route.includes('/blog/detail/')&&
+      // The 2026-10-17 Polisan Owner decision supersedes earlier archive-thumb UI checks.
+      // Its curated 12 unique frames + retained 15 archive files are explicitly checked above.
+      if(route.includes('/blog/detail/')&&route!=='/blog/detail/ntff-polisan/'&&
         (dom.archiveThumbs<1||dom.archiveCaptions!==0||!dom.archiveNote||dom.numberedCaseSubsteps))
         report.fail.push({reason:'ART-DELTA-02/03 gallery and inner section semantics',route,width,dom});
       if(route.includes('/kafe-rimskogo-korsakova-3/')&&!dom.articleTitle.includes('Кафе на Римского-Корсакова, 3'))
