@@ -374,14 +374,35 @@ try {
           if (architectural !== 1 || wrong) report.fail.push({ route, view, reason: 'Owner montage hero assignment', architectural, wrong });
         }
         if (['seven_park','karelia_ponsse','polisan','leont','zhukov','cafe'].includes(id)) {
-          const expectedGallery = {seven_park:17,karelia_ponsse:18,leont:26,polisan:15,cafe:10,zhukov:5};
+          // Polisan follows the 2026-10-17 Owner rule: 12 selected unique images in the visible story.
+          // Its other source files remain in git, not as duplicate public thumbnails.
+          const expectedGallery = {seven_park:17,karelia_ponsse:18,leont:26,cafe:10,zhukov:5};
           if (Object.hasOwn(expectedGallery,id)) {
             const archiveImages = await page.locator('.case-gallery__archive .case-gallery__item img').count();
             if (archiveImages !== expectedGallery[id]) report.fail.push({route,view,reason:'Original case archive not fully represented',archiveImages,expected:expectedGallery[id]});
           }
-          const media = await page.locator('.case-gallery__item img').count();
+          const media = await page.locator('.case-gallery__item img, .case-gallery__curated-item img').count();
           const story = await page.locator('.case-story__grid > div').count();
           if (media < 2 || story !== 3) report.fail.push({ route, view, reason: 'object evidence/story missing', media, story });
+          if (id === 'polisan') {
+            const selected = await page.locator('.case-gallery__curated-item img').evaluateAll(
+              nodes => nodes.map(img => new URL(img.getAttribute('src'), location.href).pathname)
+            );
+            const cover = await page.locator('.case-detail-hero__photo-open img').getAttribute('src');
+            const rows = await page.locator('.case-gallery__curated-row').evaluateAll(
+              nodes => nodes.map(row => row.querySelectorAll('img').length)
+            );
+            const publicPaths = [cover, ...selected];
+            const archiveAssets = (await fs.readdir('apps/web/public/evidence/polisan/archive')).filter(name => name.endsWith('.webp'));
+            const originalCount = archiveAssets.length;
+            if (selected.length !== 11 || publicPaths.length !== 12 ||
+                new Set(publicPaths).size !== 12 || rows.join(',') !== '3,4,4' ||
+                originalCount !== 15 ||
+                !publicPaths.every(source => source?.startsWith('/evidence/polisan/'))) {
+              report.fail.push({route,view,reason:'Polisan Owner 12-photo art direction and 15 preserved source assets',
+                selected: selected.length, unique: new Set(publicPaths).size, rows, originalCount});
+            }
+          }
           const hiddenArchive = await page.locator('details.case-gallery-archive, .case-gallery-archive details').count();
           if (hiddenArchive) report.fail.push({route,view,reason:'Case photos must not be gated behind a disclosure',hiddenArchive});
         }
