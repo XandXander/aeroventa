@@ -4658,6 +4658,12 @@ dialog.ponsse-letter-dialog.is-document-zoomed .ponsse-letter-dialog__sheet img{
   .home-hero--owner-airflow .home-consultant-inline{background:#e7eef1}
 }
 @media(max-width:360px){.home-hero--owner-airflow h1{font-size:clamp(1.94rem,8.7vw,2.5rem)}.home-hero--owner-airflow .home-actions{align-items:stretch}.home-hero--owner-airflow .home-actions .button{font-size:.82rem;padding-inline:12px}}
+/* Verified Owner screenshot: eliminate mobile HOME image letterboxing, keep entire approved 2:1 source. */
+@media(max-width:760px){
+ .home-hero--owner-airflow .hero-engineering{position:relative;aspect-ratio:1774 / 887;min-height:0;height:auto;margin:0;border:0;background:transparent;overflow:hidden}
+ .home-hero--owner-airflow .hero-engineering__photo{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;filter:none}
+}
+
 /* Objects: a navigable editorial index, not six empty spreadsheet cells. */
 .objects-index__grid{gap:0!important;background:transparent!important;border:0!important}
 .objects-index__grid .object-context-card{min-height:0!important;padding:clamp(18px,2.1vw,28px) clamp(12px,1.5vw,22px) clamp(23px,2.5vw,34px)!important;border:0!important;border-top:1px solid #b9cbd3!important;background:transparent!important;gap:8px}

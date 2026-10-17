@@ -134,6 +134,9 @@ const objectLinks = [
     .services-consultant-inline{display:flex;justify-content:space-between;padding:15px;background:#edf4f6;color:#214d64;text-decoration:none;font-weight:700}
   }
   @media(prefers-reduced-motion:reduce){.services-hero__routes a{scroll-behavior:auto}}
+  /* The inherited .hub-hero padding caused empty 60px/58px strips around the SERVICE artwork. */
+  .services-hero--owner-editorial{padding-block:0;}
+
 
 /* Services use a photographic study plus a navigable editorial register, not category cards. */
 .services-directions{background:#f6f8f8}
