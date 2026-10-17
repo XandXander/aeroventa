@@ -339,7 +339,7 @@ try {
         if (id === 'services') {
           // 14 Oct Owner explicitly rejected the old two-photo services HERO.
           const photographicProof = page.locator('.services-hero__backdrop--single img');
-          const expected = ['/evidence/hero/home-owner-editorial-1672.webp'];
+          const expected = ['/evidence/hero/hiend-engineering-visual-owner-v43.webp'];
           const actual = await photographicProof.evaluateAll(nodes=>nodes.map(n=>new URL(n.src).pathname));
           const wrong = await page.locator('.services-hero img[src="/evidence/hero/engineering-ductwork.jpg"],.services-hero img[src="/evidence/cafe/owner-cover-v43.webp"]').count();
           const servicesOptical = await page.evaluate(() => {
