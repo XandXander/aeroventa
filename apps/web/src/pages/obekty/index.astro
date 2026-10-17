@@ -27,37 +27,41 @@ const objects = [
     id:'production', index:'01', title:'Производство',
     text:'Проект, действующий режим объекта, трассы, доступ и границы состава монтажных работ.',
     proof:'НТФФ «Полисан» — исторический производственный кейс.',
-    href:'/portfolio/'
+    image:'/evidence/polisan/owner-cover-v43.webp',
+    imageAlt:'Реальный производственный объект НТФФ Полисан', href:'/obekty/proizvodstvo/'
   },
   {
     id:'restaurants', index:'02', title:'Рестораны и кафе',
-    text:'Кухня, зал, оборудование, потолки, стадия отделки и работа с уже начатой отделкой.',
+    text:'Назначение помещений, проектная документация и стадии монтажа.',
     proof:'Леонтьевский Мыс + кафе на Римского-Корсакова, 3.',
-    href:'/obekty/restorany-i-kafe/'
+    image:'/evidence/leont/owner-cover-v43.webp',
+    imageAlt:'Здание ЖК Леонтьевский Мыс, где расположен ресторанный объект', href:'/obekty/restorany-i-kafe/'
   },
   {
     id:'newbuilds', index:'03', title:'Новостройки и жилые комплексы',
-    text:'Повторяемый объём, логистика, последовательность по корпусам и контроль изменений.',
+    text:'Работа по корпусам, повторяющийся объём и контроль исполнения.',
     proof:'7 PARK — семь домов в Павловске.',
-    href:'/obekty/novostroyki-i-zhilye-kompleksy/'
+    image:'/evidence/7park/object-exterior-day.jpg',
+    imageAlt:'Жилой квартал 7 PARK в Павловске', href:'/obekty/novostroyki/'
   },
   {
     id:'private', index:'04', title:'Квартиры и дома',
     text:'Шум, пространство, отделка, потолки и аккуратная прокладка трасс.',
     proof:'Квартира на Маршала Жукова — подтверждённый исторический кейс.',
-    href:'/portfolio/'
+    image:'/evidence/zhukov/owner-cover-v43.webp',
+    imageAlt:'Жилой дом с квартирным объектом AEROVENTA на Маршала Жукова', href:'/obekty/kvartiry-i-doma/'
   },
   {
     id:'warehouses', index:'05', title:'Склады и базы',
-    text:'Высота, доступ, режим эксплуатации и логистика монтажа.',
-    proof:'Особенно важны доступ к трассам, высота и работа без остановки объекта.',
-    href:'/contact/?intent=project'
+    text:'Высота помещений, условия доступа и график работ.',
+    proof:'Уточняем условия доступа, доставку оборудования и время работ на действующей площадке.',
+    href:'/obekty/sklady/'
   },
   {
     id:'commercial', index:'06', title:'Офисы и коммерческие помещения',
-    text:'Потолки, сроки открытия, смежники, доступ и монтаж по проекту.',
+    text:'Планировка, доступ к монтажным зонам, график работ и проектная документация.',
     proof:'Задачу оцениваем по реальному составу монтажных работ, а не по типовой площади.',
-    href:'/contact/?intent=project'
+    href:'/obekty/ofisy-i-kommerciya/'
   },
 ];
 ---
@@ -66,75 +70,48 @@ const objects = [
   <article class="objects-hub">
     <header class="objects-hero">
       <div class="home-shell objects-hero__grid">
-        <div>
+        <div class="objects-hero__copy">
           <p class="home-kicker">По типу объекта</p>
           <h1>Вентиляция под конкретный объект</h1>
-        </div>
-        <div>
-          <p class="objects-hero__lede">
-            У квартиры, ресторана, склада и производства разные инженерные условия.
-            Поэтому начинаем не с шаблонной системы, а с задачи, объекта и исходных данных.
-          </p>
+          <p class="objects-hero__lede">Для жилых, коммерческих и производственных помещений — разный объём и условия монтажа. Выберите категорию, чтобы перейти непосредственно к её содержанию.</p>
           <p class="home-geo">Санкт-Петербург · Ленинградская область · Москва · Карелия</p>
         </div>
+        <figure class="objects-hero__photo">
+          <img src="/evidence/polisan/owner-cover-v43.webp" width="1600" height="903" alt="Фармацевтический комплекс НТФФ «Полисан» — выполненный объект AEROVENTA" loading="eager" decoding="async"/>
+          <figcaption>НТФФ «Полисан» · реальный объект</figcaption>
+        </figure>
       </div>
     </header>
 
-    <section class="home-section objects-index" aria-labelledby="objects-index-title">
+    <section class="objects-editorial-index" aria-labelledby="objects-index-title">
       <div class="home-shell">
-        <div class="section-heading">
-          <div>
-            <p class="section-index">01 / Выбрать контекст</p>
-            <h2 id="objects-index-title">Монтаж вентиляции с учётом назначения объекта.</h2>
-          </div>
+        <div class="objects-editorial-index__head">
+          <p class="section-index">Направления</p>
+          <h2 id="objects-index-title">По типу объекта</h2>
+          <p>Монтаж начинается с проекта или исходных данных, а его состав зависит от назначения помещений, трасс, оборудования и условий доступа.</p>
         </div>
-
         <div class="objects-index__grid">
-          {objects.map((item) => (
-            <a id={item.id} class="object-context-card" href={item.href}>
-              <div class="object-context-card__top"><span>{item.index}</span></div>
-              <h3>{item.title}</h3>
-              <p>{item.text}</p>
-              <div class="object-context-card__proof">{item.proof}</div>
-              <strong>Перейти к объекту →</strong>
+          {objects.map(item => (
+            <a class="object-context-card object-context-card--editorial" href={item.href}>
+              <span class="object-context-card__number">{item.index}</span>
+              <div class="object-context-card__description">
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+                <small>{item.proof}</small>
+              </div>
+              {item.image ? <img src={item.image} alt={item.imageAlt} width="600" height="375" loading="lazy" decoding="async" /> : <span class="object-context-card__no-photo">Инженерный монтаж</span>}
+              <b aria-hidden="true">↗</b>
             </a>
           ))}
         </div>
-      </div>
-    </section>
-
-    <section class="object-method" aria-labelledby="object-method-title">
-      <div class="home-shell object-method__grid">
-        <div>
-          <p class="section-index section-index--orange">02 / Что учитываем до монтажа</p>
-          <h2 id="object-method-title">Задача → исходные условия → монтаж → результат.</h2>
-        </div>
-        <div class="object-method__steps">
-          <div><span>01</span><p>Что заказчик хочет получить и что уже есть: проект, план, фото, спецификация.</p></div>
-          <div><span>02</span><p>Что в конкретном объекте влияет на трассы, оборудование, доступ и стоимость монтажа.</p></div>
-          <div><span>03</span><p>Что реально выполняет AEROVENTA и где начинаются отдельные проектные или смежные работы.</p></div>
-          <div><span>04</span><p>Какие реальные кейсы подтверждают опыт именно в похожем контексте.</p></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="objects-proof" aria-labelledby="objects-proof-title">
-      <div class="home-shell">
-        <p class="section-index">03 / Сначала доказательства</p>
-        <h2 id="objects-proof-title">Реальные объекты и фотографии работ.</h2>
-        <div class="objects-proof__grid">
-          <a href="/blog/detail/restoran-v-zhk-leontevskiy-mys/"><img src="/evidence/leont/duct-installation-01.jpg" width="800" height="520" alt="Монтаж вентиляции в ресторане ЖК Леонтьевский Мыс" loading="lazy" decoding="async" /><span>Ресторан</span><strong>ЖК «Леонтьевский Мыс»</strong><small>Приточно-вытяжная вентиляция + оборудование</small></a>
-          <a href="/blog/detail/kak-my-sdali-7-domov/"><img src="/evidence/7park/object-exterior-day.jpg" width="800" height="520" alt="Жилые дома 7 PARK в Павловске" loading="lazy" decoding="async" /><span>Новостройки</span><strong>7 PARK</strong><small>7 домов · Павловск · монтаж приточно-вытяжной вентиляции</small></a>
-          <a href="/blog/detail/ntff-polisan/"><img src="/evidence/polisan/duct-installation-01.jpg" width="800" height="520" alt="Монтаж вентиляции НТФФ Полисан" loading="lazy" decoding="async" /><span>Производство</span><strong>НТФФ «Полисан»</strong><small>Фармацевтический объект · исторический кейс</small></a>
-          <a href="/blog/detail/kvartira-na-zhukova/"><img src="/evidence/zhukov/duct-installation-01.jpg" width="800" height="520" alt="Монтаж вентиляции в квартире на Маршала Жукова" loading="lazy" decoding="async" /><span>Квартира</span><strong>Маршала Жукова</strong><small>Приточно-вытяжная вентиляция</small></a>
-        </div>
+        <p class="objects-editorial-index__footer">Фото, сроки и границы подтверждённых работ — в <a href="/portfolio/">«Наших работах»</a>.</p>
       </div>
     </section>
 
     <section class="conversion-close" aria-labelledby="objects-close-title">
       <div class="home-shell">
         <p class="section-index section-index--orange">04 / Ваш объект</p>
-        <h2 id="objects-close-title">Тип объекта помогает начать. Смета всё равно зависит от реального состава работ.</h2>
+        <h2 id="objects-close-title">Обсудим исходные данные</h2>
         <div class="home-actions">
           <a class="button button--light" href="/montazh-po-proektu/">Монтаж по готовому проекту →</a>
           <a class="button button--light" href="/obekt-bez-gotovogo-proekta/">Подготовка исходных данных</a>

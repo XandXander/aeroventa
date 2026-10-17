@@ -1,6 +1,7 @@
 ---
 import type { ContentRecord } from '@/lib/types';
 import legacySources from '../../../../../migration/legacy-page-source-index.json';
+import verifiedArchive from '../../../../../migration/bitrix-verified-articles-20260817.json';
 
 interface Props { content: ContentRecord; fixture: boolean; }
 const { content } = Astro.props;
@@ -276,6 +277,22 @@ if (!spec) throw new Error(`P0 article spec is missing for ${content.path}`);
 // Historical content belongs to the current published page, not an external SEO-only document.
 // The source index is an archived text extract; never present it as byte-perfect original HTML.
 const legacyPage = legacySources.find(row => row.path === content.path);
+const verifiedOriginal = verifiedArchive.articles.find(item => item.route === content.path);
+const safeOriginalImages = new Set(verifiedOriginal?.original_media_paths || []);
+const escapeAttribute = (value: string): string => value.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const verifiedArchiveHtml = verifiedOriginal
+  ? verifiedOriginal.source_article_html_sanitized.replace(/<img\b[^>]*>/gi, (tag: string) => {
+      const src = tag.match(/\bdata-legacy-src="([^"]+)"/)?.[1] || '';
+      if (!/^\/upload\/[a-zA-Z0-9/_-]+\.(?:jpg|jpeg|png|webp|gif)$/i.test(src) || !safeOriginalImages.has(src)) {
+        throw new Error('Unverified inline article image at ' + content.path + ': ' + src);
+      }
+      const alt = tag.match(/\balt="([^"]*)"/)?.[1] || 'Фотография из статьи';
+      return '<img src="' + escapeAttribute(src) + '" alt="' + escapeAttribute(alt) + '" loading="lazy" decoding="async" />';
+    })
+  : '';
+if (/<(?:script|iframe|object|embed)\b|\bon\w+\s*=|javascript:/i.test(verifiedArchiveHtml)) {
+  throw new Error('Unsafe verified source HTML on ' + content.path);
+}
 const legacyExtract = (legacyPage?.legacy_text_excerpt || '').trim();
 if (!legacyExtract) throw new Error(`Missing preserved legacy text for ${content.path}`);
 const sentences = legacyExtract.split(/(?<=[.!?])\s+(?=[А-ЯЁA-Z])/u).filter(Boolean);
@@ -288,109 +305,28 @@ for (const sentence of sentences) {
 if (paragraph) legacyParagraphs.push(paragraph.trim());
 ---
 
-<article class="p0-article">
-  <header class="p0-hero">
-    <div class="home-shell p0-hero__grid">
-      <div>
-        <p class="home-kicker">{spec.kicker}</p>
-        <h1>{content.h1}</h1>
-      </div>
-      <div>
-        <p class="p0-hero__signal">Инженерная практика · архив AEROVENTA</p>
-        <p class="p0-hero__lede">{spec.lede}</p>
-        <p class="p0-source-note">{spec.sourceNote}</p>
-      </div>
+<article class="p0-article p0-article--reading">
+  <header class="p0-story-head">
+    <div class="home-shell">
+      <p class="home-kicker">Практика AEROVENTA</p>
+      <h1>{content.h1}</h1>
     </div>
   </header>
-
-  <section class="p0-verdict" aria-labelledby="p0-verdict-title">
-    <div class="home-shell p0-verdict__grid">
-      <p class="section-index section-index--orange">Инженерный вывод</p>
-      <div>
-        <h2 id="p0-verdict-title">{spec.verdictTitle}</h2>
-        <p>{spec.verdict}</p>
-      </div>
-    </div>
-  </section>
-
-  {content.path === '/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/' && (
-    <section class="p0-authentic-photo home-section" aria-labelledby="p0-authentic-photo-title">
-      <div class="home-shell p0-authentic-photo__layout">
-        <figure>
-          <img src="/upload/medialibrary/548/5488fb415056eee52ac63ff9d4850c63.jpg"
-            width="800" height="600" loading="lazy" decoding="async"
-            alt="Керн из бетона после алмазного бурения: подлинное изображение из исторической статьи AEROVENTA" />
-          <figcaption>Оригинальный архивный снимок из этой статьи, сохранённый по исходному URL. Не отдельное подтверждение способа извлечения заклинившей коронки.</figcaption>
-        </figure>
-        <div>
-          <p class="section-index section-index--orange">Фото из первоисточника</p>
-          <h2 id="p0-authentic-photo-title">Что действительно находилось внутри бетонного основания.</h2>
-          <p>Отколовшийся керн и попавшие в рез включения могут менять сопротивление коронки. На фото — реальный керн из исходной публикации; порядок работы при заклинивании определяется безопасной процедурой для конкретной установки.</p>
-          <p>Историческая схема обратного молота остаётся отдельным материалом: её нельзя заменять чужим товарным изображением или искусственно созданным чертежом.</p>
-        </div>
-      </div>
-    </section>
-  )}
-
-  <div class="p0-sections">
-    {spec.sections.map((section) => (
-      <section class="p0-section">
-        <div class="home-shell p0-section__grid">
-          <div>
-            <p class="section-index">{section.index}</p>
-            <h2>{section.title}</h2>
-          </div>
-          <div class="p0-section__body">
-            {section.copy && <p class="p0-section__copy">{section.copy}</p>}
-            {section.items && (
-              <ol class="p0-list">
-                {section.items.map((item,index) => <li><span>{String(index+1).padStart(2,'0')}</span><p>{item}</p></li>)}
-              </ol>
-            )}
-            {section.note && <aside class="p0-note"><strong>Важно:</strong> {section.note}</aside>}
-          </div>
-        </div>
-      </section>
-    ))}
-  </div>
-
-  <section class="p0-historic-reading home-section" aria-labelledby="p0-archive-title">
-    <div class="home-shell p0-historic-reading__layout">
-      <div class="p0-historic-reading__aside">
-        <p class="section-index section-index--orange">Из архива AEROVENTA</p>
-        <h2 id="p0-archive-title">Опыт и подробности первоначальной публикации</h2>
-        <p>Ниже — сохранённое текстовое содержание архивной статьи. Формат абзацев адаптирован для чтения. Исторические способы, оборудование и стоимость не являются действующими рекомендациями или предложением.</p>
-        <p class="p0-historic-reading__caution">{spec.sourceObservations.caution}</p>
-      </div>
-      <div class="p0-historic-reading__body">
-        {legacyParagraphs.map(p => <p>{p}</p>)}
-      </div>
-    </div>
-  </section>
-  <section class="home-section p0-related" aria-labelledby="p0-related-title">
+  <section class="p0-story home-section" aria-label="Текст статьи с фотографиями и схемами">
     <div class="home-shell">
-      <p class="section-index">Связанные материалы</p>
-      <h2 id="p0-related-title">Продолжить по задаче, а не по архивной рубрике.</h2>
-      <div class="p0-related__grid">
-        {spec.related.map(([title,href,text],index) => (
-          <a href={href}><span>{String(index+1).padStart(2,'0')}</span><h3>{title}</h3><p>{text}</p><b>Открыть →</b></a>
-        ))}
-      </div>
+      {verifiedOriginal ? (
+        <div class="p0-story__body" set:html={verifiedArchiveHtml} />
+      ) : (
+        <div class="p0-story__body">{legacyParagraphs.map(p => <p>{p}</p>)}</div>
+      )}
     </div>
   </section>
-
-  <section class="conversion-close" aria-labelledby="p0-close-title">
-    <div class="home-shell">
-      <p class="section-index section-index--orange">Текущая модель AEROVENTA</p>
-      <h2 id="p0-close-title">{spec.ctaTitle}</h2>
-      <p class="p0-close-copy">{spec.ctaText}</p>
-      <div class="home-actions">
-        <a class="button button--light" href="/montazh-po-proektu/">Передать проект →</a>
-        <a class="button button--light" href="/contact/?intent=budget">Описать задачу →</a>
-        <a class="button button--light" href="/almaznoe-burenie/">Отдельное бурение →</a>
-      </div>
+  <footer class="p0-story-footer">
+    <div class="home-shell p0-story-footer__inner">
+      <div><h2>{spec.ctaTitle}</h2><p>{spec.ctaText}</p></div>
+      <a class="button button--primary" href="/contact/" data-contact-open data-source="article" aria-haspopup="dialog">Обсудить задачу <span aria-hidden="true">→</span></a>
     </div>
-  </section>
+  </footer>
 </article>
 
 <style>
@@ -438,4 +374,59 @@ if (paragraph) legacyParagraphs.push(paragraph.trim());
 .p0-authentic-photo h2{font-size:clamp(1.65rem,3.2vw,3.3rem);line-height:1.12;letter-spacing:-.04em}
 .p0-authentic-photo__layout>div>p:not(.section-index){line-height:1.67;color:#405668}
 @media(max-width:850px){.p0-authentic-photo__layout{grid-template-columns:1fr}}
+.p0-exact-archive__label{border-bottom:1px solid #b9cbd4;padding-bottom:10px;font-size:.77rem!important;color:#4f6571!important;line-height:1.5;margin:0 0 22px!important}
+.p0-exact-archive__text{overflow-wrap:break-word}
+.p0-exact-archive__text h2{font-size:clamp(1.32rem,1.9vw,1.82rem);font-weight:610;line-height:1.32;letter-spacing:-.02em;margin:1.5em 0 .5em}
+.p0-exact-archive__text h3{font-size:clamp(1.12rem,1.5vw,1.4rem);font-weight:580;line-height:1.33;margin:1.4em 0 .5em}
+.p0-exact-archive__text a{color:#1c6889;text-underline-offset:3px}
+.p0-exact-archive__text table{display:block;width:100%;overflow:auto;font-size:.86rem}
+.p0-exact-archive__text td,.p0-exact-archive__text th{border:1px solid #bacad2;padding:9px}
+
+.p0-source-photo-gallery{padding:20px max(20px,calc((100vw - 1280px)/2)) 42px;background:#e4eaed;color:#233d4c}
+.p0-source-photo-gallery summary{cursor:pointer;min-height:48px;font-size:.91rem;font-weight:580}
+.p0-source-photo-gallery summary:focus-visible{outline:2px solid #a85b33;outline-offset:3px}
+.p0-source-photo-gallery__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,1.5vw,21px)}
+.p0-source-photo-gallery__grid figure{margin:0;min-width:0}
+.p0-source-photo-gallery__grid img{display:block;width:100%;height:auto;aspect-ratio:1.4;object-fit:contain;background:#d7e2e7}
+@media(max-width:900px){.p0-source-photo-gallery__grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.p0-source-photo-gallery__grid{grid-template-columns:1fr}}
+
+.p0-source-photo-gallery h2{font-size:clamp(1.4rem,2.5vw,2.05rem);font-weight:550;letter-spacing:-.025em;margin:0 0 20px}
+
+/* Preserve Bitrix paragraph-to-image sequencing and original alt text. */
+.p0-article--reading{background:#fff;color:#142d3c}
+.p0-story-head{background:#fff;padding:clamp(38px,5vw,76px) 0 clamp(24px,3vw,42px)}
+.p0-story-head .home-shell,.p0-story>.home-shell{max-width:1030px}
+.p0-story-head h1{font-size:clamp(2.15rem,4vw,4.25rem);font-weight:550;letter-spacing:-.04em;line-height:1.12;max-width:24ch;text-wrap:balance}
+.p0-story{padding:0 0 clamp(65px,7vw,110px);background:#fff}
+.p0-story__body{max-width:76ch;font-size:clamp(1rem,1.25vw,1.15rem);line-height:1.79;overflow-wrap:anywhere}
+.p0-story__body :global(p){margin:0 0 1.1em}
+.p0-story__body :global(img){display:block;width:auto;max-width:100%;height:auto;max-height:88vh;object-fit:contain;margin:clamp(15px,2.4vw,31px) auto;clear:both}
+.p0-story__body :global(figure){margin:clamp(22px,3vw,44px) 0}
+.p0-story__body :global(figcaption){color:#58707d;font-size:.82rem;line-height:1.55}
+.p0-story__body :global(h2){font-size:clamp(1.45rem,2vw,2rem);font-weight:570;line-height:1.25;margin:1.8em 0 .7em}
+.p0-story__body :global(h3){font-size:clamp(1.2rem,1.6vw,1.55rem);font-weight:560;line-height:1.3;margin:1.5em 0 .6em}
+.p0-story__body :global(ol),.p0-story__body :global(ul){padding-left:1.4em;margin:1em 0 1.6em}
+.p0-story__body :global(li){margin-bottom:.55em}
+.p0-story__body :global(a){text-decoration:underline;text-underline-offset:3px}
+.p0-story__body :global(table){display:block;max-width:100%;overflow-x:auto}
+.p0-story__body :global(td),.p0-story__body :global(th){padding:8px;border:1px solid #d4dce0}
+.p0-story-footer{border-top:1px solid #d8e1e5;background:#eef3f4;padding:clamp(42px,5vw,72px) 0}
+.p0-story-footer__inner{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:34px}
+.p0-story-footer h2{font-size:clamp(1.5rem,2.3vw,2.25rem);font-weight:570;line-height:1.2;max-width:24ch}
+.p0-story-footer p{line-height:1.65;max-width:64ch;color:#4c6471}
+@media(max-width:760px){.p0-story-head{padding-block:30px 26px}.p0-story-head h1{font-size:clamp(2rem,9vw,3rem)}.p0-story-footer__inner{grid-template-columns:1fr}}
+
+/* Longform technical document: original HTML/image order is kept verbatim. */
+.p0-article--reading .p0-story-head{border-bottom:1px solid #dbe3e6;background:#f5f7f7;padding:clamp(35px,5vw,72px) 0 clamp(34px,4vw,60px)}
+.p0-article--reading .p0-story-head h1{font-size:clamp(2.05rem,3.8vw,4.1rem);font-weight:540;line-height:1.14;letter-spacing:-.037em;max-width:23ch}
+.p0-article--reading .p0-story{padding:clamp(30px,4.2vw,64px) 0 clamp(65px,8vw,115px)}
+.p0-article--reading .p0-story__body{max-width:73ch;line-height:1.8;font-weight:415}
+.p0-article--reading .p0-story__body :global(h2){margin:2.1em 0 .65em;max-width:28ch;line-height:1.22;font-weight:580}
+.p0-article--reading .p0-story__body :global(h3){margin:1.75em 0 .55em;max-width:34ch}
+.p0-article--reading .p0-story__body :global(figure){clear:both;margin:clamp(22px,3.6vw,50px) 0 clamp(24px,3vw,44px)}
+.p0-article--reading .p0-story__body :global(img){max-width:100%;height:auto;margin:clamp(17px,2.4vw,31px) auto;object-fit:contain}
+.p0-article--reading .p0-story__body :global(figcaption){max-width:62ch;margin:0 auto;font-size:.83rem;line-height:1.55;color:#516a76}
+@media(max-width:760px){.p0-article--reading .p0-story-head h1{font-size:clamp(2rem,8.9vw,3rem)}.p0-article--reading .p0-story__body{line-height:1.75}}
+
 </style>

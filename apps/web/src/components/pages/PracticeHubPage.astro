@@ -4,19 +4,19 @@ interface Props { content: ContentRecord; fixture: boolean; }
 const { content } = Astro.props;
 
 const p0 = [
-  { tag:'Полевой опыт', title:'Как вытащить застрявшую алмазную коронку из бетона', text:'Почему коронку заклинивает, что делать сначала и где заканчивается универсальный совет.', href:'/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/' },
-  { tag:'Реальный объект', title:'Бурение в стяжке под стояки отопления', text:'Слоистое перекрытие, крепление установки, готовая отделка и исходные данные.', href:'/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/' },
-  { tag:'Стоимость', title:'От чего зависит стоимость алмазного бурения', text:'Диаметр — только один фактор. Разбираем геометрию, материал, доступ и состав работ.', href:'/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/' },
-  { tag:'Вентиляция + проходка', title:'Алмазное бурение стены под вентиляцию', text:'Почему сначала определяют трассу и узел, а уже потом точку и геометрию отверстия.', href:'/blog/detail/gorizontalnoe-almaznoe-burenie/' },
+  { tag:'Полевой опыт', title:'Как вытащить застрявшую алмазную коронку из бетона', text:'Почему коронку заклинивает, что делать сначала и где заканчивается универсальный совет.', href:'/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/', image:'/upload/medialibrary/548/5488fb415056eee52ac63ff9d4850c63.jpg', imageAlt:'Керн после алмазного бурения бетона — оригинальная фотография из статьи' },
+  { tag:'Реальный объект', title:'Бурение в стяжке под стояки отопления', text:'Слоистое перекрытие, крепление установки, готовая отделка и исходные данные.', href:'/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/', image:'/upload/medialibrary/0a2/0a2f0d1be2900e0a1fe74bcd9604e3f8.jpg', imageAlt:'Бурение отверстий в стяжке под отопление — исходная фотография из статьи' },
+  { tag:'Стоимость', title:'От чего зависит стоимость алмазного бурения', text:'Диаметр — только один фактор. Разбираем геометрию, материал, доступ и состав работ.', href:'/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/', image:'/upload/medialibrary/fb3/fb3d693282a8085971dd4e2fe87bf28e.jpg', imageAlt:'Алмазное бурение отверстий — оригинальная фотография к статье о расчёте стоимости' },
+  { tag:'Вентиляция + проходка', title:'Алмазное бурение стены под вентиляцию', text:'Почему сначала определяют трассу и узел, а уже потом точку и геометрию отверстия.', href:'/blog/detail/gorizontalnoe-almaznoe-burenie/', image:'/upload/medialibrary/e1c/e1cd51110183f9c6b2e704b70664eba1.jpg', imageAlt:'Разметка отверстия под вентиляцию — оригинальная фотография из статьи' },
 ];
 
 const cases = [
   {tag:'Новостройки',title:'7 PARK',meta:'Павловск · 7 домов',image:'/evidence/7park/object-exterior-day.jpg',imageAlt:'Реальный дневной вид 7 PARK в Павловске',href:'/blog/detail/kak-my-sdali-7-domov/'},
-  {tag:'Ресторан',title:'ЖК «Леонтьевский Мыс»',meta:'Санкт-Петербург · приточно-вытяжная вентиляция + оборудование',href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/'},
+  {tag:'Ресторан',title:'ЖК «Леонтьевский Мыс»',image:'/evidence/leont/owner-cover-v43.webp',imageAlt:'Выполненный объект AEROVENTA — ресторан в ЖК Леонтьевский Мыс',meta:'Санкт-Петербург · приточно-вытяжная вентиляция + оборудование',href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/'},
   {tag:'Производство',title:'НТФФ «Полисан»',meta:'Санкт-Петербург · монтаж на фармацевтическом объекте',image:'/evidence/polisan/owner-cover-v43.webp',imageAlt:'Архивный фотокадр работ на объекте НТФФ Полисан',href:'/blog/detail/ntff-polisan/'},
-  {tag:'Квартира',title:'Маршала Жукова',meta:'Санкт-Петербург · приточно-вытяжная вентиляция',href:'/blog/detail/kvartira-na-zhukova/'},
+  {tag:'Квартира',title:'Маршала Жукова',image:'/evidence/zhukov/duct-installation-01.jpg',imageAlt:'Монтаж вентиляции в квартире на Маршала Жукова',meta:'Санкт-Петербург · приточно-вытяжная вентиляция',href:'/blog/detail/kvartira-na-zhukova/'},
   {tag:'Карелия',title:'Питкяранта / PONSSE',meta:'Сервисно-образовательный центр · вентиляция + оборудование',image:'/evidence/karelia/owner-cover-v43.webp',imageAlt:'Фотография сервисного центра PONSSE в Питкяранте',href:'/blog/detail/montazh-ventilyatsii-v-karelii/'},
-  {tag:'Кафе',title:'Римского-Корсакова, 3',meta:'Санкт-Петербург · приточно-вытяжная вентиляция + оборудование',href:'/blog/detail/kafe-rimskogo-korsakova-3/'},
+  {tag:'Кафе',title:'Римского-Корсакова, 3',image:'/evidence/cafe/owner-cover-v43.webp',imageAlt:'Выполненный объект AEROVENTA — кафе на Римского-Корсакова, 3',meta:'Санкт-Петербург · приточно-вытяжная вентиляция + оборудование',href:'/blog/detail/kafe-rimskogo-korsakova-3/'},
 ];
 
 const isRoot = content.path === '/blog/';
@@ -25,49 +25,38 @@ const isStories = content.path === '/blog/istorii-proektov/';
 ---
 
 {isRoot ? (
-  <article class="practice-hub">
-    <header class="practice-hero">
-      <div class="home-shell practice-hero__grid">
-        <div><p class="home-kicker">Статьи и опыт AEROVENTA</p><h1>Статьи</h1></div>
-        <div>
-          <p class="practice-hero__lede">Разборы инженерных вопросов, монтажных ситуаций и реализованных объектов. Эти материалы помогут подготовить свою задачу.</p>
-          <div class="home-actions"><a class="button button--primary" href="/blog/poleznye-stati/">Практические материалы →</a><a class="button button--ghost" href="/portfolio/">Реальные объекты</a></div>
-        </div>
+  <article class="practice-hub practice-hub--articles">
+    <header class="practice-index-intro">
+      <div class="home-shell">
+        <p class="home-kicker">Материалы AEROVENTA</p>
+        <h1>Статьи</h1>
+        <p>Практика монтажа и алмазного бурения: конкретные ситуации, исходные условия, технические решения.</p>
+        <nav class="practice-index-nav" aria-label="Разделы статей">
+          <a href="#articles-list">Практические материалы</a>
+          <a href="/blog/istorii-proektov/">Истории объектов</a>
+        </nav>
       </div>
     </header>
-
-    <section class="practice-entry" aria-labelledby="practice-entry-title">
-      <div class="home-shell practice-entry__grid">
-        <div><p class="section-index section-index--orange">01 / С чего начать</p><h2 id="practice-entry-title">Вопросы, решения и реальные объекты.</h2></div>
-        <div class="practice-entry__routes">
-          <a href="/faq/"><span>01</span><div><h3>Решение до монтажа</h3><p>Что прислать, как сравнить сметы, что согласовать и что проверить до закрытия.</p></div><b>→</b></a>
-          <a href="/blog/poleznye-stati/"><span>02</span><div><h3>Практическая проблема</h3><p>Конкретный вопрос, реальный опыт и полезная последовательность решений.</p></div><b>→</b></a>
-          <a href="/blog/istorii-proektov/"><span>03</span><div><h3>Истории объектов</h3><p>Задача, объём работ и реальные фотографии выполненных объектов.</p></div><b>→</b></a>
-        </div>
+    <section class="practice-article-index" id="articles-list" aria-label="Экспертные статьи">
+      <div class="home-shell practice-article-index__list">
+        {p0.map((item,index) => (
+          <a class="practice-article-index__item" href={item.href}>
+            <span class="practice-article-index__number">{String(index+1).padStart(2,'0')}</span>
+            <figure class="practice-article-index__media"><img src={item.image} width="720" height="480" loading="lazy" decoding="async" alt={item.imageAlt}/></figure>
+            <div>
+              <span class="practice-article-index__tag">{item.tag}</span>
+              <h2>{item.title}</h2>
+              <p>{item.text}</p>
+            </div>
+            <span class="practice-article-index__action" aria-hidden="true">↗</span>
+          </a>
+        ))}
       </div>
     </section>
-
-    <section class="home-section practice-featured" aria-labelledby="practice-featured-title">
-      <div class="home-shell">
-        <div class="section-heading"><div><p class="section-index">02 / Практические материалы</p><h2 id="practice-featured-title">Практические ответы на монтажные вопросы.</h2></div><a href="/blog/poleznye-stati/">Все материалы →</a></div>
-        <div class="practice-card-grid">
-          {p0.map((item,index) => <a href={item.href}><span>{String(index+1).padStart(2,'0')} / {item.tag}</span><h3>{item.title}</h3><p>{item.text}</p><b>Читать →</b></a>)}
-        </div>
-      </div>
-    </section>
-
-    <section class="practice-cases" aria-labelledby="practice-cases-title">
-      <div class="home-shell">
-        <div class="section-heading"><div><p class="section-index section-index--orange">03 / Истории объектов</p><h2 id="practice-cases-title">Опыт компании лучше читать по конкретным объектам.</h2></div><a href="/blog/istorii-proektov/">Все истории →</a></div>
-        <div class="practice-case-strip">
-          {cases.slice(0,4).map((item) => <a href={item.href}>{item.image && <img class="practice-case-strip__photo" src={item.image} alt={item.imageAlt} width="800" height="450" loading="lazy" decoding="async" />}<span>{item.tag}</span><h3>{item.title}</h3><p>{item.meta}</p><b>Открыть →</b></a>)}
-        </div>
-      </div>
-    </section>
-
-    <section class="conversion-close">
-      <div class="home-shell"><p class="section-index section-index--orange">04 / Ваш вопрос</p><h2>Не нашли ответ на свой вопрос?</h2><div class="home-actions"><a class="button button--light" href="/faq/">Что важно решить до монтажа →</a><a class="button button--light" href="/contact/">Задать вопрос по объекту</a></div></div>
-    </section>
+    <div class="home-shell practice-index-footer">
+      <p>Другие исходные статьи сохраняются на исторических адресах. Фотографии и документы выполненных объектов представлены отдельно.</p>
+      <a href="/portfolio/">Наши работы →</a>
+    </div>
   </article>
 ) : isPractical ? (
   <article class="practice-hub">
@@ -81,7 +70,7 @@ const isStories = content.path === '/blog/istorii-proektov/';
     <section class="home-section practical-index">
       <div class="home-shell"><p class="section-index">01 / Сильные архивные материалы</p><h2>Четыре материала о реальных технических задачах.</h2>
         <div class="practical-index__grid">
-          {p0.map((item,index) => <a href={item.href}><div class="practical-index__top"><span>{String(index+1).padStart(2,'0')}</span><b>{item.tag}</b></div><h3>{item.title}</h3><p>{item.text}</p><strong>Читать материал →</strong></a>)}
+          {p0.map((item,index) => <a href={item.href}><img class="practical-index__photo" src={item.image} alt={item.imageAlt} width="720" height="480" loading="lazy" decoding="async"/><div class="practical-index__top"><span>{String(index+1).padStart(2,'0')}</span><b>{item.tag}</b></div><h3>{item.title}</h3><p>{item.text}</p><strong>Читать материал →</strong></a>)}
         </div>
       </div>
     </section>
@@ -134,3 +123,9 @@ const isStories = content.path === '/blog/istorii-proektov/';
     </section>
   </article>
 ) : null}
+
+<style>
+.practical-index__photo{display:block;width:100%;height:auto;aspect-ratio:1.65;object-fit:cover;margin-bottom:18px;filter:saturate(.9)}
+.practical-index__grid a{overflow:hidden}
+.story-index__photo{object-fit:cover}
+</style>

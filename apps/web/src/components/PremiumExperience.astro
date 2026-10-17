@@ -8,27 +8,22 @@ interface Props {
 const { pagePath = '' } = Astro.props;
 ---
 
-<a class="consultant-launcher" href="/contact/" data-consultant-open data-source="persistent_launcher" aria-haspopup="dialog" aria-controls="aeroventa-consultant-dialog" aria-label="Открыть инженерного консультанта">
+<a class="consultant-launcher" href="/contact/" data-consultant-open data-source="persistent_launcher" aria-haspopup="dialog" aria-controls="aeroventa-consultant-dialog" aria-label="Задать вопрос по вентиляции">
   <span class="consultant-launcher__symbol" aria-hidden="true">↗</span>
-  <span class="consultant-launcher__label">Инженерный консультант</span>
+  <span class="consultant-launcher__label">Задать вопрос по вентиляции</span>
 </a>
 <dialog id="aeroventa-consultant-dialog" class="experience-dialog experience-dialog--consultant" data-consultant-dialog aria-labelledby="consultant-title">
   <div class="experience-dialog__shell">
     <div class="experience-dialog__head">
       <div>
         <p class="section-index">Инженерный консультант</p>
-        <h2 id="consultant-title">Расскажите о вашем объекте.</h2>
+        <h2 id="consultant-title">Помощь по вашему объекту</h2>
       </div>
       <button type="button" class="dialog-close" data-dialog-close aria-label="Закрыть консультанта">×</button>
     </div>
 
-    <section class="consultant-conversation" aria-label="Диалог с навигатором AEROVENTA">
-      <ol class="consultant-conversation__history" data-consultant-chat-messages aria-live="polite" aria-relevant="additions">
-        <li class="consultant-message consultant-message--guide">
-          <span class="consultant-message__author">AEROVENTA / Навигатор</span>
-          <p>Опишите объект и вопрос. Подскажу подходящую страницу и какие исходные данные нужны. Без выдуманной сметы и инженерных обещаний.</p>
-        </li>
-      </ol>
+    <section class="consultant-conversation" aria-label="Вопросы по вентиляции">
+      <ol class="consultant-conversation__history" data-consultant-chat-messages aria-live="polite" aria-relevant="additions"></ol>
       <form class="consultant-conversation__composer" data-consultant-chat-form>
         <label for="consultant-chat-question">Ваш вопрос</label>
         <div class="consultant-conversation__input">
@@ -37,13 +32,13 @@ const { pagePath = '' } = Astro.props;
         </div>
       </form>
       <div class="consultant-conversation__foot">
-        <span>Подберём подходящий материал или передадим вопрос специалисту.</span>
+        <span>По материалам AEROVENTA</span>
         <button type="button" data-consultant-chat-handoff>Передать вопрос специалисту →</button>
       </div>
     </section>
 
     <details class="consultant-structured">
-      <summary>Уточнить параметры объекта <span>необязательно</span></summary>
+      <summary>Параметры объекта <span>по желанию</span></summary>
     <form class="consultant-form" data-consultant-form>
       <div class="consultant-form__grid">
         <div class="field">
@@ -98,7 +93,7 @@ const { pagePath = '' } = Astro.props;
 
       <div class="consultant-form__actions">
         <button class="button button--primary" type="submit">Показать следующий шаг →</button>
-        <span>Не является сметой, проектом или гарантией соответствия нормам.</span>
+        <small class="consultant-boundary">Не является сметой, проектом или гарантией соответствия нормам.</small>
       </div>
     </form>
 
@@ -418,7 +413,7 @@ const { pagePath = '' } = Astro.props;
     }
     if (/новострой|жил(ой|ого) комплекс|многоквартир|7 park|7 парк/i.test(input)) {
       return ['/obekty/novostroyki-i-zhilye-kompleksy/', 'Монтаж в новостройках и жилых комплексах',
-        'Посмотрите подтверждённый кейс 7 PARK и особенности повторяемых объёмов.'];
+        'Посмотрите кейс 7 PARK и особенности повторяемых объёмов.'];
     }
     if (/стоимост|сколько стоит|смет|цен|расцен/i.test(input)) {
       return ['/faq/', 'Что влияет на расчёт стоимости',
@@ -456,7 +451,7 @@ const { pagePath = '' } = Astro.props;
     lastChatQuestion = question;
     addChatMessage('visitor', 'Ваш вопрос', question);
     const [route, title, explanation] = safeChatRoute(question);
-    addChatMessage('guide', 'AEROVENTA / Навигатор', title + '. ' + explanation, route);
+    addChatMessage('guide', 'Материалы AEROVENTA', title + '. ' + explanation, route);
     consultantSummary = 'Вопрос посетителя: ' + question + '\nРекомендованный раздел: ' + route;
     chatInput.value = '';
     chatInput.focus();

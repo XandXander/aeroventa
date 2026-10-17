@@ -5,21 +5,29 @@ import { resolve } from 'node:path';
 interface Props { content: ContentRecord; fixture: boolean; }
 const { content } = Astro.props;
 
-// Owner-authored installation images; never emit absent asset URLs in the published HTML.
-const teamPhotoChoices = [
-  { src:'/evidence/team/img_4170.webp', alt:'Специалист в каске на инженерном объекте AEROVENTA', caption:'Команда AEROVENTA · кадр 1 из 4' },
-  { src:'/evidence/team/img_4166.webp', alt:'Специалист в каске на объекте с вентиляционными коммуникациями', caption:'Команда AEROVENTA · кадр 2 из 4' },
-  { src:'/evidence/team/img_4168.webp', alt:'Специалист в каске рядом со смонтированными воздуховодами', caption:'Команда AEROVENTA · кадр 3 из 4' },
-  { src:'/evidence/team/img_4169.webp', alt:'Специалист в рабочей одежде и каске на объекте', caption:'Команда AEROVENTA · кадр 4 из 4' },
+// Owner-confirmed team photography. Older technical shots are kept as historical assets,
+// but are never silently substituted into the public team HERO.
+const assetExists = (src: string) => ['apps/web/public' + src, 'public' + src].some(p => existsSync(resolve(p)));
+// Exact Owner-mapped individual portraits. Show no guessed name/face association if the
+// source asset has not yet been committed. No remote URL or invented substitute is used.
+const ownerTeam = [
+  { name:'Евгений Панов', role:'Технический директор', src:'/evidence/team/owner-evgeniy-panov-20261015.webp' },
+  { name:'Александр Тарасов', role:'Операционный директор', src:'/evidence/team/owner-aleksandr-tarasov-20261013.webp' },
+  { name:'Денис Иванов', role:'Руководитель проектов', src:'/evidence/team/owner-denis-ivanov-20261013.webp' },
+  { name:'Александр Шаламов', role:'Инженер-проектировщик', src:'/evidence/team/owner-aleksandr-shalamov-20261013.webp' },
 ];
-const teamPhotos = teamPhotoChoices.filter(({src}) =>
-  ['apps/web/public' + src, 'public' + src].some(p => existsSync(resolve(p)))
-);
+const teamGroupSrc = '/evidence/team/owner-team-group-20261015.webp';
+const hasOwnerGroup = assetExists(teamGroupSrc);
+const hasAllOwnerPortraits = ownerTeam.every(({src}) => assetExists(src));
+// Fail closed: the site must not fall back to old installation photos or mismatched portraits.
+if (!hasOwnerGroup || !hasAllOwnerPortraits) {
+  throw new Error('Owner team photography incomplete — approved group and all four exact portraits required');
+}
 
 const timeline = [
   { year:'2017–2018', title:'НТФФ «Полисан»', text:'Монтаж приточно-вытяжной вентиляции и оборудования на фармацевтическом объекте.', href:'/blog/detail/ntff-polisan/' },
   { year:'2019', title:'Квартира на Маршала Жукова', text:'Приточно-вытяжная вентиляция в жилом объекте — доказательство, что работа не ограничивается крупным B2B.', href:'/blog/detail/kvartira-na-zhukova/' },
-  { year:'2020', title:'7 PARK', text:'Семь домов в Павловске. Подтверждённый исторический период интенсивных работ: 18.11.2020–10.12.2020.', href:'/blog/detail/kak-my-sdali-7-domov/' },
+  { year:'2020', title:'7 PARK', text:'Семь домов в Павловске. Период работ: 18.11.2020–10.12.2020.', href:'/blog/detail/kak-my-sdali-7-domov/' },
   { year:'2021', title:'ЖК «Леонтьевский Мыс»', text:'Ресторан: монтаж приточно-вытяжной вентиляции и оборудования.', href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/' },
   { year:'2022', title:'Питкяранта / Карелия', text:'Сервисно-образовательный центр: монтаж вентиляции и оборудования.', href:'/blog/detail/montazh-ventilyatsii-v-karelii/' },
 ];
@@ -27,61 +35,36 @@ const timeline = [
 
 <article class="about-premium">
   <header class="about-hero">
-    <div class="home-shell about-hero__grid">
-      <div>
+    <div class="home-shell about-hero__grid about-hero__grid--editorial">
+      <div class="about-hero__introduction">
         <p class="home-kicker">О AEROVENTA</p>
         <h1>AEROVENTA — команда по монтажу вентиляции</h1>
       </div>
-      <div>
-        {teamPhotos.length > 0 && <figure class="about-hero__team"><img src={teamPhotos[0].src} alt={teamPhotos[0].alt} width="600" height="800" loading="eager" decoding="async" /><figcaption>{teamPhotos[0].caption}</figcaption></figure>}
-        <p class="about-hero__lede">
-          Постоянное ядро команды держит технический и организационный контроль объекта.
-          Когда объём или график требуют усиления, подключаем проверенных профильных специалистов.
-        </p>
+      <figure class="about-hero__team about-hero__team--group">
+        <img src={teamGroupSrc} alt="Четыре участника команды AEROVENTA на фоне вентиляционного оборудования" width="1024" height="768" loading="eager" decoding="async" fetchpriority="high" />
+        <figcaption>Команда AEROVENTA · монтаж вентиляции</figcaption>
+      </figure>
+      <div class="about-hero__continuation">
+        <p class="about-hero__lede">Постоянное ядро команды держит технический и организационный контроль объекта. Когда объём или график требуют усиления, подключаем проверенных профильных специалистов.</p>
         <p class="home-geo">Работаем в Санкт-Петербурге и Ленинградской области. Берём объекты в Москве и Карелии.</p>
         <div class="home-actions">
-          <a class="button button--primary" href="/portfolio/">Посмотреть реальные объекты →</a>
-          <a class="button button--ghost" href="/contact/" data-consultant-open data-source="about_inline" aria-haspopup="dialog" aria-controls="aeroventa-consultant-dialog">Инженерный консультант</a>
+          <a class="button button--primary" href="/portfolio/">Посмотреть объекты →</a>
+          <a class="button button--ghost" href="/contact/" data-consultant-open data-source="about_inline" aria-haspopup="dialog" aria-controls="aeroventa-consultant-dialog">Задать вопрос по вентиляции</a>
         </div>
       </div>
     </div>
   </header>
 
-  <section class="about-proof home-section" aria-labelledby="about-proof-title">
-    <div class="home-shell">
-      <div class="section-heading">
-        <div>
-          <p class="section-index section-index--orange">Фактическая работа</p>
-          <h2 id="about-proof-title">Вентиляция, которую можно увидеть на объектах.</h2>
-        </div>
-        <a href="/portfolio/">Все шесть объектов →</a>
-      </div>
-      <div class="about-proof__grid">
-        <a href="/blog/detail/kak-my-sdali-7-domov/">
-          <img src="/evidence/7park/duct-route.jpg" alt="Воздуховоды, смонтированные на объекте 7 PARK в Павловске" width="800" height="600" loading="lazy" decoding="async"/>
-          <span><small>Павловск · семь домов</small><strong>7 PARK</strong><em>Монтаж и история работ ↗</em></span>
-        </a>
-        <a href="/blog/detail/ntff-polisan/">
-          <img src="/evidence/polisan/owner-cover-v43.webp" alt="Монтаж вентиляции на фармацевтическом объекте НТФФ «Полисан»" width="800" height="520" loading="lazy" decoding="async"/>
-          <span><small>Производственный объект</small><strong>НТФФ «Полисан»</strong><em>Фотографии и факты ↗</em></span>
-        </a>
-        <a href="/blog/detail/montazh-ventilyatsii-v-karelii/">
-          <img src="/evidence/karelia/owner-cover-v43.webp" alt="Монтажная фотодокументация объекта PONSSE в Питкяранте" width="800" height="520" loading="lazy" decoding="async"/>
-          <span><small>Питкяранта · Карелия</small><strong>PONSSE</strong><em>Работы и оригинал письма ↗</em></span>
-        </a>
-      </div>
-    </div>
-  </section>
   <section class="about-principle" aria-labelledby="about-principle-title">
     <div class="home-shell about-principle__grid">
       <div>
         <p class="section-index section-index--orange">01 / Как работаем</p>
-        <h2 id="about-principle-title">Без лишнего — это не про “дешевле любой ценой”.</h2>
+        <h2 id="about-principle-title">Инженерный подход к каждой задаче.</h2>
       </div>
       <div class="about-principle__body">
         <p>Сначала понимаем, что действительно требуется объекту и что входит в нашу работу.</p>
-        <p>Не добавляем сложность только потому, что её можно продать. Существенный элемент системы должен иметь понятную функцию.</p>
-        <p>Если проект конфликтует с реальным объектом, не превращаем это в незаметное изменение “по месту”: проблему нужно зафиксировать и согласовать.</p>
+        <p>Состав и расположение оборудования определяем по назначению системы, проекту и условиям объекта.</p>
+        <p>Если проект требует уточнения на площадке, согласовываем техническое решение до монтажа.</p>
         <p>Состав сметы и исключения должны быть понятны до начала работ, а не появляться постфактум.</p>
       </div>
     </div>
@@ -95,52 +78,49 @@ const timeline = [
           <h2 id="about-team-title">Работаем на объекте сами. За результат отвечаем лично.</h2>
         </div>
         <div class="about-team__statement">
-          <p>Постоянное ядро команды ведёт монтаж и техническую координацию. При большом объёме усиливаем состав проверенными монтажниками, не передавая управление работами случайной бригаде.</p>
-          <p>Реальные фотографии специалистов и монтажных работ — из архива AEROVENTA.</p>
+          <p>Постоянное ядро команды ведёт монтаж и техническую координацию. При большом объёме усиливаем состав проверенными монтажниками, сохраняя техническую координацию объекта.</p>
+          <p>У каждого направления работ есть ответственный специалист.</p>
         </div>
       </div>
-      {teamPhotos.length > 0 && (
-        <div class="about-team__photos">
-          {teamPhotos.slice(1).map((photo) => (
-            <figure class="about-team__photo">
-              <img src={photo.src} alt={photo.alt} width="600" height="800" loading="lazy" decoding="async" />
-              <figcaption>{photo.caption}</figcaption>
+      {hasAllOwnerPortraits ? (
+        <div class="about-team__photos about-team__photos--owners">
+          {ownerTeam.map(person => (
+            <figure class:list={["about-team__photo", person.name === "Евгений Панов" && "about-team__photo--lead"]}>
+              <img src={person.src} alt={`${person.name} — ${person.role}`} width="720" height="960" loading="lazy" decoding="async" />
+              <figcaption><strong>{person.name}</strong><span>{person.role}</span></figcaption>
             </figure>
           ))}
+        </div>
+      ) : (
+        <div class="about-team__verified-names" aria-label="Состав команды AEROVENTA">
+          {ownerTeam.map(person => <div><strong>{person.name}</strong><span>{person.role}</span></div>)}
         </div>
       )}
     </div>
   </section>
 
-  <section class="about-history" aria-labelledby="about-history-title">
-    <div class="home-shell">
-      <div class="section-heading">
-        <div>
-          <p class="section-index section-index--orange">03 / Опыт через объекты</p>
-          <h2 id="about-history-title">Наш опыт — в реализованных объектах.</h2>
-        </div>
-        <a href="/portfolio/">Все объекты →</a>
-      </div>
-      <div class="about-timeline">
-        {timeline.map((item) => (
-          <a href={item.href}>
-            <span>{item.year}</span>
-            <h3>{item.title}</h3>
-            <p>{item.text}</p>
-            <b>Открыть кейс →</b>
-          </a>
-        ))}
+  <section class="about-case-highlight" aria-labelledby="about-case-highlight-title">
+    <div class="home-shell about-case-highlight__grid">
+      <figure>
+        <img src="/evidence/7park/object-exterior-day.jpg" alt="Жилой квартал 7 PARK в Павловске: реальный объект AEROVENTA" width="800" height="450" loading="lazy" decoding="async"/>
+        <figcaption>7 PARK · Павловск · семь домов</figcaption>
+      </figure>
+      <div>
+        <p class="section-index">03 / Опыт на объектах</p>
+        <h2 id="about-case-highlight-title">От частных помещений до жилых кварталов</h2>
+        <p>В 7 PARK команда выполняла монтаж приточно-вытяжной вентиляции в семи домах. В кейсе — объект, трассы и сведения о выполненных работах.</p>
+        <a href="/blog/detail/kak-my-sdali-7-domov/">Посмотреть 7 PARK ↗</a>
+        <a href="/portfolio/">Наши работы →</a>
       </div>
     </div>
   </section>
-
   <section class="conversion-close" aria-labelledby="about-close-title">
     <div class="home-shell">
       <p class="section-index section-index--orange">04 / Обсудить объект</p>
       <h2 id="about-close-title">Монтаж вентиляции начинается с вашей задачи.</h2>
       <div class="home-actions">
         <a class="button button--light" href="/montazh-po-proektu/">Передать проект →</a>
-        <a class="button button--light" href="/obekt-bez-gotovogo-proekta/">Обсудить задачу</a>
+        <a class="button button--light" href="/contact/" data-contact-open data-source="about_close" aria-haspopup="dialog">Обсудить задачу</a>
       </div>
     </div>
   </section>
@@ -169,5 +149,81 @@ const timeline = [
 .about-team__photo figcaption{padding:13px 16px;font-size:.82rem;line-height:1.45;color:#435a69;}
 @media(max-width:960px){.about-team__intro{grid-template-columns:1fr;}.about-team__photos{grid-template-columns:repeat(2,minmax(0,1fr));}.about-team__photo:last-child{grid-column:1/-1;justify-self:center;width:min(100%,420px);}}
 @media(max-width:760px){.about-team__photos{grid-template-columns:1fr;}.about-team__photo:last-child{grid-column:auto;width:100%;}.about-team__photo img{aspect-ratio:3/4;}.about-team__intro h2{font-size:clamp(1.9rem,9vw,3.2rem);}}
+
+
+/* The four credited people remain grouped together; no guessed photo/name link. */
+.about-team__photos--owners{grid-template-columns:repeat(4,minmax(0,1fr))}
+.about-team__photos--owners .about-team__photo{background:transparent}
+.about-team__photos--owners .about-team__photo img{aspect-ratio:3/4;object-fit:cover}
+.about-team__photos--owners figcaption{padding:16px 0 0;display:grid;gap:3px}
+.about-team__photos--owners figcaption strong{font-weight:650;color:#153044;font-size:1rem}
+.about-team__photos--owners figcaption span{font-size:.85rem;line-height:1.5}
+.about-team__verified-names{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(16px,2vw,32px);border-top:1px solid #b9ccd5}
+.about-team__verified-names>div{padding-top:18px;display:grid;align-content:start;gap:8px}
+.about-team__verified-names strong{font-size:clamp(1rem,1.3vw,1.25rem);line-height:1.3}
+.about-team__verified-names span{font-size:.9rem;line-height:1.4;color:#4c6571}
+.about-hero__team--group img{object-fit:contain;aspect-ratio:4/3;width:100%;height:auto}
+@media(max-width:360px){
+  /* 320 px: reserve an editorial photographic stage rather than crop or distort four people.
+     Image remains fully visible at its natural 4:3 proportion, centered on the quiet backdrop. */
+  .about-premium .about-hero__team--group img{
+    display:block;
+    width:100%;
+    height:clamp(250px,78vw,280px);
+    aspect-ratio:auto;
+    object-fit:contain;
+    object-position:center;
+    background:#e7edf0;
+  }
+}
+@media(max-width:960px){.about-team__photos--owners,.about-team__verified-names{grid-template-columns:repeat(2,minmax(0,1fr))}.about-team__photos--owners .about-team__photo:last-child{grid-column:auto;justify-self:auto;width:auto}}
+@media(max-width:520px){.about-team__photos--owners,.about-team__verified-names{grid-template-columns:1fr 1fr;gap:20px 12px}.about-team__verified-names{gap:24px 16px}.about-team__photos--owners figcaption strong{font-size:.92rem}}
+
+/* Owner photo first; copy and actions stay in the same editorial fold. */
+.about-premium .about-hero{background:#f3f6f6;padding:clamp(27px,4.3vw,66px) 0}
+.about-premium .about-hero__grid--editorial{display:grid;grid-template-columns:minmax(0,.86fr) minmax(0,1.14fr);gap:clamp(28px,4.6vw,86px);align-items:center}
+.about-hero__introduction{min-width:0;display:flex;flex-direction:column;align-items:flex-start}
+.about-hero__introduction h1{margin:clamp(14px,1.4vw,22px) 0 clamp(20px,3vw,43px);max-width:18ch;font-size:clamp(2.55rem,4.1vw,4.4rem);line-height:1.08;font-weight:530;letter-spacing:-.038em;text-wrap:balance}
+.about-premium .about-hero__introduction .about-hero__lede{margin:0;max-width:51ch;font-size:clamp(1rem,1.25vw,1.15rem);line-height:1.64}
+.about-hero__introduction .home-geo{margin:clamp(14px,1.8vw,25px) 0 0}
+.about-hero__introduction .home-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:clamp(19px,2.4vw,35px)}
+.about-premium .about-hero__team--group{align-self:center;margin:0;min-width:0}
+.about-premium .about-hero__team--group img{display:block;aspect-ratio:4/3;object-fit:contain;max-height:none;width:100%;height:auto;background:#e5eced}
+.about-premium .about-hero__team--group figcaption{font-size:.77rem;line-height:1.45;padding-top:12px;color:#526a74}
+.about-team__intro h2{max-width:21ch;font-size:clamp(2rem,3.35vw,3.6rem);line-height:1.12;font-weight:560}
+@media(max-width:960px){
+ .about-premium .about-hero__grid--editorial{grid-template-columns:1fr;gap:clamp(22px,4vw,38px)}
+ .about-hero__introduction h1{max-width:24ch;font-size:clamp(2.25rem,5.7vw,3.75rem)}
+ .about-premium .about-hero__team--group img{max-height:none}
+}
+@media(max-width:760px){
+ .about-premium .about-hero{padding:24px 0 30px}
+ .about-hero__introduction h1{font-size:clamp(2.1rem,8vw,3.2rem);max-width:18ch;margin:15px 0 21px}
+ .about-hero__introduction .home-actions{margin-top:20px}
+ .about-premium .about-hero__team--group img{max-width:100%;height:auto}
+}
+
+
+/* Final first fold: the group portrait follows the headline before mobile supporting copy. */
+.about-premium .about-hero__grid--editorial{grid-template-rows:auto auto;align-items:start}
+.about-premium .about-hero__introduction{grid-column:1;grid-row:1;align-self:end}
+.about-premium .about-hero__continuation{grid-column:1;grid-row:2;min-width:0;align-self:start;display:flex;flex-direction:column;align-items:flex-start}
+.about-premium .about-hero__continuation .about-hero__lede{margin:0;max-width:51ch;font-size:clamp(1rem,1.25vw,1.15rem);line-height:1.64}
+.about-premium .about-hero__continuation .home-geo{margin:clamp(14px,1.8vw,25px) 0 0}
+.about-premium .about-hero__continuation .home-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:clamp(19px,2.4vw,35px)}
+.about-premium .about-hero__grid--editorial>.about-hero__team{grid-column:2;grid-row:1/span 2;align-self:center}
+@media(max-width:960px){
+ .about-premium .about-hero__grid--editorial{grid-template-columns:1fr;grid-template-rows:auto auto auto;gap:18px}
+ .about-premium .about-hero__introduction{grid-column:1;grid-row:1}
+ .about-premium .about-hero__grid--editorial>.about-hero__team{grid-column:1;grid-row:2;align-self:start}
+ .about-premium .about-hero__continuation{grid-column:1;grid-row:3}
+}
+@media(max-width:760px){
+ .about-premium .about-hero__grid--editorial{gap:15px}
+ .about-premium .about-hero__introduction h1{margin:13px 0 6px;max-width:20ch;font-size:clamp(2.02rem,7.8vw,3.15rem)}
+ .about-premium .about-hero__team--group img{width:100%;height:clamp(260px,78vw,390px);aspect-ratio:auto;object-fit:contain;max-height:none}
+ .about-premium .about-hero__continuation{padding-top:4px}
+ .about-premium .about-hero__continuation .about-hero__lede{font-size:.96rem;line-height:1.6}
+}
 
 </style>

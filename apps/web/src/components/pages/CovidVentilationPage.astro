@@ -1,7 +1,17 @@
 ---
 import type { ContentRecord } from '@/lib/types';
+import legacySourceIndex from '../../../../../migration/legacy-page-source-index.json';
 interface Props { content: ContentRecord; fixture: boolean; }
 const { content } = Astro.props;
+const oldCovid = legacySourceIndex.find(x=>x.path==='/covid-pritochnaya-ventilacia/');
+const originalCovidText = oldCovid?.legacy_text_excerpt || '';
+const retainedMarker = 'Коронавирус COVID-19 и приточно вытяжная вентиляция, предупреждение';
+const originalStart = originalCovidText.lastIndexOf(retainedMarker);
+const originalCovidReading = originalStart>=0 ? originalCovidText.slice(originalStart) : originalCovidText;
+const originalCovidParagraphs = originalCovidReading.split(/\n\s*\n/u).map(x=>x.trim()).filter(Boolean);
+const originalCovidHeadings = oldCovid?.h2 || [];
+if (!originalCovidReading || !originalCovidHeadings.length) throw new Error('Original REHVA 2020 article source missing');
+
 ---
 
 <article class="covid-current">
@@ -70,6 +80,17 @@ const { content } = Astro.props;
           <a class="button button--ghost" href="/upload/medialibrary/fa1/fa1b840c9474c6030bf2ccb0c725c3e4.pdf">Архивный PDF REHVA →</a>
           <span>PDF сохранён как архивное подтверждение, а не как текущая универсальная инструкция.</span>
         </div>
+        <details class="covid-source-text">
+          <summary>Прочитать оригинальный архивный текст статьи 2020 года</summary>
+          <div class="covid-source-text__body">
+            <p class="covid-source-text__notice">Оригинальная публикация сохранена как исторический источник. Рекомендации эпохи пандемии нельзя автоматически применять к действующему объекту.</p>
+            {originalCovidParagraphs.map(paragraph=><p>{paragraph}</p>)}
+            <div class="covid-source-text__headings">
+              <strong>Разделы первоначальной публикации</strong>
+              {originalCovidHeadings.map(label=><span>{label}</span>)}
+            </div>
+          </div>
+        </details>
       </div>
 
       <figure class="covid-current__figure">
@@ -127,3 +148,16 @@ const { content } = Astro.props;
     </div>
   </section>
 </article>
+
+
+<style>
+.covid-source-text{margin-top:24px;border-top:1px solid #bdcbd2}
+.covid-source-text summary{cursor:pointer;padding:19px 0;font-size:.89rem;line-height:1.5;font-weight:580}
+.covid-source-text summary:focus-visible{outline:2px solid #a9663d;outline-offset:4px}
+.covid-source-text__body{max-width:72ch;padding:4px 0 20px;color:#395569}
+.covid-source-text__body p{font-size:.91rem;line-height:1.75;margin:0 0 16px}
+.covid-source-text__body .covid-source-text__notice{font-size:.81rem;border-left:2px solid #ab724f;padding:8px 0 8px 13px}
+.covid-source-text__headings{display:flex;flex-wrap:wrap;gap:6px 12px;padding-top:12px;border-top:1px solid #c3d1d9}
+.covid-source-text__headings span,.covid-source-text__headings strong{font-size:.75rem}
+.covid-source-text__headings strong{width:100%;margin-bottom:6px}
+</style>

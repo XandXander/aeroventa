@@ -38,6 +38,8 @@ for (const r of gone) {
 
 lines.push('', '# Legacy Bitrix 404 endpoint: do not migrate as PHP; force branded 404.');
 lines.push('RewriteEngine On');
+// On-site category alias (not a historical Bitrix route); keep 13 preserved 301 contract rules.
+lines.push('RewriteRule ^obekty/novostroyki-i-zhilye-kompleksy/?$ /obekty/novostroyki/ [R=301,L]');
 lines.push('RewriteRule ^404\\.php$ - [R=404,L]');
 lines.push('');
 

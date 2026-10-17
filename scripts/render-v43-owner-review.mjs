@@ -6,16 +6,26 @@ import { createHash } from 'node:crypto';
 const root = path.resolve('V43_OWNER_BROWSER_REVIEW');
 const baseUrl = 'http://127.0.0.1:4178';
 const views = [
-  ['desktop_1440', 1440, 900],
-  ['tablet_834', 834, 1100],
-  ['mobile_390', 390, 844],
   ['mobile_320', 320, 720],
+  ['mobile_360', 360, 780],
+  ['mobile_390', 390, 844],
+  ['mobile_430', 430, 932],
+  ['tablet_768', 768, 1024],
+  ['tablet_834', 834, 1100],
+  ['tablet_1024', 1024, 768],
+  ['laptop_1280', 1280, 800],
+  ['desktop_1440', 1440, 900],
+  ['desktop_1920', 1920, 1080],
 ];
 const routes = [
   ['home', '/'],
   ['ventilation', '/montazh-ventiliacii/'],
   ['services', '/services/'],
-  ['newbuilds', '/obekty/novostroyki-i-zhilye-kompleksy/'],
+  ['newbuilds', '/obekty/novostroyki/'],
+  ['private_objects','/obekty/kvartiry-i-doma/'],
+  ['commercial_objects','/obekty/ofisy-i-kommerciya/'],
+  ['warehouse_objects','/obekty/sklady/'],
+  ['production_objects','/obekty/proizvodstvo/'],
   ['restaurants', '/obekty/restorany-i-kafe/'],
   ['portfolio', '/portfolio/'],
   ['seven_park', '/blog/detail/kak-my-sdali-7-domov/'],
@@ -124,10 +134,11 @@ try {
             const p = rect(photo),c=rect(copy),r=rect(strip);
             return {
               natural_width:image?.naturalWidth??0,photo_fit:image?getComputedStyle(image).objectFit:null,
+              copy_background:copy?getComputedStyle(copy).backgroundColor:null,
               photo_left:p?.left??0,photo_right:p?.right??0,photo_top:p?.top??0,photo_bottom:p?.bottom??0,
               copy_left:c?.left??0,copy_top:c?.top??0,copy_right:c?.right??0,copy_bottom:c?.bottom??0,
               strip_top:r?.top??0,inline_visible:inline?getComputedStyle(inline).display!=='none':false,
-              floating_visible:fixed?getComputedStyle(fixed).display!=='none':false,
+              floating_visible:fixed?getComputedStyle(fixed).display!=='none' && getComputedStyle(fixed).visibility!=='hidden' && parseFloat(getComputedStyle(fixed).opacity)>.01:false,
               diagram_count:document.querySelectorAll('.home-solution .solution-diagram,.home-solution .solution-mobile-pair').length,
               desktop_diagram_visible:!!document.querySelector('.home-solution .solution-diagram') && getComputedStyle(document.querySelector('.home-solution .solution-diagram')).display !== 'none',
               mobile_pair_visible:!!document.querySelector('.home-solution .solution-mobile-pair') && getComputedStyle(document.querySelector('.home-solution .solution-mobile-pair')).display !== 'none',
@@ -135,18 +146,21 @@ try {
             };
           });
           const isMobile = width <= 760;
-          const isTablet = width > 760 && width <= 1100;
-          const photoBeforeCopy = optical.photo_bottom <= optical.copy_top + 3;
-          const desktopColumns = optical.copy_right <= optical.photo_left + 3 && optical.photo_right >= width*.8;
-          const ownerScenePass = optical.natural_width > 0 &&
+          // P0 2026-10-16 full-bleed HOME: copy overlays source photo on desktop;
+          // mobile preserves independent reading order before the contained image.
+          const mobileReadingOrder = optical.photo_top >= optical.copy_bottom - 3 &&
+            optical.photo_fit === 'contain' && optical.strip_top >= optical.photo_bottom - 3;
+          const desktopBleed = optical.photo_fit === 'cover' &&
+            optical.photo_left <= 3 && optical.photo_right >= width - 3 &&
+            optical.copy_left >= -1 && optical.copy_right <= width + 3 &&
+            optical.photo_bottom > optical.copy_top + 100 &&
+            optical.copy_background === 'rgba(0, 0, 0, 0)';
+          const ownerScenePass = optical.natural_width >= 1200 &&
             optical.diagram_count === 2 && optical.process_stages === 4 &&
             (isMobile ? (!optical.desktop_diagram_visible && optical.mobile_pair_visible) :
                         (optical.desktop_diagram_visible && !optical.mobile_pair_visible)) &&
-            (isMobile || isTablet ?
-              (optical.photo_fit === (isMobile ? 'cover' : 'contain') && photoBeforeCopy) :
-              (optical.photo_fit === 'cover' && desktopColumns)) &&
-            (!isMobile || (optical.inline_visible && !optical.floating_visible &&
-             optical.strip_top >= optical.copy_bottom - 2));
+            (isMobile ? mobileReadingOrder : desktopBleed) &&
+            (!isMobile || (optical.inline_visible && !optical.floating_visible));
           if (!ownerScenePass) report.fail.push({route,view,reason:'Approved Owner airflow HERO scene/adaptation contract',optical});
           const recognition = page.locator('.home-ponsse');
           const orderCorrect = await page.evaluate(() => {
@@ -164,10 +178,84 @@ try {
               await recognition.locator('a[href="/blog/detail/montazh-ventilyatsii-v-karelii/"]').count() !== 1) {
             report.fail.push({route,view,reason:'PONSSE historical proof placement and direct case path',orderCorrect});
           }
+          // New Owner requirement: low-key international industrial context, not a trophy claim.
+          if (view === 'desktop_1440' || view === 'mobile_390') {
+            const txt = await recognition.innerText();
+            const h2 = await recognition.locator('h2').innerText();
+            if (!txt.includes('международная промышленная компания') ||
+                !txt.includes('профессионализм') || !txt.includes('рабочую этику') ||
+                h2 !== 'Письмо PONSSE' ||
+                /международное признание|европейское качество|мировой уровень|финская компания/i.test(txt)) {
+              report.fail.push({route,view,reason:'Owner PONSSE factual calm editorial copy',h2,txt:txt.slice(0,360)});
+            }
+          }
           const opened = await page.locator('dialog[open]').count();
           if (opened) report.fail.push({route,view,reason:'Surprise modal on initial page load',opened});
         }
         if (id === 'about') {
+          if (view === 'desktop_1440' || view === 'mobile_390') {
+            const group = page.locator('.about-hero__team--group img');
+            const panov = page.locator('.about-team__photo--lead img');
+            const expectedGroup = '/evidence/team/owner-team-group-20261015.webp';
+            const expectedPanov = '/evidence/team/owner-evgeniy-panov-20261015.webp';
+            // Compare displayed WebP subjects against the two PNG originals supplied
+            // by Owner on 14 October. 8x8 grayscale fingerprints tolerate WebP coding
+            // but detect the wrong group/person. No raw PNG reaches webroot.
+            // Group source SHA256 c6659ec091b93c37f3f6eb9a48284fd429e68032d82288839e63677aaf8eae83
+            // Panov source SHA256 64f0eaab5fa18abd878bb0e175f55827c6e73ba79ab72dea0579bcd635652207
+            const expectedFps = ['ffffff0100000021','e0c1cfedc1c18100'];
+            // Perceptual grayscale hashes alone falsely PASSED the orange jacket.
+            // The build also checks SHA256 of these exact Owner media assets.
+            const originalAssetDigests = ['0a507849d6d8b54688779af5fab086e228272908310ff1c408b93c6afdaebb3a',
+              '6227996e36b7c4b0a9cfb889f447b9dba6569a5d6a4154e628cf323aefec2f09'];
+            const actualAssetDigests = await Promise.all([expectedGroup,expectedPanov].map(async asset => {
+              const bytes = await page.evaluate(async src=>{
+                const response=await fetch(src,{cache:'no-store'});
+                if(!response.ok)throw new Error('Missing Owner asset: '+src);
+                const buf=await response.arrayBuffer();
+                const hash=await crypto.subtle.digest('SHA-256',buf);
+                return Array.from(new Uint8Array(hash)).map(x=>x.toString(16).padStart(2,'0')).join('');
+              },asset);
+              return bytes;
+            }));
+            const diffBits = (s,t) => {
+              let count=0;
+              for(let k=0;k<16;k++){
+                const v=parseInt(s[k],16)^parseInt(t[k],16);
+                count+=((v>>0)&1)+((v>>1)&1)+((v>>2)&1)+((v>>3)&1);
+              }
+              return count;
+            };
+            const media = await Promise.all([group,panov].map(async (loc,index) => {
+              const count=await loc.count();
+              if (!count) return {count,src:null,loaded:false,fingerprint:null,distance:64};
+              const img=loc.first();
+              const src=await img.getAttribute('src');
+              const rendered=await img.evaluate(async el=>{
+                el.loading='eager'; // load offscreen portrait explicitly for deterministic evidence
+                try { await el.decode(); } catch { /* reported via naturalWidth */ }
+                if (!el.complete || !el.naturalWidth) return null;
+                const c=document.createElement('canvas');c.width=8;c.height=8;
+                const ctx=c.getContext('2d',{willReadFrequently:true});
+                if(!ctx)return null;
+                ctx.drawImage(el,0,0,8,8);
+                const px=ctx.getImageData(0,0,8,8).data;
+                const l=[];for(let i=0;i<64;i++){const j=i*4;l.push(.2126*px[j]+.7152*px[j+1]+.0722*px[j+2]);}
+                const average=l.reduce((a,b)=>a+b,0)/64;
+                let out='';for(const v of l)out+=v>=average?'1':'0';
+                return {hash:BigInt('0b'+out).toString(16).padStart(16,'0'),width:el.naturalWidth,height:el.naturalHeight};
+              });
+              return {count,src,loaded:!!rendered,fingerprint:rendered?.hash||null,
+                dimensions:rendered?[rendered.width,rendered.height]:null,
+                distance:rendered?diffBits(rendered.hash,expectedFps[index]):64};
+            }));
+            if(media[0].count!==1 || media[0].src!==expectedGroup || !media[0].loaded ||
+               media[1].count!==1 || media[1].src!==expectedPanov || !media[1].loaded ||
+               media.some(x=>x.distance>12) || actualAssetDigests.some((digest,i)=>digest!==originalAssetDigests[i]) ||
+               await page.locator('.about-hero__team img[src*="img_4170"]').count()) {
+              report.fail.push({route,view,reason:'Owner original group and Panov perceptual source match',media});
+            }
+          }
           const optical = await page.evaluate(() => {
             const h = document.querySelector('.about-hero h1')?.getBoundingClientRect();
             const i = document.querySelector('.about-hero__team img');
@@ -175,7 +263,7 @@ try {
             const l = document.querySelector('.consultant-launcher')?.getBoundingClientRect();
             const overlaps = !!p && !!l && Math.max(p.left,l.left)<Math.min(p.right,l.right) &&
               Math.max(p.top,l.top)<Math.min(p.bottom,l.bottom);
-            return {headingTop:h?.top,photoTop:p?.top,photoWidth:i?.naturalWidth,photoHeight:p?.height,photoBottom:p?.bottom,launcherOverlap:overlaps,launcherVisible:!!l && getComputedStyle(document.querySelector('.consultant-launcher')).display!=='none',inlineConsultant:!!document.querySelector('.about-hero a[data-consultant-open][data-source="about_inline"]')};
+            return {headingTop:h?.top,photoTop:p?.top,photoWidth:i?.naturalWidth,photoHeight:p?.height,photoBottom:p?.bottom,launcherOverlap:overlaps,launcherVisible:!!l && getComputedStyle(document.querySelector('.consultant-launcher')).display!=='none' && getComputedStyle(document.querySelector('.consultant-launcher')).visibility!=='hidden' && parseFloat(getComputedStyle(document.querySelector('.consultant-launcher')).opacity)>.01,inlineConsultant:!!document.querySelector('.about-hero a[data-consultant-open][data-source="about_inline"]')};
           });
           if (!optical.photoWidth || optical.headingTop == null || optical.headingTop >= height*.55 ||
               (width<=760 && (optical.photoHeight < 250 || optical.photoHeight > height*.85 || optical.photoTop >= height*.7 || optical.launcherOverlap || optical.launcherVisible || !optical.inlineConsultant))) {
@@ -198,46 +286,86 @@ try {
             const count = await page.locator(`.portfolio-card:has-text("${name}") img[src="${src}"]`).count();
             if (count !== 1) report.fail.push({route,view,reason:'Owner authentic cover mismatch',name,src,count});
           }
-          if (count !== 5 || photos !== 5 || ponsse !== 1 || await page.locator('.portfolio-feature a[href="/blog/detail/kak-my-sdali-7-domov/"]').count() !== 1) {
-            report.fail.push({route,view,reason:'Five distinct case cards plus featured 7 PARK',count,photos,ponsse});
-          }
-          for (const card of await cards.all()) {
-            const href = await card.getAttribute('href');
-            if (!href?.startsWith('/blog/detail/')) report.fail.push({route,view,reason:'Case must link directly to historic case URL',href});
+          const historical = page.locator('a.portfolio-card[href^="/blog/detail/"]');
+          const archives = page.locator('button.portfolio-card[data-archive-open][aria-controls="portfolio-archive-viewer"]');
+          const historicUrls = await historical.evaluateAll(nodes=>nodes.map(n=>n.getAttribute('href')));
+          const sourceValid = await archives.evaluateAll(nodes=>{
+            // The original three photos stay source-locked; the 68 SHA-verified
+            // gallery photographs are now committed at their canonical paths.
+            const expected = new Map([
+              ['apart-hotel',13], ['eurospar-vo',9],
+              ['eurospar-sestroretsk',11], ['college-obvodny',15],
+              ['novatech',10], ['akvilon-yanino',19], ['himprom',11],
+            ]);
+            return nodes.length === expected.size && nodes.every(n=>{
+              const cover = n.querySelector('img')?.getAttribute('src') || '';
+              const slug = cover.match(/^\/evidence\/owner-portfolio\/([a-z0-9-]+)\//)?.[1];
+              if (!expected.has(slug)) return false;
+              const prefix = '/evidence/owner-portfolio/' + slug + '/';
+              const urls = JSON.parse(n.getAttribute('data-gallery-images')||'[]');
+              const valid = urls.length === expected.get(slug) &&
+                urls[0] === prefix + 'cover.webp' &&
+                new Set(urls).size === urls.length &&
+                urls.every(u=>u.startsWith(prefix) &&
+                  /^(?:cover|0[2-9]|[1-9][0-9]|gallery-[0-9]{2,3})\.webp$/.test(u.slice(prefix.length)));
+              expected.delete(slug);
+              return valid;
+            }) && expected.size === 0;
+          });
+          if (count !== 12 || photos !== 12 || ponsse !== 1 ||
+              await historical.count() !== 5 || await archives.count() !== 7 ||
+              !sourceValid || historical && !historicUrls.every(h=>h?.startsWith('/blog/detail/')) ||
+              await page.locator('.portfolio-feature a[href="/blog/detail/kak-my-sdali-7-domov/"]').count() !== 1) {
+            report.fail.push({route,view,reason:'Owner 12 source-locked objects plus leading 7 PARK',count,photos,ponsse,historic:historicUrls,archiveCount:await archives.count(),sourceValid});
           }
         }
         if (['drill_crown', 'drill_screed', 'drill_cost', 'drill_horizontal'].includes(id)) {
-          const reading = page.locator('.p0-historic-reading__body');
+          // Exact original photograph locations remain in the source article DOM.
+          const reading = page.locator('.p0-story__body');
           const restoredText = await reading.innerText();
-          if (restoredText.trim().length < 350 || await reading.locator('p').count() < 1) {
-            report.fail.push({route,view,reason:'Historical technical content not presented as readable main page text',chars:restoredText.length});
-          }
-          const figures = await page.locator('.p0-historic-reading figure, .p0-article figure').count();
-          report.open_media_debt ||= [];
-          if (figures === 0 && view === 'desktop_1440') {
-            report.open_media_debt.push({route,reason:'Original illustrated instruction still lacks historical media; source restore required before release'});
+          const inlineCount = await reading.locator('img[src^="/upload/medialibrary/"]').count();
+          const required = {drill_crown:10,drill_screed:21,drill_cost:4,drill_horizontal:29}[id];
+          const detached = await page.locator('.p0-source-photo-gallery, .p0-historic-reading').count();
+          const imagesValid = await reading.evaluate(node =>
+            [...node.querySelectorAll('img')].every(img =>
+              img.getAttribute('src')?.startsWith('/upload/medialibrary/') &&
+              img.closest('p,li,div') && img.complete && img.naturalWidth > 0));
+          if (restoredText.trim().length < 350 || inlineCount !== required ||
+              detached !== 0 || !imagesValid) {
+            report.fail.push({route,view,reason:'Exact inline historical photo-instruction',
+              chars:restoredText.length,inlineCount,required,detached,imagesValid});
           }
         }
         if (id === 'services') {
-
-          const editorial = page.locator('.services-hero__backdrop img[src="/evidence/hero/services-owner-editorial-1774.webp"]');
-          const wrong = await page.locator('.services-hero img[src="/evidence/hero/engineering-ductwork.jpg"]').count();
+          // 14 Oct Owner explicitly rejected the old two-photo services HERO.
+          const photographicProof = page.locator('.services-hero__backdrop--single img');
+          const expected = ['/evidence/hero/hiend-engineering-visual-owner-v43.webp'];
+          const actual = await photographicProof.evaluateAll(nodes=>nodes.map(n=>new URL(n.src).pathname));
+          const wrong = await page.locator('.services-hero img[src="/evidence/hero/engineering-ductwork.jpg"],.services-hero img[src="/evidence/cafe/owner-cover-v43.webp"]').count();
           const servicesOptical = await page.evaluate(() => {
-            const pic = document.querySelector('.services-hero__backdrop img');
-            const intro = document.querySelector('.services-hero__intro');
-            const rect = e => e?.getBoundingClientRect();
-            const p=rect(pic),t=rect(intro);
-            return {natural_width:pic?.naturalWidth??0,object_fit:pic?getComputedStyle(pic).objectFit:null,
-              photo_top:p?.top??0,intro_bottom:t?.bottom??0,
-              inline_visible:getComputedStyle(document.querySelector('.services-consultant-inline')).display!=='none',
-              floating_visible:getComputedStyle(document.querySelector('.consultant-launcher')).display!=='none'};
+            const pics=[...document.querySelectorAll('.services-hero__backdrop--single img')];
+            const intro=document.querySelector('.services-hero__intro');
+            const picture = pics[0]?.getBoundingClientRect();
+            const text = intro?.getBoundingClientRect();
+            const inline=document.querySelector('.services-consultant-inline');
+            const floating=document.querySelector('.consultant-launcher');
+            return {
+              natural_widths:pics.map(n=>n.naturalWidth),
+              object_fits:pics.map(n=>getComputedStyle(n).objectFit),
+              photo_top:picture?.top??0,
+              intro_bottom:text?.bottom??0,
+              inline_visible:inline?getComputedStyle(inline).display!=='none':false,
+              floating_visible:floating?getComputedStyle(floating).display!=='none' && getComputedStyle(floating).visibility!=='hidden' && parseFloat(getComputedStyle(floating).opacity)>.01:false
+            };
           });
-          const serviceMobile = width<=760;
-          if (await editorial.count()!==1 || wrong || !servicesOptical.natural_width ||
-              (serviceMobile && (servicesOptical.object_fit!=='contain' ||
-               servicesOptical.photo_top < servicesOptical.intro_bottom-3 ||
-               !servicesOptical.inline_visible || servicesOptical.floating_visible))) {
-            report.fail.push({route,view,reason:'Owner Services architectural scene and mobile placement',wrong,servicesOptical});
+          const mobile=width<=760;
+          if (JSON.stringify(actual)!==JSON.stringify(expected) || wrong ||
+              servicesOptical.natural_widths.length!==1 ||
+              servicesOptical.natural_widths.some(n=>n<400) ||
+              servicesOptical.object_fits.some(n=>n!=='cover') ||
+              (mobile && (servicesOptical.photo_top<servicesOptical.intro_bottom-3 ||
+                  !servicesOptical.inline_visible || servicesOptical.floating_visible))) {
+            report.fail.push({route,view,reason:'Owner Services single authentic image and mobile placement',wrong,actual,servicesOptical});
           }
         }
         if (id === 'ventilation') {
@@ -270,6 +398,30 @@ try {
             report.fail.push({route,view,reason:'PONSSE original image binding',actualLetter,actualPortrait,expectedLetter,expectedPortrait});
           }
         }
+        if (['home','services','objects'].includes(id) && ['desktop_1440','mobile_390'].includes(view)) {
+          const misleadingAnchors = await page.locator('a[href^="/obekty/#"]').count();
+          if (misleadingAnchors) report.fail.push({route,view,reason:'Owner prohibits object-category fragment detours',misleadingAnchors});
+          const directLinks = await page.locator('a[href^="/obekty/"]').evaluateAll(els => [...new Set(els.map(el=>el.getAttribute('href')).filter(Boolean))]);
+          for (const href of directLinks) {
+            if (href.includes('#')) report.fail.push({route,view,reason:'Fragment navigation in object category',href});
+            const response = await page.request.get(baseUrl + href);
+            if (response.status() !== 200) report.fail.push({route,view,reason:'Direct category destination not 200',href,status:response.status()});
+          }
+        }
+        if (['home','services','objects','portfolio'].includes(id) && ['desktop_1440','laptop_1280'].includes(view)) {
+          const firstFold = await page.evaluate((routeId) => {
+            const root = routeId==='home'?document.querySelector('.home-hero'):
+              routeId==='services'?document.querySelector('.services-hero__routes'):
+              routeId==='objects'?document.querySelector('.objects-hero'):
+              document.querySelector('.portfolio-hero');
+            const rect=root?.getBoundingClientRect();
+            return rect?{bottom:Math.round(rect.bottom),viewport:innerHeight}:null;
+          },id);
+          entry.first_fold = firstFold;
+          if (firstFold && firstFold.bottom < firstFold.viewport-24) {
+            report.fail.push({route,view,reason:'Owner first fold leaks next section',...firstFold});
+          }
+        }
         if (entry.status !== 200 || entry.overflow_px > 1 || entry.broken_images.length || pageErrors.length) {
           report.fail.push(entry);
         }
@@ -283,8 +435,11 @@ try {
           const shown = await viewer.locator('[data-photo-large]').getAttribute('src');
           if (shown !== firstSrc) report.fail.push({route,view,reason:'Case viewer selected image mismatch',firstSrc,shown});
           await viewer.locator('[data-photo-next]').click();
-          const secondCount = await viewer.locator('[data-photo-count]').innerText();
-          if (!secondCount.startsWith('2 / ')) report.fail.push({route,view,reason:'Case viewer next navigation failed',secondCount});
+          const secondSrc = await viewer.locator('[data-photo-large]').getAttribute('src');
+          const clean = await viewer.locator('button').count() === 3 &&
+            await viewer.locator('.case-photo-dialog__figure figcaption').innerText() === 'Фотодокументация объекта' &&
+            (await viewer.locator('.case-photo-dialog__top>span').innerText()).trim().length > 0;
+          if (!secondSrc || secondSrc === shown || !clean) report.fail.push({route,view,reason:'Case viewer navigation / minimal photo UI',shown,secondSrc,clean});
           await page.keyboard.press('Escape');
           await viewer.waitFor({state:'hidden'});
           const returned = await firstPhoto.evaluate(el => el === document.activeElement);
@@ -330,6 +485,12 @@ try {
           await page.locator('.mobile-menu summary').click();
         }
         if (id === 'home' && (view === 'desktop_1440' || view === 'mobile_390')) {
+          // On desktop the persistent launcher is intentionally hidden
+          // until the full category ribbon has left the first fold.
+          if(view === 'desktop_1440') {
+            await page.locator('.decision-preview').scrollIntoViewIfNeeded();
+            await page.waitForFunction(()=>document.documentElement.classList.contains('is-past-first-fold'),null,{timeout:4000});
+          }
           await page.locator(view === 'mobile_390' ? '.home-consultant-inline' : '.consultant-launcher').click();
           await page.locator('[data-consultant-dialog]').waitFor({ state: 'visible' });
           await page.screenshot({ path: path.join(root, 'consultant_open__' + view + '.png'), animations: 'disabled' });
@@ -364,6 +525,401 @@ try {
       }
     }
   }
+  // Owner's real motion gate: observe first-visit assembly, actual completion,
+  // repeat-navigation suppression and reduced-motion static readiness.
+  // No network calls, artificial delay, or simulated operational activity.
+  {
+    const normal = await browser.newContext({viewport:{width:1440,height:900},reducedMotion:'no-preference'});
+    const page = await normal.newPage();
+    try {
+      await page.goto(baseUrl+'/',{waitUntil:'domcontentloaded'});
+      const first = await page.evaluate(()=>{
+        const entry=document.querySelector('[data-airflow-entry]');
+        const duct=entry?.querySelector('.airflow-entry-trace__duct');
+        const pulse=entry?.querySelector('.airflow-entry-trace__pulse');
+        const supply=document.querySelector('.airflow-header-trace__route--supply')?.getBoundingClientRect();
+        const exhaust=document.querySelector('.airflow-header-trace__route--exhaust')?.getBoundingClientRect();
+        return {
+          running:!!entry?.classList.contains('is-running'),
+          assembly:duct?getComputedStyle(duct).animationName:null,
+          pulse:pulse?getComputedStyle(pulse).animationName:null,
+          nonBlocking:!!entry&&getComputedStyle(entry).pointerEvents==='none',
+          distinctlySeparated:!!supply&&!!exhaust&&supply.right<exhaust.left-1,
+          shown:sessionStorage.getItem('aeroventa-entry-shown')
+        };
+      });
+      await page.waitForFunction(()=>!document.querySelector('[data-airflow-entry]'),null,{timeout:3000});
+      const finished=await page.evaluate(()=>({
+        entryRemoved:!document.querySelector('[data-airflow-entry]'),
+        fakeProcessing:document.documentElement.hasAttribute('data-airflow-processing')
+      }));
+      await page.goto(baseUrl+'/services/',{waitUntil:'domcontentloaded'});
+      const revisited=await page.evaluate(()=>({
+        entryAbsent:!document.querySelector('[data-airflow-entry]'),
+        saved:sessionStorage.getItem('aeroventa-entry-shown')==='1'
+      }));
+      const reducedCtx=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'});
+      try {
+        const reducedPage=await reducedCtx.newPage();
+        await reducedPage.goto(baseUrl+'/',{waitUntil:'domcontentloaded'});
+        const reduced=await reducedPage.evaluate(()=>({
+          reduced:matchMedia('(prefers-reduced-motion: reduce)').matches,
+          entryAbsent:!document.querySelector('[data-airflow-entry]'),
+          sectionsReady:(document.querySelectorAll('.airflow-trace-section').length>0)&&[...document.querySelectorAll('.airflow-trace-section')].every(n=>n.classList.contains('is-airflow-active'))
+        }));
+        report.motion_evidence={first,finished,revisited,reduced};
+        if(!first.running||first.assembly!=='airflow-route-assemble'||
+           first.pulse!=='airflow-route-pulse'||!first.nonBlocking||
+           !first.distinctlySeparated||first.shown!=='1'||
+           !finished.entryRemoved||finished.fakeProcessing||
+           !revisited.entryAbsent||!revisited.saved||
+           !reduced.reduced||!reduced.entryAbsent||!reduced.sectionsReady)
+          report.fail.push({reason:'Actual first visit/revisit/reduced motion lifecycle',first,finished,revisited,reduced});
+      }finally{await reducedCtx.close()}
+    }catch(e){report.fail.push({reason:'Motion browser lifecycle exception',error:String(e)})}
+    finally{await normal.close()}
+  }
+  // Contact UI: mock POST, never reach an inbox. Verify a pending-only PULSE,
+  // accessible error path and no fabricated delivery confirmation.
+  {
+    const context=await browser.newContext({viewport:{width:1440,height:900},reducedMotion:'no-preference'});
+    const page=await context.newPage();
+    try{
+      await page.goto(baseUrl+'/',{waitUntil:'load'});
+      // Let the real first-visit signature animation finish before evaluating the idle state.
+      await page.locator('[data-airflow-entry]').waitFor({state:'detached',timeout:2500}).catch(()=>{});
+      const atRest=await page.evaluate(()=>({pending:document.documentElement.hasAttribute('data-airflow-processing'),trace:!!document.querySelector('.airflow-header-trace'),entry:!!document.querySelector('[data-airflow-entry]')}));
+      if(atRest.pending||!atRest.trace||atRest.entry) report.fail.push({reason:'No fake load animation at rest',atRest});
+      await page.locator('.header-project').click();
+      const form=page.locator('[data-contact-dialog] form[data-contact-form]');
+      await form.locator('input[name="name"]').fill('Owner QA fixture');
+      await form.locator('input[name="contact"]').fill('qa@example.org');
+      await form.locator('textarea[name="task"]').fill('Тест исключительно в изолированной сборке');
+      await form.locator('input[name="consent"]').check();
+      await form.locator('input[name="started_at"]').evaluate(x=>x.value=String(Date.now()-3000));
+      let called=0;let resolveRequest;
+      const release=new Promise(r=>resolveRequest=r);
+      await page.route('**/api/lead.php',async route=>{
+        called++;
+        await release;
+        await route.fulfill({status:503,contentType:'application/json',body:'{"ok":false,"error":"mock_only"}'});
+      });
+      await form.locator('button[type="submit"]').click();
+      await page.waitForFunction(()=>document.documentElement.hasAttribute('data-airflow-processing'),{timeout:4500});
+      const during=await page.evaluate(()=>({
+        pending:document.documentElement.hasAttribute('data-airflow-processing'),
+        pulse:getComputedStyle(document.querySelector('.airflow-header-trace__route--supply i')).animationName,
+        realFetch:document.querySelector('[data-contact-form][data-submitting="true"]')!==null
+      }));
+      resolveRequest();
+      await page.waitForFunction(()=>!document.documentElement.hasAttribute('data-airflow-processing'));
+      const status=await form.locator('[data-form-status]').innerText();
+      if(called!==1||!during.pending||!during.realFetch||during.pulse==='none'||!status.includes('Не удалось передать'))
+        report.fail.push({reason:'Mocked lead response/pulse/fallback',called,during,status});
+    }catch(error){report.fail.push({reason:'Lead and true Pulse interaction test failed',error:String(error)})}
+    finally{await context.close()}
+  }
+  // Artistic regression that the original 400 captures missed:
+  // assert the actually rendered photographic and 3-route editorial geometry.
+  for(const [width,height] of [[1440,900],[1280,768],[1024,768],[390,844],[320,640]]){
+    const context=await browser.newContext({viewport:{width,height}});
+    const page=await context.newPage();
+    try{
+      await page.goto(baseUrl+'/services/',{waitUntil:'load'});
+      const m=await page.evaluate(()=>{
+        const box=s=>document.querySelector(s)?.getBoundingClientRect();
+        const hero=box('header.services-hero--owner-editorial');
+        const photo=box('header.services-hero--owner-editorial>figure.services-hero__backdrop--single');
+        const copy=box('.services-hero__intro');
+        const routes=[...document.querySelectorAll('.services-hero__routes-inner>a')].map(a=>a.getBoundingClientRect());
+        const text=[...document.querySelectorAll('.services-hero__routes-inner>a')].map(a=>a.innerText);
+        const inline=document.querySelector('.services-consultant-inline');
+        return {hero:hero&&{x:hero.x,y:hero.y,w:hero.width,h:hero.height},photo:photo&&{x:photo.x,y:photo.y,w:photo.width,h:photo.height},
+          copy:copy&&{x:copy.x,y:copy.y,w:copy.width,h:copy.height,bottom:copy.bottom},
+          routes:routes.map(x=>({x:x.x,y:x.y,w:x.width,h:x.height})),
+          text,inline:!!inline&&getComputedStyle(inline).display!=='none',
+          overflow:document.documentElement.scrollWidth-innerWidth};
+      });
+      const desktop=width>=761;
+      const valid=!!m.hero&&!!m.photo&&!!m.copy&&m.routes.length===3&&m.overflow<=1&&
+       (desktop
+        ?m.photo.w>width*.3&&m.photo.h>350&&m.photo.x>m.copy.x+m.copy.w*.7&&
+         m.routes.every((r,i)=>r.w>width*.19&&r.h>=72&&(i===0||r.x>m.routes[i-1].x+60))&&!m.inline
+        :m.photo.w>=width-2&&m.photo.y>=m.copy.bottom-1&&m.photo.h>140&&
+         m.routes.every((r,i)=>r.w>width*.76&&r.h>=50&&(i===0||r.y>m.routes[i-1].y+32)));
+      if(!valid)report.fail.push({reason:'Services actual optical grid and legible three routes',width,height,m});
+    }catch(e){report.fail.push({reason:'Services editorial geometry exception',width,height,error:String(e)})}
+    finally{await context.close()}
+  }
+  // The persistent consultant must not overlap the six home categories.
+  {
+    const context=await browser.newContext({viewport:{width:1440,height:900}});
+    const page=await context.newPage();
+    try{
+      await page.goto(baseUrl+'/',{waitUntil:'load'});
+      const before=await page.locator('.consultant-launcher').evaluate(el=>{
+        const css=getComputedStyle(el);return {visibility:css.visibility,opacity:Number(css.opacity)};
+      });
+      await page.locator('.home-hero--owner-airflow .object-ribbon').scrollIntoViewIfNeeded();
+      const under=await page.locator('.consultant-launcher').evaluate(el=>getComputedStyle(el).visibility);
+      await page.locator('.decision-preview').scrollIntoViewIfNeeded();
+      await page.waitForFunction(()=>document.documentElement.classList.contains('is-past-first-fold'),null,{timeout:4000});
+      const after=await page.locator('.consultant-launcher').evaluate(el=>getComputedStyle(el).visibility);
+      if(before.visibility!=='hidden'||under!=='hidden'||after!=='visible')
+        report.fail.push({reason:'Consultant launcher must not overlap first-fold categories',before,under,after});
+    }catch(e){report.fail.push({reason:'Consultant first-fold overlap QA failed',error:String(e)})}
+    finally{await context.close()}
+  }
+  // ART RED TEAM DELTA: compiled DOM checks for the six confirmed source defects.
+  // This is a focused addition to the established 400-capture suite, not a new audit.
+  for (const [route, width] of [
+    ['/services/',320],['/services/',390],['/services/',768],
+    ['/services/',1440],['/services/',1920],
+    ['/about/',390],['/about/',1440],
+    ['/portfolio/',390],['/portfolio/',1440],
+    ['/blog/detail/ntff-polisan/',390],
+    ['/blog/detail/ntff-polisan/',1440],
+    ['/blog/detail/kafe-rimskogo-korsakova-3/',390],
+    ['/blog/detail/kafe-rimskogo-korsakova-3/',1440]
+  ]) {
+    const context=await browser.newContext({viewport:{width,height:850}});
+    const page=await context.newPage();
+    try{
+      await page.goto(baseUrl+route,{waitUntil:'load'});
+      const dom=await page.evaluate(()=>{
+        const headings=[...document.querySelectorAll('.section-index')].map(n=>n.textContent.trim());
+        return {
+          articles:document.querySelectorAll('main article.hub-page').length,
+          orphan:/(?:^|\n)\s*\)\)\}\s*(?:\n|$)/m.test(document.querySelector('main')?.innerText||''),
+          hubSplit:document.querySelectorAll('main .hub-split,main .hub-objects,main .hub-limits').length,
+          serviceRoutes:document.querySelectorAll('main .services-hero__routes-inner>a').length,
+          labels:headings,
+          image:document.querySelector('meta[property="og:image"]')?.getAttribute('content')||'',
+          articleTitle:document.querySelector('#case-gallery-title')?.textContent?.trim()||'',
+          archiveThumbs:document.querySelectorAll('.case-gallery__archive .case-gallery__thumbs button[data-case-photo]').length,
+          archiveCaptions:document.querySelectorAll('.case-gallery__archive .case-gallery__thumbs figcaption').length,
+          archiveNote:!!document.querySelector('.case-gallery__archive .case-gallery__archive-note'),
+          numberedCaseSubsteps:[...document.querySelectorAll('.case-story__grid>div>span')].some(el=>/^0[1-9]\s*\//.test(el.textContent.trim()))
+        };
+      });
+      if(route==='/services/'&&
+        (dom.articles!==1||dom.orphan||dom.hubSplit!==0||dom.serviceRoutes!==3||
+        !dom.image.endsWith('/evidence/hero/services-owner-editorial-1774.webp')))
+        report.fail.push({reason:'ART-DELTA-01/06 compiled services article and social preview',route,width,dom});
+      if(route==='/about/'&&!dom.labels.some(x=>x.startsWith('03 / Опыт на объектах')))
+        report.fail.push({reason:'ART-DELTA-02 about numbering',width,labels:dom.labels});
+      if(route==='/portfolio/'&&(!dom.labels.some(x=>x.startsWith('03 / Спортивный объект')) || !dom.labels.some(x=>x.startsWith('04 / Ваш объект'))))
+        report.fail.push({reason:'ART-DELTA-02 portfolio numbering',width,labels:dom.labels});
+      if(route.includes('/blog/detail/')&&
+        (dom.archiveThumbs<1||dom.archiveCaptions!==0||!dom.archiveNote||dom.numberedCaseSubsteps))
+        report.fail.push({reason:'ART-DELTA-02/03 gallery and inner section semantics',route,width,dom});
+      if(route.includes('/kafe-rimskogo-korsakova-3/')&&!dom.articleTitle.includes('Кафе на Римского-Корсакова, 3'))
+        report.fail.push({reason:'ART-DELTA-04 actual cafe editorial title',route,width,dom});
+      if(route==='/portfolio/'){
+        const tags=await page.locator('.portfolio-card__top b').allTextContents();
+        if(tags.includes('География')||!tags.includes('Сервисно-образовательный центр'))
+          report.fail.push({reason:'ART-DELTA-05 portfolio object type',width,tags});
+      }
+    }catch(e){report.fail.push({reason:'ART-DELTA compiled browser exception',route,width,error:String(e)})}
+    finally{await context.close()}
+  }
+  // ARCHIVE CASE INTERACTION: real in-page gallery, zoom, next and restored focus.
+  {
+    const context=await browser.newContext({viewport:{width:1440,height:900}});
+    const page=await context.newPage();
+    try{
+      await page.goto(baseUrl+'/portfolio/',{waitUntil:'load'});
+      const opener=page.locator('button[data-archive-open]').first();
+      await opener.click();
+      const viewer=page.locator('#portfolio-archive-viewer');
+      await viewer.waitFor({state:'visible'});
+      const img=viewer.locator('[data-gallery-photo]');
+      const original=await img.getAttribute('src');
+      const photoOk=await img.evaluate(async el=>{try{await el.decode();return el.naturalWidth>0;}catch{return false}});
+      await viewer.locator('[data-gallery-next]').click();
+      const second=await img.getAttribute('src');
+      const minimal = await viewer.locator('button').count() === 3 &&
+        await viewer.locator('.portfolio-archive-viewer__nav span').innerText() === 'Фотодокументация объекта' &&
+        (await viewer.locator('[data-gallery-title]').innerText()).trim().length > 0;
+      await page.keyboard.press('Escape');
+      await viewer.waitFor({state:'hidden'});
+      const restored=await opener.evaluate(el=>el===document.activeElement);
+      if(!photoOk||!original||!second||original===second||!minimal||!restored){
+        report.fail.push({reason:'Owner portfolio minimalist gallery interaction',photoOk,original,second,minimal,restored});
+      }
+    }catch(error){report.fail.push({reason:'Owner portfolio gallery interaction exception',error:String(error)})}
+    finally{await context.close()}
+  }
+  // OWNER-sensitive geometry regression. Adds diverse viewport heights, browser
+  // text scaling, first-fold finishing, real document interactions and motion.
+  for (const [route, width, height] of [
+    ['/',1440,600], ['/',1440,768], ['/',1440,900],
+    ['/services/',1440,600], ['/services/',1440,768], ['/services/',1440,900],
+    ['/services/',1024,600], ['/services/',1024,768],
+    ['/portfolio/',1440,768], ['/blog/',1440,768],
+    ['/services/',390,680]
+  ]) {
+    const context = await browser.newContext({viewport:{width,height},reducedMotion:'no-preference'});
+    const page = await context.newPage();
+    try {
+      await page.goto(baseUrl+route,{waitUntil:'load',timeout:25000});
+      await page.evaluate(()=>document.fonts.ready);
+      for (const zoom of [1,1.25]) {
+        const result = await page.evaluate((z) => {
+          document.body.style.zoom=String(z);
+          const home=document.querySelector('.home-hero');
+          const service=document.querySelector('header.services-hero--owner-editorial');
+          const routes=document.querySelector('.services-hero__routes');
+          const fold=(home||routes||service)?.getBoundingClientRect().bottom;
+          const firstArticle=document.querySelector('.practice-article-index__item');
+          const mark=document.querySelector('.airflow-header-trace__route');
+          const markStyle=mark ? getComputedStyle(mark) : null;
+          return {
+            horizontal:Math.max(0,document.documentElement.scrollWidth-innerWidth),
+            firstFoldBottom:fold??null,
+            firstArticleTop:firstArticle?.getBoundingClientRect().top??null,
+            traceVisible:!!mark&&markStyle.display!=='none'&&mark.getBoundingClientRect().height>=1,
+            pageHeight:innerHeight
+          };
+        },zoom);
+        if (result.horizontal>1 ||
+            (width>=1024&&zoom===1&&['/','/services/'].includes(route)&&result.firstFoldBottom!==null&&result.firstFoldBottom<height-5) ||
+            (route==='/blog/'&&zoom===1&&(result.firstArticleTop===null||result.firstArticleTop>height)) ||
+            (zoom===1&&!result.traceVisible)) {
+          if (result.horizontal>1) result.offenders=await page.evaluate(()=>[...document.querySelectorAll('body *')].map(el=>{const b=el.getBoundingClientRect();return{tag:el.tagName.toLowerCase(),cls:typeof el.className==='string'?el.className.slice(0,90):'',left:Math.round(b.left),right:Math.round(b.right),scroll:el.scrollWidth,client:el.clientWidth}}).filter(x=>x.right>innerWidth+1||x.left < -1).slice(0,15));
+          report.fail.push({reason:'Owner height/zoom/real TRACE gate',route,width,height,zoom,result});
+        }
+      }
+      if(route==='/services/'&&width===390){
+        const placement=await page.evaluate(()=>{
+          const a=document.querySelector('.services-hero__intro')?.getBoundingClientRect();
+          const b=document.querySelector('.services-hero__backdrop--single')?.getBoundingClientRect();
+          return {introBottom:a?.bottom,photoTop:b?.top};
+        });
+        if(!placement.introBottom||!placement.photoTop||placement.photoTop<placement.introBottom-2){
+          report.fail.push({reason:'Services mobile reading order',placement});
+        }
+      }
+      if(route==='/portfolio/'&&width===1440){
+        const grid=await page.locator('.portfolio-card').evaluateAll(nodes=>nodes.map(n=>Math.round(n.getBoundingClientRect().top)));
+        if(grid.length!==12||new Set(grid.slice(0,4)).size!==1||new Set(grid.slice(4,8)).size!==1||new Set(grid.slice(8,12)).size!==1||grid[4]<=grid[0]||grid[8]<=grid[4])
+          report.fail.push({reason:'Portfolio 12 verified cards, 4+4+4 editorial rows',grid});
+      }
+    } catch(e){report.fail.push({reason:'Owner additional QA exception',route,width,height,error:String(e)})}
+    finally{await context.close()}
+  }
+  // Owner separate sport feature with source-corroborated exterior;
+  // no unsupported project scope, never a 13th grid card.
+  for(const [width,height] of [[1440,900],[390,844]]){
+    const context=await browser.newContext({viewport:{width,height}});
+    const page=await context.newPage();
+    try{
+      await page.goto(baseUrl+'/portfolio/',{waitUntil:'load'});
+      const sport=page.locator('section.portfolio-sport');
+      const sportCount=await sport.count();
+      const gridCount=await page.locator('.portfolio-grid>.portfolio-card').count();
+      await sport.scrollIntoViewIfNeeded();
+      await sport.locator('img').evaluateAll(async nodes=>{
+        await Promise.all(nodes.map(async img=>{
+          img.loading='eager';
+          try { await img.decode(); } catch { /* failure reported below */ }
+        }));
+      });
+      const media=await sport.locator('img').evaluateAll(nodes=>nodes.map(n=>({
+        natural:n.complete&&n.naturalWidth>0,
+        src:n.getAttribute('src')
+      })));
+      if(sportCount!==1||gridCount!==12||media.length!==2||media.some(x=>!x.natural) ||
+        await page.getByRole('heading',{name:'Центр адаптивного спорта'}).count()!==1) {
+        report.fail.push({reason:'Separate owner sports feature: 12+1 and source identity gate',width,sportCount,gridCount,media});
+      }
+      const open=sport.locator('button[data-archive-open]');
+      await open.click();
+      const modal=page.locator('#portfolio-archive-viewer');
+      await modal.waitFor({state:'visible',timeout:2500});
+      const first=await modal.locator('[data-gallery-photo]').getAttribute('src');
+      const minimalControls=await modal.locator('button').count()===3;
+      await modal.locator('[data-gallery-next]').click();
+      const second=await modal.locator('[data-gallery-photo]').getAttribute('src');
+      await page.keyboard.press('Escape');
+      const restored=await open.evaluate(el=>document.activeElement===el);
+      if(!minimalControls||first===second||!restored||await modal.isVisible())
+        report.fail.push({reason:'Sports minimalist gallery navigation / Escape / focus',width,minimalControls,first,second,restored});
+    }catch(e){report.fail.push({reason:'Sports UI regression error',width,error:String(e)})}
+    finally{await context.close()}
+  }
+  // Owner artistic rejection: fixed launcher covers /about/ intro text and CTA
+  // in actual compiled screenshot. Suppress until past hero while retaining CTA.
+  {
+    const ctx=await browser.newContext({viewport:{width:1440,height:900}});
+    const page=await ctx.newPage();
+    try{
+      await page.goto(baseUrl+'/about/',{waitUntil:'load'});
+      const before=await page.locator('.consultant-launcher').evaluate(el=>getComputedStyle(el).visibility);
+      const hero=page.locator('.about-hero');
+      await hero.scrollIntoViewIfNeeded();
+      await page.locator('.about-team').scrollIntoViewIfNeeded();
+      await page.waitForFunction(()=>document.documentElement.classList.contains('is-past-first-fold'),null,{timeout:4000});
+      const after=await page.locator('.consultant-launcher').evaluate(el=>getComputedStyle(el).visibility);
+      if(before!=='hidden'||after!=='visible')
+        report.fail.push({reason:'About intro must not be covered by floating consultant',before,after});
+    }catch(e){report.fail.push({reason:'About first-fold consultant regression',error:String(e)})}
+    finally{await ctx.close()}
+  }
+  // Same-page PONSSE document must zoom, fit, Escape and restore focus.
+  {
+    const context=await browser.newContext({viewport:{width:1440,height:900}});
+    const page=await context.newPage();
+    try{
+      await page.goto(baseUrl+'/',{waitUntil:'load'});
+      const opener=page.locator('[data-home-ponsse-open]').first();
+      await opener.click();
+      const dialog=page.locator('#home-ponsse-letter-dialog');
+      await dialog.waitFor({state:'visible'});
+      const validOriginal=(await dialog.locator('img').getAttribute('src'))==='/evidence/karelia/ponsse-letter-20220405.png';
+      const minimal=await dialog.locator('button').count()===1 &&
+        (await dialog.locator('.ponsse-letter-dialog__actions strong').innerText()).includes('PONSSE');
+      await page.keyboard.press('Escape');
+      await dialog.waitFor({state:'hidden'});
+      const restored=await opener.evaluate(x=>x===document.activeElement);
+      if(!validOriginal||!minimal||!restored||await page.locator('a[target="_blank"][href*="ponsse-letter"]').count()){
+        report.fail.push({reason:'Owner PONSSE minimal document original / Escape / focus',validOriginal,minimal,restored});
+      }
+    }catch(e){report.fail.push({reason:'PONSSE document full interaction exception',error:String(e)})}
+    finally{await context.close()}
+  }
+
+  // Read-only evidence delivery: JPG is an exact captured screenshot re-encoding, not a fabricated mockup.
+  const selectedDelivery = [
+    'home__desktop_1440','home__mobile_390',
+    'services__desktop_1440','services__mobile_390',
+    'about__desktop_1440','about__mobile_390',
+    'portfolio__desktop_1440','portfolio__mobile_390',
+    'polisan__desktop_1440','drill_crown__desktop_1440',
+    'ponsse_letter_open__mobile_390','consultant_open__mobile_390'
+  ];
+  const deliveryDir = path.join(root,'selected_preview');
+  await fs.mkdir(deliveryDir,{recursive:true});
+  const previewContext = await browser.newContext();
+  const previewPage = await previewContext.newPage();
+  try {
+    for(const name of selectedDelivery) {
+      const png = await fs.readFile(path.join(root,name+'.png'));
+      const jpegBase64 = await previewPage.evaluate(async data => {
+        const original = new Image();
+        original.src = 'data:image/png;base64,'+data;
+        await original.decode();
+        const width = Math.min(960,original.naturalWidth);
+        const height = Math.round(original.naturalHeight * width / original.naturalWidth);
+        if (height>32000) throw new Error('Captured page too tall for JPEG preview');
+        const canvas = document.createElement('canvas');
+        canvas.width=width;canvas.height=height;
+        canvas.getContext('2d').drawImage(original,0,0,width,height);
+        return canvas.toDataURL('image/jpeg',.47).split(',')[1];
+      },png.toString('base64'));
+      await fs.writeFile(path.join(deliveryDir,name+'.jpg'),Buffer.from(jpegBase64,'base64'));
+    }
+  } finally { await previewContext.close(); }
 } finally {
   await browser.close();
 }

@@ -1,0 +1,22 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ObjectDetailPage from '@/components/pages/ObjectDetailPage.astro';
+import type { ContentRecord } from '@/lib/types';
+const content: ContentRecord = {
+ path:'/obekty/sklady/',title:'Монтаж вентиляции складов — AEROVENTA',h1:'Монтаж вентиляции складов',
+ content_type:'landing',business_role:'CORE_SERVICE_HUB',status:'fixture_stub',
+ robots_index:false,robots_follow:true,sitemap_include:false,knowledge_allowed:true,ai_origin:false,
+ seo_title:'Монтаж вентиляции складов — AEROVENTA',seo_description:'Особенности вентиляции складских комплексов: высота, доступ и логистика монтажа.',
+ excerpt:'',body_html:'',body_html_safety_status:'not_applicable',owner_approved_at:null
+};
+const constraints = [["01","Высота","Технология доступа к верхним монтажным зонам."],["02","Логистика","Места хранения и перемещение материалов."],["03","Режим площадки","Монтаж согласуется с условиями эксплуатации."],["04","Рабочие трассы","Соответствие проекту и доступ для обслуживания."]];
+const evidence = [{"title":"Разбегаево · Аверс Тверь","meta":"Ленинградская область","detail":"Отдельный оригинальный фотоархив складско-производственного объекта ожидает публикации снимков.","href":"/portfolio/"},{"title":"Фармацевтический склад · Санкт-Петербург","meta":"Складской объект","detail":"Оригинальный фотоархив площадки находится в материалах компании; фотографии ещё не опубликованы.","href":"/portfolio/"}];
+const drivers = ['Рабочая проектная документация и спецификация','Монтажные зоны и условия доступа','Стадия объекта и смежные инженерные системы','Оборудование, трассы и рабочие сроки'];
+const questions = ['Какие документы передать для расчёта монтажа?','Что согласовать до начала работ?','Какие ограничения объекта влияют на организацию монтажа?'];
+---
+<BaseLayout content={content}>
+ <ObjectDetailPage content={content} eyebrow="Склады"
+  lede="Высотные зоны, работающая логистика и доступ к оборудованию определяют монтажную последовательность. Фотоархивы объектов Разбегаево и фармкомпании предоставлены компанией и готовятся к публикации." constraints={constraints} drivers={drivers} evidence={evidence} questions={questions}
+  proofTitle="Производственные и складские площадки."
+  heroMedia={{src:'/evidence/owner-portfolio/novatech/cover.webp',alt:'Промышленный объект компании — иллюстрация типа площадки',caption:'Реальный промышленный объект · портфолио AEROVENTA'}}/>
+</BaseLayout>

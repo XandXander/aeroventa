@@ -4,6 +4,7 @@ import Footer from '@/components/Footer.astro';
 import AirflowTracePulse from '@/components/AirflowTracePulse.astro';
 import Telemetry from '@/components/Telemetry.astro';
 import PremiumExperience from '@/components/PremiumExperience.astro';
+import PonsseDocumentExperience from '@/components/PonsseDocumentExperience.astro';
 import { canonicalUrl, jsonLd, robotsValue, serializeJsonLd } from '@/lib/seo';
 import type { ContentRecord } from '@/lib/types';
 import globalCssUrl from '@/styles/global.css?url';
@@ -33,17 +34,24 @@ const ogTitle = content.og_title || content.seo_title || content.title;
 const ogDescription = content.og_description?.trim() || seoDescription;
 const editorialOgFallback: Record<string, string> = {
   '/': '/evidence/hero/owner-luxury-airflow-20261010.png',
-  '/services/': '/evidence/hero/engineering-ductwork.jpg',
+  '/services/': '/evidence/hero/services-owner-editorial-1774.webp',
   '/montazh-ventiliacii/': '/evidence/hero/hiend-engineering-visual-owner-v43.webp',
   '/portfolio/': '/evidence/7park/object-exterior-day.jpg',
   '/blog/detail/kak-my-sdali-7-domov/': '/evidence/7park/object-exterior-day.jpg',
-  '/blog/detail/restoran-v-zhk-leontevskiy-mys/': '/evidence/leont/duct-installation-01.jpg',
-  '/blog/detail/ntff-polisan/': '/evidence/polisan/duct-installation-01.jpg',
-  '/blog/detail/kvartira-na-zhukova/': '/evidence/zhukov/duct-installation-01.jpg',
+  '/blog/detail/restoran-v-zhk-leontevskiy-mys/': '/evidence/leont/owner-cover-v43.webp',
+  '/blog/detail/ntff-polisan/': '/evidence/polisan/owner-cover-v43.webp',
+  '/blog/detail/kvartira-na-zhukova/': '/evidence/zhukov/owner-cover-v43.webp',
   '/blog/detail/montazh-ventilyatsii-v-karelii/': '/evidence/karelia/object-exterior.jpg',
-  '/blog/detail/kafe-rimskogo-korsakova-3/': '/evidence/cafe/duct-installation-01.jpg',
+  '/blog/detail/kafe-rimskogo-korsakova-3/': '/evidence/cafe/owner-interior-v43.webp',
 };
-const ogImageSource = content.og_image || editorialOgFallback[content.path];
+// Keep approved Directus social imagery, but never permit the rejected cafe
+// visual back into the generic services link preview, even via older content.
+const rejectedServicesImage = content.path === '/services/' &&
+  ['/evidence/cafe/owner-cover-v43.webp',
+   'https://aeroventa.ru/evidence/cafe/owner-cover-v43.webp'].includes(content.og_image || '');
+const ogImageSource = rejectedServicesImage
+  ? editorialOgFallback['/services/']
+  : (content.og_image || editorialOgFallback[content.path]);
 const ogImage = ogImageSource ? new URL(ogImageSource, 'https://aeroventa.ru').toString() : null;
 const yandexVerification = (import.meta.env.PUBLIC_YANDEX_WEBMASTER_VERIFICATION || '').trim();
 const googleVerification = (import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION || '').trim();
@@ -92,5 +100,6 @@ const googleVerification = (import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION || '
     </main>
     <Footer />
     <PremiumExperience pagePath={content.path} />
+    <PonsseDocumentExperience />
   </body>
 </html>

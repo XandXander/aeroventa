@@ -1,0 +1,22 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ObjectDetailPage from '@/components/pages/ObjectDetailPage.astro';
+import type { ContentRecord } from '@/lib/types';
+const content: ContentRecord = {
+ path:'/obekty/kvartiry-i-doma/',title:'Монтаж вентиляции квартир и домов — AEROVENTA',h1:'Монтаж вентиляции квартир и домов',
+ content_type:'landing',business_role:'CORE_SERVICE_HUB',status:'fixture_stub',
+ robots_index:false,robots_follow:true,sitemap_include:false,knowledge_allowed:true,ai_origin:false,
+ seo_title:'Монтаж вентиляции квартир и домов — AEROVENTA',seo_description:'Монтаж вентиляции в жилых помещениях с учётом архитектуры, шума, потолков и эксплуатации.',
+ excerpt:'',body_html:'',body_html_safety_status:'not_applicable',owner_approved_at:null
+};
+const constraints = [["01","Планировка","Трассы и узлы согласуются с интерьером."],["02","Акустика","Требования к шуму закладываются в проект."],["03","Отделка","Последовательность монтажа согласовывают заранее."],["04","Сервис","Доступ к оборудованию предусматривают до закрытия потолков."]];
+const evidence = [{"title":"7 PARK","meta":"Павловск · жилой квартал","detail":"Монтаж приточно-вытяжной вентиляции в семи домах. Подробности и фотографии выполненных работ.","href":"/blog/detail/kak-my-sdali-7-domov/","image":"/evidence/7park/archive/img_6653.webp","imageAlt":"Фотография жилого квартала 7 PARK в Павловске"},{"title":"Квартира на Маршала Жукова","meta":"Санкт-Петербург","detail":"Выполненная приточно-вытяжная вентиляция; фотодокументация в исходном кейсе.","href":"/blog/detail/kvartira-na-zhukova/","image":"/evidence/zhukov/owner-cover-v43.webp","imageAlt":"Квартирный объект AEROVENTA на Маршала Жукова"}];
+const drivers = ['Рабочая проектная документация и спецификация','Монтажные зоны и условия доступа','Стадия объекта и смежные инженерные системы','Оборудование, трассы и рабочие сроки'];
+const questions = ['Какие документы передать для расчёта монтажа?','Что согласовать до начала работ?','Какие ограничения объекта влияют на организацию монтажа?'];
+---
+<BaseLayout content={content}>
+ <ObjectDetailPage content={content} eyebrow="Квартиры и дома"
+  lede="В жилых помещениях особенно важны размещение трасс, интеграция в интерьер и доступ к обслуживанию. Показываем примеры жилых объектов и учитываем архитектурные ограничения каждого помещения." constraints={constraints} drivers={drivers} evidence={evidence} questions={questions}
+  proofTitle="Жилые объекты"
+  heroMedia={{src:'/evidence/7park/archive/img_6653.webp',alt:'Фотография жилых корпусов квартала 7 PARK в Павловске',caption:'7 PARK · Павловск · монтаж вентиляции в семи домах'}}/>
+</BaseLayout>

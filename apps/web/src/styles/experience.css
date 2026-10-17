@@ -580,3 +580,65 @@
 
 /* About mobile: in-flow consultant CTA is reachable without covering the principal portfolio action. */
 @media(max-width:760px){body:has(.about-premium) .consultant-launcher{display:none}}
+
+/* Quiet on-page sheet, without a fabricated progress state. */
+@keyframes aeroventa-sheet-in{from{opacity:.4;transform:translateY(12px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+.experience-dialog[open]{animation:aeroventa-sheet-in .3s cubic-bezier(.2,.75,.25,1) both;overscroll-behavior:contain}
+.experience-dialog--consultant{border-radius:clamp(15px,2vw,24px)}
+@media(max-width:760px){.experience-dialog--consultant{border-radius:23px}}
+@media(prefers-reduced-motion:reduce){.experience-dialog[open]{animation:none}}
+
+/* Mobile: in-flow launcher cannot obscure case galleries, buttons or reading. */
+@media(max-width:760px){
+  .consultant-launcher{position:relative;inset:auto;right:auto;bottom:auto;width:max-content;max-width:calc(100% - 32px);margin:22px auto;z-index:1}
+  body:has(.mobile-contact-dock.is-visible) .consultant-launcher{bottom:auto;z-index:1}
+}
+
+/* The existing modal remains accessible; animation expresses an in-page sheet, not a new route. */
+.experience-dialog--contact,.experience-dialog--consultant{
+  animation:aeroventa-sheet-in .28s cubic-bezier(.18,.7,.25,1) both;
+  max-height:calc(100dvh - 20px);
+  overscroll-behavior:contain;
+}
+.experience-dialog--contact::backdrop,.experience-dialog--consultant::backdrop{animation:aeroventa-shade-in .28s ease both}
+.experience-dialog--contact{margin:auto max(10px,3vw) auto auto;width:min(580px,calc(100vw - 20px));border-radius:18px}
+.experience-dialog--consultant{margin:auto max(10px,3vw) auto auto}
+.experience-dialog--contact .experience-dialog__head h2{font-size:clamp(1.5rem,2.25vw,2rem);line-height:1.15}
+@keyframes aeroventa-sheet-in{from{opacity:0;transform:translateX(26px)}to{opacity:1;transform:translateX(0)}}
+@keyframes aeroventa-shade-in{from{opacity:0}to{opacity:1}}
+@media(max-width:760px){
+ .experience-dialog--contact,.experience-dialog--consultant{margin:auto 8px max(8px,env(safe-area-inset-bottom,8px));width:calc(100% - 16px);max-height:calc(100dvh - 16px)}
+ body:has(.home-consultant-inline) .consultant-launcher,
+ body:has(.services-consultant-inline) .consultant-launcher{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+ .experience-dialog--contact,.experience-dialog--consultant,.experience-dialog--contact::backdrop,.experience-dialog--consultant::backdrop{animation:none}
+}
+
+/* Quiet, truthful engineering helper: no dummy opening bubble or fake model processing. */
+.consultant-conversation__history:empty{display:none;min-height:0}
+.consultant-conversation__history:not(:empty){min-height:0;max-height:35dvh;padding:18px;scrollbar-width:thin}
+.experience-dialog--consultant .experience-dialog__head h2{font-size:clamp(1.45rem,2.4vw,2rem);font-weight:580;letter-spacing:-.028em}
+.consultant-conversation{border:1px solid #e2eaf0;border-radius:17px}
+.consultant-conversation__composer{padding:16px;border:0}
+.consultant-conversation__foot{padding:0 16px 15px}
+.consultant-conversation__foot span{font-weight:450}
+.consultant-structured{margin-top:10px;border:0;border-top:1px solid #dce6ec;border-radius:0}
+.consultant-structured summary{padding:13px 5px;font-weight:570}
+.consultant-launcher{font-weight:660}
+@media(max-width:760px){
+ body:has(.home-hero--owner-airflow) .consultant-launcher,
+ body:has(.services-hero--owner-editorial) .consultant-launcher,
+ body:has(.about-premium) .consultant-launcher{display:inline-flex}
+ .consultant-conversation__history:not(:empty){max-height:32dvh}
+}
+
+/* Final consultant sheet: useful question first, no stacked ornamental frames. */
+.experience-dialog--consultant::backdrop{background:rgba(9,25,38,.43)}
+.experience-dialog--consultant .experience-dialog__shell{padding:clamp(18px,2.4vw,29px)}
+.experience-dialog--consultant .consultant-conversation{background:transparent;border:0;border-radius:0;overflow:visible}
+.experience-dialog--consultant .consultant-conversation__composer{padding:12px 0 9px}
+.experience-dialog--consultant .consultant-conversation__foot{padding:0 0 14px}
+.experience-dialog--consultant .consultant-conversation__history:empty{display:none}
+.experience-dialog--consultant .consultant-structured{margin-top:4px;border-top:1px solid #dce6ec}
+@media(max-width:760px){.experience-dialog--consultant .experience-dialog__shell{padding:18px 16px max(20px,env(safe-area-inset-bottom))}}

@@ -42,54 +42,83 @@ const tel = SITE.phone.replace(/[^+\d]/g, '');
   const mobileDock = document.querySelector('[data-mobile-contact-dock]');
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  let seen = false;
-  try { seen = sessionStorage.getItem('aeroventa-airflow-entry') === '1'; } catch {}
-
+  // Non-blocking identity cue on first real document view. It never masks content.
+  // Request PULSE below remains correlated with actual form submission.
   if (entry) {
-    if (prefersReduced || seen) {
-      entry.remove();
-    } else {
-      requestAnimationFrame(() => entry.classList.add('is-running'));
+    let alreadyShown = false;
+    try {
+      alreadyShown = sessionStorage.getItem('aeroventa-entry-shown') === '1';
+      if (!alreadyShown && !prefersReduced) sessionStorage.setItem('aeroventa-entry-shown','1');
+    } catch { /* private-storage denied */ }
+    if (prefersReduced || alreadyShown) entry.remove();
+    else {
+      entry.classList.add('is-running');
       entry.addEventListener('animationend', (event) => {
-        if (event.animationName === 'airflow-entry-fade') entry.remove();
+        if (event.target === entry && event.animationName === 'airflow-entry-fade') entry.remove();
       });
-      window.setTimeout(() => entry.remove(), 1100);
-      try { sessionStorage.setItem('aeroventa-airflow-entry', '1'); } catch {}
     }
   }
+  // AirflowTracePulse renders before PremiumExperience. Wait for the form DOM:
+  // binding before DOMContentLoaded silently misses all submission states.
+  const bindRequestPulse = () => {
+    const pendingForms = [...document.querySelectorAll('form[data-contact-form]')];
+    const reflectProcessing = () => {
+      const processing = pendingForms.some(form => form.getAttribute('data-submitting') === 'true');
+      root.toggleAttribute('data-airflow-processing', processing);
+    };
+    if (pendingForms.length) {
+      const observer = new MutationObserver(reflectProcessing);
+      pendingForms.forEach(form => observer.observe(form, {attributes:true,attributeFilter:['data-submitting']}));
+      reflectProcessing();
+    }
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bindRequestPulse, {once:true});
+  } else bindRequestPulse();
 
-  const sections = [...document.querySelectorAll('main > section, main article > section')]
-    .filter((section) => !section.hasAttribute('data-airflow-ignore'));
+  // BaseLayout places this component before <main>. Initialize after parsing
+  // the page content, otherwise the observer receives zero section nodes.
+  const bindSectionTrace = () => {
+    const sections = [...document.querySelectorAll('main > section, main article > section')]
+      .filter((section) => !section.hasAttribute('data-airflow-ignore'));
 
-  sections.forEach((section, index) => {
-    section.classList.add('airflow-trace-section');
-    section.style.setProperty('--airflow-trace-index', String(index));
-  });
+    sections.forEach((section, index) => {
+      section.classList.add('airflow-trace-section');
+      section.style.setProperty('--airflow-trace-index', String(index));
+    });
 
-  if (prefersReduced) {
-    sections.forEach((section) => section.classList.add('is-airflow-active'));
-  } else if ('IntersectionObserver' in window) {
-    let lastPulseAt = 0;
-    const observer = new IntersectionObserver((entries) => {
-      const candidates = entries
-        .filter((entry) => entry.isIntersecting && !entry.target.classList.contains('is-airflow-active'))
-        .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-      if (!candidates.length) return;
+    if (prefersReduced) {
+      sections.forEach((section) => section.classList.add('is-airflow-active'));
+    } else if ('IntersectionObserver' in window) {
+      let lastPulseAt = 0;
+      const observer = new IntersectionObserver((entries) => {
+        const candidates = entries
+          .filter((entry) => entry.isIntersecting && !entry.target.classList.contains('is-airflow-active'))
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+        if (!candidates.length) return;
 
-      const now = performance.now();
-      if (now - lastPulseAt < 280) return;
+        const now = performance.now();
+        if (now - lastPulseAt < 280) return;
 
-      const target = candidates[0].target;
-      target.classList.add('is-airflow-active');
-      lastPulseAt = now;
-      observer.unobserve(target);
-    }, { threshold: [0.22, 0.42], rootMargin: '0px 0px -12% 0px' });
+        const target = candidates[0].target;
+        target.classList.add('is-airflow-active');
+        lastPulseAt = now;
+        observer.unobserve(target);
+      }, { threshold: [0.22, 0.42], rootMargin: '0px 0px -12% 0px' });
 
-    sections.forEach((section) => observer.observe(section));
-  } else {
-    sections.forEach((section) => section.classList.add('is-airflow-active'));
-  }
+      sections.forEach((section) => observer.observe(section));
+    } else {
+      sections.forEach((section) => section.classList.add('is-airflow-active'));
+    }
 
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bindSectionTrace, {once:true});
+  } else bindSectionTrace();
+
+  // Do not cover first-fold object routes with a fixed consultant launcher.
+  // Discovery is deferred until the entire page has rendered.
+  let entryBoundary = null;
   let ticking = false;
   const updateScrollState = () => {
     const y = window.scrollY || 0;
@@ -98,6 +127,9 @@ const tel = SITE.phone.replace(/[^+\d]/g, '');
     root.style.setProperty('--airflow-scroll', String(progress));
 
     if (header) header.classList.toggle('is-compact', y > 28);
+    if (entryBoundary) {
+      root.classList.toggle('is-past-first-fold', entryBoundary.getBoundingClientRect().bottom < 80);
+    }
     if (mobileDock) mobileDock.classList.toggle('is-visible', y > Math.min(280, window.innerHeight * 0.42));
     ticking = false;
   };
@@ -108,6 +140,10 @@ const tel = SITE.phone.replace(/[^+\d]/g, '');
     }
   };
   window.addEventListener('scroll', onScroll, { passive: true });
+  document.addEventListener('DOMContentLoaded', () => {
+    entryBoundary = document.querySelector('.home-hero--owner-airflow .object-ribbon, .services-hero__routes, .about-hero');
+    updateScrollState();
+  }, {once:true});
   updateScrollState();
 })();
 </script>

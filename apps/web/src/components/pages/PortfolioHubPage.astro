@@ -1,5 +1,7 @@
 ---
 import type { ContentRecord } from '@/lib/types';
+import { readdirSync } from 'node:fs';
+import { resolve } from 'node:path';
 interface Props { content: ContentRecord; fixture: boolean; }
 const { content } = Astro.props;
 
@@ -8,23 +10,135 @@ const cases = [
   { index:'02', title:'Ресторан в ЖК «Леонтьевский Мыс»', image:'/evidence/leont/owner-cover-v43.webp', location:'Санкт-Петербург', scope:'Ресторан · приточно-вытяжная вентиляция + оборудование', detail:'Исторический срок: 2 недели', href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/', kind:'Рестораны' },
   { index:'03', title:'НТФФ «Полисан»', image:'/evidence/polisan/owner-cover-v43.webp', location:'Санкт-Петербург, ул. Салова, 72', scope:'Фармацевтический объект · вентиляция + оборудование', detail:'Исторический период: 06.2017 — 06.2018', href:'/blog/detail/ntff-polisan/', kind:'Производство' },
   { index:'04', title:'Квартира на Маршала Жукова', image:'/evidence/zhukov/owner-cover-v43.webp', location:'Санкт-Петербург', scope:'Квартира · приточно-вытяжная вентиляция', detail:'Исторический источник: ~100 м.п., 5 дней', href:'/blog/detail/kvartira-na-zhukova/', kind:'Квартиры' },
-  { index:'05', title:'PONSSE — Питкяранта', image:'/evidence/karelia/owner-cover-v43.webp', location:'Республика Карелия', scope:'Сервисно-образовательный центр · вентиляция + оборудование', detail:'Исторический срок: 2 недели', href:'/blog/detail/montazh-ventilyatsii-v-karelii/', kind:'География' },
+  { index:'05', title:'PONSSE — Питкяранта', image:'/evidence/karelia/owner-cover-v43.webp', location:'Республика Карелия', scope:'Сервисно-образовательный центр · вентиляция + оборудование', detail:'Исторический срок: 2 недели', href:'/blog/detail/montazh-ventilyatsii-v-karelii/', kind:'Сервисно-образовательный центр' },
   { index:'06', title:'Кафе на Римского-Корсакова, 3', image:'/evidence/cafe/owner-cover-v43.webp', location:'Санкт-Петербург', scope:'Кафе · приточно-вытяжная вентиляция + оборудование', detail:'Исторический источник: 200 м², 5 дней', href:'/blog/detail/kafe-rimskogo-korsakova-3/', kind:'Рестораны' }
 ];
+
+// Seven distinct Owner-archive objects, photo backed; no fabricated scope or URLs.
+const newOwnerCases = [
+  {
+    "index": "07",
+    "title": "Апарт-отель и коворкинг · Бумажный",
+    "kind": "Апарт-отель и коворкинг",
+    "location": "Санкт-Петербург",
+    "cover": "/evidence/owner-portfolio/apart-hotel/cover.webp",
+    "photos": [
+      "/evidence/owner-portfolio/apart-hotel/cover.webp",
+      "/evidence/owner-portfolio/apart-hotel/02.webp",
+      "/evidence/owner-portfolio/apart-hotel/03.webp"
+    ]
+  },
+  {
+    "index": "08",
+    "title": "EUROSPAR · Васильевский остров",
+    "kind": "Торговый объект",
+    "location": "Санкт-Петербург",
+    "cover": "/evidence/owner-portfolio/eurospar-vo/cover.webp",
+    "photos": [
+      "/evidence/owner-portfolio/eurospar-vo/cover.webp",
+      "/evidence/owner-portfolio/eurospar-vo/02.webp",
+      "/evidence/owner-portfolio/eurospar-vo/03.webp"
+    ]
+  },
+  {
+    "index": "09",
+    "title": "EUROSPAR · Сестрорецк",
+    "kind": "Торговый объект",
+    "location": "Сестрорецк",
+    "cover": "/evidence/owner-portfolio/eurospar-sestroretsk/03.webp",
+    "photos": [
+      "/evidence/owner-portfolio/eurospar-sestroretsk/cover.webp",
+      "/evidence/owner-portfolio/eurospar-sestroretsk/02.webp",
+      "/evidence/owner-portfolio/eurospar-sestroretsk/03.webp"
+    ]
+  },
+  {
+    "index": "10",
+    "title": "Колледж туризма и гостиничного сервиса",
+    "kind": "Образовательный объект",
+    "location": "Санкт-Петербург",
+    "cover": "/evidence/owner-portfolio/college-obvodny/cover.webp",
+    "photos": [
+      "/evidence/owner-portfolio/college-obvodny/cover.webp",
+      "/evidence/owner-portfolio/college-obvodny/02.webp",
+      "/evidence/owner-portfolio/college-obvodny/03.webp"
+    ]
+  },
+  {
+    "index": "11",
+    "title": "Новатех",
+    "kind": "Производственный объект",
+    "location": "Московская область",
+    "cover": "/evidence/owner-portfolio/novatech/03.webp",
+    "photos": [
+      "/evidence/owner-portfolio/novatech/cover.webp",
+      "/evidence/owner-portfolio/novatech/02.webp",
+      "/evidence/owner-portfolio/novatech/03.webp"
+    ]
+  },
+  {
+    "index": "12",
+    "title": "Жилой комплекс «Аквилон» · Янино",
+    "kind": "Жилой комплекс",
+    "location": "Янино, Ленинградская область",
+    "cover": "/evidence/owner-portfolio/akvilon-yanino/cover.webp",
+    "photos": [
+      "/evidence/owner-portfolio/akvilon-yanino/cover.webp",
+      "/evidence/owner-portfolio/akvilon-yanino/02.webp",
+      "/evidence/owner-portfolio/akvilon-yanino/03.webp"
+    ]
+  },
+  {
+    "index": "13",
+    "title": "Химпром",
+    "kind": "Промышленный объект",
+    "location": "Санкт-Петербург",
+    "cover": "/evidence/owner-portfolio/himprom/03.webp",
+    "photos": [
+      "/evidence/owner-portfolio/himprom/cover.webp",
+      "/evidence/owner-portfolio/himprom/02.webp",
+      "/evidence/owner-portfolio/himprom/03.webp"
+    ]
+  }
+];
+// Source-locked project directories, no client-side listing and no fabricated photographs.
+// Every imported original in the dedicated archive directory becomes a gallery frame.
+const sourceSlugs = new Set(['apart-hotel','eurospar-vo','eurospar-sestroretsk','college-obvodny','novatech','akvilon-yanino','himprom','sport-komendantskiy']);
+const ownerGallery = (slug: string): string[] => {
+  if (!sourceSlugs.has(slug)) return [];
+  let names: string[] = [];
+  try { names = readdirSync(resolve('apps/web/public/evidence/owner-portfolio', slug)); }
+  catch { try { names = readdirSync(resolve('public/evidence/owner-portfolio', slug)); } catch { return []; } }
+  const valid = names.filter(n => /^(?:cover|0[2-9]|[1-9][0-9]|gallery-[0-9]{2,3})\.(?:webp|jpe?g|png)$/i.test(n));
+  valid.sort((a,b) => (a === 'cover.webp' ? -1 : b === 'cover.webp' ? 1 : a.localeCompare(b,undefined,{numeric:true})));
+  return [...new Set(valid)].map(n => '/evidence/owner-portfolio/' + slug + '/' + n);
+};
+const gallerySlugFor = (image: string): string => image.split('/')[3] || '';
+const archiveCases = newOwnerCases.map(item => ({ ...item, photos: ownerGallery(gallerySlugFor(item.cover)) }));
+const sportPhotos = ['/evidence/owner-portfolio/sport-komendantskiy/owner-selected-aerial.webp', ...ownerGallery('sport-komendantskiy')];
 ---
 
 <article class="portfolio-hub">
   <header class="portfolio-hero">
     <div class="home-shell portfolio-hero__grid">
-      <div>
+      <div class="portfolio-hero__copy">
         <p class="home-kicker">Выполненные работы AEROVENTA</p>
-        <h1>Реальные объекты и выполненные работы</h1>
+        <h1>Наши работы</h1>
+        <p class="portfolio-hero__lede">Реальные объекты, фотографии, задачи и результаты монтажа — от квартиры и ресторана до жилого квартала и производства.</p>
       </div>
-      <div>
-        <p class="portfolio-hero__lede">
-          Собрали жилые, коммерческие и производственные объекты: что монтировали, какой был объём работ и какие особенности пришлось учитывать.
-        </p>
-        
+      <div class="portfolio-hero__mosaic" aria-label="Три подлинных объекта AEROVENTA">
+        <figure>
+          <img src="/evidence/owner-portfolio/apart-hotel/cover.webp" width="1200" height="800" alt="Апарт-отель и коворкинг на Бумажном — оригинальная фотография интерьера и открытых инженерных систем" loading="eager" decoding="async"/>
+          <figcaption>Апарт-отель / коворкинг · Бумажный</figcaption>
+        </figure>
+        <figure>
+          <img src="/evidence/polisan/duct-installation-01.jpg" width="1600" height="903" alt="Монтаж воздуховодов на площадке НТФФ «Полисан»" loading="eager" decoding="async"/>
+          <figcaption>Полисан · инженерные трассы</figcaption>
+        </figure>
+        <figure>
+          <img src="/evidence/leont/duct-installation-01.jpg" width="1349" height="744" alt="Монтаж воздуховодов в ресторане ЖК «Леонтьевский Мыс»" loading="eager" decoding="async"/>
+          <figcaption>Леонтьевский Мыс · монтаж</figcaption>
+        </figure>
       </div>
     </div>
   </header>
@@ -37,10 +151,16 @@ const cases = [
         <p class="portfolio-feature__sub">Павловск · 7 домов · приточно-вытяжная вентиляция</p>
         <a class="button button--case" href="/blog/detail/kak-my-sdali-7-domov/">Открыть кейс →</a>
       </div>
-      <figure class="portfolio-feature__visual portfolio-feature__visual--photo">
-        <img src="/evidence/7park/object-exterior-day.jpg" alt="Жилые дома квартала 7 PARK в Павловске" width="800" height="450" loading="lazy" />
-        <figcaption>7 PARK · жилой квартал в Павловске</figcaption>
-      </figure>
+      <div class="portfolio-feature__photography" aria-label="Объект и выполненные монтажные работы">
+        <figure class="portfolio-feature__visual portfolio-feature__visual--photo">
+          <img src="/evidence/7park/object-exterior-day.jpg" alt="Архитектурная визуализация жилого квартала 7 PARK в Павловске" width="800" height="450" loading="lazy" />
+          <figcaption>Архитектурный вид · 7 PARK</figcaption>
+        </figure>
+        <figure class="portfolio-feature__detail">
+          <img src="/evidence/7park/duct-route.jpg" alt="Смонтированные воздуховоды и инженерные трассы на объекте 7 PARK" width="600" height="600" loading="lazy" />
+          <figcaption>Работа AEROVENTA · воздуховоды</figcaption>
+        </figure>
+      </div>
       <dl class="case-facts">
         <div><dt>Объём</dt><dd>7 домов</dd></div>
         <div><dt>Период</dt><dd>18.11.2020 — 10.12.2020</dd></div>
@@ -55,9 +175,10 @@ const cases = [
       <div class="section-heading">
         <div>
           <p class="section-index">02 / Сравнить по объекту</p>
-          <h2 id="cases-title">Найдите опыт работы на похожем объекте.</h2>
+          <h2 id="cases-title">Объекты разного масштаба</h2>
         </div>
       </div>
+      <p class="portfolio-list__introduction">Квартиры и коммерческие пространства, промышленные площадки и объекты общественного назначения. У части объектов есть подробное описание работ; остальные представлены фотографиями.</p>
       <div class="portfolio-grid">
         {cases.filter((item) => item.index !== '01').map((item) => (
           <a href={item.href} class="portfolio-card">
@@ -75,34 +196,288 @@ const cases = [
             </div>
           </a>
         ))}
+        {archiveCases.map(item => (
+          <button type="button" id={`owner-${item.index}`} class="portfolio-card portfolio-card--archive" data-archive-open
+            data-gallery-images={JSON.stringify(item.photos)} data-gallery-title={item.title}
+            aria-haspopup="dialog" aria-controls="portfolio-archive-viewer"
+            aria-label={`Открыть фотографии: ${item.title}`}>
+            <div class="portfolio-card__media"><img src={item.cover} width="1200" height="800" loading="lazy" decoding="async" alt={`Фотография объекта: ${item.title}`}/></div>
+            <div class="portfolio-card__body">
+              <div class="portfolio-card__top"><span>{item.index}</span><b>{item.kind}</b></div>
+              <div><p>{item.location}</p><h3>{item.title}</h3></div>
+              <div class="portfolio-card__bottom"><span>Фотографии объекта</span><b>Смотреть фотографии →</b></div>
+            </div>
+          </button>
+        ))}
       </div>
     </div>
   </section>
 
-  <section class="portfolio-method" aria-labelledby="portfolio-method-title">
-    <div class="home-shell portfolio-method__grid">
-      <div>
-        <p class="section-index section-index--orange">03 / Как читаем кейс</p>
-        <h2 id="portfolio-method-title">Задача → особенности объекта → наша роль → результат.</h2>
+
+  <!-- Source provenance: КОНТЕНТ.zip / СПОРТКОМПЛЕКС КОМЕНДАНТСКИЙ.
+       Architectural exterior corroborated with publicly pictured Centre on
+       Яхтенная 39; extent of AEROVENTA works remains source-unconfirmed. -->
+  <section class="portfolio-sport" aria-labelledby="portfolio-sport-title">
+    <div class="home-shell portfolio-sport__inner">
+      <div class="portfolio-sport__intro">
+        <p class="section-index">03 / Спортивный объект</p>
+        <h2 id="portfolio-sport-title">Центр адаптивного спорта</h2>
+        <p>Санкт-Петербург · Яхтенная, 39. Общий вид комплекса и фотографии инженерных помещений.</p>
+        <button type="button" class="portfolio-sport__gallery-link" data-archive-open
+          data-gallery-title="Центр адаптивного спорта"
+          data-gallery-images={JSON.stringify(sportPhotos)}
+          aria-haspopup="dialog" aria-controls="portfolio-archive-viewer">
+          Смотреть фотографии объекта <span aria-hidden="true">↗</span>
+        </button>
       </div>
-      <div class="portfolio-method__list">
-        <div><span>01</span><p>Что было за объект и на какой стадии.</p></div>
-        <div><span>02</span><p>Что реально входило в работу AEROVENTA.</p></div>
-        <div><span>03</span><p>Какие реальные фотографии показывают объект и монтаж.</p></div>
-        <div><span>04</span><p>Какие условия монтажа и объём работ отличаются от вашего объекта.</p></div>
+      <div class="portfolio-sport__photography">
+        <figure class="portfolio-sport__photo portfolio-sport__photo--large">
+          <img src="/evidence/owner-portfolio/sport-komendantskiy/owner-selected-aerial.webp" width="1280" height="960" loading="lazy" decoding="async"
+            alt="Общий вид зданий Центра адаптивного спорта"/>
+        </figure>
+        <figure class="portfolio-sport__photo portfolio-sport__photo--detail">
+          <img src="/evidence/owner-portfolio/sport-komendantskiy/gallery-01.webp" width="1600" height="1200" loading="lazy" decoding="async"
+            alt="Инженерный диффузор в Центре адаптивного спорта"/>
+        </figure>
       </div>
     </div>
   </section>
+
+  <dialog id="portfolio-archive-viewer" class="portfolio-archive-viewer" aria-label="Фотодокументация объекта">
+    <div class="portfolio-archive-viewer__top">
+      <strong data-gallery-title></strong>
+      <button type="button" data-gallery-close aria-label="Закрыть просмотр">×</button>
+    </div>
+    <div class="portfolio-archive-viewer__stage" tabindex="0"><img data-gallery-photo src="/evidence/owner-portfolio/apart-hotel/cover.webp" width="1200" height="800" loading="lazy" alt="Фотография объекта"/></div>
+    <div class="portfolio-archive-viewer__nav" aria-label="Навигация по фотографиям">
+      <button type="button" data-gallery-prev aria-label="Предыдущая фотография">‹</button>
+      <span>Фотодокументация объекта</span>
+      <button type="button" data-gallery-next aria-label="Следующая фотография">›</button>
+    </div>
+  </dialog>
 
   <section class="conversion-close" aria-labelledby="portfolio-close-title">
     <div class="home-shell">
       <p class="section-index section-index--orange">04 / Ваш объект</p>
-      <h2 id="portfolio-close-title">Не нашли точного аналога — это нормально.</h2>
-      <p class="portfolio-close-copy">Пришлите проект или опишите задачу: сравнивать надо не по названию объекта, а по составу монтажных работ и особенностям исполнения.</p>
+      <h2 id="portfolio-close-title">Расскажите о вашем объекте.</h2>
+      <p class="portfolio-close-copy">Пришлите проект или описание задачи. Уточним состав работ, исходные данные и следующий шаг.</p>
       <div class="home-actions">
         <a class="button button--light" href="/montazh-po-proektu/">Передать проект →</a>
-        <a class="button button--light" href="/contact/?intent=budget">Описать объект →</a>
+        <a class="button button--light" href="/contact/" data-contact-open data-source="portfolio_close" aria-haspopup="dialog">Обсудить объект →</a>
       </div>
     </div>
   </section>
 </article>
+
+<script>
+  const dialog=document.querySelector<HTMLDialogElement>('#portfolio-archive-viewer');
+  if (dialog) {
+    const image=dialog.querySelector<HTMLImageElement>('[data-gallery-photo]');
+    const stage=dialog.querySelector<HTMLElement>('.portfolio-archive-viewer__stage');
+    const title=dialog.querySelector<HTMLElement>('[data-gallery-title]');
+    const close=dialog.querySelector<HTMLButtonElement>('[data-gallery-close]');
+    let photos:string[]=[];
+    let index=0, zoom=1;
+    let opener:HTMLElement|null=null;
+    // The only visible controls are arrows and close. Zoom uses touch pinch,
+    // double click/tap, Ctrl+wheel or + / - / 0 keys.
+    const setZoom=(value:number)=>{
+      if(!stage||!image)return;
+      zoom=Math.max(1,Math.min(4,Math.round(value*100)/100));
+      if(zoom===1){
+        dialog.classList.remove('is-zoomed');
+        image.style.removeProperty('width');
+        stage.scrollTo({left:0,top:0});
+      } else {
+        const ratio=image.naturalWidth>0&&image.naturalHeight>0?image.naturalWidth/image.naturalHeight:1.4;
+        const base=Math.min(stage.clientWidth-24,(stage.clientHeight-16)*ratio,image.naturalWidth||1800);
+        image.style.width=Math.round(Math.max(100,base)*zoom)+'px';
+        dialog.classList.add('is-zoomed');
+      }
+      dialog.dataset.zoom=String(zoom);
+    };
+    const show=(n:number)=>{
+      if(!photos.length||!image)return;
+      index=(n+photos.length)%photos.length;
+      setZoom(1);
+      image.src=photos[index];
+      image.alt=(title?.textContent||'Объект')+' — фотография '+(index+1);
+    };
+    for(const button of document.querySelectorAll<HTMLElement>('[data-archive-open]')){
+      button.addEventListener('click',()=>{
+        try{
+          const value=JSON.parse(button.dataset.galleryImages||'[]');
+          const safe=/^\/evidence\/owner-portfolio\/(?:apart-hotel|eurospar-vo|eurospar-sestroretsk|college-obvodny|novatech|akvilon-yanino|himprom|sport-komendantskiy)\/(?:owner-selected-aerial|cover|[0-9]{2,3}|gallery-[0-9]{2,3})\.(?:webp|jpe?g|png)$/i;
+          if(!Array.isArray(value)||!value.length||!value.every((v:unknown)=>typeof v==='string'&&safe.test(v)))return;
+          photos=value;opener=button;
+          if(title)title.textContent=button.dataset.galleryTitle||'Объект';
+          show(0);dialog.showModal();close?.focus({preventScroll:true});
+        }catch{return;}
+      });
+    }
+    close?.addEventListener('click',()=>dialog.close());
+    dialog.querySelector('[data-gallery-prev]')?.addEventListener('click',()=>show(index-1));
+    dialog.querySelector('[data-gallery-next]')?.addEventListener('click',()=>show(index+1));
+    stage?.addEventListener('dblclick',e=>{e.preventDefault();setZoom(zoom>1?1:2);});
+    stage?.addEventListener('wheel',e=>{if(!e.ctrlKey)return;e.preventDefault();setZoom(zoom*(e.deltaY<0?1.15:1/1.15));},{passive:false});
+    let pinchStart=0, pinchZoom=1;
+    const distance=(a:Touch,b:Touch)=>Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);
+    stage?.addEventListener('touchstart',e=>{
+      if(e.touches.length===2){pinchStart=distance(e.touches[0],e.touches[1]);pinchZoom=zoom;e.preventDefault();}
+    },{passive:false});
+    stage?.addEventListener('touchmove',e=>{
+      if(e.touches.length===2&&pinchStart>0){setZoom(pinchZoom*distance(e.touches[0],e.touches[1])/pinchStart);e.preventDefault();}
+    },{passive:false});
+    stage?.addEventListener('touchend',e=>{if(e.touches.length<2)pinchStart=0;},{passive:true});
+    dialog.addEventListener('keydown',e=>{
+      if(e.key==='ArrowLeft'){e.preventDefault();show(index-1);}
+      if(e.key==='ArrowRight'){e.preventDefault();show(index+1);}
+      if(e.key==='+'||e.key==='='){e.preventDefault();setZoom(zoom+.35);}
+      if(e.key==='-'||e.key==='_'){e.preventDefault();setZoom(zoom-.35);}
+      if(e.key==='0'){e.preventDefault();setZoom(1);}
+      // Escape is handled natively by <dialog>, preserving focus and semantics.
+    });
+    let x:number|null=null;
+    stage?.addEventListener('touchstart',e=>{if(e.touches.length===1)x=e.touches[0].clientX;},{passive:true});
+    stage?.addEventListener('touchend',e=>{
+      if(x===null||zoom>1||e.changedTouches.length!==1)return;
+      const end=e.changedTouches[0].clientX;
+      if(Math.abs(end-x)>65)show(index+(end<x?1:-1));x=null;
+    },{passive:true});
+    dialog.addEventListener('close',()=>{
+      setZoom(1);if(image)image.removeAttribute('src');
+      photos=[];opener?.focus({preventScroll:true});opener=null;
+    });
+  }
+</script>
+
+<style>
+/* Photography leads; typography and evidence are deliberately restrained. */
+.portfolio-hero{padding:clamp(38px,5vw,74px) 0 clamp(34px,4vw,60px)}
+.portfolio-hero__grid{align-items:center;gap:clamp(24px,5vw,80px)}
+.portfolio-hero h1{font-size:clamp(2.45rem,4.55vw,5rem);line-height:1.03;letter-spacing:-.044em;max-width:17ch;text-wrap:balance}
+.portfolio-hero__lede{font-size:clamp(1rem,1.35vw,1.2rem);line-height:1.52;max-width:48ch}
+.portfolio-grid{gap:clamp(16px,2vw,28px)}
+.portfolio-card__media{aspect-ratio:1.5}
+.portfolio-card__media img{filter:none}
+.portfolio-card h3{font-size:clamp(1.23rem,1.65vw,1.75rem);line-height:1.18;letter-spacing:-.025em}
+.portfolio-feature__visual img{object-fit:cover}
+@media(max-width:760px){.portfolio-hero{padding:36px 0 38px}.portfolio-hero h1{font-size:clamp(2rem,8vw,3.2rem);max-width:none}.portfolio-hero__grid{gap:18px}.portfolio-grid{gap:20px}}
+
+/* Owner 2026-10-15: dedicated photographic sports feature, not a 13th card. */
+.portfolio-sport{padding-block:clamp(60px,7vw,112px);background:#e9eef0;color:#193447}
+.portfolio-sport__inner{display:grid;grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr);align-items:center;gap:clamp(30px,4vw,75px)}
+.portfolio-sport__intro h2{font-size:clamp(1.75rem,3vw,3.25rem);line-height:1.12;letter-spacing:-.028em;font-weight:590;max-width:17ch;margin:14px 0 20px}
+.portfolio-sport__intro>p:not(.section-index){font-size:clamp(.98rem,1.2vw,1.14rem);line-height:1.65;color:#4b6070;max-width:47ch}
+.portfolio-sport__gallery-link{display:inline-flex;align-items:center;justify-content:space-between;gap:24px;margin-top:26px;padding:14px 0;min-height:48px;border:0;border-bottom:1px solid #8da5af;background:transparent;color:#183d51;font:600 .98rem Onest,sans-serif;text-align:left;cursor:pointer}
+.portfolio-sport__gallery-link:hover,.portfolio-sport__gallery-link:focus-visible{color:#a35933;outline-offset:5px}
+.portfolio-sport__photography{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,.8fr);gap:clamp(9px,1.25vw,19px);min-height:300px}
+.portfolio-sport__photo{margin:0;overflow:hidden;background:#d5dfe3;min-width:0}
+.portfolio-sport__photo img{display:block;width:100%;height:100%;object-fit:cover}
+.portfolio-sport__photo--large{aspect-ratio:1.25}
+.portfolio-sport__photo--detail{aspect-ratio:.7}
+@media(max-width:900px){.portfolio-sport__inner{grid-template-columns:1fr;gap:25px}.portfolio-sport__intro h2{max-width:24ch}}
+@media(max-width:520px){.portfolio-sport{padding-block:52px}.portfolio-sport__photography{min-height:210px}.portfolio-sport__intro h2{font-size:clamp(1.7rem,7vw,2.4rem)}}
+/* Owner P0: the portfolio first fold is photographic, not an empty 100svh
+   slab. Different-height views flow naturally; 7 PARK remains a distinct case. */
+.portfolio-hero__mosaic{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:minmax(0,1.65fr) minmax(0,.85fr)}
+.portfolio-hero__mosaic figure:first-child{grid-column:1/-1;grid-row:1}
+.portfolio-hero__mosaic figure:nth-child(2){grid-column:1;grid-row:2}
+.portfolio-hero__mosaic figure:nth-child(3){grid-column:2;grid-row:2}
+@media(min-width:1025px){
+  .portfolio-hero{padding-block:clamp(40px,4.7vw,76px)}
+  .portfolio-hero__mosaic{height:clamp(445px,56svh,620px);min-height:0}
+}
+@media(min-width:761px) and (max-width:1024px){
+  .portfolio-hero__mosaic{min-height:380px}
+}
+@media(max-width:760px){
+  .portfolio-hero__mosaic{grid-template-rows:190px 126px}
+}
+
+
+/* PR12 Owner final lightbox: photograph + centered title, side arrows and discreet close only. */
+.portfolio-archive-viewer{position:relative;width:min(100vw,1520px);max-width:100vw;height:100dvh;max-height:100dvh;background:#121c25;color:#f4f7f8}
+.portfolio-archive-viewer[open]{display:block}
+.portfolio-archive-viewer__top{position:absolute;top:0;left:0;right:0;z-index:4;display:flex;justify-content:center;padding:22px 63px 20px;background:linear-gradient(#0c1822d6,transparent);border:0}
+.portfolio-archive-viewer__top strong{font-size:.84rem;font-weight:500;margin:0;color:#ecf2f5;text-align:center;letter-spacing:.02em}
+.portfolio-archive-viewer__top [data-gallery-close]{position:absolute;top:10px;right:12px;width:48px;height:48px;padding:0;border:0;background:transparent;color:#fff;font-size:2rem;font-weight:300;cursor:pointer}
+.portfolio-archive-viewer__stage{height:100%;padding:72px clamp(36px,6vw,100px) 60px;display:grid;place-items:center;overflow:auto}
+.portfolio-archive-viewer__stage img{max-height:100%;max-width:100%;width:auto;height:auto;object-fit:contain}
+.portfolio-archive-viewer__nav{position:absolute;inset:0;background:transparent;pointer-events:none;display:flex;align-items:center;justify-content:space-between;padding:0 4px}
+.portfolio-archive-viewer__nav button{pointer-events:auto;min-width:44px;min-height:54px;padding:0;border:0;background:transparent;color:#fff;font-size:2.45rem;font-weight:300;cursor:pointer}
+.portfolio-archive-viewer__nav span{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);font-size:.72rem;font-weight:400;letter-spacing:.025em;color:#d5e0e6;white-space:nowrap}
+.portfolio-archive-viewer button:focus-visible{outline:2px solid #fff;outline-offset:2px}
+@media(max-width:600px){.portfolio-archive-viewer__stage{padding:64px 34px 52px}.portfolio-archive-viewer__top{padding:18px 58px}}
+
+/* Independent case dossiers and the archival image record must not imply the same evidence level. */
+.portfolio-archive__intro{max-width:66ch;margin:clamp(56px,7vw,90px) 0 28px}
+.portfolio-archive__intro h3{font-size:clamp(1.65rem,2.55vw,2.6rem);font-weight:570;letter-spacing:-.035em;line-height:1.15;margin:8px 0}
+.portfolio-archive__intro>p:last-child{color:#526779;line-height:1.6;font-size:.95rem}
+.portfolio-archive-viewer.is-zoomed .portfolio-archive-viewer__stage{display:block;overflow:auto;overscroll-behavior:contain}
+.portfolio-archive-viewer.is-zoomed .portfolio-archive-viewer__stage img{width:auto;max-width:none;max-height:none;height:auto;object-fit:contain}
+.portfolio-archive-viewer__stage{overscroll-behavior:contain}
+
+/* Fullscreen archival viewer, no accidental scrollbars at fit scale. */
+:global(html:has(#portfolio-archive-viewer[open])){overflow:hidden}
+.portfolio-archive-viewer[open]{box-sizing:border-box;position:fixed;inset:0;margin:0;width:100vw;max-width:100vw;height:100dvh;max-height:100dvh;padding:0;border:0;overflow:hidden;scrollbar-width:none}
+.portfolio-archive-viewer__stage{box-sizing:border-box;min-width:0;min-height:0;overflow:hidden;scrollbar-width:none}
+.portfolio-archive-viewer__stage::-webkit-scrollbar,.portfolio-archive-viewer::-webkit-scrollbar{display:none}
+.portfolio-archive-viewer__nav{z-index:3}
+.portfolio-archive-viewer__top{pointer-events:none}
+.portfolio-archive-viewer__top [data-gallery-close]{pointer-events:auto}
+.portfolio-archive-viewer.is-zoomed .portfolio-archive-viewer__stage{overflow:auto;scrollbar-width:none}
+@media(max-width:600px){.portfolio-archive-viewer__stage{padding-inline:42px}.portfolio-archive-viewer__nav{padding-inline:0}}
+
+/* Documentary portfolio: one commanding object and its actual installation evidence. */
+.portfolio-hub .portfolio-hero{background:#f3f6f6;padding:clamp(35px,4.3vw,72px) 0}
+.portfolio-hub .portfolio-hero__grid{display:grid;grid-template-columns:minmax(0,.69fr) minmax(0,1.31fr);gap:clamp(27px,4vw,75px);align-items:center}
+.portfolio-hub .portfolio-hero h1{font-weight:540;letter-spacing:-.04em;font-size:clamp(3.1rem,4.3vw,5.25rem);line-height:1.06}
+.portfolio-hub .portfolio-hero__lede{line-height:1.65;max-width:47ch}
+.portfolio-hub .portfolio-hero__mosaic{min-height:0;aspect-ratio:1.6;grid-template-rows:minmax(0,1.65fr) minmax(0,.85fr);gap:clamp(7px,.7vw,12px)}
+.portfolio-hub .portfolio-hero__mosaic figure{min-height:0;overflow:hidden;margin:0}
+.portfolio-hub .portfolio-hero__mosaic img{width:100%;height:100%;object-fit:cover}
+.portfolio-hub .portfolio-hero__mosaic figcaption{font-size:.73rem;font-weight:520}
+.portfolio-hub .portfolio-feature{padding:clamp(38px,4.3vw,66px) 0}
+.portfolio-hub .portfolio-feature__grid{display:grid;grid-template-columns:minmax(0,.58fr) minmax(0,1.42fr);gap:clamp(20px,3.2vw,50px);align-items:start}
+.portfolio-hub .portfolio-feature__grid>div:first-child{grid-column:1;grid-row:1}
+.portfolio-hub .portfolio-feature__photography{grid-column:2;grid-row:1/span 2;display:grid;grid-template-columns:minmax(0,1.34fr) minmax(0,.66fr);align-items:stretch;gap:clamp(9px,1vw,16px);min-width:0}
+.portfolio-hub .portfolio-feature__photography figure{position:relative;margin:0;min-width:0;overflow:hidden;background:#173244;min-height:340px}
+.portfolio-hub .portfolio-feature__photography img{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.portfolio-hub .portfolio-feature__photography figure:last-child img{object-position:50% 50%}
+.portfolio-hub .portfolio-feature__photography figcaption{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(8,24,36,.72));padding:28px 13px 12px;font-size:.72rem;font-weight:500;color:#fff;line-height:1.4}
+.portfolio-hub .portfolio-feature .case-facts{grid-column:1;grid-row:2;display:flex;flex-direction:column;gap:0;margin:0;padding:0;border:0;background:transparent;min-width:0;max-width:100%}
+.portfolio-hub .portfolio-feature .case-facts>div{display:grid;grid-template-columns:minmax(64px,.38fr) minmax(0,1fr);gap:8px 14px;align-items:start;min-width:0;max-width:100%;padding:13px 0;border:0;border-top:1px solid #405968}
+.portfolio-hub .portfolio-feature .case-facts dt{font-size:.72rem;line-height:1.4;font-weight:450;color:#b4c9d3;overflow-wrap:normal}
+.portfolio-hub .portfolio-feature .case-facts dd{margin:0;min-width:0;max-width:100%;font-size:.9rem;line-height:1.43;font-weight:530;overflow-wrap:normal;word-break:normal;hyphens:auto}
+.portfolio-hub .portfolio-list__introduction{max-width:73ch;margin:18px 0 clamp(24px,3vw,40px);font-size:clamp(.97rem,1.18vw,1.12rem);line-height:1.62;color:#516774}
+.portfolio-hub .portfolio-grid .portfolio-card__body{gap:7px}
+.portfolio-hub .portfolio-grid .portfolio-card__top span{font-size:.67rem;font-weight:540;color:#6c8290}
+.portfolio-hub .portfolio-grid .portfolio-card h3{font-weight:570;line-height:1.23}
+@media(max-width:1024px){
+ .portfolio-hub .portfolio-hero__grid{grid-template-columns:minmax(0,.77fr) minmax(0,1.23fr);gap:25px}
+ .portfolio-hub .portfolio-feature__grid{grid-template-columns:minmax(0,.67fr) minmax(0,1.33fr)}
+ .portfolio-hub .portfolio-feature__photography{grid-template-columns:1.15fr .85fr}
+}
+@media(max-width:760px){
+ .portfolio-hub .portfolio-hero{padding:28px 0 33px}
+ .portfolio-hub .portfolio-hero__grid{grid-template-columns:1fr;gap:22px}
+ .portfolio-hub .portfolio-hero h1{font-size:clamp(2.6rem,9vw,3.5rem)}
+ .portfolio-hub .portfolio-hero__mosaic{aspect-ratio:1.65;grid-template-rows:1.55fr .85fr;min-height:0;height:auto}
+ .portfolio-hub .portfolio-feature__grid{grid-template-columns:1fr;gap:22px}
+ .portfolio-hub .portfolio-feature__grid>div:first-child{grid-column:1;grid-row:1}
+ .portfolio-hub .portfolio-feature__photography{grid-column:1;grid-row:2;grid-template-columns:1.2fr .8fr;min-height:0}
+ .portfolio-hub .portfolio-feature__photography figure{min-height:235px}
+ .portfolio-hub .portfolio-feature .case-facts{grid-column:1;grid-row:3;gap:0}
+}
+
+
+/* Prevent intrinsic card strings from widening 125%-zoom grid tracks. */
+.portfolio-hub .portfolio-hero__grid,.portfolio-hub .portfolio-hero__mosaic,.portfolio-hub .portfolio-feature__grid,.portfolio-hub .portfolio-feature__photography,.portfolio-hub .portfolio-grid{min-width:0;max-width:100%;box-sizing:border-box}
+.portfolio-hub .portfolio-grid>.portfolio-card{min-width:0!important;max-width:100%;box-sizing:border-box}
+.portfolio-hub .portfolio-card__body,.portfolio-hub .portfolio-card__top,.portfolio-hub .portfolio-card__bottom{min-width:0;max-width:100%;box-sizing:border-box}
+.portfolio-hub .portfolio-card__top,.portfolio-hub .portfolio-card__bottom{flex-wrap:wrap}
+.portfolio-hub .portfolio-card__top>b,.portfolio-hub .portfolio-card__body h3,.portfolio-hub .portfolio-card__bottom span{min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:normal}
+.portfolio-hub .portfolio-hero__mosaic figcaption{max-width:100%;box-sizing:border-box;overflow-wrap:anywhere}
+
+</style>

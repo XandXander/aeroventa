@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createHash } from 'node:crypto';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..');
@@ -138,11 +139,11 @@ check(files.premium.includes('if (!endpoint)'), 'Lead form has safe no-endpoint 
 check(files.premium.includes('mailto:'), 'Lead fallback keeps direct human contact');
 
 check(!files.header.includes('data-consultant-open') && files.premium.includes('data-source="persistent_launcher"'), 'Consultant entry is standalone, outside navigation');
-check(!files.footer.includes('data-consultant-open') && files.footer.includes('data-contact-open'), 'Footer retains contact form without consultant menu');
+check(!files.footer.includes('data-consultant-open') && !files.footer.includes('data-contact-open') && files.footer.includes('mailto:'), 'Footer uses direct human contact without repetitive CTA or consultant menu');
 check(files.lead.includes('data-contact-open'), 'Lead CTA opens modern contact form');
 check(files.contactPage.includes('<ContactForm'), 'Contact page includes semantic form');
 check(files.home.includes('data-consultant-open') && files.home.includes('data-contact-open'), 'Homepage close offers consultant and direct contact');
-check(files.ready.includes('data-contact-open') && files.ready.includes('data-project-status="ready"'), 'Ready-project route preserves contextual contact');
+check(files.ready.includes('projectMail') && files.ready.includes('href={projectMail}') && files.header.includes('data-contact-open'), 'Ready-project route offers direct mail and header contact without repetitive CTAs');
 check(files.notReady.includes('data-contact-open') && files.notReady.includes('data-consultant-open'), 'No-project route exposes form and consultant');
 
 check(files.airflow.includes('airflow-header-trace__route--supply'), 'AIRFLOW TRACE supply route preserved');
@@ -166,16 +167,43 @@ check(files.layout.includes('retainedDescriptionFallback') && files.layout.inclu
 check(files.layout.includes('editorialOgFallback') && files.layout.includes('content.og_image || editorialOgFallback[content.path]'), 'Social sharing uses case-context media if Directus has not supplied an image');
 check(!files.home.includes('<svg class="hero-engineering__overlay"') && files.home.includes('class="solution-mobile-pair"') && files.home.includes('class="home-shell process-strip"'), 'HERO has no invented arrows; mobile native split illustration and original stages remain present');
 check(files.home.includes('/evidence/hero/engineering-scene-accepted-v43.webp') && files.home.includes('Комплексный подход к вентиляции'), 'Owner-locked original engineering illustration restored without replacing HOME HERO');
-check(!files.home.includes('object-ribbon__number') && (files.home.match(/\['(?:Квартиры|Коттеджи|Рестораны|Магазины|Производства|Новостройки)/g) ?? []).length === 6, 'Object navigation has six named destinations without catalogue counters');
-const approvedTeamFiles = ['img_4170.webp', 'img_4166.webp', 'img_4168.webp', 'img_4169.webp'];
-check(approvedTeamFiles.every(name => files.about.includes('/evidence/team/' + name)) && 
-      !files.about.includes('/evidence/team/img_5958.webp') &&
-      !files.about.includes('/evidence/team/img_5971.webp') &&
-      files.about.includes('teamPhotos.slice(1).map'), 'Four Owner-selected team photographs present; no substitute photos or repeated hero portrait');
+check(!files.home.includes('object-ribbon__number') && (files.home.match(/\['(?:Квартиры|Офисы|Рестораны|Магазины|Производства|Новостройки)/g) ?? []).length === 6, 'Object navigation has six named destinations without catalogue counters');
+// 2026-10-13 Owner supersession: one group frame + four individually named source portraits.
+// Fixture can render identity-safe text while binary uploads are pending; PUBLICATION is fail-closed.
+const ownerTeamNames = ['Евгений Панов','Александр Тарасов','Денис Иванов','Александр Шаламов'];
+const ownerTeamMedia = ['owner-team-group-20261015.webp','owner-evgeniy-panov-20261015.webp',
+  'owner-aleksandr-tarasov-20261013.webp','owner-denis-ivanov-20261013.webp','owner-aleksandr-shalamov-20261013.webp'];
+const ownerTeamSHA256 = {
+  "owner-team-group-20261015.webp": "0a507849d6d8b54688779af5fab086e228272908310ff1c408b93c6afdaebb3a",
+  "owner-evgeniy-panov-20261015.webp": "6227996e36b7c4b0a9cfb889f447b9dba6569a5d6a4154e628cf323aefec2f09",
+  "owner-aleksandr-tarasov-20261013.webp": "9215087532eef31a03f3af4bc35ef062855ab0a22ac003b5e5bd4fdbf29e2a4a",
+  "owner-denis-ivanov-20261013.webp": "c72222ae1090d94955e2d6824a125f7adffd8bfead4e6d050903c369b2e93362",
+  "owner-aleksandr-shalamov-20261013.webp": "c2057be1490d987b82b237c1f728093831e8afe87b2b634da22a8257a1a0817a"
+};
+check(ownerTeamNames.every(name => files.about.includes(name)) &&
+      ownerTeamMedia.every(name => files.about.includes('/evidence/team/' + name)) &&
+      files.about.includes('hasOwnerGroup') && files.about.includes('hasAllOwnerPortraits') &&
+      !files.about.includes('teamPhotos.slice(1).map') &&
+      !files.about.includes('/evidence/team/img_5958.webp'),
+      'New four-person identity-safe Owner mapping and group/portrait gating');
+if (process.env.AEROVENTA_REQUIRE_OWNER_TEAM_MEDIA === 'true') {
+  for (const name of ownerTeamMedia) {
+    const pathname = path.join(root, 'apps/web/public/evidence/team', name);
+    const bytes = await fs.readFile(pathname).catch(() => null);
+    const actualSHA256 = bytes ? createHash('sha256').update(bytes).digest('hex') : null;
+    check(Boolean(bytes && bytes.length > 20000 && actualSHA256 === ownerTeamSHA256[name]),
+      'Release requires exact Owner-provided media SHA256: ' + name);
+  }
+}
 check(files.restaurants.includes("heroMedia={{ src:'/evidence/leont/owner-cover-v43.webp'") &&
       !files.restaurants.includes("heroMedia={{ src:'/evidence/leont/duct-installation-02.jpg'"), 'Restaurant direction uses authentic architectural context, retains montage only as case evidence');
 const acceptedScene = await fs.stat(path.join(root, 'apps/web/public/evidence/hero/engineering-scene-accepted-v43.webp')).catch(() => null);
 check(Boolean(acceptedScene?.isFile() && acceptedScene.size > 20000), 'Original accepted engineering-scene visual exists physically in build sources');
+
+check(!/\/obekty\/#(?:private|commercial|warehouses|production)/.test(files.home + files.services), 'Owner: homepage/services never route categories through fragment detours');
+for(const directRoute of ['/obekty/kvartiry-i-doma/','/obekty/ofisy-i-kommerciya/','/obekty/sklady/','/obekty/proizvodstvo/']) {
+  check(files.home.includes(directRoute) && files.services.includes(directRoute), 'Owner: category directly addresses destination '+directRoute);
+}
 check(files.home.includes('owner-luxury-airflow-20261010.png') && files.home.includes('hasOwnerHeroMedia') && files.home.includes('if (!hasOwnerHeroMedia) throw') && !files.home.includes('home-owner-editorial-1672.webp'), 'Current Owner-approved original blue-airflow HERO is fail-closed and not substituted');
 check(files.airflow.includes('airflow-header-trace__route--supply') && files.airflow.includes('airflow-header-trace__route--exhaust') && !files.home.includes('solution-overlay-label'), 'Independent supply/exhaust TRACE remains; removed diagram does not assert a false connection');
 check(!files.home.includes('РЕАЛЬНЫЙ МОНТАЖ · 7 PARK · ПАВЛОВСК') && files.home.includes('Реальный монтаж AEROVENTA на объекте 7 PARK'), 'Rejected visual caption gone, accessible attribution preserved');
@@ -193,9 +221,23 @@ const mediaStats = await Promise.all(ownerMediaVariants.map(async name => {
   catch { return null; }
 }));
 check(mediaStats.every(stat => stat?.isFile() && stat.size > 20000), 'All six optimized Owner source image variants exist as nonempty files');
-check(files.services.includes('services-owner-editorial-1774.webp') &&
-      files.services.includes('services-owner-editorial-640.webp') &&
-      !files.services.includes('engineering-ductwork.jpg'), 'Rejected Services metal-duct HERO replaced with Owner architectural illustration');
+// 2026-10-16 Owner P0: HOME and SERVICES must not repeat the same rendered HERO.
+// Conceptual nature stays in meaningful alternative text, not a developer QA caption.
+// Rejected construction/café images must never become the services lead image.
+check(files.home.includes("const ownerHeroMedia = '/evidence/hero/owner-luxury-airflow-20261010.png'") &&
+      files.services.includes('/evidence/hero/hiend-engineering-visual-owner-v43.webp') &&
+      files.services.includes('alt="Архитектурная визуализация скрытой системы воздуховодов в жилом интерьере"') &&
+      !files.services.includes('home-owner-editorial-1672.webp') &&
+      !files.services.includes('services-owner-editorial-1774.webp') &&
+      !files.services.includes('<img src="/evidence/cafe/owner-cover-v43.webp"') &&
+      !files.services.includes('/evidence/7park/duct-route.jpg') &&
+      files.services.includes('services-hero__backdrop--single') &&
+      !files.services.includes('концептуальная иллюстрация'),
+      'Distinct HOME/SERVICES HERO media; truthful alt and no public QA caption or rejected café');
+for(const p of ['evidence/cafe/owner-cover-v43.webp']){
+  const stat=await fs.stat(path.join(root,'apps/web/public',p)).catch(()=>null);
+  check(Boolean(stat?.isFile() && stat.size>20000), 'Source-valid Services evidence asset exists: '+p);
+}
 check(files.home.includes('class="home-consultant-inline"') &&
       files.services.includes('class="services-consultant-inline"') &&
       files.css.includes('body:has(.home-hero--owner-airflow) .consultant-launcher') &&
@@ -225,6 +267,67 @@ check(files.css.includes('@media (prefers-reduced-motion: reduce)'), 'Premium ex
 check(files.css.includes(':focus-visible'), 'Premium experience includes visible focus treatment');
 check(!/exit-intent|timer-popup|auto-open|setInterval\(/i.test(files.premium + files.telemetry), 'No intrusive popup trigger pattern');
 
+// Owner sports dossier: exterior matches public architecture of the
+// Яхтенная 39 Centre. Exact scope of engineering works remains unverified.
+// ART RED TEAM 2026-10-15: verified owner P0/P1/P2 source corrections.
+const caseSource = await read('apps/web/src/components/pages/EvidenceCasePage.astro');
+const portfolioSource = await read('apps/web/src/components/pages/PortfolioHubPage.astro');
+const servicesPage = files.services.slice(0, files.services.indexOf('<style>'));
+check((servicesPage.match(/<article\b/g) || []).length === 1 &&
+      (servicesPage.match(/<\/article>/g) || []).length === 1 &&
+      !servicesPage.includes('hub-split') && !servicesPage.includes('hub-objects') &&
+      servicesPage.trimEnd().endsWith('</article>'), 'ART-DELTA-01: one semantic services article, no abandoned sections');
+check(files.about.includes('03 / Опыт на объектах') &&
+      portfolioSource.includes('03 / Спортивный объект') &&
+      portfolioSource.includes('04 / Ваш объект') &&
+      !caseSource.includes('<span>01 / Задача</span>'), 'ART-DELTA-02: consistent section counting');
+check(caseSource.includes('case-gallery__archive-note') &&
+      !caseSource.includes('<figcaption>{caption}</figcaption>\n              </figure>\\n            ))}'), 'ART-DELTA-03: no repetitive archive thumbnail captions');
+check(caseSource.includes("'/blog/detail/kafe-rimskogo-korsakova-3/': {gallery:") &&
+      !caseSource.includes("'/blog/detail/kafe-na-rimskogo-korsakova/':"), 'ART-DELTA-04: cafe documentary key correct');
+check(portfolioSource.includes("kind:'Сервисно-образовательный центр'") &&
+      !portfolioSource.includes("kind:'География'"), 'ART-DELTA-05: kind means object type');
+check(files.layout.includes("'/services/': '/evidence/hero/services-owner-editorial-1774.webp'") &&
+      files.layout.includes('rejectedServicesImage'), 'ART-DELTA-06: approved services social preview and rejected-cover protection');
+
+
+check(portfolioSource.includes('class="portfolio-sport"') &&
+      portfolioSource.includes('04 / Ваш объект') &&
+      portfolioSource.includes("const sportPhotos = ['/evidence/owner-portfolio/sport-komendantskiy/owner-selected-aerial.webp', ...ownerGallery('sport-komendantskiy')]") &&
+      portfolioSource.includes('<h2 id="portfolio-sport-title">Центр адаптивного спорта</h2>'),
+      'Sport: independent, photo-backed feature; unverified exact identity not asserted');
+for(const name of ['cover','02','03','04']){
+  const img=await fs.stat(path.join(root,'apps/web/public/evidence/owner-portfolio/sport-komendantskiy',name+'.webp')).catch(()=>null);
+  check(Boolean(img?.isFile()&&img.size>15000), 'Sports object selected provenance media exists: '+name);
+}
+const ownerPhotoManifest=JSON.parse(await read('migration/owner-portfolio-source-manifest-2026-10-15.json'));
+check(ownerPhotoManifest.length===25 &&
+  ownerPhotoManifest.filter(x=>x.status==='OWNER_PHOTO_ARCHIVE_SCOPE_FACTS_UNVERIFIED').length===21,
+  'Owner photo provenance: 21 for seven object archives and four distinct sports candidates');
+check(portfolioSource.includes('.portfolio-archive-viewer__nav{position:absolute;inset:0;background:transparent;'), 'F07: full-screen photo navigation cannot paint opaque over gallery image');
+check(portfolioSource.includes('newOwnerCases.map') && portfolioSource.includes('portfolio-archive-viewer'),
+  'Seven archive source cards plus five legacy portfolio cards with same-page accessible galleries');
+check(files.globalCss.includes('.portfolio-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))'),
+  'Portfolio uses 4/3/2 editorial grid');
+const verifiedBitrix=JSON.parse(await read('migration/bitrix-verified-articles-20260817.json'));
+const archivedIndex=JSON.parse(await read('migration/legacy-page-source-index.json'));
+check(verifiedBitrix.count===9 && verifiedBitrix.articles.length===9 &&
+  verifiedBitrix.articles.every(x=>archivedIndex.some(y=>y.path===x.route&&y.sha256===x.source_sha256)),
+  'Nine full historical Bitrix texts anchored to August 2026 source SHA256');
+const p0Actual=await read('apps/web/src/components/pages/P0LegacyArticlePage.astro');
+const casesActual=await read('apps/web/src/components/pages/EvidenceCasePage.astro');
+check(p0Actual.includes('verifiedArchiveHtml') && casesActual.includes('verifiedArchiveHtml') &&
+  p0Actual.includes('set:html={verifiedArchiveHtml}') && casesActual.includes('set:html={verifiedArchiveHtml}'),
+  'Original SEO article bodies integrated in existing four technical and five case URLs');
+const restoredMediaMap=JSON.parse(await read('migration/bitrix-public-media-500-sha-map.json'));
+const restoredMediaSet=new Set(restoredMediaMap.files.map(x=>x.path));
+check(restoredMediaMap.record_count===500 &&
+  restoredMediaMap.files.every(x=>/^\/upload\//.test(x.path)&&x.sha256?.length===64),
+  'Bitrix 500 original media exact paths and SHA256 source manifest');
+check(verifiedBitrix.articles.every(article=>article.original_media_paths.every(src=>restoredMediaSet.has(src))),
+  'Nine exact article images and schemas route to recovered assets');
+check(p0Actual.includes('p0-source-photo-gallery') && casesActual.includes('case-gallery__verified-originals'),
+  'Original photos exposed in native article and case galleries rather than omitted');
 const result = {
   generated_at: new Date().toISOString(),
   verdict: failures.length ? 'FAIL' : 'PASS',
