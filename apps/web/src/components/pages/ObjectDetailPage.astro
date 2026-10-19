@@ -20,14 +20,14 @@ interface Props {
   questions: string[];
   proofTitle: string;
   visualVariant?: 'residential' | 'restaurants';
-  heroMedia?: { src: string; alt: string; caption: string };
+  heroMedia?: { src: string; alt: string; caption: string; nativeWidth?: number; nativeHeight?: number; editorialSplit?: boolean };
   secondaryMedia?: { src: string; alt: string; caption: string };
 }
 
 const { content, eyebrow, lede, constraints, drivers, evidence, questions, proofTitle, visualVariant, heroMedia, secondaryMedia } = Astro.props;
 ---
 
-<article class:list={['object-detail', visualVariant && `object-detail--${visualVariant}`]}>
+<article class:list={['object-detail', visualVariant && `object-detail--${visualVariant}`, heroMedia?.editorialSplit && 'object-detail--editorial-media']}>
   <header class="object-detail__hero">
     <div class="home-shell object-detail__hero-grid">
       <div>
@@ -44,7 +44,7 @@ const { content, eyebrow, lede, constraints, drivers, evidence, questions, proof
       </div>
       {heroMedia && (
         <figure class="object-detail__hero-media">
-          <img src={heroMedia.src} alt={heroMedia.alt} width="800" height="450" fetchpriority="high" />
+          <img src={heroMedia.src} alt={heroMedia.alt} width={heroMedia.nativeWidth || 800} height={heroMedia.nativeHeight || 450} fetchpriority="high" decoding="async" />
           {heroMedia.caption && <figcaption>{heroMedia.caption}</figcaption>}
         </figure>
       )}
@@ -134,3 +134,27 @@ const { content, eyebrow, lede, constraints, drivers, evidence, questions, proof
     </div>
   </section>
 </article>
+
+<style>
+/* Original Owner-supplied 531x376 facade: never fake its native resolution. */
+.object-detail--editorial-media .object-detail__hero-media {
+  width:min(100%,531px);margin:0 auto;min-width:0;background:transparent;
+}
+.object-detail--editorial-media .object-detail__hero-media img {
+  display:block;width:100%;max-width:531px;height:auto;aspect-ratio:531/376;object-fit:contain;
+}
+@media(min-width:901px){
+  .object-detail--editorial-media .object-detail__hero-grid {
+    display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);
+    column-gap:clamp(24px,4.5vw,68px);row-gap:clamp(12px,2vw,30px);align-items:center;
+  }
+  .object-detail--editorial-media .object-detail__hero-grid>div:first-child {grid-column:1;grid-row:1;}
+  .object-detail--editorial-media .object-detail__hero-grid>div:nth-child(2) {grid-column:1;grid-row:2;}
+  .object-detail--editorial-media .object-detail__hero-media {
+    grid-column:2;grid-row:1/span 2;justify-self:center;align-self:center;
+  }
+}
+@media(max-width:900px){
+  .object-detail--editorial-media .object-detail__hero-media {max-width:531px;margin-inline:auto;}
+}
+</style>
