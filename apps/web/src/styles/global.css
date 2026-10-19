@@ -528,19 +528,22 @@ main { min-height: 60vh; }
 .objects-proof__grid strong { margin:auto 0 10px; font-size:1.45rem; letter-spacing:-.04em; }
 .objects-proof__grid small { color:var(--muted); font-size:.9rem; }
 
-.object-evidence { background:var(--navy); color:#fff; padding:clamp(66px,7vw,100px) 0; }
-.object-evidence__grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:#435b6b; border:1px solid #435b6b; margin-top:40px; }
-.object-evidence__grid a { background:#0a2233; min-height:280px; padding:28px; text-decoration:none; display:flex; flex-direction:column; }
-.object-evidence__grid span { color:#ff8550; font-weight:900; text-transform:uppercase; font-size:.78rem; }
-.object-evidence__grid h3 { font-size:clamp(1.8rem,3vw,3rem); letter-spacing:-.05em; margin:auto 0 10px; }
-.object-evidence__grid p { color:#c7d2da; margin:0; }
-.object-evidence__grid b { margin-top:22px; }
+.object-evidence { background:#e9eff0;color:#1a3543;padding:clamp(48px,5.6vw,78px) 0; }
+.object-evidence__grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(16px,2.5vw,32px);background:transparent;border:0;margin-top:clamp(22px,3vw,36px);}
+.object-evidence__grid a {background:#fff;min-height:0;padding:clamp(23px,2.8vw,38px);text-decoration:none;display:flex;flex-direction:column;transition:background-color .2s ease;}
+.object-evidence__grid a:hover{background:#f6f9f9;}
+.object-evidence__grid span {color:#92543a;font-weight:580;text-transform:none;font-size:.8rem;}
+.object-evidence__grid h3 {font-size:clamp(1.6rem,2.55vw,2.8rem);letter-spacing:-.038em;line-height:1.13;font-weight:570;margin:clamp(28px,3.5vw,48px) 0 12px;}
+.object-evidence__grid p {color:#4f6572;margin:0;line-height:1.6;}
+.object-evidence__grid b {margin-top:24px;font-weight:560;color:#214858;}
+@media(prefers-reduced-motion:reduce){.object-evidence__grid a{transition:none}}
 
-.object-constraints__grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); margin-top:44px; }
-.object-constraints__grid article { min-height:290px; background:#fff; padding:25px; display:flex; flex-direction:column; }
-.object-constraints__grid span { font-weight:900; }
-.object-constraints__grid h3 { margin:auto 0 12px; font-size:1.5rem; letter-spacing:-.04em; }
-.object-constraints__grid p { color:var(--muted); margin:0; }
+.object-constraints__grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(18px,3vw,44px) clamp(26px,5vw,80px);margin-top:clamp(24px,3.5vw,44px);border:0;background:transparent;}
+.object-constraints__grid article {min-height:0;background:transparent;padding:16px 0 4px;display:block;border-top:1px solid #c6d4d8;}
+.object-constraints__grid span {display:block;color:#9b684e;font-weight:550;font-size:.73rem;letter-spacing:.05em;}
+.object-constraints__grid h3 {margin:clamp(10px,1.4vw,19px) 0 8px;font-size:clamp(1.26rem,1.8vw,1.75rem);line-height:1.18;font-weight:570;letter-spacing:-.028em;}
+.object-constraints__grid p {color:#526772;margin:0;line-height:1.62;font-size:clamp(.95rem,1.1vw,1.04rem);}
+@media(max-width:650px){.object-constraints__grid{grid-template-columns:1fr;gap:18px}}
 
 .object-drivers { background:#f7f9fa; border-block:1px solid var(--line); padding:clamp(72px,8vw,112px) 0; }
 .object-drivers__grid { display:grid; grid-template-columns:.9fr 1.1fr; gap:80px; }
@@ -575,14 +578,16 @@ main { min-height: 60vh; }
 .about-hero h1,.contact-hero h1 { margin:0; font-size:clamp(3.5rem,6vw,6.7rem); line-height:.9; letter-spacing:-.07em; }
 .about-hero__lede,.contact-hero__lede { margin:0; color:var(--muted); font-size:clamp(1.05rem,1.6vw,1.35rem); max-width:760px; }
 
-.about-principle { background:var(--navy); color:#fff; padding:clamp(72px,8vw,112px) 0; }
+.about-principle { background:#e9f0f1; color:#1a3543; padding:clamp(48px,5.8vw,82px) 0; }
 .about-principle__grid,.about-geography__grid,.about-honesty__grid,.contact-area__grid,.contact-data__grid { display:grid; grid-template-columns:.9fr 1.1fr; gap:80px; }
 .about-principle h2,.about-model h2,.about-history h2,.about-geography h2,.about-honesty h2,
 .contact-routes h2,.contact-area h2,.contact-what h2,.contact-data h2 {
   margin:0; font-size:clamp(2.5rem,5vw,5rem); line-height:.97; letter-spacing:-.065em; max-width:1080px;
 }
-.about-principle__body { border-top:1px solid #526a79; }
-.about-principle__body p { margin:0; padding:18px 0; border-bottom:1px solid #405866; color:#d6e0e6; font-weight:700; }
+.about-principle__body { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(18px,2.8vw,40px) clamp(20px,3.5vw,54px);border:0;align-content:center; }
+.about-principle__body p { margin:0;padding:12px 0 0;border:0;border-top:1px solid #b7cbd0;color:#385463;font-weight:480;font-size:clamp(.96rem,1.2vw,1.1rem);line-height:1.65; }
+.about-principle h2 {font-size:clamp(1.95rem,3.35vw,3.5rem);font-weight:560;line-height:1.13;letter-spacing:-.038em;max-width:17ch;}
+@media(max-width:740px){.about-principle__body{grid-template-columns:1fr;gap:14px}.about-principle{padding-block:44px}}
 
 .about-model__grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); margin-top:44px; }
 .about-model__grid article { min-height:300px; background:#fff; padding:26px; display:flex; flex-direction:column; }
@@ -4520,7 +4525,7 @@ html.is-past-first-fold body:has(.about-hero) .consultant-launcher{
   border-top:1px solid #cbd8df;padding:11px 0 0;font-size:.76rem;line-height:1.42;color:#4a6572}
 .evidence-case .case-detail-hero__photograph figcaption span{color:#7a5d4e;font-size:.68rem;letter-spacing:.045em;text-transform:uppercase;white-space:nowrap}
 @media(min-width:1051px) and (min-height:700px){
-  .evidence-case .case-detail-hero{min-height:calc(100svh - 86px);display:flex;align-items:center}
+  .evidence-case .case-detail-hero{min-height:0;display:block}
   .evidence-case .case-detail-hero>.home-shell{width:min(var(--editorial-content,1360px),calc(100% - 2*var(--editorial-gutter,40px)))}
 }
 .evidence-case .case-gallery--lead{background:#fff;padding:clamp(34px,5vw,64px) 0 clamp(42px,5vw,78px)}

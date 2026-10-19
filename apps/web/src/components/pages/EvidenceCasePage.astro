@@ -443,7 +443,7 @@ const fullOriginalGallery=isPolisan ? [] : (verifiedOriginal?.original_media_pat
     <div class="home-shell">
       <p class="section-index section-index--orange">Реальные фотографии</p>
       <h2 id="case-gallery-title">{documentary.gallery}</h2>
-      <p class="case-gallery__intro">Фотографии объекта и выполненных работ.</p>
+      <p class="case-gallery__intro">{isPolisan ? 'Кровельные установки, инженерные трассы и монтажные узлы — последовательно, от общего вида к деталям.' : 'Объект и выполненные монтажные работы.'}</p>
       {isPolisan && <div class="case-gallery__curated" aria-label="Фотоистория НТФФ «Полисан»">
         {polisanRows.map((row, rowIndex) => (
           <div class:list={['case-gallery__curated-row',rowIndex === 0 ? 'case-gallery__curated-row--three' : 'case-gallery__curated-row--four',rowIndex === 2 ? 'case-gallery__curated-row--portrait' : '']}>
