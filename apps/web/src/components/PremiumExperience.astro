@@ -174,6 +174,7 @@ const { pagePath = '' } = Astro.props;
 
   // Stateful sheet opening/closing, respecting reduced motion and native focus.
   const sheetTimers = new WeakMap();
+  const activeRequests = new WeakMap();
   const motionDisabled = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const clearSheetTimer = (dialog) => {
     const timer = sheetTimers.get(dialog);
@@ -183,12 +184,12 @@ const { pagePath = '' } = Astro.props;
   const openDialog = (dialog) => {
     if (!dialog) return;
     clearSheetTimer(dialog);
+    // Put the initial visual state in place before showModal paints the dialog.
+    dialog.dataset.state = motionDisabled() ? 'open' : 'opening';
     if (typeof dialog.showModal === 'function') {
       if (!dialog.open) dialog.showModal();
     } else dialog.setAttribute('open', '');
-    if (motionDisabled()) dialog.dataset.state = 'open';
-    else {
-      dialog.dataset.state = 'opening';
+    if (!motionDisabled()) {
       sheetTimers.set(dialog, window.setTimeout(() => {
         if (dialog.open && dialog.dataset.state === 'opening') dialog.dataset.state = 'open';
       }, 380));
@@ -262,6 +263,8 @@ const { pagePath = '' } = Astro.props;
       if (event.target === dialog) closeDialog(dialog);
     });
     dialog?.addEventListener('close', () => {
+      const sendingForm = dialog.querySelector('form[data-contact-form],form[data-project-form]');
+      activeRequests.get(sendingForm)?.abort();
       const opener = lastDialogTrigger.get(dialog);
       if (opener?.isConnected) opener.focus({ preventScroll: true });
     });
@@ -274,6 +277,7 @@ const { pagePath = '' } = Astro.props;
     if(stamp) stamp.value=String(Date.now());
     uploadForm.addEventListener('submit',async(event)=>{
       event.preventDefault();
+      if(uploadForm.dataset.submitting === 'true')return;
       const status=uploadForm.querySelector<HTMLElement>('[data-project-status]');
       const submit=uploadForm.querySelector<HTMLButtonElement>('[data-project-submit]');
       const files=Array.from(uploadForm.querySelector<HTMLInputElement>('[data-project-files]')?.files||[]);
@@ -283,9 +287,14 @@ const { pagePath = '' } = Astro.props;
         return;
       }
       if(!uploadForm.reportValidity())return;
-      submit.disabled=true;status.textContent='Передаём проект…';
+      uploadForm.dataset.submitting='true';
+      submit.disabled=true;submit.setAttribute('aria-busy','true');
+      status.textContent='Передаём проект…';
+      const controller=new AbortController();
+      activeRequests.set(uploadForm,controller);
+      const timeout=setTimeout(()=>controller.abort(),20000);
       try {
-        const response=await fetch('/api/project.php',{method:'POST',body:new FormData(uploadForm),credentials:'same-origin',cache:'no-store',headers:{accept:'application/json'}});
+        const response=await fetch('/api/project.php',{method:'POST',body:new FormData(uploadForm),credentials:'same-origin',cache:'no-store',signal:controller.signal,headers:{accept:'application/json'}});
         const result=await response.json().catch(()=>null);
         if(!response.ok||result?.ok!==true)throw new Error(result?.error||'request_failed');
         status.textContent='Сервер принял документы для отправки. Доставку в почтовый ящик подтвердим отдельно.';
@@ -295,7 +304,13 @@ const { pagePath = '' } = Astro.props;
       }catch{
         status.textContent='Документы не были приняты сервером. Проверьте объём файлов или согласуйте прямую отправку по email.';
         track('project_upload_error',{source:location.pathname});
-      }finally{submit.disabled=false;}
+      }finally{
+        clearTimeout(timeout);
+        activeRequests.delete(uploadForm);
+        uploadForm.dataset.submitting='false';
+        submit.disabled=false;
+        submit.removeAttribute('aria-busy');
+      }
     });
   }
 
@@ -641,8 +656,12 @@ const { pagePath = '' } = Astro.props;
       submit.setAttribute('aria-busy', 'true');
       status.textContent = 'Передаём запрос…';
 
+      const controller = new AbortController();
+      activeRequests.set(form,controller);
+      const timeout = setTimeout(() => controller.abort(),20000);
       try {
         const response = await fetch(endpoint, {
+          signal:controller.signal,
           method: 'POST',
           headers: { 'content-type': 'application/json', 'accept': 'application/json' },
           credentials: 'same-origin',
@@ -667,6 +686,8 @@ const { pagePath = '' } = Astro.props;
         else status.append(message);
         track('contact_form_error', { source: location.pathname, outcome: 'network_or_server' });
       } finally {
+        clearTimeout(timeout);
+        activeRequests.delete(form);
         form.dataset.submitting = 'false';
         submit.disabled = false;
         submit.removeAttribute('aria-busy');

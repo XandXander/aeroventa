@@ -2,14 +2,14 @@
 :root{--av-fold-header:56px;--av-fold-ribbon:58px}
 @media(min-width:761px){
  .home-hero--owner-airflow{min-height:0;padding:0}
- .home-hero--owner-airflow .home-hero__grid{min-height:0!important;height:calc(100svh - var(--av-fold-header) - var(--av-fold-ribbon));max-height:none}
- .home-hero--owner-airflow .hero-engineering{min-height:0;height:100%}
- .home-hero--owner-airflow .home-hero__copy{min-height:0;padding-block:clamp(17px,2.5svh,35px)!important;max-width:min(800px,72vw)}
- .home-hero--owner-airflow h1{font-size:clamp(2.35rem,min(4.2vw,7.8svh),4.45rem);line-height:1.055;max-width:17ch;text-wrap:balance}
+ .home-hero--owner-airflow .home-hero__grid{min-height:calc(100svh - var(--av-fold-header) - var(--av-fold-ribbon))!important;height:auto;max-height:none}
+ .home-hero--owner-airflow .hero-engineering{min-height:0;height:100%;align-self:stretch}
+ .home-hero--owner-airflow .home-hero__copy{min-height:0;padding-block:clamp(20px,3svh,38px)!important;max-width:min(840px,72vw)}
+ .home-hero--owner-airflow h1{font-size:clamp(2.3rem,min(3.7vw,6.7svh),3.9rem);line-height:1.1;max-width:19ch;text-wrap:balance}
  .home-hero--owner-airflow .home-lede{font-size:clamp(.94rem,1.1vw,1.1rem);line-height:1.45;max-width:47ch}
  .home-hero--owner-airflow .home-actions{gap:10px;margin-top:clamp(12px,1.7svh,20px)}
  .home-hero--owner-airflow .object-ribbon{min-height:var(--av-fold-ribbon);align-items:center}
- :is(.about-premium .about-hero,.services-hero,.portfolio-hero,.objects-hero,.object-detail__hero,.engagement-hero,.evidence-case .case-detail-hero){min-height:calc(100svh - var(--av-fold-header));box-sizing:border-box}
+ :is(.about-premium .about-hero,.services-hero,.portfolio-hero,.objects-hero,.object-detail__hero,.engagement-hero,.evidence-case .case-detail-hero){min-height:min(700px,calc(100svh - var(--av-fold-header)));height:auto;box-sizing:border-box}
  .practice-hub--articles .practice-index-intro{min-height:calc(100svh - var(--av-fold-header));display:flex;align-items:center}
  .practice-hub--articles .practice-index-intro>.home-shell{padding-block:clamp(44px,6svh,100px)}
  .practice-hub--articles .practice-index-intro h1{font-size:clamp(3.4rem,7vw,8.5rem);font-weight:550;line-height:.96;letter-spacing:-.052em;margin:18px 0 26px}

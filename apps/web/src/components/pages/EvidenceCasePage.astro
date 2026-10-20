@@ -267,7 +267,7 @@ const specs: Record<string, CaseSpec> = {
   '/blog/detail/montazh-ventilyatsii-v-karelii/': {
     eyebrow:'Карелия / сервисно-образовательный центр',
     location:'Питкяранта · Республика Карелия',
-    lede:'Исторический объект AEROVENTA в Питкяранте: монтаж приточно-вытяжной вентиляции и оборудования в контексте сервисно-образовательного центра PONSSE.',
+    lede:'Монтаж приточно-вытяжной вентиляции и оборудования в сервисно-образовательном центре PONSSE в Питкяранте.',
     task:"Выполнить вентиляционные работы в сервисно-образовательном центре в Питкяранте.",
     works:"Монтаж приточно-вытяжной вентиляции и оборудования.",
     result:"Монтаж вентиляции в сервисном центре PONSSE в Питкяранте занял две недели. Работы выполнили три специалиста.",
@@ -280,10 +280,10 @@ const specs: Record<string, CaseSpec> = {
       ['Команда','3 специалиста']
     ],
     evidence:[
-      'Архивный источник фиксирует работу в Питкяранте, Карелия.',
-      'Подтверждены приточно-вытяжная вентиляция и оборудование.',
-      'Исторический источник указывает 2 недели и 3 специалистов.',
-      'Фотографии ниже взяты из галереи исходной страницы PONSSE / Питкяранта.'
+      'Сервисно-образовательный центр PONSSE в Питкяранте.',
+      'Монтаж приточно-вытяжной вентиляции и оборудования.',
+      'Две недели работ, три специалиста.',
+      'Фотографии объекта и смонтированных инженерных систем.'
     ],
     media:[
       ['/evidence/karelia/owner-cover-v43.webp','Фасад сервисного центра PONSSE в Питкяранте с вывеской','PONSSE · сервисный центр'],
@@ -691,8 +691,11 @@ const fullOriginalGallery=isPolisan ? [] : (verifiedOriginal?.original_media_pat
     };
     photos.forEach((button, index) => button.addEventListener('click', () => {
       activeTrigger = button;
+      const previousScroll = window.scrollY;
       show(index);
       if (!viewer.open) viewer.showModal();
+      viewer.querySelector<HTMLButtonElement>('[data-photo-close]')?.focus({preventScroll:true});
+      if(Math.abs(window.scrollY-previousScroll)>1)window.scrollTo({top:previousScroll,behavior:'instant'});
     }));
     viewer.querySelector('[data-photo-close]')?.addEventListener('click', () => viewer.close());
     viewer.querySelector('[data-photo-previous]')?.addEventListener('click', () => show(activeIndex - 1));
