@@ -182,8 +182,8 @@ try {
           if (view === 'desktop_1440' || view === 'mobile_390') {
             const txt = await recognition.innerText();
             const h2 = await recognition.locator('h2').innerText();
-            if (!txt.includes('международная промышленная компания') ||
-                !txt.includes('профессионализм') || !txt.includes('рабочую этику') ||
+            if (!txt.includes('вентиляционные работы') ||
+                !txt.includes('Питкяранте') || !txt.includes('5 апреля 2022 года') ||
                 h2 !== 'Письмо PONSSE' ||
                 /международное признание|европейское качество|мировой уровень|финская компания/i.test(txt)) {
               report.fail.push({route,view,reason:'Owner PONSSE factual calm editorial copy',h2,txt:txt.slice(0,360)});
@@ -836,7 +836,7 @@ try {
         },zoom);
         if (result.horizontal>1 ||
             (width>=1024&&zoom===1&&['/','/services/'].includes(route)&&result.firstFoldBottom!==null&&result.firstFoldBottom<height-5) ||
-            (route==='/blog/'&&zoom===1&&(result.firstArticleTop===null||result.firstArticleTop<height-5)) ||
+            (route==='/blog/'&&zoom===1&&(result.firstArticleTop===null||result.firstArticleTop>height-160)) ||
             (zoom===1&&!result.traceVisible)) {
           if (result.horizontal>1) result.offenders=await page.evaluate(()=>[...document.querySelectorAll('body *')].map(el=>{const b=el.getBoundingClientRect();return{tag:el.tagName.toLowerCase(),cls:typeof el.className==='string'?el.className.slice(0,90):'',left:Math.round(b.left),right:Math.round(b.right),scroll:el.scrollWidth,client:el.clientWidth}}).filter(x=>x.right>innerWidth+1||x.left < -1).slice(0,15));
           report.fail.push({reason:'Owner height/zoom/real TRACE gate',route,width,height,zoom,result});
