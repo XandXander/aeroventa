@@ -936,6 +936,130 @@ try {
     finally{await context.close()}
   }
 
+
+  // P0 motion gate: actual intermediate frames, never CSS-presence alone.
+  // All captures use the compiled local fixture; no external requests or mail.
+  for(const [width,height] of [[1440,900],[390,844]]) {
+    const ctx=await browser.newContext({viewport:{width,height},reducedMotion:'no-preference'});
+    const page=await ctx.newPage();
+    try {
+      await page.goto(baseUrl+'/',{waitUntil:'domcontentloaded'});
+      const animated=page.locator('[data-airflow-entry]');
+      await page.waitForFunction(()=>document.querySelector('[data-airflow-entry]')?.classList.contains('is-running'),null,{timeout:1800});
+      await page.screenshot({path:path.join(root,'motion_first_start__'+width+'.png'),animations:'allow'});
+      await page.waitForTimeout(380);
+      const building=await page.evaluate(()=>{
+        const line=document.querySelector('.airflow-entry-trace__duct--supply');
+        return {mode:document.querySelector('[data-airflow-entry]')?.dataset.mode,offset:line&&parseFloat(getComputedStyle(line).strokeDashoffset),name:line&&getComputedStyle(line).animationName};
+      });
+      await page.screenshot({path:path.join(root,'motion_first_assembly__'+width+'.png'),animations:'allow'});
+      await page.waitForTimeout(650);
+      const pulse=await page.evaluate(()=>{
+        const line=document.querySelector('.airflow-entry-trace__pulse--exhaust');
+        return {offset:line&&parseFloat(getComputedStyle(line).strokeDashoffset),name:line&&getComputedStyle(line).animationName};
+      });
+      await page.screenshot({path:path.join(root,'motion_first_pulse__'+width+'.png'),animations:'allow'});
+      if(building.mode!=='full'||building.name==='none'||pulse.name==='none'||!Number.isFinite(building.offset)||!Number.isFinite(pulse.offset))
+        report.fail.push({reason:'Brand loader must visibly assemble route, then pulse',width,building,pulse});
+      await animated.waitFor({state:'detached',timeout:4000});
+      await page.reload({waitUntil:'domcontentloaded'});
+      await page.waitForFunction(()=>document.querySelector('[data-airflow-entry]')?.classList.contains('is-running'),null,{timeout:1700});
+      const repeatMode=await page.locator('[data-airflow-entry]').getAttribute('data-mode');
+      await page.screenshot({path:path.join(root,'motion_repeat__'+width+'.png'),animations:'allow'});
+      if(repeatMode!=='short')report.fail.push({reason:'Repeat visit must have shortened signature',width,repeatMode});
+      await page.locator('[data-airflow-entry]').waitFor({state:'detached',timeout:2600});
+    }catch(error){report.fail.push({reason:'Loader frame-sequence browser regression',width,error:String(error)})}
+    finally{await ctx.close()}
+  }
+  {
+    const ctx=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'});
+    const page=await ctx.newPage();
+    try{
+      await page.goto(baseUrl+'/',{waitUntil:'domcontentloaded'});
+      const staticState=await page.evaluate(()=>({
+        entry:!!document.querySelector('[data-airflow-entry]'),
+        supply:!!document.querySelector('.airflow-header-trace__route--supply'),
+        exhaust:!!document.querySelector('.airflow-header-trace__route--exhaust'),
+        processing:document.documentElement.hasAttribute('data-airflow-processing')
+      }));
+      await page.screenshot({path:path.join(root,'motion_reduced_static__390.png'),animations:'disabled'});
+      if(staticState.entry||!staticState.supply||!staticState.exhaust||staticState.processing)
+        report.fail.push({reason:'Reduced motion must display a complete static signature',staticState});
+    }catch(error){report.fail.push({reason:'Reduced motion trace regression',error:String(error)})}
+    finally{await ctx.close()}
+  }
+  // Deep case lightbox should retain scroll while navigating, then restore focus.
+  {
+    const ctx=await browser.newContext({viewport:{width:1440,height:900},reducedMotion:'no-preference'});
+    const page=await ctx.newPage();
+    try{
+      await page.goto(baseUrl+'/blog/detail/montazh-ventilyatsii-v-karelii/',{waitUntil:'load'});
+      const chosen=page.locator('.case-gallery__ponsse-curated [data-case-photo]').nth(7);
+      await chosen.scrollIntoViewIfNeeded();
+      const before=await page.evaluate(()=>scrollY);
+      await chosen.click();
+      await page.locator('#case-photo-viewer').waitFor({state:'visible'});
+      const whileOpen=await page.evaluate(()=>scrollY);
+      await page.locator('[data-photo-next]').click();
+      await page.keyboard.press('Escape');
+      await page.locator('#case-photo-viewer').waitFor({state:'hidden'});
+      const after=await page.evaluate(()=>scrollY);
+      const returned=await chosen.evaluate(el=>el===document.activeElement);
+      if(Math.abs(before-whileOpen)>2||Math.abs(before-after)>2||!returned)
+        report.fail.push({reason:'PONSSE deep lightbox scroll/focus restoration',before,whileOpen,after,returned});
+    }catch(error){report.fail.push({reason:'PONSSE lightbox interaction',error:String(error)})}
+    finally{await ctx.close()}
+  }
+  // Mobile fixed action must open the project sheet without navigation.
+  {
+    const ctx=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'});
+    const page=await ctx.newPage();
+    try{
+      await page.goto(baseUrl+'/',{waitUntil:'load'});
+      await page.evaluate(()=>window.scrollTo(0,550));
+      await page.locator('.mobile-contact-dock.is-visible [data-project-open]').click();
+      const open=await page.locator('[data-project-dialog]').isVisible();
+      const route=await page.evaluate(()=>location.pathname);
+      if(!open||route!=='/')report.fail.push({reason:'Mobile project CTA opens immediate form',open,route});
+      await page.screenshot({path:path.join(root,'mobile_project_dialog__390.png'),animations:'disabled'});
+    }catch(error){report.fail.push({reason:'Mobile project CTA exception',error:String(error)})}
+    finally{await ctx.close()}
+  }
+  // Project-file request: mocked pending -> real HTTP error; Pulse clears. No actual transmission.
+  {
+    const ctx=await browser.newContext({viewport:{width:1440,height:900},reducedMotion:'reduce'});
+    const page=await ctx.newPage();
+    try{
+      await page.goto(baseUrl+'/montazh-po-proektu/',{waitUntil:'load'});
+      await page.locator('[data-project-open]').first().click();
+      const form=page.locator('[data-project-form]');
+      await form.locator('input[name="name"]').fill('Offline Test');
+      await form.locator('input[name="contact"]').fill('offline@example.org');
+      await form.locator('textarea[name="task"]').fill('Local-only test, never send');
+      await form.locator('input[name="consent"]').check();
+      await form.locator('input[name="started_at"]').evaluate(el=>el.value=String(Date.now()-3500));
+      await form.locator('input[type="file"]').setInputFiles({name:'offline.pdf',mimeType:'application/pdf',buffer:Buffer.from('%PDF-1.4\nOffline testing only\n%%EOF')});
+      let seen=0, release;
+      const pending=new Promise(resolve=>release=resolve);
+      await page.route('**/api/project.php',async route=>{
+        seen++; await pending; await route.fulfill({status:503,contentType:'application/json',body:'{"ok":false,"error":"offline_mock"}'});
+      });
+      await form.locator('button[type="submit"]').click();
+      await page.waitForFunction(()=>document.documentElement.hasAttribute('data-airflow-processing'),null,{timeout:4000});
+      const moving=await page.evaluate(()=>({
+        active:document.documentElement.hasAttribute('data-airflow-processing'),
+        animation:getComputedStyle(document.querySelector('.airflow-header-trace__route--supply i')).animationName
+      }));
+      await page.screenshot({path:path.join(root,'project_operation_pending__1440.png'),animations:'allow'});
+      release();
+      await page.waitForFunction(()=>!document.documentElement.hasAttribute('data-airflow-processing'),null,{timeout:4500});
+      const status=await form.locator('[data-project-status]').innerText();
+      if(seen!==1||!moving.active||moving.animation==='none'||!status.includes('не были приняты'))
+        report.fail.push({reason:'True document POST Pulse and honest error outcome',seen,moving,status});
+    }catch(error){report.fail.push({reason:'True project POST Pulse test exception',error:String(error)})}
+    finally{await ctx.close()}
+  }
+
   // Read-only evidence delivery: JPG is an exact captured screenshot re-encoding, not a fabricated mockup.
   const selectedDelivery = [
     'home__desktop_1440','home__mobile_390',
