@@ -376,12 +376,12 @@ try {
         if (['seven_park','karelia_ponsse','polisan','leont','zhukov','cafe'].includes(id)) {
           // Polisan follows the 2026-10-17 Owner rule: 12 selected unique images in the visible story.
           // Its other source files remain in git, not as duplicate public thumbnails.
-          const expectedGallery = {karelia_ponsse:18,leont:26,cafe:10,zhukov:5};
+          const expectedGallery = {leont:26,cafe:10,zhukov:5};
           if (Object.hasOwn(expectedGallery,id)) {
             const archiveImages = await page.locator('.case-gallery__archive .case-gallery__item img').count();
             if (archiveImages !== expectedGallery[id]) report.fail.push({route,view,reason:'Original case archive not fully represented',archiveImages,expected:expectedGallery[id]});
           }
-          const media = await page.locator('.case-gallery__item img, .case-gallery__curated-item img, .case-gallery__seven-item img').count();
+          const media = await page.locator('.case-gallery__item img, .case-gallery__curated-item img, .case-gallery__seven-item img, .case-gallery__ponsse-item img').count();
           const story = await page.locator('.case-story__grid > div').count();
           if (media < 2 || story !== 3) report.fail.push({ route, view, reason: 'object evidence/story missing', media, story });
           if (id === 'seven_park') {
@@ -424,8 +424,13 @@ try {
         if (id === 'karelia_ponsse') {
           const content = await page.locator('.ponsse-recognition').innerText();
           if (!content.includes('05.04.2022') || !content.includes('Petteri Teittinen')) report.fail.push({ route, view, reason: 'PONSSE letter editorial content absent' });
-          const galleryCount = await page.locator('.case-gallery__archive .case-gallery__item img').count();
-          if (galleryCount !== 18) report.fail.push({route,view,reason:'Complete PONSSE historical image inventory not present',galleryCount});
+          const selected=await page.locator('.case-gallery__ponsse-item img').evaluateAll(nodes=>nodes.map(img=>img.getAttribute('src')));
+          const preserved=(await fs.readdir('apps/web/public/evidence/karelia/archive')).filter(name=>name.endsWith('.webp')).length;
+          const columns=await page.locator('.case-gallery__ponsse-curated').evaluate(el=>getComputedStyle(el).gridTemplateColumns.split(' ').length);
+          const expectedColumns=width<=470?1:width<=850?2:3;
+          if(selected.length!==12||new Set(selected).size!==12||preserved!==18||
+            await page.locator('.case-gallery__archive[data-case-archive]').count()>0||columns!==expectedColumns)
+            report.fail.push({route,view,reason:'PONSSE 12 curated photos visible, 18 original files preserved, complete grid rows',selected:selected.length,preserved,columns,expectedColumns});
           const expectedLetter = report.owner_media.find(x=>x.name==='ponsse_letter')?.status === 'EXACT';
           const expectedPortrait = report.owner_media.find(x=>x.name==='ponsse_portrait')?.status === 'EXACT' && process.env.PUBLIC_PONSSE_PORTRAIT_PUBLICATION_APPROVED === 'true';
           const actualLetter = await page.locator('[data-ponsse-open] img').count();
@@ -569,6 +574,7 @@ try {
     const page = await normal.newPage();
     try {
       await page.goto(baseUrl+'/',{waitUntil:'domcontentloaded'});
+      await page.waitForFunction(()=>document.querySelector('[data-airflow-entry]')?.classList.contains('is-running'),null,{timeout:1900});
       const first = await page.evaluate(()=>{
         const entry=document.querySelector('[data-airflow-entry]');
         const duct=entry?.querySelector('.airflow-entry-trace__duct');
@@ -577,6 +583,7 @@ try {
         const exhaust=document.querySelector('.airflow-header-trace__route--exhaust')?.getBoundingClientRect();
         return {
           running:!!entry?.classList.contains('is-running'),
+          mode:entry?.dataset.mode,
           assembly:duct?getComputedStyle(duct).animationName:null,
           pulse:pulse?getComputedStyle(pulse).animationName:null,
           nonBlocking:!!entry&&getComputedStyle(entry).pointerEvents==='none',
@@ -590,8 +597,10 @@ try {
         fakeProcessing:document.documentElement.hasAttribute('data-airflow-processing')
       }));
       await page.goto(baseUrl+'/services/',{waitUntil:'domcontentloaded'});
+      await page.waitForFunction(()=>document.querySelector('[data-airflow-entry]')?.classList.contains('is-running'),null,{timeout:1900});
       const revisited=await page.evaluate(()=>({
-        entryAbsent:!document.querySelector('[data-airflow-entry]'),
+        entryMode:document.querySelector('[data-airflow-entry]')?.dataset.mode,
+        running:document.querySelector('[data-airflow-entry]')?.classList.contains('is-running'),
         saved:sessionStorage.getItem('aeroventa-entry-shown')==='1'
       }));
       const reducedCtx=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'});
@@ -606,9 +615,9 @@ try {
         report.motion_evidence={first,finished,revisited,reduced};
         if(!first.running||first.assembly!=='airflow-route-assemble'||
            first.pulse!=='airflow-route-pulse'||!first.nonBlocking||
-           !first.distinctlySeparated||first.shown!=='1'||
+           !first.distinctlySeparated||first.shown!=='1'||first.mode!=='full'||
            !finished.entryRemoved||finished.fakeProcessing||
-           !revisited.entryAbsent||!revisited.saved||
+           !revisited.running||revisited.entryMode!=='short'||!revisited.saved||
            !reduced.reduced||!reduced.entryAbsent||!reduced.sectionsReady)
           report.fail.push({reason:'Actual first visit/revisit/reduced motion lifecycle',first,finished,revisited,reduced});
       }finally{await reducedCtx.close()}
