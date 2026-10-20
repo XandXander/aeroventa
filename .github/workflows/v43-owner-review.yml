@@ -63,7 +63,7 @@ jobs:
           const root='V43_OWNER_BROWSER_REVIEW/selected_preview';
           if (!fs.existsSync(root)) throw new Error('Selected screenshots missing');
           const files=fs.readdirSync(root).filter(f=>f.endsWith('.jpg')).sort();
-          if(files.length!==12) throw new Error('Expected 12 Owner previews, got '+files.length);
+          if(files.length!==23) throw new Error('Expected 23 Owner previews (12 base + 11 motion/interactions), got '+files.length);
           for(const file of files){
             const b64=fs.readFileSync(path.join(root,file)).toString('base64');
             const size=12000,total=Math.ceil(b64.length/size);
