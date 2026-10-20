@@ -40,7 +40,7 @@ const specs: Record<string, CaseSpec> = {
   '/blog/detail/kak-my-sdali-7-domov/': {
     eyebrow:'Новостройки / жилой квартал',
     location:'Павловск, Санкт-Петербург',
-    lede:'Исторический объект AEROVENTA: монтаж приточно-вытяжной вентиляции в семи домах жилого квартала. Основная ценность кейса — повторяемый объём и интенсивная фаза работ на нескольких зданиях.',
+    lede:'Монтаж приточно-вытяжной вентиляции в семи домах квартала 7 PARK в Павловске. Работы выполнялись на нескольких зданиях в течение одного периода.',
     task:"Организовать монтаж вентиляции в семи домах жилого квартала.",
     works:"Монтаж приточно-вытяжной вентиляции на объектах квартала 7 PARK в Павловске.",
     result:"В исторической публикации AEROVENTA указан период работ с 18 ноября по 10 декабря 2020 года.",
@@ -171,7 +171,7 @@ const specs: Record<string, CaseSpec> = {
   '/blog/detail/ntff-polisan/': {
     eyebrow:'Производство / фармацевтический объект',
     location:'Санкт-Петербург · ул. Салова, 72',
-    lede:'Исторический промышленный объект AEROVENTA: монтаж приточно-вытяжной вентиляции и вентиляционного оборудования на площадке НТФФ «Полисан».',
+    lede:'На площадке НТФФ «Полисан» в Санкт-Петербурге выполняли монтаж приточно-вытяжной вентиляции и оборудования.',
     task:"Выполнить монтаж вентиляции на площадке фармацевтического производства.",
     works:"Монтаж приточно-вытяжной вентиляции и вентиляционного оборудования по адресу ул. Салова, 72.",
     result:"Монтажные работы выполнялись с июня 2017 по июнь 2018 года.",
@@ -220,7 +220,7 @@ const specs: Record<string, CaseSpec> = {
   '/blog/detail/kvartira-na-zhukova/': {
     eyebrow:'Квартира / жилой объект',
     location:'Санкт-Петербург · Маршала Жукова',
-    lede:'Исторический квартирный объект AEROVENTA: приточно-вытяжная вентиляция с оборудованием. Этот кейс важен тем, что подтверждает реальный частный/жилой опыт, а не только крупный B2B.',
+    lede:'В квартире на Маршала Жукова в Санкт-Петербурге смонтировали приточно-вытяжную вентиляцию с оборудованием.',
     task:"Реализовать вентиляцию квартиры в Санкт-Петербурге.",
     works:"Монтаж приточно-вытяжной вентиляции с оборудованием; указанный в первоисточнике объём — около 100 погонных метров.",
     result:"В архивной публикации указан срок пять дней и два специалиста; эти данные относятся только к конкретному объекту.",
@@ -427,7 +427,7 @@ const fullOriginalGallery=isPolisan ? [] : (verifiedOriginal?.original_media_pat
         <p class="case-detail-hero__location">{spec.location}</p>
         <p class="case-detail-hero__lede">{spec.lede}</p>
         <div class="home-actions">
-          <button class="button button--primary" type="button" data-contact-open data-source="evidence_case" data-project-status="unknown">Обсудить похожую задачу →</button>
+          <button class="button button--primary" type="button" data-contact-open data-source="evidence_case" data-project-status="unknown">Обсудить ваш объект →</button>
           <a class="button button--ghost" href="/portfolio/">Все объекты</a>
         </div>
       </div>
@@ -626,7 +626,7 @@ const fullOriginalGallery=isPolisan ? [] : (verifiedOriginal?.original_media_pat
   <section class="home-section case-detail-related" aria-labelledby="case-related-title">
     <div class="home-shell">
       <p class="section-index">{content.path === '/blog/detail/montazh-ventilyatsii-v-karelii/' ? '03 / Продолжить' : '02 / Продолжить'}</p>
-      <h2 id="case-related-title">Другие выполненные работы и ваша задача</h2>
+      <h2 id="case-related-title">Другие объекты и услуги</h2>
       <div class="case-detail-related__grid">
         {spec.related.map(([title,href,text],index) => <a href={href}><span>{String(index+1).padStart(2,'0')}</span><h3>{title}</h3><p>{text}</p><b>Открыть →</b></a>)}
       </div>
