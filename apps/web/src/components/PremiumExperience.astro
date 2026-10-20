@@ -543,7 +543,7 @@ const { pagePath = '' } = Astro.props;
       });
 
       if (!endpoint) {
-        const direct = form.querySelector('.premium-contact-form__direct')?.getAttribute('href') || 'mailto:aeroventaspb@yandex.ru';
+        const direct = form.querySelector('.premium-contact-form__direct')?.getAttribute('href') || 'mailto:office@aeroventa.ru';
         const email = direct.replace(/^mailto:/, '').split('?')[0];
         const subject = encodeURIComponent('Запрос с сайта AEROVENTA');
         const body = encodeURIComponent([

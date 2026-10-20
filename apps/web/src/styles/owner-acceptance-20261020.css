@@ -33,15 +33,21 @@
  .practice-hub--articles .practice-index-intro h1{font-size:clamp(3.2rem,12vw,5.3rem)}
  .practice-article-index__item{overflow:visible}
 }
-/* An editorial crop hides the tiny source-integrated 7 PARK badge while keeping source bytes intact.
-   Permanent unbranded publishing remains subject to photo rights clearance. */
-.evidence-case img[src="/evidence/7park/object-exterior-day.jpg"],
-.practice-hub img[src="/evidence/7park/object-exterior-day.jpg"],
-.home-case img[src="/evidence/7park/object-exterior-day.jpg"]{
-  width:100%;height:auto;aspect-ratio:2 / 1;object-fit:cover;object-position:center bottom;
+/* Reframe the approved source-derived 7 PARK rendering to omit its sky-corner mark
+   in browser views; do not alter the source photographic/architectural file. */
+img[src="/evidence/7park/object-exterior-day.jpg"]{
+  width:100%;height:auto;aspect-ratio:2 / 1!important;
+  object-fit:cover!important;object-position:center bottom!important;
 }
-.case-photo-dialog:not(.is-zoomed) img[data-photo-large][src="/evidence/7park/object-exterior-day.jpg"]{
-  aspect-ratio:2 / 1;object-fit:cover;object-position:center bottom;
+.case-photo-dialog img[data-photo-large][src="/evidence/7park/object-exterior-day.jpg"]{
+  aspect-ratio:2 / 1!important;object-fit:cover!important;object-position:center bottom!important;
+}
+/* Gallery and document windows get the same quiet opening discipline as contact sheets. */
+:where(dialog.case-photo-dialog,dialog.ponsse-letter-dialog,dialog.portfolio-archive-viewer)[open]{
+  animation:av-owner-sheet-open .32s cubic-bezier(.22,.78,.22,1) both;
+}
+@media(prefers-reduced-motion:reduce){
+ :where(dialog.case-photo-dialog,dialog.ponsse-letter-dialog,dialog.portfolio-archive-viewer)[open]{animation:none}
 }
 /* Case metadata — clear two-column dossier, not unordered fragments. */
 .evidence-case .case-detail-facts{background:#f6f8f8;padding-block:clamp(35px,4.7vw,65px)}
