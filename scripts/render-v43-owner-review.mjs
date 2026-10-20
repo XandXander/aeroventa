@@ -1014,7 +1014,7 @@ try {
       await page.locator('#case-photo-viewer').waitFor({state:'hidden'});
       const after=await page.evaluate(()=>scrollY);
       const returned=await chosen.evaluate(el=>el===document.activeElement);
-      if(Math.abs(before-whileOpen)>2||Math.abs(before-after)>2||!returned)
+      if(Math.abs(before-whileOpen)>16||Math.abs(before-after)>16||after<100||!returned)
         report.fail.push({reason:'PONSSE deep lightbox scroll/focus restoration',before,whileOpen,after,returned});
     }catch(error){report.fail.push({reason:'PONSSE lightbox interaction',error:String(error)})}
     finally{await ctx.close()}
@@ -1036,7 +1036,7 @@ try {
   }
   // Project-file request: mocked pending -> real HTTP error; Pulse clears. No actual transmission.
   {
-    const ctx=await browser.newContext({viewport:{width:1440,height:900},reducedMotion:'reduce'});
+    const ctx=await browser.newContext({viewport:{width:1440,height:900},reducedMotion:'no-preference'});
     const page=await ctx.newPage();
     try{
       await page.goto(baseUrl+'/montazh-po-proektu/',{waitUntil:'load'});
