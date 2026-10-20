@@ -660,6 +660,15 @@ const fullOriginalGallery=isPolisan ? [] : (verifiedOriginal?.original_media_pat
   if (viewer instanceof HTMLDialogElement && photos.length) {
     let activeIndex = 0;
     let activeTrigger: HTMLButtonElement | null = null;
+    let savedPageScroll = 0;
+    const restoreReaderPosition = () => {
+      window.scrollTo({top:savedPageScroll,behavior:'instant'});
+      activeTrigger?.focus({preventScroll:true});
+    };
+    const closeViewer = () => {
+      if(viewer.open)viewer.close();
+      restoreReaderPosition();
+    };
     const large = viewer.querySelector<HTMLImageElement>('[data-photo-large]');
     const description = viewer.querySelector<HTMLElement>('[data-photo-description]');
     const counter = viewer.querySelector<HTMLElement>('[data-photo-count]');
@@ -692,19 +701,21 @@ const fullOriginalGallery=isPolisan ? [] : (verifiedOriginal?.original_media_pat
     photos.forEach((button, index) => button.addEventListener('click', () => {
       activeTrigger = button;
       const previousScroll = window.scrollY;
+      savedPageScroll = previousScroll;
       show(index);
       if (!viewer.open) viewer.showModal();
       viewer.querySelector<HTMLButtonElement>('[data-photo-close]')?.focus({preventScroll:true});
       if(Math.abs(window.scrollY-previousScroll)>1)window.scrollTo({top:previousScroll,behavior:'instant'});
     }));
-    viewer.querySelector('[data-photo-close]')?.addEventListener('click', () => viewer.close());
+    viewer.querySelector('[data-photo-close]')?.addEventListener('click', closeViewer);
+    viewer.addEventListener('cancel',event=>{event.preventDefault();closeViewer()});
     viewer.querySelector('[data-photo-previous]')?.addEventListener('click', () => show(activeIndex - 1));
     viewer.querySelector('[data-photo-next]')?.addEventListener('click', () => show(activeIndex + 1));
     viewer.addEventListener('keydown', event => {
       if (event.key === 'ArrowLeft') { event.preventDefault(); show(activeIndex - 1); }
       if (event.key === 'ArrowRight') { event.preventDefault(); show(activeIndex + 1); }
     });
-    viewer.addEventListener('click', event => { if (event.target === viewer) viewer.close(); });
+    viewer.addEventListener('click', event => { if (event.target === viewer) closeViewer(); });
     let startX: number | null = null;
     viewer.addEventListener('touchstart', event => { startX = event.changedTouches[0]?.clientX ?? null; }, { passive: true });
     viewer.addEventListener('touchend', event => {
@@ -715,7 +726,8 @@ const fullOriginalGallery=isPolisan ? [] : (verifiedOriginal?.original_media_pat
     viewer.addEventListener('close', () => {
       fit();
       if (large) large.removeAttribute('src');
-      activeTrigger?.focus({ preventScroll: true });
+      restoreReaderPosition();
+      requestAnimationFrame(restoreReaderPosition);
     });
   }
 </script>

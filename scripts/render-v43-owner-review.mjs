@@ -1040,7 +1040,7 @@ try {
     const page=await ctx.newPage();
     try{
       await page.goto(baseUrl+'/montazh-po-proektu/',{waitUntil:'load'});
-      await page.locator('[data-project-open]').first().click();
+      await page.locator('.engagement--project [data-project-open]').first().click();
       const form=page.locator('[data-project-form]');
       await form.locator('input[name="name"]').fill('Offline Test');
       await form.locator('input[name="contact"]').fill('offline@example.org');

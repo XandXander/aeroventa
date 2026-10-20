@@ -152,3 +152,8 @@ html:not(.is-past-first-fold) body:has(.about-hero) .consultant-launcher{
 .experience-dialog--project .consent-check input{flex:0 0 auto;margin-top:3px}
 .experience-dialog--project .dialog-close{flex:0 0 auto}
 @media(max-width:760px){.experience-dialog--project{max-height:96dvh;overflow-y:auto}.experience-dialog--project .experience-dialog__shell{padding:20px 16px max(22px,env(safe-area-inset-bottom))}}
+
+/* Owner-first fold: an objects landing page must not reveal a clipped next section. */
+@media(min-width:761px){
+ .objects-hero{min-height:calc(100svh - var(--av-fold-header))!important}
+}
