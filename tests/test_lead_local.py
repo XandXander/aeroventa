@@ -9,7 +9,7 @@ capture.unlink(missing_ok=True)
 with socket.socket() as sock:
     sock.bind(('127.0.0.1', 0))
     port = sock.getsockname()[1]
-env = {**os.environ, 'AEROVENTA_LEAD_TO':'aeroventaspb@yandex.ru',
+env = {**os.environ, 'AEROVENTA_LEAD_TO':'office@aeroventa.ru',
        'AEROVENTA_LEAD_FROM':'office@aeroventa.ru'}  # MOCK ONLY
 server = subprocess.Popen(['php', '-d', f'sendmail_path={stub}',
                            '-S', f'127.0.0.1:{port}', '-t', str(webroot)],

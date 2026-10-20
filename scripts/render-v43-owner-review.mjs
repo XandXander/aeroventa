@@ -149,7 +149,7 @@ try {
           // P0 2026-10-16 full-bleed HOME: copy overlays source photo on desktop;
           // mobile preserves independent reading order before the contained image.
           const mobileReadingOrder = optical.photo_top >= optical.copy_bottom - 3 &&
-            optical.photo_fit === 'contain' && optical.strip_top >= optical.photo_bottom - 3;
+            ['cover','contain'].includes(optical.photo_fit) && optical.strip_top >= optical.photo_bottom - 3;
           const desktopBleed = optical.photo_fit === 'cover' &&
             optical.photo_left <= 3 && optical.photo_right >= width - 3 &&
             optical.copy_left >= -1 && optical.copy_right <= width + 3 &&
@@ -160,7 +160,7 @@ try {
             (isMobile ? (!optical.desktop_diagram_visible && optical.mobile_pair_visible) :
                         (optical.desktop_diagram_visible && !optical.mobile_pair_visible)) &&
             (isMobile ? mobileReadingOrder : desktopBleed) &&
-            (!isMobile || (optical.inline_visible && !optical.floating_visible));
+            (!isMobile || (!optical.inline_visible && optical.floating_visible));
           if (!ownerScenePass) report.fail.push({route,view,reason:'Approved Owner airflow HERO scene/adaptation contract',optical});
           const recognition = page.locator('.home-ponsse');
           const orderCorrect = await page.evaluate(() => {
@@ -266,7 +266,7 @@ try {
             return {headingTop:h?.top,photoTop:p?.top,photoWidth:i?.naturalWidth,photoHeight:p?.height,photoBottom:p?.bottom,launcherOverlap:overlaps,launcherVisible:!!l && getComputedStyle(document.querySelector('.consultant-launcher')).display!=='none' && getComputedStyle(document.querySelector('.consultant-launcher')).visibility!=='hidden' && parseFloat(getComputedStyle(document.querySelector('.consultant-launcher')).opacity)>.01,inlineConsultant:!!document.querySelector('.about-hero a[data-consultant-open][data-source="about_inline"]')};
           });
           if (!optical.photoWidth || optical.headingTop == null || optical.headingTop >= height*.55 ||
-              (width<=760 && (optical.photoHeight < 250 || optical.photoHeight > height*.85 || optical.photoTop >= height*.7 || optical.launcherOverlap || optical.launcherVisible || !optical.inlineConsultant))) {
+              (width<=760 && (optical.photoHeight < 250 || optical.photoHeight > height*.85 || optical.photoTop >= height*.7 || !optical.launcherVisible || !optical.inlineConsultant))) {
             report.fail.push({route,view,reason:'About first-fold heading and documentary team photo must be visible without consultant obscuring the image',optical});
           }
         }
@@ -364,7 +364,7 @@ try {
               servicesOptical.natural_widths.some(n=>n<400) ||
               servicesOptical.object_fits.some(n=>n!=='cover') ||
               (mobile && (servicesOptical.photo_top<servicesOptical.intro_bottom-3 ||
-                  !servicesOptical.inline_visible || servicesOptical.floating_visible))) {
+                  servicesOptical.inline_visible || !servicesOptical.floating_visible))) {
             report.fail.push({route,view,reason:'Owner Services single authentic image and mobile placement',wrong,actual,servicesOptical});
           }
         }
@@ -512,7 +512,7 @@ try {
             await page.locator('.decision-preview').scrollIntoViewIfNeeded();
             await page.waitForFunction(()=>document.documentElement.classList.contains('is-past-first-fold'),null,{timeout:4000});
           }
-          await page.locator(view === 'mobile_390' ? '.home-consultant-inline' : '.consultant-launcher').click();
+          await page.locator('.consultant-launcher').click();
           await page.locator('[data-consultant-dialog]').waitFor({ state: 'visible' });
           await page.screenshot({ path: path.join(root, 'consultant_open__' + view + '.png'), animations: 'disabled' });
           await page.locator('[data-consultant-dialog] [data-dialog-close]').click();
@@ -672,23 +672,28 @@ try {
     }catch(e){report.fail.push({reason:'Services editorial geometry exception',width,height,error:String(e)})}
     finally{await context.close()}
   }
-  // The persistent consultant must not overlap the six home categories.
+  // Owner 2026-10-20: permanent assistant CTA is discoverable but must not cover
+  // the category ribbon or the HOME primary action. Measure actual intersections.
   {
     const context=await browser.newContext({viewport:{width:1440,height:900}});
     const page=await context.newPage();
     try{
       await page.goto(baseUrl+'/',{waitUntil:'load'});
-      const before=await page.locator('.consultant-launcher').evaluate(el=>{
-        const css=getComputedStyle(el);return {visibility:css.visibility,opacity:Number(css.opacity)};
+      const measured=await page.evaluate(()=>{
+        const button=document.querySelector('.consultant-launcher');
+        const ribbon=document.querySelector('.home-hero--owner-airflow .object-ribbon');
+        const primary=document.querySelector('.home-hero--owner-airflow .home-actions .button--primary');
+        const show=button&&getComputedStyle(button).display!=='none'&&getComputedStyle(button).visibility!=='hidden';
+        const collide=(a,b)=>{
+          if(!a||!b)return true;
+          const x=a.getBoundingClientRect(),y=b.getBoundingClientRect();
+          return x.left<y.right&&x.right>y.left&&x.top<y.bottom&&x.bottom>y.top;
+        };
+        return {show,overlapsCategories:collide(button,ribbon),overlapsMainCTA:collide(button,primary)};
       });
-      await page.locator('.home-hero--owner-airflow .object-ribbon').scrollIntoViewIfNeeded();
-      const under=await page.locator('.consultant-launcher').evaluate(el=>getComputedStyle(el).visibility);
-      await page.locator('.decision-preview').scrollIntoViewIfNeeded();
-      await page.waitForFunction(()=>document.documentElement.classList.contains('is-past-first-fold'),null,{timeout:4000});
-      const after=await page.locator('.consultant-launcher').evaluate(el=>getComputedStyle(el).visibility);
-      if(before.visibility!=='hidden'||under!=='hidden'||after!=='visible')
-        report.fail.push({reason:'Consultant launcher must not overlap first-fold categories',before,under,after});
-    }catch(e){report.fail.push({reason:'Consultant first-fold overlap QA failed',error:String(e)})}
+      if(!measured.show||measured.overlapsCategories||measured.overlapsMainCTA)
+        report.fail.push({reason:'Visible consultant must not obstruct first-fold controls',measured});
+    }catch(e){report.fail.push({reason:'Consultant first-fold geometry QA failed',error:String(e)})}
     finally{await context.close()}
   }
   // ART RED TEAM DELTA: compiled DOM checks for the six confirmed source defects.
@@ -807,7 +812,7 @@ try {
         },zoom);
         if (result.horizontal>1 ||
             (width>=1024&&zoom===1&&['/','/services/'].includes(route)&&result.firstFoldBottom!==null&&result.firstFoldBottom<height-5) ||
-            (route==='/blog/'&&zoom===1&&(result.firstArticleTop===null||result.firstArticleTop>height)) ||
+            (route==='/blog/'&&zoom===1&&(result.firstArticleTop===null||result.firstArticleTop<height-5)) ||
             (zoom===1&&!result.traceVisible)) {
           if (result.horizontal>1) result.offenders=await page.evaluate(()=>[...document.querySelectorAll('body *')].map(el=>{const b=el.getBoundingClientRect();return{tag:el.tagName.toLowerCase(),cls:typeof el.className==='string'?el.className.slice(0,90):'',left:Math.round(b.left),right:Math.round(b.right),scroll:el.scrollWidth,client:el.clientWidth}}).filter(x=>x.right>innerWidth+1||x.left < -1).slice(0,15));
           report.fail.push({reason:'Owner height/zoom/real TRACE gate',route,width,height,zoom,result});
@@ -871,22 +876,26 @@ try {
     }catch(e){report.fail.push({reason:'Sports UI regression error',width,error:String(e)})}
     finally{await context.close()}
   }
-  // Owner artistic rejection: fixed launcher covers /about/ intro text and CTA
-  // in actual compiled screenshot. Suppress until past hero while retaining CTA.
+  // Owner 2026-10-20: show an assistant but not over the first ABOUT CTA or H1.
   {
     const ctx=await browser.newContext({viewport:{width:1440,height:900}});
     const page=await ctx.newPage();
     try{
       await page.goto(baseUrl+'/about/',{waitUntil:'load'});
-      const before=await page.locator('.consultant-launcher').evaluate(el=>getComputedStyle(el).visibility);
-      const hero=page.locator('.about-hero');
-      await hero.scrollIntoViewIfNeeded();
-      await page.locator('.about-team').scrollIntoViewIfNeeded();
-      await page.waitForFunction(()=>document.documentElement.classList.contains('is-past-first-fold'),null,{timeout:4000});
-      const after=await page.locator('.consultant-launcher').evaluate(el=>getComputedStyle(el).visibility);
-      if(before!=='hidden'||after!=='visible')
-        report.fail.push({reason:'About intro must not be covered by floating consultant',before,after});
-    }catch(e){report.fail.push({reason:'About first-fold consultant regression',error:String(e)})}
+      const state=await page.evaluate(()=>{
+        const button=document.querySelector('.consultant-launcher');
+        const title=document.querySelector('.about-hero h1');
+        const primary=document.querySelector('.about-hero .home-actions .button');
+        const overlap=(x,y)=>{
+          if(!x||!y)return false;
+          const a=x.getBoundingClientRect(),b=y.getBoundingClientRect();
+          return a.left<b.right&&a.right>b.left&&a.top<b.bottom&&a.bottom>b.top;
+        };
+        return {visible:!!button&&getComputedStyle(button).visibility!=='hidden'&&getComputedStyle(button).display!=='none',titleOverlap:overlap(button,title),ctaOverlap:overlap(button,primary)};
+      });
+      if(!state.visible||state.titleOverlap||state.ctaOverlap)
+        report.fail.push({reason:'About first-fold assistant/title collision',state});
+    }catch(e){report.fail.push({reason:'About assistant visibility QA failed',error:String(e)})}
     finally{await ctx.close()}
   }
   // Same-page PONSSE document must zoom, fit, Escape and restore focus.

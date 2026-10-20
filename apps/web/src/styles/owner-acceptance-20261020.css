@@ -102,3 +102,16 @@ body .consultant-launcher:focus-visible{outline:3px solid #ba774e;outline-offset
 @media(prefers-reduced-motion:reduce){
  .experience-dialog[data-state="opening"],.experience-dialog[data-state="closing"],.experience-dialog[data-state="opening"]::backdrop,.experience-dialog[data-state="closing"]::backdrop{animation:none!important;clip-path:none!important;transform:none!important}
 }
+
+/* Keep the visible launcher clear of HOME object categories on first entry. */
+@media(min-width:761px){
+ html:not(.is-past-first-fold) body:has(.home-hero--owner-airflow) .consultant-launcher{
+  bottom:calc(var(--av-fold-ribbon) + max(16px,env(safe-area-inset-bottom,16px)));
+ }
+}
+@media(max-width:760px){
+ html:not(.is-past-first-fold) body:has(.home-hero--owner-airflow) .consultant-launcher{
+  bottom:calc(65px + env(safe-area-inset-bottom,0px));
+ }
+}
+body .consultant-launcher{appearance:none;font-family:inherit;cursor:pointer}
