@@ -30,6 +30,8 @@ jobs:
         run: |
           php -l apps/web/public/api/lead.php
           python3 tests/test_lead_local.py
+          php -l apps/web/public/api/project.php
+          python3 tests/test_project_local.py
 
       - name: Generate route rules
         run: npm run generate:hosting-rules
