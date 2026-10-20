@@ -8,10 +8,10 @@ interface Props {
 const { pagePath = '' } = Astro.props;
 ---
 
-<a class="consultant-launcher" href="/contact/" data-consultant-open data-source="persistent_launcher" aria-haspopup="dialog" aria-controls="aeroventa-consultant-dialog" aria-label="Задать вопрос по вентиляции">
+<button type="button" class="consultant-launcher" data-consultant-open data-source="persistent_launcher" aria-haspopup="dialog" aria-controls="aeroventa-consultant-dialog" aria-label="Открыть консультанта AEROVENTA">
   <span class="consultant-launcher__symbol" aria-hidden="true">↗</span>
-  <span class="consultant-launcher__label">Задать вопрос по вентиляции</span>
-</a>
+  <span class="consultant-launcher__label">Консультант AEROVENTA</span>
+</button>
 <dialog id="aeroventa-consultant-dialog" class="experience-dialog experience-dialog--consultant" data-consultant-dialog aria-labelledby="consultant-title">
   <div class="experience-dialog__shell">
     <div class="experience-dialog__head">
@@ -125,7 +125,7 @@ const { pagePath = '' } = Astro.props;
     <div class="experience-dialog__head">
       <div>
         <p class="section-index">Связаться по объекту</p>
-        <h2 id="contact-dialog-title">Передайте минимум — остальное уточним.</h2>
+        <h2 id="contact-dialog-title">Обсудить монтаж вентиляции</h2>
       </div>
       <button type="button" class="dialog-close" data-dialog-close aria-label="Закрыть форму">×</button>
     </div>
@@ -144,19 +144,43 @@ const { pagePath = '' } = Astro.props;
 
   const track = (name, payload = {}) => window.aeroventaTrack?.(name, payload);
 
+  // Stateful sheet opening/closing, respecting reduced motion and native focus.
+  const sheetTimers = new WeakMap();
+  const motionDisabled = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const clearSheetTimer = (dialog) => {
+    const timer = sheetTimers.get(dialog);
+    if (timer) window.clearTimeout(timer);
+    sheetTimers.delete(dialog);
+  };
   const openDialog = (dialog) => {
     if (!dialog) return;
+    clearSheetTimer(dialog);
     if (typeof dialog.showModal === 'function') {
       if (!dialog.open) dialog.showModal();
-    } else {
-      dialog.setAttribute('open', '');
+    } else dialog.setAttribute('open', '');
+    if (motionDisabled()) dialog.dataset.state = 'open';
+    else {
+      dialog.dataset.state = 'opening';
+      sheetTimers.set(dialog, window.setTimeout(() => {
+        if (dialog.open && dialog.dataset.state === 'opening') dialog.dataset.state = 'open';
+      }, 380));
     }
   };
 
   const closeDialog = (dialog) => {
-    if (!dialog) return;
-    if (typeof dialog.close === 'function') dialog.close();
-    else dialog.removeAttribute('open');
+    if (!dialog || !dialog.open || dialog.dataset.state === 'closing') return;
+    clearSheetTimer(dialog);
+    const finish = () => {
+      if (typeof dialog.close === 'function') dialog.close();
+      else dialog.removeAttribute('open');
+      dialog.dataset.state = 'closed';
+      sheetTimers.delete(dialog);
+    };
+    if (motionDisabled()) finish();
+    else {
+      dialog.dataset.state = 'closing';
+      sheetTimers.set(dialog, window.setTimeout(finish, 220));
+    }
   };
 
   document.addEventListener('click', (event) => {
@@ -192,6 +216,12 @@ const { pagePath = '' } = Astro.props;
   });
 
   for (const dialog of [consultantDialog, contactDialog]) {
+    dialog?.addEventListener('cancel', (event) => {
+      if (!motionDisabled()) {
+        event.preventDefault();
+        closeDialog(dialog);
+      }
+    });
     dialog?.addEventListener('click', (event) => {
       if (event.target === dialog) closeDialog(dialog);
     });
