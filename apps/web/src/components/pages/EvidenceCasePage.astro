@@ -397,6 +397,16 @@ const documentary = documentaryTitles[content.path] || {gallery:'Фотогра�
 const spec=specs[content.path];
 if(!spec) throw new Error('Case spec missing: '+content.path);
 const isPolisan=content.path === '/blog/detail/ntff-polisan/';
+const isSevenPark=content.path === '/blog/detail/kak-my-sdali-7-domov/';
+/* 12 unique authenticated images; larger originals IMG_6653/6654/6656,
+   other frames are source-verified 551–734px images for restrained grid use. */
+const sevenParkSelected=isSevenPark?[
+  'img_6653','img_6656','img_6654',
+  'img_4316','img_4318','img_4322',
+  'img_4288','img_4289','img_4320',
+  'img_4292','img_4297','img_4300',
+].map(name=>spec.archiveMedia?.find(entry=>entry[0].endsWith('/'+name+'.webp'))).filter((entry):entry is [string,string,string]=>Boolean(entry)):[];
+if(isSevenPark&&(sevenParkSelected.length!==12||new Set(sevenParkSelected.map(x=>x[0])).size!==12))throw new Error('Seven Park gallery requires 12 unique source photos');
 const polisanRows=isPolisan ? [spec.media.slice(1,4),spec.media.slice(4,8),spec.media.slice(8,12)] : [];
 const existingPhotoSet=new Set([...spec.media,...(spec.archiveMedia||[])].map(x=>x[0]));
 const fullOriginalGallery=isPolisan ? [] : (verifiedOriginal?.original_media_paths.filter(src=>!existingPhotoSet.has(src))||[]);
@@ -443,7 +453,17 @@ const fullOriginalGallery=isPolisan ? [] : (verifiedOriginal?.original_media_pat
     <div class="home-shell">
       <p class="section-index section-index--orange">Реальные фотографии</p>
       <h2 id="case-gallery-title">{documentary.gallery}</h2>
-      <p class="case-gallery__intro">{isPolisan ? 'Кровельные установки, инженерные трассы и монтажные узлы — последовательно, от общего вида к деталям.' : 'Объект и выполненные монтажные работы.'}</p>
+      <p class="case-gallery__intro">{isSevenPark ? 'Документальные виды жилого квартала и отдельные кадры смонтированных инженерных узлов.' : isPolisan ? 'Кровельные установки, инженерные трассы и монтажные узлы — последовательно, от общего вида к деталям.' : 'Объект и выполненные монтажные работы.'}</p>
+      {isSevenPark && <div class="case-gallery__seven-park" aria-label="12 оригинальных фотографий объекта 7 PARK">
+        {sevenParkSelected.map(([src,alt,caption],index)=>(
+          <figure class:list={['case-gallery__seven-item',index>=9&&'case-gallery__seven-item--technical']}>
+            <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={alt} data-photo-caption={caption} aria-label={`Увеличить фотографию 7 PARK: ${caption}`}>
+              <img src={src} alt={alt} width="734" height="551" loading="lazy" decoding="async" />
+            </button>
+            <figcaption>{caption}</figcaption>
+          </figure>
+        ))}
+      </div>}
       {isPolisan && <div class="case-gallery__curated" aria-label="Фотоистория НТФФ «Полисан»">
         {polisanRows.map((row, rowIndex) => (
           <div class:list={['case-gallery__curated-row',rowIndex === 0 ? 'case-gallery__curated-row--three' : 'case-gallery__curated-row--four',rowIndex === 2 ? 'case-gallery__curated-row--portrait' : '']}>
@@ -458,7 +478,7 @@ const fullOriginalGallery=isPolisan ? [] : (verifiedOriginal?.original_media_pat
           </div>
         ))}
       </div>}
-      {!isPolisan && spec.media.length > 1 && <div class="case-gallery__grid case-gallery__grid--featured">
+      {!isPolisan && !isSevenPark && spec.media.length > 1 && <div class="case-gallery__grid case-gallery__grid--featured">
         {spec.media.slice(1).map(([src, alt, caption]) => (
           <figure class="case-gallery__item">
             <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={alt} data-photo-caption={caption} aria-label={`Увеличить фотографию: ${caption}`}>
@@ -468,7 +488,7 @@ const fullOriginalGallery=isPolisan ? [] : (verifiedOriginal?.original_media_pat
           </figure>
         ))}
       </div>}
-      {Boolean(spec.archiveMedia?.length) && (
+      {!isSevenPark && Boolean(spec.archiveMedia?.length) && (
         <section class="case-gallery__archive" data-case-archive aria-labelledby="case-photo-archive-title">
           <h3 id="case-photo-archive-title">Монтаж в деталях</h3>
           <div class="case-gallery__thumbs">
@@ -749,4 +769,16 @@ const fullOriginalGallery=isPolisan ? [] : (verifiedOriginal?.original_media_pat
 @media(max-width:900px){.case-gallery__verified-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:620px){.case-gallery__verified-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
+</style>
+
+<style>
+.case-gallery__seven-park{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(12px,1.7vw,24px);align-items:start;margin-top:clamp(22px,3vw,40px)}
+.case-gallery__seven-item{margin:0;min-width:0;display:grid;grid-template-rows:auto 1fr;gap:9px}
+.case-gallery__seven-item .case-gallery__open{display:block;padding:0;width:100%;aspect-ratio:4/3;border:0;background:#e8eff2;overflow:hidden;cursor:zoom-in}
+.case-gallery__seven-item img{width:100%;height:100%;display:block;object-fit:cover}
+.case-gallery__seven-item--technical img{object-fit:contain}
+.case-gallery__seven-item figcaption{font-size:clamp(.73rem,.8vw,.85rem);line-height:1.45;color:#486272;min-height:2.6em}
+@media(max-width:1120px){.case-gallery__seven-park{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:800px){.case-gallery__seven-park{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:460px){.case-gallery__seven-park{grid-template-columns:1fr}.case-gallery__seven-item figcaption{min-height:0}}
 </style>

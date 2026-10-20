@@ -126,18 +126,14 @@ const sportPhotos = ['/evidence/owner-portfolio/sport-komendantskiy/owner-select
         <h1>Наши работы</h1>
         <p class="portfolio-hero__lede">Реальные объекты, фотографии, задачи и результаты монтажа — от квартиры и ресторана до жилого квартала и производства.</p>
       </div>
-      <div class="portfolio-hero__mosaic" aria-label="Три подлинных объекта AEROVENTA">
+      <div class="portfolio-hero__mosaic portfolio-hero__mosaic--architectural" aria-label="Два архитектурных объекта AEROVENTA">
         <figure>
-          <img src="/evidence/owner-portfolio/apart-hotel/cover.webp" width="1200" height="800" alt="Апарт-отель и коворкинг на Бумажном — оригинальная фотография интерьера и открытых инженерных систем" loading="eager" decoding="async"/>
-          <figcaption>Апарт-отель / коворкинг · Бумажный</figcaption>
+          <img src="/evidence/leont/owner-cover-v43.webp" width="1349" height="744" alt="Жилой комплекс «Леонтьевский Мыс», архитектурный вид" loading="eager" decoding="async"/>
+          <figcaption>Леонтьевский Мыс · Санкт-Петербург</figcaption>
         </figure>
         <figure>
-          <img src="/evidence/polisan/duct-installation-01.jpg" width="1600" height="903" alt="Монтаж воздуховодов на площадке НТФФ «Полисан»" loading="eager" decoding="async"/>
-          <figcaption>Полисан · инженерные трассы</figcaption>
-        </figure>
-        <figure>
-          <img src="/evidence/leont/duct-installation-01.jpg" width="1349" height="744" alt="Монтаж воздуховодов в ресторане ЖК «Леонтьевский Мыс»" loading="eager" decoding="async"/>
-          <figcaption>Леонтьевский Мыс · монтаж</figcaption>
+          <img src="/evidence/residential/owner-neva-facade-20261016.jpg" width="531" height="376" alt="Фасад здания «На излучине Невы», оригинальный снимок" loading="eager" decoding="async"/>
+          <figcaption>На излучине Невы · Санкт-Петербург</figcaption>
         </figure>
       </div>
     </div>
@@ -480,4 +476,13 @@ const sportPhotos = ['/evidence/owner-portfolio/sport-komendantskiy/owner-select
 .portfolio-hub .portfolio-card__top>b,.portfolio-hub .portfolio-card__body h3,.portfolio-hub .portfolio-card__bottom span{min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:normal}
 .portfolio-hub .portfolio-hero__mosaic figcaption{max-width:100%;box-sizing:border-box;overflow-wrap:anywhere}
 
+</style>
+
+<style is:global>
+.portfolio-hub .portfolio-hero__mosaic--architectural{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr);aspect-ratio:2.12;max-height:450px;height:auto;gap:clamp(9px,1.15vw,17px)}
+.portfolio-hub .portfolio-hero__mosaic--architectural figure:first-child{grid-column:1;grid-row:1}
+.portfolio-hub .portfolio-hero__mosaic--architectural figure:nth-child(2){grid-column:2;grid-row:1}
+.portfolio-hub .portfolio-hero__mosaic--architectural figure{min-height:0;height:100%}
+.portfolio-hub .portfolio-hero__mosaic--architectural img{display:block;object-fit:cover;object-position:center}
+@media(max-width:760px){.portfolio-hub .portfolio-hero__mosaic--architectural{aspect-ratio:1.78;grid-template-rows:minmax(0,1fr);gap:7px}}
 </style>
