@@ -930,13 +930,22 @@ try {
     'polisan__desktop_1440','drill_crown__desktop_1440',
     'ponsse_letter_open__mobile_390','consultant_open__mobile_390'
   ];
+  // Print diagnostic failures before packaging; a missing capture must not erase the evidence.
+  await fs.writeFile(path.join(root, 'manifest.partial.json'), JSON.stringify(report, null, 2));
+  if (report.fail.length) console.error('AV_OWNER_QA_DIAGNOSTICS', JSON.stringify(report.fail.slice(0, 40), null, 2));
   const deliveryDir = path.join(root,'selected_preview');
   await fs.mkdir(deliveryDir,{recursive:true});
   const previewContext = await browser.newContext();
   const previewPage = await previewContext.newPage();
   try {
     for(const name of selectedDelivery) {
-      const png = await fs.readFile(path.join(root,name+'.png'));
+      let png;
+      try { png = await fs.readFile(path.join(root,name+'.png')); }
+      catch (error) {
+        report.fail.push({reason:'Required original browser capture missing; never fabricate it',name,error:String(error)});
+        console.error('AV_OWNER_MISSING_CAPTURE',name,String(error));
+        continue;
+      }
       const jpegBase64 = await previewPage.evaluate(async data => {
         const original = new Image();
         original.src = 'data:image/png;base64,'+data;
