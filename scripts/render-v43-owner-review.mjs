@@ -376,14 +376,29 @@ try {
         if (['seven_park','karelia_ponsse','polisan','leont','zhukov','cafe'].includes(id)) {
           // Polisan follows the 2026-10-17 Owner rule: 12 selected unique images in the visible story.
           // Its other source files remain in git, not as duplicate public thumbnails.
-          const expectedGallery = {seven_park:17,karelia_ponsse:18,leont:26,cafe:10,zhukov:5};
+          const expectedGallery = {karelia_ponsse:18,leont:26,cafe:10,zhukov:5};
           if (Object.hasOwn(expectedGallery,id)) {
             const archiveImages = await page.locator('.case-gallery__archive .case-gallery__item img').count();
             if (archiveImages !== expectedGallery[id]) report.fail.push({route,view,reason:'Original case archive not fully represented',archiveImages,expected:expectedGallery[id]});
           }
-          const media = await page.locator('.case-gallery__item img, .case-gallery__curated-item img').count();
+          const media = await page.locator('.case-gallery__item img, .case-gallery__curated-item img, .case-gallery__seven-item img').count();
           const story = await page.locator('.case-story__grid > div').count();
           if (media < 2 || story !== 3) report.fail.push({ route, view, reason: 'object evidence/story missing', media, story });
+          if (id === 'seven_park') {
+            const selected=await page.locator('.case-gallery__seven-item img').evaluateAll(
+              nodes=>nodes.map(img=>({src:new URL(img.getAttribute('src'),location.href).pathname,
+                naturalWidth:img.naturalWidth,visible:img.getBoundingClientRect().width>0&&getComputedStyle(img).visibility!=='hidden'})));
+            const originals=(await fs.readdir('apps/web/public/evidence/7park/archive')).filter(name=>name.endsWith('.webp'));
+            const columns=await page.locator('.case-gallery__seven-park').evaluate(el=>getComputedStyle(el).gridTemplateColumns.split(' ').length);
+            const expectedColumns=width<=460?1:width<=800?2:width<=1120?3:4;
+            if(selected.length!==12||new Set(selected.map(x=>x.src)).size!==12||
+              selected.some(x=>x.naturalWidth<300||!x.visible)||originals.length!==17||
+              selected.some(x=>!originals.includes(x.src.split('/').at(-1)))||
+              columns!==expectedColumns||await page.locator('.case-gallery__archive[data-case-archive]').count()>0){
+              report.fail.push({route,view,reason:'7 PARK gallery must show 12 genuine unique photos, complete responsive rows, retain 17 source assets',
+                selected:selected.length,unique:new Set(selected.map(x=>x.src)).size,originals:originals.length,columns,expectedColumns});
+            }
+          }
           if (id === 'polisan') {
             const selected = await page.locator('.case-gallery__curated-item img').evaluateAll(
               nodes => nodes.map(img => new URL(img.getAttribute('src'), location.href).pathname)
