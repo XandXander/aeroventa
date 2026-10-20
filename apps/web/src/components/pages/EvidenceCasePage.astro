@@ -270,14 +270,14 @@ const specs: Record<string, CaseSpec> = {
     lede:'Исторический объект AEROVENTA в Питкяранте: монтаж приточно-вытяжной вентиляции и оборудования в контексте сервисно-образовательного центра PONSSE.',
     task:"Выполнить вентиляционные работы в сервисно-образовательном центре в Питкяранте.",
     works:"Монтаж приточно-вытяжной вентиляции и оборудования.",
-    result:"Для объекта в Питкяранте архивная публикация указывает две недели монтажа силами трёх специалистов. Отдельное письмо PONSSE от апреля 2022 года относится к двум годам сотрудничества, а не к сроку работ на одном объекте.",
+    result:"Монтаж вентиляции в сервисном центре PONSSE в Питкяранте занял две недели. Работы выполнили три специалиста.",
     facts:[
       ['Локация','Питкяранта · Республика Карелия'],
       ['Объект','Сервисно-образовательный центр'],
-      ['Контекст','PONSSE по архивному источнику'],
+      ['Заказчик','PONSSE'],
       ['Система','Приточно-вытяжная вентиляция + оборудование'],
-      ['Срок','2 недели по исходной публикации'],
-      ['Состав','3 специалиста по исходной публикации']
+      ['Срок монтажа','2 недели'],
+      ['Команда','3 специалиста']
     ],
     evidence:[
       'Архивный источник фиксирует работу в Питкяранте, Карелия.',
@@ -397,6 +397,7 @@ const documentary = documentaryTitles[content.path] || {gallery:'Фотогра�
 const spec=specs[content.path];
 if(!spec) throw new Error('Case spec missing: '+content.path);
 const isPolisan=content.path === '/blog/detail/ntff-polisan/';
+const isPonsse=content.path === '/blog/detail/montazh-ventilyatsii-v-karelii/';
 const isSevenPark=content.path === '/blog/detail/kak-my-sdali-7-domov/';
 /* 12 unique authenticated images; larger originals IMG_6653/6654/6656,
    other frames are source-verified 551–734px images for restrained grid use. */
@@ -407,6 +408,11 @@ const sevenParkSelected=isSevenPark?[
   'img_4292','img_4297','img_4300',
 ].map(name=>spec.archiveMedia?.find(entry=>entry[0].endsWith('/'+name+'.webp'))).filter((entry):entry is [string,string,string]=>Boolean(entry)):[];
 if(isSevenPark&&(sevenParkSelected.length!==12||new Set(sevenParkSelected.map(x=>x[0])).size!==12))throw new Error('Seven Park gallery requires 12 unique source photos');
+const ponsseChosen=isPonsse ? [
+  'img-8306','img-8307','img-8009','img-8007','img-8199','img-8196',
+  'img-8179','img-8193','img-8110','img-8096','img-8090','img-8181'
+].map(name=>[...spec.media,...(spec.archiveMedia||[])].find(item=>item[0].endsWith('/'+name+'.webp'))).filter((item):item is [string,string,string]=>Boolean(item)) : [];
+if(isPonsse&&(ponsseChosen.length!==12||new Set(ponsseChosen.map(x=>x[0])).size!==12))throw new Error('PONSSE gallery: 12 unique original photos required');
 const polisanRows=isPolisan ? [spec.media.slice(1,4),spec.media.slice(4,8),spec.media.slice(8,12)] : [];
 const existingPhotoSet=new Set([...spec.media,...(spec.archiveMedia||[])].map(x=>x[0]));
 const fullOriginalGallery=isPolisan ? [] : (verifiedOriginal?.original_media_paths.filter(src=>!existingPhotoSet.has(src))||[]);
@@ -464,6 +470,16 @@ const fullOriginalGallery=isPolisan ? [] : (verifiedOriginal?.original_media_pat
           </figure>
         ))}
       </div>}
+      {isPonsse && <div class="case-gallery__ponsse-curated" aria-label="12 документальных фотографий PONSSE">
+        {ponsseChosen.map(([src,alt,caption],index)=>(
+          <figure class="case-gallery__ponsse-item">
+            <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={alt} data-photo-caption={caption} aria-label={`Посмотреть фото объекта PONSSE ${index+1}`}>
+              <img src={src} alt={alt} width="1280" height="960" loading="lazy" decoding="async"/>
+            </button>
+            <figcaption>{caption}</figcaption>
+          </figure>
+        ))}
+      </div>}
       {isPolisan && <div class="case-gallery__curated" aria-label="Фотоистория НТФФ «Полисан»">
         {polisanRows.map((row, rowIndex) => (
           <div class:list={['case-gallery__curated-row',rowIndex === 0 ? 'case-gallery__curated-row--three' : 'case-gallery__curated-row--four',rowIndex === 2 ? 'case-gallery__curated-row--portrait' : '']}>
@@ -478,7 +494,7 @@ const fullOriginalGallery=isPolisan ? [] : (verifiedOriginal?.original_media_pat
           </div>
         ))}
       </div>}
-      {!isPolisan && !isSevenPark && spec.media.length > 1 && <div class="case-gallery__grid case-gallery__grid--featured">
+      {!isPolisan && !isSevenPark && !isPonsse && spec.media.length > 1 && <div class="case-gallery__grid case-gallery__grid--featured">
         {spec.media.slice(1).map(([src, alt, caption]) => (
           <figure class="case-gallery__item">
             <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={alt} data-photo-caption={caption} aria-label={`Увеличить фотографию: ${caption}`}>
@@ -488,7 +504,7 @@ const fullOriginalGallery=isPolisan ? [] : (verifiedOriginal?.original_media_pat
           </figure>
         ))}
       </div>}
-      {!isSevenPark && Boolean(spec.archiveMedia?.length) && (
+      {!isSevenPark && !isPonsse && Boolean(spec.archiveMedia?.length) && (
         <section class="case-gallery__archive" data-case-archive aria-labelledby="case-photo-archive-title">
           <h3 id="case-photo-archive-title">Монтаж в деталях</h3>
           <div class="case-gallery__thumbs">
@@ -509,7 +525,7 @@ const fullOriginalGallery=isPolisan ? [] : (verifiedOriginal?.original_media_pat
       )}
       {fullOriginalGallery.length>0 && (
         <details class="case-gallery__verified-originals">
-          <summary>Другие фотографии объекта ({fullOriginalGallery.length})</summary>
+          <summary>Дополнительные материалы объекта</summary>
           <div class="case-gallery__verified-grid">
             {fullOriginalGallery.map((src,index)=>(
               <button class="case-gallery__open" type="button" data-case-photo
@@ -559,12 +575,12 @@ const fullOriginalGallery=isPolisan ? [] : (verifiedOriginal?.original_media_pat
         <div>
           <p class="section-index section-index--orange">02 / Документ сотрудничества</p>
           <h2 id="ponsse-recognition-title">Письмо PONSSE</h2>
-          <p>Письмо от 5 апреля 2022 года отмечает два года сотрудничества с PONSSE — международной промышленной компанией. В письме благодарят команду за профессионализм, рабочую этику и своевременное исполнение задач. Работы в Питкяранте — один из объектов этого сотрудничества.</p>
+          <p>Два года сотрудничества с PONSSE отмечены благодарственным письмом от 5 апреля 2022 года. Документ доступен для просмотра в оригинале.</p>
         </div>
         <aside class="ponsse-recognition__citation">
           <span>Благодарственное письмо · 2022</span>
           <strong>05.04.2022</strong>
-          <p>PONSSE благодарит команду за профессионализм, рабочую этику и соблюдение сроков.</p>
+          <p>Два года сотрудничества · оригинал документа.</p>
           {hasLetter && (
             <button type="button" class="ponsse-letter-preview" data-ponsse-open aria-haspopup="dialog" aria-controls="ponsse-letter-dialog" aria-label="Увеличить подлинное благодарственное письмо PONSSE">
               <img src={letterSrc} alt="Письмо PONSSE с датой 5 апреля 2022 года и подписью" width="1481" height="2048" loading="lazy" decoding="async" />
@@ -781,4 +797,14 @@ const fullOriginalGallery=isPolisan ? [] : (verifiedOriginal?.original_media_pat
 @media(max-width:1120px){.case-gallery__seven-park{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:800px){.case-gallery__seven-park{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:460px){.case-gallery__seven-park{grid-template-columns:1fr}.case-gallery__seven-item figcaption{min-height:0}}
+</style>
+<style>
+/* PONSSE: 12 editor-selected photographic records, 4 complete rows of 3. */
+.evidence-case .case-gallery__ponsse-curated{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(14px,1.8vw,28px);margin-top:clamp(22px,3vw,40px);align-items:stretch}
+.evidence-case .case-gallery__ponsse-item{display:flex;flex-direction:column;min-width:0;margin:0;gap:9px}
+.evidence-case .case-gallery__ponsse-item .case-gallery__open{display:block;aspect-ratio:4/3;min-width:0;width:100%;height:auto;overflow:hidden;padding:0;border:0;background:#e8eef1}
+.evidence-case .case-gallery__ponsse-item img{display:block;width:100%;height:100%;object-fit:cover}
+.evidence-case .case-gallery__ponsse-item figcaption{font-size:.8rem;color:#486070;line-height:1.4;min-height:2.4em}
+@media(max-width:850px){.evidence-case .case-gallery__ponsse-curated{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:470px){.evidence-case .case-gallery__ponsse-curated{grid-template-columns:1fr}.evidence-case .case-gallery__ponsse-item figcaption{min-height:0}}
 </style>

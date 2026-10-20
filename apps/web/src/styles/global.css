@@ -855,61 +855,26 @@ main { min-height: 60vh; }
 .site-header.is-compact .site-header__inner { min-height: 54px; }
 
 .airflow-trace-ui { pointer-events:none; }
-.airflow-entry-trace {
-  position:fixed;
-  z-index:44;
-  top:64px;
-  left:0;
-  right:0;
-  height:58px;
-  opacity:0;
-  transform:translateY(-5px);
-  pointer-events:none;
-}
-.airflow-entry-trace__inner {
-  width:min(1380px,calc(100% - 48px));
-  height:100%;
-  margin-inline:auto;
-  position:relative;
-}
-.airflow-entry-trace svg { width:100%; height:36px; overflow:visible; }
-.airflow-entry-trace__duct {
-  fill:none;
-  stroke:rgba(8,23,40,.18);
-  stroke-width:1.5;
-  vector-effect:non-scaling-stroke;
-  stroke-dasharray:100;
-  stroke-dashoffset:100;
-}
-.airflow-entry-trace__pulse {
-  fill:none;
-  stroke:var(--orange);
-  stroke-width:3;
-  vector-effect:non-scaling-stroke;
-  stroke-linecap:round;
-  stroke-dasharray:6 94;
-  stroke-dashoffset:100;
-}
-.airflow-entry-trace__steps {
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:16px;
-  font-size:.68rem;
-  text-transform:uppercase;
-  letter-spacing:.055em;
-  font-weight:850;
-  color:#667482;
-}
-.airflow-entry-trace.is-running {
-  animation: airflow-entry-fade .95s ease both;
-}
-.airflow-entry-trace.is-running .airflow-entry-trace__duct {
-  animation: airflow-route-assemble .42s cubic-bezier(.22,.61,.36,1) both;
-}
-.airflow-entry-trace.is-running .airflow-entry-trace__pulse {
-  animation: airflow-route-pulse .58s .18s cubic-bezier(.22,.61,.36,1) both;
-}
-
+.airflow-entry-trace{position:fixed;z-index:44;top:64px;left:0;right:0;height:94px;opacity:0;pointer-events:none;background:linear-gradient(180deg,rgba(245,248,249,.98),rgba(245,248,249,.84) 80%,transparent);transform:translateY(-4px)}
+.airflow-entry-trace__inner{width:min(1300px,calc(100% - 48px));height:100%;margin-inline:auto;position:relative}
+.airflow-entry-trace svg{width:100%;height:64px;overflow:visible;display:block}
+.airflow-entry-trace__duct,.airflow-entry-trace__pulse{fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:square;vector-effect:non-scaling-stroke;stroke-dasharray:100;stroke-dashoffset:100}
+.airflow-entry-trace__duct--supply{stroke:#7f98a9}.airflow-entry-trace__duct--exhaust{stroke:#b19c8c}
+.airflow-entry-trace__pulse{stroke-width:3.5;stroke-dasharray:10 90}
+.airflow-entry-trace__pulse--supply{stroke:#236d98}.airflow-entry-trace__pulse--exhaust{stroke:#b96c42}
+.airflow-entry-trace__end{opacity:0}
+.airflow-entry-trace__end--supply{fill:#236d98}.airflow-entry-trace__end--exhaust{fill:#b96c42}
+.airflow-entry-trace__steps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;color:#3e5868;font-size:.67rem;letter-spacing:.045em;font-weight:600;text-transform:uppercase}
+.airflow-entry-trace.is-running{animation:airflow-entry-fade 1.85s ease both}
+.airflow-entry-trace.is-running .airflow-entry-trace__duct{animation:airflow-route-assemble .72s .14s cubic-bezier(.25,.65,.3,1) both}
+.airflow-entry-trace.is-running .airflow-entry-trace__pulse--supply{animation:airflow-route-pulse .67s .78s ease-in-out both}
+.airflow-entry-trace.is-running .airflow-entry-trace__pulse--exhaust{animation:airflow-route-pulse .67s .83s ease-in-out both}
+.airflow-entry-trace.is-running .airflow-entry-trace__end{animation:av-entry-point .32s 1.37s ease-out both}
+.airflow-entry-trace[data-mode="short"].is-running{animation-duration:.88s}
+.airflow-entry-trace[data-mode="short"].is-running .airflow-entry-trace__duct{animation-duration:.26s;animation-delay:.04s}
+.airflow-entry-trace[data-mode="short"].is-running .airflow-entry-trace__pulse{animation-duration:.35s;animation-delay:.28s}
+.airflow-entry-trace[data-mode="short"].is-running .airflow-entry-trace__end{animation-duration:.16s;animation-delay:.62s}
+@keyframes av-entry-point{from{opacity:0}to{opacity:1}}
 .airflow-header-trace {
   position:fixed;
   z-index:45;
@@ -1013,9 +978,9 @@ main { min-height: 60vh; }
 }
 
 @keyframes airflow-entry-fade {
-  0% { opacity:0; transform:translateY(-5px); }
-  12%,72% { opacity:1; transform:translateY(0); }
-  100% { opacity:0; transform:translateY(-2px); }
+  0% {opacity:0;transform:translateY(-4px)}
+  7%,81% {opacity:1;transform:translateY(0)}
+  100% {opacity:0;transform:translateY(-2px)}
 }
 @keyframes airflow-route-assemble {
   from { stroke-dashoffset:100; }
@@ -1040,7 +1005,7 @@ main { min-height: 60vh; }
 }
 @media (max-width:760px) {
   .site-header.is-compact .site-header__inner { min-height:52px; }
-  .airflow-entry-trace { top:56px; height:48px; }
+  .airflow-entry-trace {top:56px;height:72px}
   .airflow-entry-trace__inner { width:calc(100% - 28px); }
   .airflow-entry-trace__steps { font-size:.56rem; gap:5px; }
   .airflow-header-trace { top:55px; }
@@ -1071,7 +1036,7 @@ main { min-height: 60vh; }
     transform:translateY(0);
     pointer-events:auto;
   }
-  .mobile-contact-dock a {
+  .mobile-contact-dock :is(a,button) {
     min-height:50px;
     display:flex;
     align-items:center;
@@ -1081,7 +1046,7 @@ main { min-height: 60vh; }
     font-weight:850;
     font-size:.9rem;
   }
-  .mobile-contact-dock a:focus-visible { outline-offset:-4px; }
+  .mobile-contact-dock :is(a,button):focus-visible { outline-offset:-4px; }
   .mobile-contact-dock__call { border-right:1px solid var(--line); }
   .mobile-contact-dock__project { background:var(--navy); color:#fff; }
   html { scroll-padding-bottom:calc(88px + env(safe-area-inset-bottom, 0px)); }
@@ -1094,7 +1059,7 @@ main { min-height: 60vh; }
   .site-header__inner,
   .mobile-contact-dock,
   .airflow-trace-section::before { transition:none !important; }
-  .airflow-entry-trace { display:none !important; }
+  .airflow-entry-trace {display:none!important} .airflow-header-trace__route::before{opacity:1!important}
   .airflow-header-trace__route i {
     box-shadow:none;
   }
@@ -1686,7 +1651,7 @@ main { min-height: 60vh; }
 @media (max-width:760px) {
   .airflow-entry-trace { height:34px; }
   .airflow-entry-trace__steps { display:none; }
-  .airflow-entry-trace svg { height:28px; }
+  .airflow-entry-trace svg {height:49px}
   .hero-engineering__label--supply { left:10px; top:12px; }
   .hero-engineering__label--exhaust { right:10px; top:52px; }
 }
