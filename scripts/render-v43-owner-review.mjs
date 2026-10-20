@@ -428,9 +428,9 @@ try {
           const preserved=(await fs.readdir('apps/web/public/evidence/karelia/archive')).filter(name=>name.endsWith('.webp')).length;
           const columns=await page.locator('.case-gallery__ponsse-curated').evaluate(el=>getComputedStyle(el).gridTemplateColumns.split(' ').length);
           const expectedColumns=width<=470?1:width<=850?2:3;
-          if(selected.length!==12||new Set(selected).size!==12||preserved!==18||
+          if(selected.length!==12||new Set(selected).size!==12||preserved!==20||
             await page.locator('.case-gallery__archive[data-case-archive]').count()>0||columns!==expectedColumns)
-            report.fail.push({route,view,reason:'PONSSE 12 curated photos visible, 18 original files preserved, complete grid rows',selected:selected.length,preserved,columns,expectedColumns});
+            report.fail.push({route,view,reason:'PONSSE 12 curated photos visible, 20 original/archived files preserved, complete grid rows',selected:selected.length,preserved,columns,expectedColumns});
           const expectedLetter = report.owner_media.find(x=>x.name==='ponsse_letter')?.status === 'EXACT';
           const expectedPortrait = report.owner_media.find(x=>x.name==='ponsse_portrait')?.status === 'EXACT' && process.env.PUBLIC_PONSSE_PORTRAIT_PUBLICATION_APPROVED === 'true';
           const actualLetter = await page.locator('[data-ponsse-open] img').count();
