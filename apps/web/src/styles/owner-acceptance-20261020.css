@@ -128,3 +128,11 @@ body .consultant-launcher{appearance:none;font-family:inherit;cursor:pointer}
 .evidence-case .case-detail-related__grid>a{
  background:transparent!important;border-left:0!important;border-right:0!important;border-bottom:0!important;
 }
+
+/* Owner 2026-10-20 supersedes the historical "hidden until scroll" policy.
+   Explicitly override legacy visibility/pointer blocking for all first-fold layouts. */
+html:not(.is-past-first-fold) body:has(.home-hero--owner-airflow) .consultant-launcher,
+html:not(.is-past-first-fold) body:has(.services-hero--owner-editorial) .consultant-launcher,
+html:not(.is-past-first-fold) body:has(.about-hero) .consultant-launcher{
+  visibility:visible!important;opacity:1!important;pointer-events:auto!important;
+}
