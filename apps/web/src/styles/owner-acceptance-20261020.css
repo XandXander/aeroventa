@@ -115,3 +115,16 @@ body .consultant-launcher:focus-visible{outline:3px solid #ba774e;outline-offset
  }
 }
 body .consultant-launcher{appearance:none;font-family:inherit;cursor:pointer}
+
+/* Case HERO uses its full first-screen field instead of leaving unused blank space below a top-aligned photograph. */
+@media(min-width:961px){
+ .evidence-case .case-detail-hero{display:flex;align-items:center}
+ .evidence-case .case-detail-hero>.home-shell{flex:0 0 auto}
+}
+/* Neutralise inherited gray card-table surface behind the related editorial navigation. */
+.evidence-case .case-detail-related__grid{
+ background:transparent!important;border:0!important;box-shadow:none!important;
+}
+.evidence-case .case-detail-related__grid>a{
+ background:transparent!important;border-left:0!important;border-right:0!important;border-bottom:0!important;
+}
