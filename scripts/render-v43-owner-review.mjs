@@ -1076,7 +1076,12 @@ try {
     'about__desktop_1440','about__mobile_390',
     'portfolio__desktop_1440','portfolio__mobile_390',
     'polisan__desktop_1440','drill_crown__desktop_1440',
-    'ponsse_letter_open__mobile_390','consultant_open__mobile_390'
+    'ponsse_letter_open__mobile_390','consultant_open__mobile_390',
+    // Exact captured frames from the real Chrome motion lifecycle, not illustrations.
+    'motion_first_start__1440','motion_first_assembly__1440','motion_first_pulse__1440',
+    'motion_repeat__1440','motion_first_start__390','motion_first_assembly__390',
+    'motion_first_pulse__390','motion_repeat__390','motion_reduced_static__390',
+    'mobile_project_dialog__390','project_operation_pending__1440'
   ];
   // Print diagnostic failures before packaging; a missing capture must not erase the evidence.
   await fs.writeFile(path.join(root, 'manifest.partial.json'), JSON.stringify(report, null, 2));
