@@ -14,7 +14,7 @@ const projectMail = `mailto:${SITE.email}?subject=${encodeURIComponent('Монт
           Если для расчёта потребуется уточнение, зададим конкретные вопросы по проекту.
         </p>
         <div class="home-actions">
-          <a class="button button--primary" href={projectMail} data-aeroventa-event="primary_cta">Передать проект на рассмотрение →</a>
+          <button class="button button--primary" type="button" data-project-open data-source="project_ready_hero" data-aeroventa-event="primary_cta">Передать проект на рассмотрение →</button>
           <span class="engagement-hero__contact-note">Контакт для вопросов доступен в шапке сайта.</span>
         </div>
       </div>
@@ -32,8 +32,8 @@ const projectMail = `mailto:${SITE.email}?subject=${encodeURIComponent('Монт
         <h2 id="project-input-title">Пришлите проект. Остальное уточним по делу.</h2>
       </div>
       <div class="project-brief__body">
-        <p>Достаточно рабочих чертежей, спецификации (если она есть), адреса объекта и краткого описания требуемого монтажа. Материалы можно прислать по электронной почте.</p>
-        <a href={projectMail} class="project-brief__link">Отправить документацию →</a>
+        <p>Достаточно рабочих чертежей, спецификации (если она есть), адреса объекта и краткого описания требуемого монтажа. Прикрепите имеющиеся материалы в форме. Если комплект слишком большой — <a href={projectMail}>напишите на корпоративную почту</a>.</p>
+        <button type="button" data-project-open data-source="project_ready_brief" class="project-brief__link">Отправить документацию →</button>
       </div>
     </div>
   </section>
@@ -72,7 +72,7 @@ const projectMail = `mailto:${SITE.email}?subject=${encodeURIComponent('Монт
     <div class="home-shell engagement-close__grid">
       <p class="section-index section-index--orange">04 / Передача проекта</p>
       <h2>Передайте рабочий комплект. Вернёмся с конкретикой по монтажу.</h2>
-      <a class="button button--light" href={projectMail}>Передать проект →</a>
+      <button type="button" class="button button--light" data-project-open data-source="project_ready_close">Передать проект →</button>
     </div>
   </section>
 </article>
