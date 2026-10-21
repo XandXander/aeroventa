@@ -16,12 +16,13 @@ const { pagePath = '' } = Astro.props;
   <div class="experience-dialog__shell">
     <div class="experience-dialog__head">
       <div>
-        <h2 id="consultant-title">Чем помочь с вентиляцией?</h2>
+        <h2 id="consultant-title">Консультант AEROVENTA</h2>
       </div>
       <button type="button" class="dialog-close" data-dialog-close aria-label="Закрыть консультанта">×</button>
     </div>
 
-    <section class="consultant-conversation" aria-label="Вопросы по вентиляции">
+    <section class="consultant-conversation" aria-label="Консультация по монтажу вентиляции">
+      <p class="consultant-conversation__intro">Опишите объект или задайте вопрос о монтаже.</p>
       <ol class="consultant-conversation__history" data-consultant-chat-messages aria-live="polite" aria-relevant="additions"></ol>
       <form class="consultant-conversation__composer" data-consultant-chat-form>
         <label class="consultant-conversation__accessible-label" for="consultant-chat-question">Вопрос о вентиляции</label>

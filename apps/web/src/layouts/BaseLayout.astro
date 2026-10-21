@@ -10,6 +10,7 @@ import type { ContentRecord } from '@/lib/types';
 import globalCssUrl from '@/styles/global.css?url';
 import experienceCssUrl from '@/styles/experience.css?url';
 import ownerAcceptanceCssUrl from '@/styles/owner-acceptance-20261020.css?url';
+import finalEditorialCssUrl from '@/styles/hiend-editorial-20261021.css?url';
 
 interface Props { content: ContentRecord; }
 const { content } = Astro.props;
@@ -20,24 +21,32 @@ const schema = preview ? null : jsonLd(content);
 // Controlled fallbacks for five historical HTML-200 routes. Approved Directus copy wins.
 const retainedDescriptionFallback: Record<string, string> = {
   '/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/':
-    'Застрявшая алмазная коронка в бетоне: причины заклинивания, безопасный порядок действий и архивный практический опыт AEROVENTA.',
+    'Застрявшая алмазная коронка в бетоне: причины заклинивания и последовательность действий из практики.',
   '/vakansii/':
     'Сотрудничество с AEROVENTA для специалистов по монтажу вентиляции: какой опыт сообщить и как связаться с командой. Актуальные вакансии уточняйте.',
   '/news/korporativnaya-zhizn/':
-    'Архив корпоративных материалов AEROVENTA. Для знакомства с актуальными направлениями монтажа вентиляции и реальными объектами смотрите портфолио.',
+    'Команда и выполненные работы AEROVENTA: реальные объекты, особенности монтажа и инженерная практика.',
   '/news/istoriya-kompanii/':
-    'История AEROVENTA через архивные материалы, развитие направления вентиляции и ссылки на подтверждённые выполненные объекты.',
+    'История AEROVENTA: монтаж вентиляции на жилых, коммерческих и производственных объектах.',
   '/faq/':
     'Ответы о монтаже вентиляции: подготовка проекта, сравнение смет, оборудование, воздуховоды, условия объекта, согласование изменений и приёмка.',
 };
-const seoDescription = content.seo_description?.trim() || retainedDescriptionFallback[content.path] || '';
+const cleanPublicSummary = (text: string) => text.replace(/Исторический источник/gi,'Материал').replace(/Архивная публикация/gi,'Статья').replace(/Тихий архив/gi,'История компании').trim();
+const seoDescription = cleanPublicSummary(content.seo_description?.trim() || retainedDescriptionFallback[content.path] || '');
 const ogTitle = content.og_title || content.seo_title || content.title;
-const ogDescription = content.og_description?.trim() || seoDescription;
+const ogDescription = cleanPublicSummary(content.og_description?.trim() || seoDescription);
 const editorialOgFallback: Record<string, string> = {
   '/': '/evidence/hero/owner-luxury-airflow-20261010.png',
   '/services/': '/evidence/hero/services-owner-editorial-1774.webp',
   '/montazh-ventiliacii/': '/evidence/hero/hiend-engineering-visual-owner-v43.webp',
-  '/portfolio/': '/evidence/7park/object-exterior-day.jpg',
+  '/portfolio/': '/evidence/leont/owner-cover-v43.webp',
+  '/about/': '/evidence/team/owner-team-group-20261015.webp',
+  '/montazh-po-proektu/': '/evidence/polisan/archive/20180601-133711.webp',
+  '/obekty/proizvodstvo/': '/evidence/polisan/archive/20180601-133711.webp',
+  '/obekty/kvartiry-i-doma/': '/evidence/residential/owner-neva-facade-20261016.jpg',
+  '/obekty/restorany-i-kafe/': '/evidence/leont/owner-cover-v43.webp',
+  '/blog/': '/evidence/polisan/archive/20180601-133711.webp',
+  '/blog/istorii-proektov/': '/evidence/leont/owner-cover-v43.webp',
   '/blog/detail/kak-my-sdali-7-domov/': '/evidence/7park/object-exterior-day.jpg',
   '/blog/detail/restoran-v-zhk-leontevskiy-mys/': '/evidence/leont/owner-cover-v43.webp',
   '/blog/detail/ntff-polisan/': '/evidence/polisan/owner-cover-v43.webp',
@@ -54,6 +63,8 @@ const ogImageSource = rejectedServicesImage
   ? editorialOgFallback['/services/']
   : (content.og_image || editorialOgFallback[content.path]);
 const ogImage = ogImageSource ? new URL(ogImageSource, 'https://aeroventa.ru').toString() : null;
+const ogImageType = ogImage ? (/\.png(?:$|\?)/i.test(ogImage) ? 'image/png' : /\.jpe?g(?:$|\?)/i.test(ogImage) ? 'image/jpeg' : /\.webp(?:$|\?)/i.test(ogImage) ? 'image/webp' : null) : null;
+const ogImageAlt = `AEROVENTA — ${content.h1 || content.title}`;
 const yandexVerification = (import.meta.env.PUBLIC_YANDEX_WEBMASTER_VERIFICATION || '').trim();
 const googleVerification = (import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION || '').trim();
 ---
@@ -68,6 +79,7 @@ const googleVerification = (import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION || '
     <link rel="stylesheet" href={globalCssUrl} />
     <link rel="stylesheet" href={experienceCssUrl} />
     <link rel="stylesheet" href={ownerAcceptanceCssUrl} />
+    <link rel="stylesheet" href={finalEditorialCssUrl} />
     <title>{content.seo_title || content.title}</title>
     {seoDescription && <meta name="description" content={seoDescription} />}
     <meta name="robots" content={robots} />
@@ -79,7 +91,11 @@ const googleVerification = (import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION || '
     <meta property="og:url" content={canonical} />
     <meta property="og:type" content={['article', 'news'].includes(content.content_type) ? 'article' : 'website'} />
     <meta property="og:site_name" content="AEROVENTA" />
+    <meta property="og:locale" content="ru_RU" />
     {ogImage && <meta property="og:image" content={ogImage} />}
+    {ogImage && <meta property="og:image:secure_url" content={ogImage} />}
+    {ogImage && <meta property="og:image:alt" content={ogImageAlt} />}
+    {ogImageType && <meta property="og:image:type" content={ogImageType} />}
     <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
     <meta name="twitter:title" content={ogTitle} />
     {ogDescription && <meta name="twitter:description" content={ogDescription} />}

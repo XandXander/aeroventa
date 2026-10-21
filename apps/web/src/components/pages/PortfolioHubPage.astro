@@ -8,7 +8,7 @@ const { content } = Astro.props;
 const cases = [
   { index:'01', title:'7 PARK', image:'/evidence/7park/object-exterior-day.jpg', location:'Павловск, Санкт-Петербург', scope:'7 домов · монтаж приточно-вытяжной вентиляции', detail:'18.11.2020 — 10.12.2020', href:'/blog/detail/kak-my-sdali-7-domov/', kind:'Новостройки' },
   { index:'02', title:'Ресторан в ЖК «Леонтьевский Мыс»', image:'/evidence/leont/owner-cover-v43.webp', location:'Санкт-Петербург', scope:'Ресторан · приточно-вытяжная вентиляция + оборудование', detail:'Монтаж · 2 недели', href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/', kind:'Рестораны' },
-  { index:'03', title:'НТФФ «Полисан»', image:'/evidence/polisan/owner-cover-v43.webp', location:'Санкт-Петербург, ул. Салова, 72', scope:'Фармацевтический объект · вентиляция + оборудование', detail:'Монтаж · 06.2017 — 06.2018', href:'/blog/detail/ntff-polisan/', kind:'Производство' },
+  { index:'03', title:'НТФФ «Полисан»', image:'/evidence/polisan/archive/20180601-133711.webp', location:'Санкт-Петербург, ул. Салова, 72', scope:'Фармацевтический объект · вентиляция + оборудование', detail:'Монтаж · 06.2017 — 06.2018', href:'/blog/detail/ntff-polisan/', kind:'Производство' },
   { index:'04', title:'Квартира на Маршала Жукова', image:'/evidence/zhukov/owner-cover-v43.webp', location:'Санкт-Петербург', scope:'Квартира · приточно-вытяжная вентиляция', detail:'Объём / срок · ~100 м.п., 5 дней', href:'/blog/detail/kvartira-na-zhukova/', kind:'Квартиры' },
   { index:'05', title:'PONSSE — Питкяранта', image:'/evidence/karelia/owner-cover-v43.webp', location:'Республика Карелия', scope:'Сервисно-образовательный центр · вентиляция + оборудование', detail:'Монтаж · 2 недели', href:'/blog/detail/montazh-ventilyatsii-v-karelii/', kind:'Сервисно-образовательный центр' },
   { index:'06', title:'Кафе на Римского-Корсакова, 3', image:'/evidence/cafe/owner-cover-v43.webp', location:'Санкт-Петербург', scope:'Кафе · приточно-вытяжная вентиляция + оборудование', detail:'Объём / срок · 200 м², 5 дней', href:'/blog/detail/kafe-rimskogo-korsakova-3/', kind:'Рестораны' }
@@ -115,7 +115,13 @@ const ownerGallery = (slug: string): string[] => {
 };
 const gallerySlugFor = (image: string): string => image.split('/')[3] || '';
 const archiveCases = newOwnerCases.map(item => ({ ...item, photos: ownerGallery(gallerySlugFor(item.cover)) }));
-const sportPhotos = ['/evidence/owner-portfolio/sport-komendantskiy/owner-selected-aerial.webp', ...ownerGallery('sport-komendantskiy')];
+const sportPhotos = [
+ '/evidence/owner-portfolio/sport-komendantskiy/owner-selected-aerial.webp',
+ '/evidence/owner-portfolio/sport-komendantskiy/02.webp',
+ '/evidence/owner-portfolio/sport-komendantskiy/04.webp',
+ '/evidence/owner-portfolio/sport-komendantskiy/gallery-01.webp',
+ '/evidence/owner-portfolio/sport-komendantskiy/cover.webp'
+];
 ---
 
 <article class="portfolio-hub">
@@ -132,7 +138,7 @@ const sportPhotos = ['/evidence/owner-portfolio/sport-komendantskiy/owner-select
           <figcaption>Леонтьевский Мыс · Санкт-Петербург</figcaption>
         </figure>
         <figure>
-          <img src="/evidence/residential/owner-neva-facade-20261016.jpg" width="531" height="376" alt="Фасад здания «На излучине Невы», оригинальный снимок" loading="eager" decoding="async"/>
+          <button type="button" class="portfolio-hero__neva-open" data-archive-open data-gallery-title="На излучине Невы" data-gallery-images={JSON.stringify(['/evidence/residential/owner-neva-facade-20261016.jpg'])} aria-haspopup="dialog" aria-controls="portfolio-archive-viewer" aria-label="Увеличить фотографию здания «На излучине Невы»"><img src="/evidence/residential/owner-neva-facade-20261016.jpg" width="531" height="376" alt="Фасад здания «На излучине Невы», оригинальный снимок" loading="eager" decoding="async"/></button>
           <figcaption>На излучине Невы · Санкт-Петербург</figcaption>
         </figure>
       </div>
@@ -174,11 +180,11 @@ const sportPhotos = ['/evidence/owner-portfolio/sport-komendantskiy/owner-select
           <h2 id="cases-title">Объекты разного масштаба</h2>
         </div>
       </div>
-      <p class="portfolio-list__introduction">От жилых помещений и ресторанов до производственных и общественных объектов. На фотографиях — реальные площадки и наша монтажная работа.</p>
+      <p class="portfolio-list__introduction">Жилые, коммерческие и производственные объекты. Фотографии показывают сами площадки и отдельные этапы монтажа вентиляции.</p>
       <div class="portfolio-grid">
         {cases.filter((item) => item.index !== '01').map((item) => (
           <a href={item.href} class="portfolio-card">
-            <div class="portfolio-card__media"><img src={item.image} width="800" height="520" alt={`Реальные фотографии работ: ${item.title}`} loading="lazy" decoding="async" /></div>
+            <div class="portfolio-card__media"><img src={item.image} width="800" height="520" alt={`Объект AEROVENTA: ${item.title}`} loading="lazy" decoding="async" /></div>
             <div class="portfolio-card__body">
             <div class="portfolio-card__top"><b>{item.kind}</b><span>{item.location}</span></div>
             <div>
@@ -217,7 +223,7 @@ const sportPhotos = ['/evidence/owner-portfolio/sport-komendantskiy/owner-select
       <div class="portfolio-sport__intro">
         <p class="section-index">03 / Спортивный объект</p>
         <h2 id="portfolio-sport-title">Центр адаптивного спорта</h2>
-        <p>Санкт-Петербург · Яхтенная, 39. Общий вид комплекса и фотографии инженерных помещений.</p>
+        <p>Санкт-Петербург · Яхтенная, 39. Общий вид здания, потолочные трассы и детали вентиляционной системы на фотографиях этапа монтажа.</p>
         <button type="button" class="portfolio-sport__gallery-link" data-archive-open
           data-gallery-title="Центр адаптивного спорта"
           data-gallery-images={JSON.stringify(sportPhotos)}
@@ -231,8 +237,16 @@ const sportPhotos = ['/evidence/owner-portfolio/sport-komendantskiy/owner-select
             alt="Общий вид зданий Центра адаптивного спорта"/>
         </figure>
         <figure class="portfolio-sport__photo portfolio-sport__photo--detail">
+          <img src="/evidence/owner-portfolio/sport-komendantskiy/02.webp" width="1200" height="900" loading="lazy" decoding="async"
+            alt="Потолочные воздуховоды в Центре адаптивного спорта"/>
+        </figure>
+        <figure class="portfolio-sport__photo portfolio-sport__photo--technical">
+          <img src="/evidence/owner-portfolio/sport-komendantskiy/04.webp" width="1200" height="900" loading="lazy" decoding="async"
+            alt="Вентиляционная трасса в зале спортивного центра"/>
+        </figure>
+        <figure class="portfolio-sport__photo portfolio-sport__photo--technical">
           <img src="/evidence/owner-portfolio/sport-komendantskiy/gallery-01.webp" width="1600" height="1200" loading="lazy" decoding="async"
-            alt="Инженерный диффузор в Центре адаптивного спорта"/>
+            alt="Металлический воздухораспределитель в спортивном центре"/>
         </figure>
       </div>
     </div>

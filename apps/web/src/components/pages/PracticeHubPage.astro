@@ -13,7 +13,7 @@ const p0 = [
 const cases = [
   {tag:'Новостройки',title:'7 PARK',meta:'Павловск · 7 домов',image:'/evidence/7park/object-exterior-day.jpg',imageAlt:'Реальный дневной вид 7 PARK в Павловске',href:'/blog/detail/kak-my-sdali-7-domov/'},
   {tag:'Ресторан',title:'ЖК «Леонтьевский Мыс»',image:'/evidence/leont/owner-cover-v43.webp',imageAlt:'Выполненный объект AEROVENTA — ресторан в ЖК Леонтьевский Мыс',meta:'Санкт-Петербург · приточно-вытяжная вентиляция + оборудование',href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/'},
-  {tag:'Производство',title:'НТФФ «Полисан»',meta:'Санкт-Петербург · монтаж на фармацевтическом объекте',image:'/evidence/polisan/owner-cover-v43.webp',imageAlt:'Архивный фотокадр работ на объекте НТФФ Полисан',href:'/blog/detail/ntff-polisan/'},
+  {tag:'Производство',title:'НТФФ «Полисан»',meta:'Санкт-Петербург · монтаж на фармацевтическом объекте',image:'/evidence/polisan/archive/20180601-133711.webp',imageAlt:'Архивный фотокадр работ на объекте НТФФ Полисан',href:'/blog/detail/ntff-polisan/'},
   {tag:'Квартира',title:'Маршала Жукова',image:'/evidence/zhukov/duct-installation-01.jpg',imageAlt:'Монтаж вентиляции в квартире на Маршала Жукова',meta:'Санкт-Петербург · приточно-вытяжная вентиляция',href:'/blog/detail/kvartira-na-zhukova/'},
   {tag:'Карелия',title:'Питкяранта / PONSSE',meta:'Сервисно-образовательный центр · вентиляция + оборудование',image:'/evidence/karelia/owner-cover-v43.webp',imageAlt:'Фотография сервисного центра PONSSE в Питкяранте',href:'/blog/detail/montazh-ventilyatsii-v-karelii/'},
   {tag:'Кафе',title:'Римского-Корсакова, 3',image:'/evidence/cafe/owner-cover-v43.webp',imageAlt:'Выполненный объект AEROVENTA — кафе на Римского-Корсакова, 3',meta:'Санкт-Петербург · приточно-вытяжная вентиляция + оборудование',href:'/blog/detail/kafe-rimskogo-korsakova-3/'},
@@ -32,12 +32,37 @@ const isStories = content.path === '/blog/istorii-proektov/';
         <h1>Статьи</h1>
         <p>Практика монтажа и алмазного бурения: конкретные ситуации, исходные условия, технические решения.</p>
         <nav class="practice-index-nav" aria-label="Разделы статей">
-          <a href="#articles-list">Практические материалы</a>
+          <a href="#ventilation-stories">Монтаж вентиляции</a>
+          <a href="#articles-list">Технические статьи</a>
           <a href="/blog/istorii-proektov/">Истории объектов</a>
         </nav>
       </div>
     </header>
-    <section class="practice-article-index" id="articles-list" aria-label="Экспертные статьи">
+    <section class="home-section practice-featured" id="ventilation-stories" aria-labelledby="practice-featured-title">
+      <div class="home-shell">
+        <header class="practice-featured__heading">
+          <div>
+            <p class="section-index">Монтаж вентиляции</p>
+            <h2 id="practice-featured-title">Работы на реальных объектах</h2>
+            <p>Жилые комплексы, производственные площадки, кафе и квартиры: состав работ и фотографии из наших проектов.</p>
+          </div>
+          <a href="/blog/istorii-proektov/">Все истории объектов →</a>
+        </header>
+        <div class="practice-featured__grid">
+          {cases.slice(0,4).map(item => (
+            <a class="practice-featured__card" href={item.href}>
+              <img src={item.image} alt={item.imageAlt} width="800" height="520" loading="lazy" decoding="async"/>
+              <span>{item.tag}</span><h3>{item.title}</h3><p>{item.meta}</p>
+              <b>Смотреть объект →</b>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+    <section class="practice-article-index" id="articles-list" aria-label="Технические статьи">
+      <div class="home-shell practice-featured__heading practice-featured__heading--archive">
+        <div><p class="section-index">Технический опыт</p><h2>Алмазное бурение: статьи из практики</h2></div>
+      </div>
       <div class="home-shell practice-article-index__list">
         {p0.map((item,index) => (
           <a class="practice-article-index__item" href={item.href}>
@@ -63,7 +88,7 @@ const isStories = content.path === '/blog/istorii-proektov/';
     <header class="practice-hero">
       <div class="home-shell practice-hero__grid">
         <div><p class="home-kicker">Статьи / полезные материалы</p><h1>Практические материалы</h1></div>
-        <div><p class="practice-hero__lede">Материалы, в которых есть конкретная задача, непосредственный опыт или понятная инженерная логика. Старые сильные статьи сохраняем на их URL, но не переносим устаревшие цены и коммерческие заявления.</p><a class="practice-back" href="/blog/">← Статьи</a></div>
+        <div><p class="practice-hero__lede">Технические статьи о проходках, материалах стен, условиях доступа и факторах стоимости. Отдельные работы по алмазному бурению рассматриваем как смежные с монтажом вентиляции.</p><a class="practice-back" href="/blog/">← Статьи</a></div>
       </div>
     </header>
 
@@ -104,7 +129,7 @@ const isStories = content.path === '/blog/istorii-proektov/';
     </header>
 
     <section class="home-section story-index">
-      <div class="home-shell"><p class="section-index">01 / Подтверждённые истории</p><h2>Квартиры, жилые дома, кафе и производство.</h2>
+      <div class="home-shell"><p class="section-index">01 / Выполненные объекты</p><h2>Квартиры, жилые дома, кафе и производство.</h2>
         <div class="story-index__grid">
           {cases.map((item,index) => <a href={item.href}>{item.image && <img class="story-index__photo" src={item.image} alt={item.imageAlt} width="800" height="450" loading="lazy" decoding="async" />}<div><span>{String(index+1).padStart(2,'0')}</span><b>{item.tag}</b></div><h3>{item.title}</h3><p>{item.meta}</p><strong>Смотреть объект →</strong></a>)}
         </div>
