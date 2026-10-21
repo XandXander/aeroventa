@@ -378,9 +378,21 @@ try {
               servicesOptical.natural_widths.some(n=>n<400) ||
               servicesOptical.object_fits.some(n=>n!=='cover') ||
               (mobile && (servicesOptical.photo_top<servicesOptical.intro_bottom-3 ||
-                  servicesOptical.inline_visible || !servicesOptical.floating_visible))) {
-            report.fail.push({route,view,reason:'Owner Services single authentic image and mobile placement',wrong,actual,servicesOptical});
+                  servicesOptical.inline_visible)) ||
+              servicesOptical.floating_visible) {
+            report.fail.push({route,view,reason:'Owner Services single authentic image, no obstructive launcher in first fold',wrong,actual,servicesOptical});
           }
+          // Even after suppressing the colliding initial launcher, the
+          // consultant must remain reachable on scroll by keyboard and pointer.
+          await page.locator('.services-competence').scrollIntoViewIfNeeded();
+          await page.waitForFunction(()=>document.documentElement.classList.contains('is-past-first-fold'),null,{timeout:4500});
+          const postFoldLauncher=await page.locator('.consultant-launcher').evaluate(el=>{
+            const s=getComputedStyle(el),r=el.getBoundingClientRect();
+            return s.visibility!=='hidden'&&s.display!=='none'&&s.pointerEvents!=='none'&&r.width>0&&r.height>0;
+          });
+          if(!postFoldLauncher)report.fail.push({route,view,reason:'Services consultant must reappear after first fold'});
+          await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
+          await page.waitForFunction(()=>!document.documentElement.classList.contains('is-past-first-fold'),null,{timeout:4500});
         }
         if (id === 'ventilation') {
           const architectural = await page.locator('.service-premium__visual img[src="/evidence/hero/hiend-engineering-visual-owner-v43.webp"]').count();

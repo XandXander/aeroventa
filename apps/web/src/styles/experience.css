@@ -516,6 +516,13 @@
  .consultant-conversation__history {scroll-behavior:auto;}
 }
 
+/* Consultant launcher outside navigation, no automatic popup or model claim.
+ * On SERVICES, the three real routes occupy the initial fold. A fixed button
+ * must not obscure or intercept the third route. The primary in-fold contact
+ * action remains available; the consultant launcher appears after the first fold. */
+html:not(.is-past-first-fold):has(.services-hero--owner-editorial) .consultant-launcher{
+  visibility:hidden;opacity:0;pointer-events:none;
+}
 /* Consultant launcher outside navigation, no automatic popup or model claim. */
 .consultant-launcher {position:fixed;z-index:29;right:max(22px,env(safe-area-inset-right,22px));bottom:max(20px,env(safe-area-inset-bottom,20px));display:inline-flex;align-items:center;gap:12px;min-height:52px;padding:7px 19px 7px 8px;border:1px solid #c9dae5;border-radius:999px;background:#fff;color:#12344c;text-decoration:none;box-shadow:0 10px 28px rgba(7,28,43,.15);font-size:.84rem;font-weight:760;}
 .consultant-launcher:hover {border-color:#8cb8ce;background:#f7fbfd;}
