@@ -47,6 +47,31 @@ const editorialOgFallback: Record<string, string> = {
   '/obekty/restorany-i-kafe/': '/evidence/leont/owner-cover-v43.webp',
   '/blog/': '/evidence/polisan/archive/20180601-133711.webp',
   '/blog/istorii-proektov/': '/evidence/leont/owner-cover-v43.webp',
+  '/blog/poleznye-stati/': '/upload/medialibrary/548/5488fb415056eee52ac63ff9d4850c63.jpg',
+  '/blog/obzory-i-intervyu/': '/evidence/polisan/archive/20180601-133720.webp',
+  '/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/': '/upload/medialibrary/548/5488fb415056eee52ac63ff9d4850c63.jpg',
+  '/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/': '/upload/medialibrary/0a2/0a2f0d1be2900e0a1fe74bcd9604e3f8.jpg',
+  '/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/': '/upload/medialibrary/fb3/fb3d693282a8085971dd4e2fe87bf28e.jpg',
+  '/blog/detail/gorizontalnoe-almaznoe-burenie/': '/upload/medialibrary/e1c/e1cd51110183f9c6b2e704b70664eba1.jpg',
+  '/blog/detail/novoe-almaznoe-burenie/': '/upload/medialibrary/0a2/0a2f0d1be2900e0a1fe74bcd9604e3f8.jpg',
+  '/almaznoe-burenie/': '/upload/medialibrary/e1c/e1cd51110183f9c6b2e704b70664eba1.jpg',
+  '/contact/': '/evidence/team/owner-team-group-20261015.webp',
+  '/faq/': '/evidence/hero/services-owner-editorial-1774.webp',
+  '/privacy/': '/evidence/hero/owner-luxury-airflow-20261010.png',
+  '/vakansii/': '/evidence/team/owner-team-group-20261015.webp',
+  '/news/': '/evidence/team/owner-team-group-20261015.webp',
+  '/news/istoriya-kompanii/': '/evidence/team/owner-team-group-20261015.webp',
+  '/news/korporativnaya-zhizn/': '/evidence/team/owner-team-group-20261015.webp',
+  '/news/znachimye-sobytiya/': '/evidence/polisan/archive/20180601-133711.webp',
+  '/obekt-bez-gotovogo-proekta/': '/evidence/hero/project-not-ready-owner-concept-1672.webp',
+  '/obekty/': '/evidence/leont/owner-cover-v43.webp',
+  '/obekty/novostroyki/': '/evidence/7park/object-courtyard-night.jpg',
+  '/obekty/ofisy-i-kommerciya/': '/evidence/owner-portfolio/apart-hotel/cover.webp',
+  '/obekty/sklady/': '/evidence/hero/services-owner-editorial-1774.webp',
+  '/obekty/magaziny-i-sklady/': '/evidence/hero/services-owner-editorial-1774.webp',
+  '/obekty/ofisy-i-kommercheskie-pomeshcheniya/': '/evidence/owner-portfolio/apart-hotel/cover.webp',
+  '/obekty/novostroyki-i-zhilye-kompleksy/': '/evidence/7park/object-courtyard-night.jpg',
+  '/covid-pritochnaya-ventilacia/': '/evidence/hero/services-owner-editorial-1774.webp',
   '/blog/detail/kak-my-sdali-7-domov/': '/evidence/7park/object-exterior-day.jpg',
   '/blog/detail/restoran-v-zhk-leontevskiy-mys/': '/evidence/leont/owner-cover-v43.webp',
   '/blog/detail/ntff-polisan/': '/evidence/polisan/owner-cover-v43.webp',
@@ -61,7 +86,7 @@ const rejectedServicesImage = content.path === '/services/' &&
    'https://aeroventa.ru/evidence/cafe/owner-cover-v43.webp'].includes(content.og_image || '');
 const ogImageSource = rejectedServicesImage
   ? editorialOgFallback['/services/']
-  : (content.og_image || editorialOgFallback[content.path]);
+  : (content.og_image || editorialOgFallback[content.path] || '/evidence/hero/services-owner-editorial-1774.webp');
 const ogImage = ogImageSource ? new URL(ogImageSource, 'https://aeroventa.ru').toString() : null;
 const ogImageType = ogImage ? (/\.png(?:$|\?)/i.test(ogImage) ? 'image/png' : /\.jpe?g(?:$|\?)/i.test(ogImage) ? 'image/jpeg' : /\.webp(?:$|\?)/i.test(ogImage) ? 'image/webp' : null) : null;
 const ogImageAlt = `AEROVENTA — ${content.h1 || content.title}`;

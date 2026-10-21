@@ -316,7 +316,7 @@ const sportPhotos = [
       button.addEventListener('click',()=>{
         try{
           const value=JSON.parse(button.dataset.galleryImages||'[]');
-          const safe=/^\/evidence\/owner-portfolio\/(?:apart-hotel|eurospar-vo|eurospar-sestroretsk|college-obvodny|novatech|akvilon-yanino|himprom|sport-komendantskiy)\/(?:owner-selected-aerial|cover|[0-9]{2,3}|gallery-[0-9]{2,3})\.(?:webp|jpe?g|png)$/i;
+          const safe=/^(?:\/evidence\/owner-portfolio\/(?:apart-hotel|eurospar-vo|eurospar-sestroretsk|college-obvodny|novatech|akvilon-yanino|himprom|sport-komendantskiy)\/(?:owner-selected-aerial|cover|[0-9]{2,3}|gallery-[0-9]{2,3})\.(?:webp|jpe?g|png)|\/evidence\/residential\/owner-neva-facade-20261016\.jpg)$/i;
           if(!Array.isArray(value)||!value.length||!value.every((v:unknown)=>typeof v==='string'&&safe.test(v)))return;
           photos=value;opener=button;
           if(title)title.textContent=button.dataset.galleryTitle||'Объект';

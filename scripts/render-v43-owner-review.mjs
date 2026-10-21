@@ -277,7 +277,7 @@ try {
           const ponsse = await page.locator('.portfolio-card:has-text("PONSSE")').count();
           const requiredCovers = {
             'Ресторан в ЖК': '/evidence/leont/owner-cover-v43.webp',
-            'НТФФ': '/evidence/polisan/owner-cover-v43.webp',
+            'НТФФ': '/evidence/polisan/archive/20180601-133711.webp',
             'Маршала Жукова': '/evidence/zhukov/owner-cover-v43.webp',
             'PONSSE': '/evidence/karelia/owner-cover-v43.webp',
             'Римского-Корсакова': '/evidence/cafe/owner-cover-v43.webp',
@@ -339,7 +339,7 @@ try {
         if (id === 'services') {
           // 14 Oct Owner explicitly rejected the old two-photo services HERO.
           const photographicProof = page.locator('.services-hero__backdrop--single img');
-          const expected = ['/evidence/hero/hiend-engineering-visual-owner-v43.webp'];
+          const expected = ['/evidence/hero/services-owner-editorial-1774.webp'];
           const actual = await photographicProof.evaluateAll(nodes=>nodes.map(n=>new URL(n.src).pathname));
           const wrong = await page.locator('.services-hero img[src="/evidence/hero/engineering-ductwork.jpg"],.services-hero img[src="/evidence/cafe/owner-cover-v43.webp"]').count();
           const servicesOptical = await page.evaluate(() => {
@@ -781,7 +781,7 @@ try {
     const page=await context.newPage();
     try{
       await page.goto(baseUrl+'/portfolio/',{waitUntil:'load'});
-      const opener=page.locator('button[data-archive-open]').first();
+      const opener=page.locator('button.portfolio-card[data-archive-open]').first();
       await opener.click();
       const viewer=page.locator('#portfolio-archive-viewer');
       await viewer.waitFor({state:'visible'});
@@ -796,7 +796,16 @@ try {
       await page.keyboard.press('Escape');
       await viewer.waitFor({state:'hidden'});
       const restored=await opener.evaluate(el=>el===document.activeElement);
-      if(!photoOk||!original||!second||original===second||!minimal||!restored){
+      // Validate the single Owner-approved Neva photograph without inventing other gallery frames.
+      const neva=page.locator('.portfolio-hero__neva-open');
+      await neva.click();
+      await viewer.waitFor({state:'visible'});
+      const nevaImage=await img.getAttribute('src');
+      await page.keyboard.press('Escape');
+      await viewer.waitFor({state:'hidden'});
+      const nevaFocus=await neva.evaluate(el=>el===document.activeElement);
+      if(!photoOk||!original||!second||original===second||!minimal||!restored||
+         nevaImage!=='/evidence/residential/owner-neva-facade-20261016.jpg'||!nevaFocus){
         report.fail.push({reason:'Owner portfolio minimalist gallery interaction',photoOk,original,second,minimal,restored});
       }
     }catch(error){report.fail.push({reason:'Owner portfolio gallery interaction exception',error:String(error)})}
@@ -823,7 +832,7 @@ try {
           const service=document.querySelector('header.services-hero--owner-editorial');
           const routes=document.querySelector('.services-hero__routes');
           const fold=(home||routes||service)?.getBoundingClientRect().bottom;
-          const firstArticle=document.querySelector('.practice-article-index__item');
+          const firstArticle=document.querySelector('.practice-featured__card, .practice-article-index__item');
           const mark=document.querySelector('.airflow-header-trace__route');
           const markStyle=mark ? getComputedStyle(mark) : null;
           return {
@@ -881,7 +890,9 @@ try {
         natural:n.complete&&n.naturalWidth>0,
         src:n.getAttribute('src')
       })));
-      if(sportCount!==1||gridCount!==12||media.length!==2||media.some(x=>!x.natural) ||
+      if(sportCount!==1||gridCount!==12||media.length!==4||media.some(x=>!x.natural) ||
+         !media.some(x=>x.src?.endsWith('/sport-komendantskiy/02.webp')) ||
+         !media.some(x=>x.src?.endsWith('/sport-komendantskiy/04.webp')) ||
         await page.getByRole('heading',{name:'Центр адаптивного спорта'}).count()!==1) {
         report.fail.push({reason:'Separate owner sports feature: 12+1 and source identity gate',width,sportCount,gridCount,media});
       }
