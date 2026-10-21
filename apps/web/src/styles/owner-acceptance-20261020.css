@@ -171,6 +171,9 @@ html:not(.is-past-first-fold) body:has(.about-hero) .consultant-launcher{
  .object-detail__hero-media{margin-top:12px}
 }
 @media(max-width:1050px){
+ /* Native details[open] is immediate; its JS toggle event may be deferred. */
+ html:has(.mobile-menu[open]){overflow:hidden}
+ html:has(.mobile-menu[open]) .consultant-launcher{visibility:hidden!important;pointer-events:none!important}
  html.av-mobile-menu-open{overflow:hidden}
  html.av-mobile-menu-open .consultant-launcher{visibility:hidden!important;pointer-events:none!important}
  .site-header:has(.mobile-menu[open]){z-index:80;background:#fff}
