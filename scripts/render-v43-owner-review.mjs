@@ -277,7 +277,6 @@ try {
           const ponsse = await page.locator('.portfolio-card:has-text("PONSSE")').count();
           const requiredCovers = {
             'Ресторан в ЖК': '/evidence/leont/owner-cover-v43.webp',
-            'НТФФ': '/evidence/polisan/archive/20180601-133711.webp',
             'Маршала Жукова': '/evidence/zhukov/owner-cover-v43.webp',
             'PONSSE': '/evidence/karelia/owner-cover-v43.webp',
             'Римского-Корсакова': '/evidence/cafe/owner-cover-v43.webp',
@@ -286,6 +285,11 @@ try {
             const count = await page.locator(`.portfolio-card:has-text("${name}") img[src="${src}"]`).count();
             if (count !== 1) report.fail.push({route,view,reason:'Owner authentic cover mismatch',name,src,count});
           }
+          // Latest Owner P0: Polisan is an editorial feature with the actual facade,
+          // not a duplicate roof-image card; 7 PARK is kept on HOME and its own case.
+          const polisanFeature=page.locator('.portfolio-feature img[src="/evidence/polisan/owner-cover-v43.webp"]');
+          if(await polisanFeature.count()!==1)
+            report.fail.push({route,view,reason:'Owner Polisan chosen facade must be visible as portfolio editorial feature'});
           const historical = page.locator('a.portfolio-card[href^="/blog/detail/"]');
           const archives = page.locator('button.portfolio-card[data-archive-open][aria-controls="portfolio-archive-viewer"]');
           const historicUrls = await historical.evaluateAll(nodes=>nodes.map(n=>n.getAttribute('href')));
@@ -297,12 +301,17 @@ try {
               ['eurospar-sestroretsk',11], ['college-obvodny',15],
               ['novatech',10], ['akvilon-yanino',19], ['himprom',11],
             ]);
-            return nodes.length === expected.size && nodes.every(n=>{
+            let nevaCount=0;
+            const allValid=nodes.every(n=>{
               const cover = n.querySelector('img')?.getAttribute('src') || '';
+              const urls = JSON.parse(n.getAttribute('data-gallery-images')||'[]');
+              if(cover==='/evidence/residential/owner-neva-facade-20261016.jpg'){
+                nevaCount++;
+                return urls.length===1 && urls[0]===cover;
+              }
               const slug = cover.match(/^\/evidence\/owner-portfolio\/([a-z0-9-]+)\//)?.[1];
               if (!expected.has(slug)) return false;
               const prefix = '/evidence/owner-portfolio/' + slug + '/';
-              const urls = JSON.parse(n.getAttribute('data-gallery-images')||'[]');
               const valid = urls.length === expected.get(slug) &&
                 urls[0] === prefix + 'cover.webp' &&
                 new Set(urls).size === urls.length &&
@@ -310,13 +319,15 @@ try {
                   /^(?:cover|0[2-9]|[1-9][0-9]|gallery-[0-9]{2,3})\.webp$/.test(u.slice(prefix.length)));
               expected.delete(slug);
               return valid;
-            }) && expected.size === 0;
+            });
+            return nodes.length===8 && nevaCount===1 && allValid && expected.size===0;
           });
           if (count !== 12 || photos !== 12 || ponsse !== 1 ||
-              await historical.count() !== 5 || await archives.count() !== 7 ||
-              !sourceValid || historical && !historicUrls.every(h=>h?.startsWith('/blog/detail/')) ||
-              await page.locator('.portfolio-feature a[href="/blog/detail/kak-my-sdali-7-domov/"]').count() !== 1) {
-            report.fail.push({route,view,reason:'Owner 12 source-locked objects plus leading 7 PARK',count,photos,ponsse,historic:historicUrls,archiveCount:await archives.count(),sourceValid});
+              await historical.count() !== 4 || await archives.count() !== 8 ||
+              !sourceValid || !historicUrls.every(h=>h?.startsWith('/blog/detail/')) ||
+              await page.locator('.portfolio-feature a[href="/blog/detail/ntff-polisan/"]').count() !== 1 ||
+              await page.locator('.portfolio-feature a[href="/blog/detail/kak-my-sdali-7-domov/"]').count() !== 0) {
+            report.fail.push({route,view,reason:'Owner diversified archive portfolio + Polisan editorial feature, 7 PARK not featured',count,photos,ponsse,historic:historicUrls,archiveCount:await archives.count(),sourceValid});
           }
         }
         if (['drill_crown', 'drill_screed', 'drill_cost', 'drill_horizontal'].includes(id)) {
@@ -803,15 +814,19 @@ try {
       await viewer.waitFor({state:'hidden'});
       const restored=await opener.evaluate(el=>el===document.activeElement);
       // Validate the single Owner-approved Neva photograph without inventing other gallery frames.
-      const neva=page.locator('.portfolio-hero__neva-open');
+      const neva=page.locator('button.portfolio-card--archive:has-text("На излучине Невы")');
       await neva.click();
       await viewer.waitFor({state:'visible'});
       const nevaImage=await img.getAttribute('src');
+      const fakeArrows=await viewer.locator('[data-gallery-nav]').isVisible();
+      await page.keyboard.press('ArrowRight');
+      const nevaAfterArrow=await img.getAttribute('src');
       await page.keyboard.press('Escape');
       await viewer.waitFor({state:'hidden'});
       const nevaFocus=await neva.evaluate(el=>el===document.activeElement);
       if(!photoOk||!original||!second||original===second||!minimal||!restored||
-         nevaImage!=='/evidence/residential/owner-neva-facade-20261016.jpg'||!nevaFocus){
+         nevaImage!=='/evidence/residential/owner-neva-facade-20261016.jpg'||fakeArrows||
+         nevaAfterArrow!==nevaImage||!nevaFocus){
         report.fail.push({reason:'Owner portfolio minimalist gallery interaction',photoOk,original,second,minimal,restored});
       }
     }catch(error){report.fail.push({reason:'Owner portfolio gallery interaction exception',error:String(error)})}
@@ -896,13 +911,16 @@ try {
         natural:n.complete&&n.naturalWidth>0,
         src:n.getAttribute('src')
       })));
-      if(sportCount!==1||gridCount!==12||media.length!==4||media.some(x=>!x.natural) ||
-         !media.some(x=>x.src?.endsWith('/sport-komendantskiy/02.webp')) ||
-         !media.some(x=>x.src?.endsWith('/sport-komendantskiy/04.webp')) ||
+      if(sportCount!==1||gridCount!==12||media.length!==2||media.some(x=>!x.natural) ||
+         !media.some(x=>x.src?.endsWith('/sport-komendantskiy/owner-selected-aerial.webp')) ||
+         !media.some(x=>x.src?.endsWith('/sport-komendantskiy/gallery-01.webp')) ||
         await page.getByRole('heading',{name:'Центр адаптивного спорта'}).count()!==1) {
         report.fail.push({reason:'Separate owner sports feature: 12+1 and source identity gate',width,sportCount,gridCount,media});
       }
-      const open=sport.locator('button[data-archive-open]');
+      const open=sport.locator('.portfolio-sport__photo--large button[data-archive-open]');
+      const diffuserOpen=sport.locator('.portfolio-sport__photo--detail button[data-archive-open]');
+      if(await open.count()!==1 || await diffuserOpen.count()!==1)
+        throw new Error('Both leading sport photos must be actionable');
       await open.click();
       const modal=page.locator('#portfolio-archive-viewer');
       await modal.waitFor({state:'visible',timeout:2500});
@@ -912,8 +930,14 @@ try {
       const second=await modal.locator('[data-gallery-photo]').getAttribute('src');
       await page.keyboard.press('Escape');
       const restored=await open.evaluate(el=>document.activeElement===el);
-      if(!minimalControls||first===second||!restored||await modal.isVisible())
-        report.fail.push({reason:'Sports minimalist gallery navigation / Escape / focus',width,minimalControls,first,second,restored});
+      await diffuserOpen.click();
+      await modal.waitFor({state:'visible'});
+      const sameGallery=await modal.locator('[data-gallery-photo]').getAttribute('src')===first &&
+        await modal.locator('[data-gallery-next]').isVisible();
+      await page.keyboard.press('Escape');
+      const diffuserFocus=await diffuserOpen.evaluate(el=>document.activeElement===el);
+      if(!minimalControls||first===second||!restored||!sameGallery||!diffuserFocus||await modal.isVisible())
+        report.fail.push({reason:'Sport: both chosen images open one navigable gallery with focus restoration',width,minimalControls,first,second,restored,sameGallery,diffuserFocus});
     }catch(e){report.fail.push({reason:'Sports UI regression error',width,error:String(e)})}
     finally{await context.close()}
   }
