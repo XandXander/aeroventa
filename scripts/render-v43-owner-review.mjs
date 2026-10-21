@@ -353,7 +353,7 @@ try {
         if (id === 'services') {
           // 14 Oct Owner explicitly rejected the old two-photo services HERO.
           const photographicProof = page.locator('.services-hero__backdrop--single img');
-          const expected = ['/evidence/owner-portfolio/apart-hotel/cover.webp'];
+          const expected = ['/evidence/hero/project-not-ready-owner-concept-1672.webp'];
           const actual = await photographicProof.evaluateAll(nodes=>nodes.map(n=>new URL(n.src).pathname));
           const wrong = await page.locator('.services-hero img[src="/evidence/hero/engineering-ductwork.jpg"],.services-hero img[src="/evidence/cafe/owner-cover-v43.webp"]').count();
           const servicesOptical = await page.evaluate(() => {
@@ -367,6 +367,8 @@ try {
               natural_widths:pics.map(n=>n.naturalWidth),
               object_fits:pics.map(n=>getComputedStyle(n).objectFit),
               photo_top:picture?.top??0,
+              photo_bottom:picture?.bottom??0,
+              intro_top:text?.top??0,
               intro_bottom:text?.bottom??0,
               inline_visible:inline?getComputedStyle(inline).display!=='none':false,
               floating_visible:floating?getComputedStyle(floating).display!=='none' && getComputedStyle(floating).visibility!=='hidden' && parseFloat(getComputedStyle(floating).opacity)>.01:false
@@ -376,8 +378,8 @@ try {
           if (JSON.stringify(actual)!==JSON.stringify(expected) || wrong ||
               servicesOptical.natural_widths.length!==1 ||
               servicesOptical.natural_widths.some(n=>n<400) ||
-              servicesOptical.object_fits.some(n=>n!=='cover') ||
-              (mobile && (servicesOptical.photo_top<servicesOptical.intro_bottom-3 ||
+              servicesOptical.object_fits.some(n=>n!=='contain') ||
+              (mobile && (servicesOptical.photo_bottom>servicesOptical.intro_top+3 ||
                   servicesOptical.inline_visible)) ||
               servicesOptical.floating_visible) {
             report.fail.push({route,view,reason:'Owner Services single authentic image, no obstructive launcher in first fold',wrong,actual,servicesOptical});

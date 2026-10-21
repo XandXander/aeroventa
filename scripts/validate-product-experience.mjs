@@ -229,8 +229,8 @@ check(mediaStats.every(stat => stat?.isFile() && stat.size > 20000), 'All six op
 // Conceptual nature stays in meaningful alternative text, not a developer QA caption.
 // Rejected construction/café images must never become the services lead image.
 check(files.home.includes("const ownerHeroMedia = '/evidence/hero/owner-luxury-airflow-20261010.png'") &&
-      files.services.includes('/evidence/owner-portfolio/apart-hotel/cover.webp') &&
-      files.services.includes('alt="Коворкинг на Бумажном: открытые вентиляционные воздуховоды в реальном интерьере"') &&
+      files.services.includes('/evidence/hero/project-not-ready-owner-concept-1672.webp') &&
+      files.services.includes('alt="Художественная архитектурная визуализация: прозрачная голубая схема вентиляции и воздушных потоков в панорамном интерьере"') &&
       !files.services.includes('home-owner-editorial-1672.webp') &&
       !files.services.includes('hiend-engineering-visual-owner-v43.webp') &&
       !files.services.includes('<img src="/evidence/cafe/owner-cover-v43.webp"') &&
