@@ -120,15 +120,20 @@ jobs:
           test ! -e apps/web/dist/STAGING_RULES_REFERENCE_ONLY.txt
           python3 - <<'PY'
           from pathlib import Path
-          import os,re
+          import os
           root=Path('apps/web/dist')
           htmls=list(root.rglob('*.html'))
           assert len(htmls)>=40, len(htmls)
-          assert all(re.search(r'<meta[^>]+name=["\\']robots["\\'][^>]*noindex',p.read_text(),re.I) for p in htmls)
+          assert all('name="robots" content="noindex' in p.read_text() for p in htmls)
           assert (root/'index.html').is_file() and (root/'404.html').is_file()
           assert not any(p.is_symlink() for p in root.rglob('*'))
-          forbidden=re.compile(r'(^|/)(?:\\.env(?:\\..*)?|\\.git|\\.htaccess|.*\\.log|.*\\.zip|STAGING_ONLY_BUILD_INFO\\.txt|STAGING_RULES_REFERENCE_ONLY\\.txt)$',re.I)
-          assert all(not forbidden.search(p.relative_to(root).as_posix()) for p in root.rglob('*') if p.is_file())
+          forbidden_names={'.htaccess','.git','node_modules','STAGING_ONLY_BUILD_INFO.txt','STAGING_RULES_REFERENCE_ONLY.txt'}
+          for item in root.rglob('*'):
+              if not item.is_file():
+                  continue
+              parts=item.relative_to(root).parts
+              assert not any(part in forbidden_names or part.startswith('.env') for part in parts), parts
+              assert not item.name.lower().endswith(('.log','.zip','.dpapi')), parts
           print('STAGING_ONLY_SOURCE_SHA='+os.environ['REVIEW_SHA'])
           print('WEBROOT_FILES='+str(sum(p.is_file() for p in root.rglob('*'))))
           print('EXISTING_STAGING_HTACCESS=DO_NOT_REPLACE')
