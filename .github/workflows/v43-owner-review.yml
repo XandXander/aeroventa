@@ -101,7 +101,7 @@ jobs:
       # Browser QA must PASS first. The archive contains compiled site files
       # at ZIP root. Existing staging .htaccess / Basic Auth MUST be preserved.
       - name: Seal tested staging-only site
-        if: success() && github.event_name == 'workflow_dispatch'
+        if: success() && (github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.number == 12))
         env:
           REVIEW_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
@@ -111,29 +111,34 @@ jobs:
           test -f apps/web/dist/sitemap.xml
           grep -qi 'name="robots" content="noindex' apps/web/dist/index.html
           printf 'User-agent: *\nDisallow: /\n' > apps/web/dist/robots.txt
-          cat > apps/web/dist/STAGING_ONLY_BUILD_INFO.txt <<EOF
-          AEROVENTA STAGING-ONLY FIXTURE REVIEW BUILD
-          GITHUB_SHA=$REVIEW_SHA
-          TEST=implementation validation + compiled Playwright browser review PASS
-          INDEXING=DISABLED (noindex and robots Disallow)
-          DESTINATION=staging.aeroventa.ru ONLY, after verifying existing Basic Auth
-          EXISTING_STAGING_HTACCESS=DO_NOT_REPLACE
-          ROUTING_RULES_GENERATED=reference-only in STAGING_RULES_REFERENCE_ONLY.txt
-          NOT_A_DIRECTUS_PRODUCTION_BUILD
-          DO_NOT_UPLOAD_TO_PRODUCTION_OR_REPLACE_LIVE_BITRIX
-          EOF
           grep -q '^Disallow: /' apps/web/dist/robots.txt
-          grep -q '^DO_NOT_UPLOAD_TO_PRODUCTION' apps/web/dist/STAGING_ONLY_BUILD_INFO.txt
-          # Beget staging Basic Auth historically resides inside .htaccess.
-          # Never allow this distributable bundle to overwrite that security
-          # boundary with the raw generated production routing rules.
-          mv apps/web/dist/.htaccess apps/web/dist/STAGING_RULES_REFERENCE_ONLY.txt
+          # Keep existing protected Beget staging .htaccess untouched.
+          # Only the static public site-root files may be included in the ZIP.
+          mv apps/web/dist/.htaccess "$RUNNER_TEMP/aeroventa-generated-hosting-rules.txt"
           test ! -f apps/web/dist/.htaccess
+          test ! -e apps/web/dist/STAGING_ONLY_BUILD_INFO.txt
+          test ! -e apps/web/dist/STAGING_RULES_REFERENCE_ONLY.txt
+          python3 - <<'PY'
+          from pathlib import Path
+          import os,re
+          root=Path('apps/web/dist')
+          htmls=list(root.rglob('*.html'))
+          assert len(htmls)>=40, len(htmls)
+          assert all(re.search(r'<meta[^>]+name=["\\']robots["\\'][^>]*noindex',p.read_text(),re.I) for p in htmls)
+          assert (root/'index.html').is_file() and (root/'404.html').is_file()
+          assert not any(p.is_symlink() for p in root.rglob('*'))
+          forbidden=re.compile(r'(^|/)(?:\\.env(?:\\..*)?|\\.git|\\.htaccess|.*\\.log|.*\\.zip|STAGING_ONLY_BUILD_INFO\\.txt|STAGING_RULES_REFERENCE_ONLY\\.txt)$',re.I)
+          assert all(not forbidden.search(p.relative_to(root).as_posix()) for p in root.rglob('*') if p.is_file())
+          print('STAGING_ONLY_SOURCE_SHA='+os.environ['REVIEW_SHA'])
+          print('WEBROOT_FILES='+str(sum(p.is_file() for p in root.rglob('*'))))
+          print('EXISTING_STAGING_HTACCESS=DO_NOT_REPLACE')
+          print('MODE=FIXTURE_STAGING_ONLY')
+          PY
       - name: Upload exact tested staging-only site
-        if: success() && github.event_name == 'workflow_dispatch'
+        if: success() && (github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.number == 12))
         uses: actions/upload-artifact@v6
         with:
-          name: AEROVENTA_V43_STAGING_ONLY_SITE_DO_NOT_UPLOAD_TO_PRODUCTION
+          name: AEROVENTA_PR12_STAGING_ONLY_SITE_DO_NOT_UPLOAD_TO_PRODUCTION
           path: apps/web/dist/
           include-hidden-files: true
           if-no-files-found: error

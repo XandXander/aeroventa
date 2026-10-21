@@ -299,12 +299,30 @@ check(portfolioSource.includes('class="portfolio-sport"') &&
       portfolioSource.includes('04 / Ваш объект') &&
       portfolioSource.includes("const sportPhotos = [") &&
       portfolioSource.includes("'/evidence/owner-portfolio/sport-komendantskiy/owner-selected-aerial.webp'") &&
+      portfolioSource.includes("'/evidence/owner-portfolio/sport-komendantskiy/gallery-01.webp'") &&
       portfolioSource.includes("'/evidence/owner-portfolio/sport-komendantskiy/02.webp'") &&
       portfolioSource.includes("'/evidence/owner-portfolio/sport-komendantskiy/04.webp'") &&
+      portfolioSource.includes('aria-label="Две главные фотографии спортивного центра"') &&
+      portfolioSource.includes('alt="Чёрный круглый воздухораспределитель в спортивном центре"') &&
+      !portfolioSource.includes('portfolio-sport__photo--technical') &&
       !portfolioSource.includes("...ownerGallery('sport-komendantskiy')") &&
-      portfolioSource.includes('portfolio-sport__photo--technical') &&
       portfolioSource.includes('<h2 id="portfolio-sport-title">Центр адаптивного спорта</h2>'),
-      'Sport: independently curated, photo-backed engineering sequence; unverified scope not asserted');
+      'Sport: two Owner-selected original photographs open one curated object gallery');
+check(portfolioSource.includes('if(nav)nav.hidden=photos.length<2;') &&
+      portfolioSource.includes('if(x===null||photos.length<2||zoom>1') &&
+      portfolioSource.includes('portfolio-archive-viewer__nav[hidden]{display:none!important}') &&
+      portfolioSource.includes('"title": "На излучине Невы"'),
+      'Owner Neva: original facade and no false arrows for single-photo gallery');
+const polisanMediaSection = caseSource.split("'/blog/detail/ntff-polisan/': {")[1]?.split('    proves:')[0] || '';
+check(polisanMediaSection.includes('    media:[\\n      ["/evidence/polisan/owner-cover-v43.webp"') &&
+      polisanMediaSection.includes('20180601-133711.webp') &&
+      polisanMediaSection.includes('20180601-133720.webp'),
+      'Owner Polisan: chosen exterior case cover with authentic roof photos');
+check(portfolioSource.includes('aria-label="Разные реальные объекты AEROVENTA"') &&
+      portfolioSource.includes('portfolio-hero__mosaic-third') &&
+      portfolioSource.includes("item.index !== '01' && item.index !== '03'") &&
+      !portfolioSource.includes('id="featured-case-title">7 PARK'),
+      'Portfolio: diverse first-fold and no repeat 7 PARK feature');
 for(const name of ['cover','02','03','04']){
   const img=await fs.stat(path.join(root,'apps/web/public/evidence/owner-portfolio/sport-komendantskiy',name+'.webp')).catch(()=>null);
   check(Boolean(img?.isFile()&&img.size>15000), 'Sports object selected provenance media exists: '+name);
