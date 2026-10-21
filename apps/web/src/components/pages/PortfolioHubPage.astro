@@ -255,7 +255,7 @@ const sportPhotos = [
         </figure>
         <figure class="portfolio-sport__photo portfolio-sport__photo--detail">
           <button type="button" data-archive-open data-gallery-title="Центр адаптивного спорта"
-            data-gallery-images={JSON.stringify(sportPhotos)} aria-haspopup="dialog"
+            data-gallery-images={JSON.stringify(sportPhotos)} data-gallery-start="1" aria-haspopup="dialog"
             aria-controls="portfolio-archive-viewer" aria-label="Открыть галерею с фотографией чёрного круглого диффузора">
             <img src="/evidence/owner-portfolio/sport-komendantskiy/gallery-01.webp" width="1600" height="1200" loading="lazy" decoding="async" alt="Чёрный круглый воздухораспределитель в спортивном центре"/>
           </button>
@@ -335,7 +335,9 @@ const sportPhotos = [
           photos=value;opener=button;
           if(nav)nav.hidden=photos.length<2;
           if(title)title.textContent=button.dataset.galleryTitle||'Объект';
-          show(0);dialog.showModal();close?.focus({preventScroll:true});
+          const requestedStart=Number(button.dataset.galleryStart ?? '0');
+          const start=Number.isInteger(requestedStart)&&requestedStart>=0&&requestedStart<photos.length?requestedStart:0;
+          show(start);dialog.showModal();close?.focus({preventScroll:true});
         }catch{return;}
       });
     }
