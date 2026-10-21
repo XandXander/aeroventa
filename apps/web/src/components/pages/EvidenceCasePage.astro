@@ -420,16 +420,21 @@ const fullOriginalGallery=isPolisan ? [] : (verifiedOriginal?.original_media_pat
 /** The two sign photographs are contextual views of the same supplied Ждановская 45 album.
  * All 26 original frames remain in source-backed arrays and visible on the page. */
 const leontContext=isLeont ? (spec.archiveMedia || []).filter(([src]) => /\/img-(5236|5239)\.webp$/.test(src)) : [];
-// Preserve the owner archive's two photographic sequences while moving the
-// two signage/context images out of the installation narrative.
-const leontGroupIds=[
-  ['4998','4999','5001','5003','5004','5005','5006','5007','5008','5009','5010','5029'],
-  ['5237','5238','5240','5241','5242','5243','5244','5245','5250','5251','5253','5256']
+// Owner editorial selection from the 26 verified source photos (not the first 12).
+// The 12 selected photographs appear first; all 14 other originals remain visible.
+const leontSelectedIds=[
+  '5237','5005','5008',
+  '5241','5007','5242',
+  '5244','5250','5010',
+  '5240','5009','5029'
 ];
-const leontEngineeringGroups=isLeont ? leontGroupIds.map(group=>
-  group.map(id=>(spec.archiveMedia || []).find(([src])=>src.endsWith('/img-'+id+'.webp')))
-    .filter((item):item is [string,string,string]=>Boolean(item))) : [];
-const leontEngineering=leontEngineeringGroups.flat();
+const leontSelected=isLeont ? leontSelectedIds.map(id=>
+  (spec.archiveMedia || []).find(([src])=>src.endsWith('/img-'+id+'.webp')))
+  .filter((item):item is [string,string,string]=>Boolean(item)) : [];
+const leontSelectedPaths=new Set(leontSelected.map(([src])=>src));
+const leontRemaining=isLeont ? (spec.archiveMedia || []).filter(([src])=>
+  !leontSelectedPaths.has(src) && !/\/img-(5236|5239)\.webp$/.test(src)) : [];
+const leontEngineering=[...leontSelected,...leontRemaining];
 const leontPhotoDescriptions:Record<string,string>={
   '4998':'Магистраль воздуховода у потолка',
   '4999':'Параллельные вентиляционные трассы',
@@ -459,9 +464,9 @@ const leontPhotoDescriptions:Record<string,string>={
   '5256':'Техническая зона помещения на этапе монтажа'
 };
 const leontCaption=(src:string)=>leontPhotoDescriptions[src.match(/img-(\d+)\.webp$/)?.[1]||'']||'Документальный кадр монтажа';
-if(isLeont && (leontContext.length !== 2 || leontEngineering.length !== 24 ||
-  new Set([...leontContext,...leontEngineering].map(x=>x[0])).size !== 26 ||
-  leontEngineeringGroups.some(group=>group.length!==12))) {
+if(isLeont && (leontContext.length !== 2 || leontSelected.length !== 12 ||
+  leontRemaining.length !== 12 || leontEngineering.length !== 24 ||
+  new Set([...leontContext,...leontEngineering].map(x=>x[0])).size !== 26)) {
   throw new Error('Leontievsky Mys: exactly 26 unique original photos are required');
 }
 ---
@@ -555,28 +560,14 @@ if(isLeont && (leontContext.length !== 2 || leontEngineering.length !== 24 ||
       {!isSevenPark && !isPonsse && Boolean(spec.archiveMedia?.length) && (
         <section class:list={['case-gallery__archive',isLeont && 'case-gallery__archive--leont']} aria-labelledby="case-photo-archive-title">
           <h3 id="case-photo-archive-title">{isLeont ? 'Помещение ресторана и монтаж вентиляции' : 'Фотографии монтажных работ'}</h3>
-          {isLeont && <div class="case-gallery__chapter" aria-label="Контекст объекта на Ждановской, 45">
-            <h4>Объект · Ждановская, 45</h4>
-            <p>Два кадра из архива этой публикации показывают вывески здания. Их нельзя считать доказательством завершённого интерьера ресторана.</p>
-            <div class="case-gallery__thumbs case-gallery__thumbs--context">
-              {leontContext.map(([src]) => (
-                <figure class="case-gallery__item case-gallery__item--thumb">
-                  <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={leontCaption(src)} data-photo-caption={leontCaption(src)} aria-label={`Увеличить фотографию: ${leontCaption(src)}`}>
-                    <img src={src} alt={leontCaption(src)} width="734" height="551" loading="lazy" decoding="async" />
-                  </button>
-                  <figcaption>{leontCaption(src)}</figcaption>
-                </figure>
-              ))}
-            </div>
-          </div>}
-          {isLeont ? leontEngineeringGroups.map((group,index)=>(
-            <div class="case-gallery__chapter" aria-label={index===0?'Трассировка воздуховодов':'Оборудование и монтажные узлы'}>
-              <h4>{index===0?'Трассы воздуховодов · 12 кадров':'Воздухораспределители и монтажные узлы · 12 кадров'}</h4>
-              <p>{index===0?'Размещение и соединения вентиляционных каналов под перекрытием.':'Продолжение монтажа: узлы, решётки, инженерное оборудование и работа в помещении.'}</p>
+          {isLeont ? (<>
+            <div class="case-gallery__chapter" aria-label="Отобранные фотографии монтажа">
+              <h4>Монтаж вентиляции · 12 фотографий</h4>
+              <p>Отобранные оригинальные кадры: общие планы, трассы, узлы, освещение и работа монтажников.</p>
               <div class="case-gallery__thumbs">
-                {group.map(([src])=>(
+                {leontSelected.map(([src])=>(
                   <figure class="case-gallery__item case-gallery__item--thumb">
-                    <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={leontCaption(src)} data-photo-archival="true" data-photo-caption={leontCaption(src)} aria-label={`Увеличить фотографию: ${leontCaption(src)}`}>
+                    <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={leontCaption(src)} data-photo-archival="true" data-photo-caption={leontCaption(src)} aria-label={`Открыть фотографию: ${leontCaption(src)}`}>
                       <img src={src} alt={leontCaption(src)} width="734" height="551" loading="lazy" decoding="async" />
                     </button>
                     <figcaption>{leontCaption(src)}</figcaption>
@@ -584,7 +575,35 @@ if(isLeont && (leontContext.length !== 2 || leontEngineering.length !== 24 ||
                 ))}
               </div>
             </div>
-          )) : (
+            <div class="case-gallery__chapter" aria-label="Дополнительные фотографии монтажа">
+              <h4>Остальные ракурсы монтажа · 12 фотографий</h4>
+              <p>Документальная последовательность исходных кадров. Все фотографии доступны прямо на странице и в полноэкранном просмотре.</p>
+              <div class="case-gallery__thumbs">
+                {leontRemaining.map(([src])=>(
+                  <figure class="case-gallery__item case-gallery__item--thumb">
+                    <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={leontCaption(src)} data-photo-archival="true" data-photo-caption={leontCaption(src)} aria-label={`Открыть фотографию: ${leontCaption(src)}`}>
+                      <img src={src} alt={leontCaption(src)} width="734" height="551" loading="lazy" decoding="async" />
+                    </button>
+                    <figcaption>{leontCaption(src)}</figcaption>
+                  </figure>
+                ))}
+              </div>
+            </div>
+            <div class="case-gallery__chapter" aria-label="Контекст здания">
+              <h4>Контекст здания · 2 фотографии</h4>
+              <p>Вывески из фотоархива страницы на Ждановской, 45. Это не кадры готового интерьера ресторана.</p>
+              <div class="case-gallery__thumbs case-gallery__thumbs--context">
+                {leontContext.map(([src])=>(
+                  <figure class="case-gallery__item case-gallery__item--thumb">
+                    <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={leontCaption(src)} data-photo-caption={leontCaption(src)} aria-label={`Открыть фотографию: ${leontCaption(src)}`}>
+                      <img src={src} alt={leontCaption(src)} width="734" height="551" loading="lazy" decoding="async" />
+                    </button>
+                    <figcaption>{leontCaption(src)}</figcaption>
+                  </figure>
+                ))}
+              </div>
+            </div>
+          </>) : (
             <div class="case-gallery__thumbs" aria-label="Фотографии объекта">
               {(spec.archiveMedia || []).map(([src,alt,caption])=>(
                 <figure class="case-gallery__item case-gallery__item--thumb">
