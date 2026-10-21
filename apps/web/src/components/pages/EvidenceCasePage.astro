@@ -420,9 +420,48 @@ const fullOriginalGallery=isPolisan ? [] : (verifiedOriginal?.original_media_pat
 /** The two sign photographs are contextual views of the same supplied Ждановская 45 album.
  * All 26 original frames remain in source-backed arrays and visible on the page. */
 const leontContext=isLeont ? (spec.archiveMedia || []).filter(([src]) => /\/img-(5236|5239)\.webp$/.test(src)) : [];
-const leontEngineering=isLeont ? (spec.archiveMedia || []).filter(([src]) => !/\/img-(5236|5239)\.webp$/.test(src)) : [];
+// Preserve the owner archive's two photographic sequences while moving the
+// two signage/context images out of the installation narrative.
+const leontGroupIds=[
+  ['4998','4999','5001','5003','5004','5005','5006','5007','5008','5009','5010','5029'],
+  ['5237','5238','5240','5241','5242','5243','5244','5245','5250','5251','5253','5256']
+];
+const leontEngineeringGroups=isLeont ? leontGroupIds.map(group=>
+  group.map(id=>(spec.archiveMedia || []).find(([src])=>src.endsWith('/img-'+id+'.webp')))
+    .filter((item):item is [string,string,string]=>Boolean(item))) : [];
+const leontEngineering=leontEngineeringGroups.flat();
+const leontPhotoDescriptions:Record<string,string>={
+  '4998':'Магистраль воздуховода у потолка',
+  '4999':'Параллельные вентиляционные трассы',
+  '5001':'Потолочный инженерный узел',
+  '5003':'Воздуховоды и корпус оборудования',
+  '5004':'Разветвление трассы',
+  '5005':'Трасса у оконного проёма',
+  '5006':'Соединения воздуховодов',
+  '5007':'Потолочная сеть воздуховодов',
+  '5008':'Монтаж воздуховодов в помещении',
+  '5009':'Протяжённый участок трассы',
+  '5010':'Воздуховоды под перекрытием',
+  '5029':'Работа монтажника на объекте',
+  '5236':'Вывеска «МЫС» на Ждановской, 45',
+  '5237':'Воздуховоды у наружного остекления',
+  '5238':'Фрагмент потолочной разводки',
+  '5239':'Вывеска «КОФЕ» в здании',
+  '5240':'Участок теплоизолированной трассы',
+  '5241':'Потолочный воздухораспределитель',
+  '5242':'Соединение вентиляционных каналов',
+  '5243':'Вентиляционный отвод',
+  '5244':'Прямоугольная трасса',
+  '5245':'Вентиляция и освещение на этапе монтажа',
+  '5250':'Трассы воздуховодов и светильники',
+  '5251':'Участок системы под потолком',
+  '5253':'Инженерное оборудование под перекрытием',
+  '5256':'Воздуховоды и монтажные узлы'
+};
+const leontCaption=(src:string)=>leontPhotoDescriptions[src.match(/img-(\d+)\.webp$/)?.[1]||'']||'Документальный кадр монтажа';
 if(isLeont && (leontContext.length !== 2 || leontEngineering.length !== 24 ||
-  new Set([...leontContext,...leontEngineering].map(x=>x[0])).size !== 26)) {
+  new Set([...leontContext,...leontEngineering].map(x=>x[0])).size !== 26 ||
+  leontEngineeringGroups.some(group=>group.length!==12))) {
   throw new Error('Leontievsky Mys: exactly 26 unique original photos are required');
 }
 ---
@@ -517,33 +556,45 @@ if(isLeont && (leontContext.length !== 2 || leontEngineering.length !== 24 ||
         <section class:list={['case-gallery__archive',isLeont && 'case-gallery__archive--leont']} aria-labelledby="case-photo-archive-title">
           <h3 id="case-photo-archive-title">{isLeont ? 'Помещение ресторана и монтаж вентиляции' : 'Фотографии монтажных работ'}</h3>
           {isLeont && <div class="case-gallery__chapter" aria-label="Контекст объекта на Ждановской, 45">
-            <h4>Объект · два архивных кадра</h4>
-            <p>Вывески в здании на Ждановской, 45. Кадры показывают место работ и не служат подтверждением завершённой отделки.</p>
+            <h4>Объект · Ждановская, 45</h4>
+            <p>Два кадра из архива этой публикации показывают вывески здания. Их нельзя считать доказательством завершённого интерьера ресторана.</p>
             <div class="case-gallery__thumbs case-gallery__thumbs--context">
-              {leontContext.map(([src,alt,caption]) => (
+              {leontContext.map(([src,alt]) => (
                 <figure class="case-gallery__item case-gallery__item--thumb">
-                  <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={alt} data-photo-caption={caption} aria-label={`Увеличить фотографию: ${caption}`}>
+                  <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={alt} data-photo-caption={leontCaption(src)} aria-label={`Увеличить фотографию: ${leontCaption(src)}`}>
                     <img src={src} alt={alt} width="734" height="551" loading="lazy" decoding="async" />
                   </button>
-                  <figcaption>{caption}</figcaption>
+                  <figcaption>{leontCaption(src)}</figcaption>
                 </figure>
               ))}
             </div>
           </div>}
-          {isLeont && <div class="case-gallery__chapter case-gallery__chapter--engineering">
-            <h4>Вентиляционные трассы и узлы · 24 фотографии</h4>
-            <p>Монтажные кадры из оригинального архива. Нажмите на фотографию для просмотра полного изображения.</p>
-          </div>}
-          <div class="case-gallery__thumbs" aria-label={isLeont ? '24 оригинальные фотографии монтажа ресторана' : 'Фотографии объекта'}>
-            {(isLeont ? leontEngineering : (spec.archiveMedia || [])).map(([src, alt, caption]) => (
-              <figure class="case-gallery__item case-gallery__item--thumb">
-                <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={alt} data-photo-archival="true" data-photo-caption={caption} aria-label={`Посмотреть фотографию: ${alt}`}>
-                  <img src={src} alt={alt} width="734" height="551" loading="lazy" decoding="async" />
-                </button>
-                {isLeont && <figcaption>{caption}</figcaption>}
-              </figure>
-            ))}
-          </div>
+          {isLeont ? leontEngineeringGroups.map((group,index)=>(
+            <div class="case-gallery__chapter" aria-label={index===0?'Трассировка воздуховодов':'Оборудование и монтажные узлы'}>
+              <h4>{index===0?'Трассы воздуховодов · 12 кадров':'Воздухораспределители и монтажные узлы · 12 кадров'}</h4>
+              <p>{index===0?'Размещение и соединения вентиляционных каналов под перекрытием.':'Продолжение монтажа: узлы, решётки, инженерное оборудование и работа в помещении.'}</p>
+              <div class="case-gallery__thumbs">
+                {group.map(([src,alt])=>(
+                  <figure class="case-gallery__item case-gallery__item--thumb">
+                    <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={alt} data-photo-archival="true" data-photo-caption={leontCaption(src)} aria-label={`Увеличить фотографию: ${leontCaption(src)}`}>
+                      <img src={src} alt={alt} width="734" height="551" loading="lazy" decoding="async" />
+                    </button>
+                    <figcaption>{leontCaption(src)}</figcaption>
+                  </figure>
+                ))}
+              </div>
+            </div>
+          )) : (
+            <div class="case-gallery__thumbs" aria-label="Фотографии объекта">
+              {(spec.archiveMedia || []).map(([src,alt,caption])=>(
+                <figure class="case-gallery__item case-gallery__item--thumb">
+                  <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={alt} data-photo-archival="true" data-photo-caption={caption} aria-label={`Посмотреть фотографию: ${alt}`}>
+                    <img src={src} alt={alt} width="734" height="551" loading="lazy" decoding="async" />
+                  </button>
+                </figure>
+              ))}
+            </div>
+          )}
         </section>
       )}
       {fullOriginalGallery.length>0 && (
