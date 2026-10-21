@@ -149,7 +149,11 @@ check(files.notReady.includes('data-contact-open') && files.notReady.includes('d
 check(files.airflow.includes('airflow-header-trace__route--supply'), 'AIRFLOW TRACE supply route preserved');
 check(files.airflow.includes('airflow-header-trace__route--exhaust'), 'AIRFLOW TRACE exhaust route preserved');
 check(files.airflow.includes("matchMedia('(prefers-reduced-motion: reduce)')"), 'AIRFLOW TRACE reduced-motion behavior preserved');
-check(files.airflow.includes('mobile-contact-dock'), 'Persistent mobile contact dock preserved');
+// Owner's 2026-10-21 mobile decision supersedes the V43 persistent dock contract.
+check(!files.airflow.includes('mobile-contact-dock') &&
+      !files.globalCss.includes('.mobile-contact-dock') &&
+      !files.css.includes('.mobile-contact-dock'),
+      'Owner P0: mobile contact dock removed from markup, behavior and CSS');
 
 const ownerShortlistHash = '07B137BF2405D6A863194C254EED12EFBB6557033281DE2427FF279773B3A427';
 check(files.brandWordmark.includes(ownerShortlistHash), 'Owner shortlist provenance retained in AEROVENTA 01 candidate wordmark asset');
