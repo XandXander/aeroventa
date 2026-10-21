@@ -353,7 +353,7 @@ try {
         if (id === 'services') {
           // 14 Oct Owner explicitly rejected the old two-photo services HERO.
           const photographicProof = page.locator('.services-hero__backdrop--single img');
-          const expected = ['/evidence/hero/services-owner-editorial-1774.webp'];
+          const expected = ['/evidence/owner-portfolio/apart-hotel/cover.webp'];
           const actual = await photographicProof.evaluateAll(nodes=>nodes.map(n=>new URL(n.src).pathname));
           const wrong = await page.locator('.services-hero img[src="/evidence/hero/engineering-ductwork.jpg"],.services-hero img[src="/evidence/cafe/owner-cover-v43.webp"]').count();
           const servicesOptical = await page.evaluate(() => {
@@ -762,7 +762,12 @@ try {
           articleTitle:document.querySelector('#case-gallery-title')?.textContent?.trim()||'',
           archiveThumbs:document.querySelectorAll('.case-gallery__archive .case-gallery__thumbs button[data-case-photo]').length,
           archiveCaptions:document.querySelectorAll('.case-gallery__archive .case-gallery__thumbs figcaption').length,
-          archiveNote:!!document.querySelector('.case-gallery__archive .case-gallery__archive-note'),
+          archiveToggle:document.querySelectorAll('.case-gallery__archive [data-case-gallery-expand]').length,
+          visibleArchiveThumbs:[...document.querySelectorAll('.case-gallery__archive .case-gallery__thumbs button[data-case-photo]')].filter(el=>{
+             const style=getComputedStyle(el.closest('figure')||el);
+             const box=el.getBoundingClientRect();
+             return style.display!=='none' && style.visibility!=='hidden' && box.width>0 && box.height>0;
+          }).length,
           numberedCaseSubsteps:[...document.querySelectorAll('.case-story__grid>div>span')].some(el=>/^0[1-9]\s*\//.test(el.textContent.trim()))
         };
       });
@@ -783,8 +788,10 @@ try {
       // The 2026-10-17 Polisan Owner decision supersedes earlier archive-thumb UI checks.
       // Its curated 12 unique frames + retained 15 archive files are explicitly checked above.
       if(route.includes('/blog/detail/')&&route!=='/blog/detail/ntff-polisan/'&&
-        (dom.archiveThumbs<1||dom.archiveCaptions!==0||!dom.archiveNote||dom.numberedCaseSubsteps))
-        report.fail.push({reason:'ART-DELTA-02/03 gallery and inner section semantics',route,width,dom});
+        (dom.archiveThumbs<1 || dom.archiveThumbs!==dom.visibleArchiveThumbs ||
+         dom.archiveToggle!==0 || dom.numberedCaseSubsteps ||
+         (route.includes('/restoran-v-zhk-leontevskiy-mys/') ? (dom.archiveThumbs!==26 || dom.archiveCaptions!==26) : dom.archiveCaptions!==0)))
+        report.fail.push({reason:'ART-DELTA-02/03 all photographs physically visible; restaurant 2+12+12 annotated original frames',route,width,dom});
       if(route.includes('/kafe-rimskogo-korsakova-3/')&&!dom.articleTitle.includes('Кафе на Римского-Корсакова, 3'))
         report.fail.push({reason:'ART-DELTA-04 actual cafe editorial title',route,width,dom});
       if(route==='/portfolio/'){
