@@ -307,7 +307,10 @@ try {
               const urls = JSON.parse(n.getAttribute('data-gallery-images')||'[]');
               if(cover==='/evidence/residential/owner-neva-facade-20261016.jpg'){
                 nevaCount++;
-                return urls.length===1 && urls[0]===cover;
+                const nevaPrefix='/evidence/residential/neva/';
+                return urls.length===4 && urls[0]===cover &&
+                  new Set(urls).size===4 &&
+                  urls.slice(1).every((u,i)=>u===nevaPrefix+'curated-'+String(i+1).padStart(2,'0')+'.webp');
               }
               const slug = cover.match(/^\/evidence\/owner-portfolio\/([a-z0-9-]+)\//)?.[1];
               if (!expected.has(slug)) return false;
@@ -808,26 +811,33 @@ try {
       await viewer.locator('[data-gallery-next]').click();
       const second=await img.getAttribute('src');
       const minimal = await viewer.locator('button').count() === 3 &&
-        await viewer.locator('.portfolio-archive-viewer__nav span').innerText() === 'Фотографии работ' &&
+        (await viewer.locator('[data-gallery-position]').innerText()).trim() === 'Фото 2 из 13' &&
         (await viewer.locator('[data-gallery-title]').innerText()).trim().length > 0;
       await page.keyboard.press('Escape');
       await viewer.waitFor({state:'hidden'});
       const restored=await opener.evaluate(el=>el===document.activeElement);
-      // Validate the single Owner-approved Neva photograph without inventing other gallery frames.
+      // The Owner facade + three source-hashed interior photographs form one real gallery.
       const neva=page.locator('button.portfolio-card--archive:has-text("На излучине Невы")');
       await neva.click();
       await viewer.waitFor({state:'visible'});
       const nevaImage=await img.getAttribute('src');
-      const fakeArrows=await viewer.locator('[data-gallery-nav]').isVisible();
+      const nevaNav=await viewer.locator('[data-gallery-nav]').isVisible();
+      const nevaFirstCount=(await viewer.locator('[data-gallery-position]').innerText()).trim();
       await page.keyboard.press('ArrowRight');
       const nevaAfterArrow=await img.getAttribute('src');
+      const nevaPhotoOk=await img.evaluate(async el=>{try{await el.decode();return el.naturalWidth>0;}catch{return false}});
+      const nevaSecondCount=(await viewer.locator('[data-gallery-position]').innerText()).trim();
+      await viewer.locator('[data-gallery-prev]').click();
+      const nevaBack=await img.getAttribute('src');
       await page.keyboard.press('Escape');
       await viewer.waitFor({state:'hidden'});
       const nevaFocus=await neva.evaluate(el=>el===document.activeElement);
       if(!photoOk||!original||!second||original===second||!minimal||!restored||
-         nevaImage!=='/evidence/residential/owner-neva-facade-20261016.jpg'||fakeArrows||
-         nevaAfterArrow!==nevaImage||!nevaFocus){
-        report.fail.push({reason:'Owner portfolio minimalist gallery interaction',photoOk,original,second,minimal,restored});
+         nevaImage!=='/evidence/residential/owner-neva-facade-20261016.jpg'||!nevaNav||
+         nevaAfterArrow!=='/evidence/residential/neva/curated-01.webp'||!nevaPhotoOk||
+         nevaFirstCount!=='Фото 1 из 4'||nevaSecondCount!=='Фото 2 из 4'||
+         nevaBack!==nevaImage||!nevaFocus){
+        report.fail.push({reason:'Owner portfolio minimalist gallery interaction',photoOk,original,second,minimal,restored,nevaNav,nevaFirstCount,nevaSecondCount,nevaFocus});
       }
     }catch(error){report.fail.push({reason:'Owner portfolio gallery interaction exception',error:String(error)})}
     finally{await context.close()}

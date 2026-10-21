@@ -1,0 +1,91 @@
+{
+  "title": "AEROVENTA PR12 P0 photographs, 2026-10-21",
+  "source_contract": "Source identity is full ZIP member path + original SHA256; optimized WebP has separate SHA256. Owner facade is preserved as preexisting asset.",
+  "published_requirements": {
+    "sport": "2 approved leading images + 7 curated = 9",
+    "neva": "1 Owner facade + 3 curated = 4",
+    "polisan": "12 unique existing archive images, owner facade unchanged"
+  },
+  "rows": [
+    {
+      "destination": "apps/web/public/evidence/owner-portfolio/sport-komendantskiy/curated-01.webp",
+      "source_archive": "КОНТЕНТ.zip",
+      "source_path": "СПОРТКОМПЛЕКС КОМЕНДАНТСКИЙ/2022-09-15 11-14-01.JPG",
+      "source_sha256": "1b9589dd3350c77a6e66da4e9449d17a542319e8d849d0fb753ded26897de76f",
+      "webp_sha256": "df500175caf94701964d354a1e92da3e32dcb7f73dba40f2ecd423976e3e4d53",
+      "git_blob_sha": "294a67d00d93632f9b828bbe2d951b6e557b8def"
+    },
+    {
+      "destination": "apps/web/public/evidence/owner-portfolio/sport-komendantskiy/curated-02.webp",
+      "source_archive": "КОНТЕНТ.zip",
+      "source_path": "СПОРТКОМПЛЕКС КОМЕНДАНТСКИЙ/2022-08-17 15-58-18.JPG",
+      "source_sha256": "291a69a44b69cfc75b3531cf4a7a32769e63f61efae43a34543a080939a1fb3c",
+      "webp_sha256": "4a503b340ca5072c7d4b140412f5dbe73c0494f00b9b9d47ad0e26bd50861b67",
+      "git_blob_sha": "588807186104d3eef3b16cf1c3fa31dadcd68bc3"
+    },
+    {
+      "destination": "apps/web/public/evidence/owner-portfolio/sport-komendantskiy/curated-03.webp",
+      "source_archive": "КОНТЕНТ.zip",
+      "source_path": "СПОРТКОМПЛЕКС КОМЕНДАНТСКИЙ/2022-09-12 14-20-22.JPG",
+      "source_sha256": "75a79f042d05bd2c475c875cbe5ae09ad549c59c465654c9e1d64b4c328aac01",
+      "webp_sha256": "bb53c7e0100bbf99d91c049cceea9bb055e4137e26b7d2bc457d8c4dc6826999",
+      "git_blob_sha": "3eade4ef09e2ab2c2d8fcdda48dd9975cacd078f"
+    },
+    {
+      "destination": "apps/web/public/evidence/owner-portfolio/sport-komendantskiy/curated-04.webp",
+      "source_archive": "КОНТЕНТ.zip",
+      "source_path": "СПОРТКОМПЛЕКС КОМЕНДАНТСКИЙ/2022-09-15 09-56-35.JPG",
+      "source_sha256": "96d8eecfe4c24bcea6f22d917a4d06364f326290893ac8534a07dc929af3a609",
+      "webp_sha256": "854131397bed13b0da0dc2ac7b84f85b0887eb73b4cbc958d0ace5ed58f749fb",
+      "git_blob_sha": "067f535260b0fc92f624307dc326abfe3a8eb3bf"
+    },
+    {
+      "destination": "apps/web/public/evidence/owner-portfolio/sport-komendantskiy/curated-05.webp",
+      "source_archive": "КОНТЕНТ.zip",
+      "source_path": "СПОРТКОМПЛЕКС КОМЕНДАНТСКИЙ/2022-08-24 11-54-38.JPG",
+      "source_sha256": "840a9424724af71756e3dc301079627462b2a221b1fd3598c1b99fdc4463a667",
+      "webp_sha256": "f2d235ccaf4270964ea578c13e43b9a21100a3b69deefb9204ff604ad8968b71",
+      "git_blob_sha": "cbd1d4b520e9d015ae2504a92e0172d70c5b7f06"
+    },
+    {
+      "destination": "apps/web/public/evidence/owner-portfolio/sport-komendantskiy/curated-06.webp",
+      "source_archive": "КОНТЕНТ.zip",
+      "source_path": "СПОРТКОМПЛЕКС КОМЕНДАНТСКИЙ/photo_5226735321473556566_y.jpg",
+      "source_sha256": "64aac0a9d54f6baa0bd78be6349a24daf97db3e3b67bde50abcd62bbb718adb0",
+      "webp_sha256": "b42391310cb20c5fba587a159ed0fc6825b7188bea48f8190e9d41216819262d",
+      "git_blob_sha": "7b8414a530876e0d21f38cd8426b4407e074f2e8"
+    },
+    {
+      "destination": "apps/web/public/evidence/owner-portfolio/sport-komendantskiy/curated-07.webp",
+      "source_archive": "КОНТЕНТ.zip",
+      "source_path": "СПОРТКОМПЛЕКС КОМЕНДАНТСКИЙ/2022-09-12 14-20-07.JPG",
+      "source_sha256": "f42d2e3d7d8fa9d1b014127e359e1f7b4def07182b2bc09200ccb2a47e257c6b",
+      "webp_sha256": "d9ea8c8a9d9771b0ec87c28f81d8159d5fb259e18aa1cb9c1efe503ae07d4afa",
+      "git_blob_sha": "e84d9ff82f376011c1d5afe3775fa6b91b642f57"
+    },
+    {
+      "destination": "apps/web/public/evidence/residential/neva/curated-01.webp",
+      "source_archive": "Новая папка (2).zip",
+      "source_path": "КВАРТИРА На излучине Невы СПб/photo_5222735321473556574_y.webp",
+      "source_sha256": "65082e7b159eb32cd66255bab192dbdc89280dfdbf6cccad1c3b04dadc8da53c",
+      "webp_sha256": "3e277a403209126b14e4a2e64389c744dc5d8234d5875fc523118a6f6fd06320",
+      "git_blob_sha": "b4c8448561a27d446c97ec92cc5db1cf1e39f2ad"
+    },
+    {
+      "destination": "apps/web/public/evidence/residential/neva/curated-02.webp",
+      "source_archive": "Новая папка (2).zip",
+      "source_path": "КВАРТИРА На излучине Невы СПб/photo_5226735321473556571_y.png",
+      "source_sha256": "dfc30790cdbb2b5db8ce6fecdb80f4c24419646e34dc49d5cdce2a76d2367ab7",
+      "webp_sha256": "e54f90ecec5747a7a930ed6ad7d95493bbbec7949588e3131d3a030e66b7695b",
+      "git_blob_sha": "f355cb9561905855ce806021eab1e688a8ec7886"
+    },
+    {
+      "destination": "apps/web/public/evidence/residential/neva/curated-03.webp",
+      "source_archive": "Новая папка (2).zip",
+      "source_path": "КВАРТИРА На излучине Невы СПб/photo_5226735321473556576_y.png",
+      "source_sha256": "4a3a8398b36a814542997953f3429f8094245ff113667eb50564b35a35bd13a3",
+      "webp_sha256": "38163a2a7dfdf3415dbe1d3c2682785b5ea1285c65e981af670e73baa97efa39",
+      "git_blob_sha": "2f6a63eb1ea90767339b87bc068ce17b07398d8c"
+    }
+  ]
+}

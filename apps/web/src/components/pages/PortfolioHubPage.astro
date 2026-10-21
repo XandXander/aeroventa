@@ -127,18 +127,18 @@ const gallerySlugFor = (image: string): string => image.split('/')[3] || '';
 // Until transferred, the existing verified media remain visible without broken links.
 const curatedSource = {
   sport: [
-    ['curated-01.webp','7efa67fd83b4480408ef1a7db14d7afb9ac7b77d14ea07a651c559edd62b38e5'], // 2022-09-15 11-14-01.JPG
-    ['curated-02.webp','20bd865684ebfcfc5417d3352ee69496ff21b2822dd31f6d8383850e270a8c64'], // 2022-08-17 15-58-18.JPG
-    ['curated-03.webp','6eda70201a8717f40c3e4e5f57a0e417b5cfe30c1334fdb293a23d9ddca11900'], // 2022-09-12 14-20-22.JPG
-    ['curated-04.webp','223e611ab8146fc81986a8bf7a9da67602595cf04331a0907f4f9a2168ef3adc'], // 2022-09-15 09-56-35.JPG
-    ['curated-05.webp','715e7a292602208f72aac5f246e79030e35e7e153a85aae5bca5e92e7a3d2daf'], // 2022-08-24 11-54-38.JPG
-    ['curated-06.webp','5a61c19422711a717c298e94c54be67c97eb1c71bbf06a61da5ae5e220927a11'], // photo_5226735321473556566_y.jpg
-    ['curated-07.webp','ddfc92adb143d33e2b8a597713b227ea4f92ccbb41cae2f1e394abd5e49409e6'], // 2022-09-12 14-20-07.JPG
+    ['curated-01.webp','df500175caf94701964d354a1e92da3e32dcb7f73dba40f2ecd423976e3e4d53'], // 2022-09-15 11-14-01.JPG
+    ['curated-02.webp','4a503b340ca5072c7d4b140412f5dbe73c0494f00b9b9d47ad0e26bd50861b67'], // 2022-08-17 15-58-18.JPG
+    ['curated-03.webp','bb53c7e0100bbf99d91c049cceea9bb055e4137e26b7d2bc457d8c4dc6826999'], // 2022-09-12 14-20-22.JPG
+    ['curated-04.webp','854131397bed13b0da0dc2ac7b84f85b0887eb73b4cbc958d0ace5ed58f749fb'], // 2022-09-15 09-56-35.JPG
+    ['curated-05.webp','f2d235ccaf4270964ea578c13e43b9a21100a3b69deefb9204ff604ad8968b71'], // 2022-08-24 11-54-38.JPG
+    ['curated-06.webp','b42391310cb20c5fba587a159ed0fc6825b7188bea48f8190e9d41216819262d'], // photo_5226735321473556566_y.jpg
+    ['curated-07.webp','d9ea8c8a9d9771b0ec87c28f81d8159d5fb259e18aa1cb9c1efe503ae07d4afa'], // 2022-09-12 14-20-07.JPG
   ],
   neva: [
-    ['curated-01.webp','656892ff57419731568278041cf603d8b51ded156a770015ee7b2493a05784a9'], // photo_5222735321473556574_y.webp
-    ['curated-02.webp','ab30e5bba2d685d638c4b3e2a58415d301a3f7683722b0a0feeb4687cde961ff'], // photo_5226735321473556571_y.png
-    ['curated-03.webp','6fe7826a0248b69ad5eb87fb9920b68d901b00e4fdc88bd5b35766673532e5be'], // photo_5226735321473556576_y.png
+    ['curated-01.webp','3e277a403209126b14e4a2e64389c744dc5d8234d5875fc523118a6f6fd06320'], // photo_5222735321473556574_y.webp
+    ['curated-02.webp','e54f90ecec5747a7a930ed6ad7d95493bbbec7949588e3131d3a030e66b7695b'], // photo_5226735321473556571_y.png
+    ['curated-03.webp','38163a2a7dfdf3415dbe1d3c2682785b5ea1285c65e981af670e73baa97efa39'], // photo_5226735321473556576_y.png
   ]
 } as const;
 function checkedCuratedPhotos(group:'sport'|'neva'): string[] {
@@ -167,7 +167,7 @@ const archiveCases = newOwnerCases.map(item => ({
     : sourceSlugs.has(gallerySlugFor(item.cover)) ? ownerGallery(gallerySlugFor(item.cover)) : item.photos
 }));
 // The two Owner-locked leading photographs precede the engineering sequence.
-// Additional archive originals are not presented until physically committed and verified.
+// Additional archive originals are published only after SHA256 readback in the build.
 const sportPhotos = [
  '/evidence/owner-portfolio/sport-komendantskiy/owner-selected-aerial.webp',
  '/evidence/owner-portfolio/sport-komendantskiy/gallery-01.webp',
