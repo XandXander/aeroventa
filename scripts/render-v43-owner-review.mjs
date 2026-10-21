@@ -1019,21 +1019,49 @@ try {
     }catch(error){report.fail.push({reason:'PONSSE lightbox interaction',error:String(error)})}
     finally{await ctx.close()}
   }
-  // Mobile fixed action must open the project sheet without navigation.
-  {
-    const ctx=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'});
+  // Owner 2026-10-21 mobile directive: no fixed contact dock.
+  // Test native navigation/launcher and the contextual project CTA with real clicks.
+  for(const [width,height] of [[320,720],[390,844],[834,1100]]){
+    const ctx=await browser.newContext({viewport:{width,height},reducedMotion:'reduce'});
     const page=await ctx.newPage();
     try{
-      await page.goto(baseUrl+'/',{waitUntil:'load'});
-      await page.evaluate(()=>window.scrollTo(0,550));
-      await page.locator('.mobile-contact-dock.is-visible [data-project-open]').click();
+      await page.goto(baseUrl+'/montazh-po-proektu/',{waitUntil:'load'});
+      if(await page.locator('.mobile-contact-dock').count())report.fail.push({reason:'Removed mobile dock still rendered',width});
+      const menu=page.locator('.mobile-menu');
+      await menu.locator('summary').click();
+      const expanded=await menu.evaluate(el=>el.open);
+      const hiddenLauncher=await page.locator('.consultant-launcher').evaluate(el=>getComputedStyle(el).visibility==='hidden');
+      await page.keyboard.press('Escape');
+      const closed=!(await menu.evaluate(el=>el.open));
+      if(!expanded||!hiddenLauncher||!closed)report.fail.push({reason:'Mobile navigation state/focus lifecycle',width,expanded,hiddenLauncher,closed});
+      await page.locator('.engagement--project [data-project-open]').first().click();
       const open=await page.locator('[data-project-dialog]').isVisible();
       const route=await page.evaluate(()=>location.pathname);
-      if(!open||route!=='/')report.fail.push({reason:'Mobile project CTA opens immediate form',open,route});
-      await page.screenshot({path:path.join(root,'mobile_project_dialog__390.png'),animations:'disabled'});
-    }catch(error){report.fail.push({reason:'Mobile project CTA exception',error:String(error)})}
+      if(!open||route!=='/montazh-po-proektu/')report.fail.push({reason:'Contextual mobile project sheet',width,open,route});
+      if(width===390)await page.screenshot({path:path.join(root,'mobile_project_dialog__390.png'),animations:'disabled'});
+    }catch(error){report.fail.push({reason:'Mobile navigation / project interaction',width,error:String(error)})}
     finally{await ctx.close()}
   }
+  // Owner Neva original: open the actual 531x376 source in a native dialog, return focus.
+  for(const [width,height] of [[390,844],[1440,900]]){
+    const ctx=await browser.newContext({viewport:{width,height},reducedMotion:'reduce'});
+    const page=await ctx.newPage();
+    try{
+      await page.goto(baseUrl+'/obekty/kvartiry-i-doma/',{waitUntil:'load'});
+      const opener=page.locator('[data-object-photo-open]');
+      await opener.click();
+      const dialog=page.locator('#object-photo-dialog');
+      const open=await dialog.evaluate(el=>el.open);
+      const src=await dialog.locator('img').getAttribute('src');
+      await page.keyboard.press('Escape');
+      const closed=!(await dialog.evaluate(el=>el.open));
+      const focused=await opener.evaluate(el=>document.activeElement===el);
+      if(!open||!closed||!focused||src!=='/evidence/residential/owner-neva-facade-20261016.jpg')
+        report.fail.push({reason:'Neva native-size lightbox/focus',width,open,closed,focused,src});
+    }catch(error){report.fail.push({reason:'Neva lightbox interaction exception',width,error:String(error)})}
+    finally{await ctx.close()}
+  }
+
   // Project-file request: mocked pending -> real HTTP error; Pulse clears. No actual transmission.
   {
     const ctx=await browser.newContext({viewport:{width:1440,height:900},reducedMotion:'no-preference'});
