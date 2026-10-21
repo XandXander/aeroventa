@@ -314,7 +314,8 @@ check(portfolioSource.includes('if(nav)nav.hidden=photos.length<2;') &&
       portfolioSource.includes('"title": "На излучине Невы"'),
       'Owner Neva: original facade and no false arrows for single-photo gallery');
 const polisanMediaSection = caseSource.split("'/blog/detail/ntff-polisan/': {")[1]?.split('    proves:')[0] || '';
-check(polisanMediaSection.includes('    media:[\\n      ["/evidence/polisan/owner-cover-v43.webp"') &&
+check(polisanMediaSection.includes('    media:[') &&
+      polisanMediaSection.includes('      ["/evidence/polisan/owner-cover-v43.webp"') &&
       polisanMediaSection.includes('20180601-133711.webp') &&
       polisanMediaSection.includes('20180601-133720.webp'),
       'Owner Polisan: chosen exterior case cover with authentic roof photos');
