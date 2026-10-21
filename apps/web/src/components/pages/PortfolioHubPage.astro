@@ -511,6 +511,13 @@ const sportPhotos = [
 .portfolio-hub .portfolio-hero__mosaic--architectural figure:nth-child(2){aspect-ratio:531/376;max-width:min(100%,430px);justify-self:end}
 }
 
+/* Tablet integrity: the two real sports images form readable stacked editorial
+   photographs, never a scroll-width-expanding compressed two-column mosaic. */
+@media (min-width:761px) and (max-width:900px){
+ .portfolio-sport__photography{grid-template-columns:minmax(0,1fr)!important;width:100%;max-width:100%;min-width:0}
+ .portfolio-sport__photography>.portfolio-sport__photo{width:100%;max-width:100%;min-width:0;aspect-ratio:1.55!important}
+ .portfolio-sport__photo button,.portfolio-sport__photo img{max-width:100%;min-width:0}
+}
 /* 21 October Owner P0: three genuine object types, without 7 PARK saturation. */
 /* Minimum opening height on full-size desktop prevents accidental next-section
    fragments; intrinsic content height and natural scrolling are preserved. */
