@@ -14,12 +14,13 @@ const cards = [
  ['portfolio','evidence/leont/owner-cover-v43.webp','Реальные объекты'],
  ['about','evidence/team/owner-team-group-20261015.webp','Команда AEROVENTA'],
  ['project','evidence/polisan/archive/20180601-133720.webp','Работа по проекту'],
- ['polisan','evidence/polisan/archive/20180601-133711.webp','НТФФ Полисан'],
+ ['polisan','evidence/polisan/owner-cover-v43.webp','НТФФ «Полисан»'],
  ['sevenpark','evidence/7park/object-exterior-day.jpg','7 PARK'],
  ['leont','evidence/leont/owner-cover-v43.webp','Леонтьевский Мыс'],
  ['ponsse','evidence/karelia/owner-cover-v43.webp','PONSSE'],
  ['zhukov','evidence/zhukov/owner-cover-v43.webp','Маршала Жукова'],
  ['cafe','evidence/cafe/owner-interior-v43.webp','Кафе на Римского-Корсакова'],
+ ['akvilon','evidence/owner-portfolio/akvilon-yanino/cover.webp','ЖК «Аквилон» · Янино'],
  ['neva','evidence/residential/owner-neva-facade-20261016.jpg','На излучине Невы']
 ];
 const xmlEscape=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
