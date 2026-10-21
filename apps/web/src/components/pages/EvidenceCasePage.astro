@@ -414,7 +414,26 @@ const ponsseChosen=isPonsse ? [
   'img-8179','img-8193','img-8110','img-8096','img-8090','img-8181'
 ].map(name=>[...spec.media,...(spec.archiveMedia||[])].find(item=>item[0].endsWith('/'+name+'.webp'))).filter((item):item is [string,string,string]=>Boolean(item)) : [];
 if(isPonsse&&(ponsseChosen.length!==12||new Set(ponsseChosen.map(x=>x[0])).size!==12))throw new Error('PONSSE gallery: 12 unique original photos required');
-const polisanRows=isPolisan ? [spec.media.slice(1,4),spec.media.slice(4,8),spec.media.slice(8,12)] : [];
+// 12 selected original installation photographs; identity facade remains a separate cover.
+const polisanSelectionIds=[
+  '20180601-133711','20180601-133720','20180601-114227','20180601-114505',
+  '20180601-164403','20180508-144933','20180508-145055','20180510-173901',
+  '20180510-173909','20180510-173851','20180508-113558','20180508-113510-1'
+];
+const polisanSourcePhotos: Array<[string,string,string]> = isPolisan ? [
+  ...spec.media.slice(1),
+  ['/evidence/polisan/archive/20180510-173851.webp',
+    'Монтажный этап в помещении НТФФ «Полисан»','Монтаж в помещении']
+] : [];
+const polisanSelected=isPolisan ? polisanSelectionIds.map(id=>
+  polisanSourcePhotos.find(([src])=>src.endsWith('/'+id+'.webp')))
+  .filter((item):item is [string,string,string]=>Boolean(item)) : [];
+if(isPolisan&&(polisanSelected.length!==12||new Set(polisanSelected.map(([src])=>src)).size!==12)){
+  throw new Error('Polisan: 12 unique authenticated installation photos required');
+}
+const polisanRows=isPolisan ? [
+  polisanSelected.slice(0,4),polisanSelected.slice(4,8),polisanSelected.slice(8,12)
+] : [];
 const existingPhotoSet=new Set([...spec.media,...(spec.archiveMedia||[])].map(x=>x[0]));
 const fullOriginalGallery=isPolisan ? [] : (verifiedOriginal?.original_media_paths.filter(src=>!existingPhotoSet.has(src))||[]);
 /** The two sign photographs are contextual views of the same supplied Ждановская 45 album.
@@ -535,7 +554,7 @@ if(isLeont && (leontContext.length !== 2 || leontSelected.length !== 12 ||
       </div>}
       {isPolisan && <div class="case-gallery__curated" aria-label="Фотоистория НТФФ «Полисан»">
         {polisanRows.map((row, rowIndex) => (
-          <div class:list={['case-gallery__curated-row',rowIndex === 0 ? 'case-gallery__curated-row--three' : 'case-gallery__curated-row--four',rowIndex === 2 ? 'case-gallery__curated-row--portrait' : '']}>
+          <div class:list={['case-gallery__curated-row','case-gallery__curated-row--four',rowIndex === 2 ? 'case-gallery__curated-row--portrait' : '']}>
             {row.map(([src,alt,caption]) => (
               <figure class="case-gallery__curated-item">
                 <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={alt} data-photo-caption={caption} aria-label={`Увеличить фотографию: ${caption}`}>

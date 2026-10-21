@@ -436,8 +436,8 @@ try {
             const publicPaths = [cover, ...selected];
             const archiveAssets = (await fs.readdir('apps/web/public/evidence/polisan/archive')).filter(name => name.endsWith('.webp'));
             const originalCount = archiveAssets.length;
-            if (selected.length !== 11 || publicPaths.length !== 12 ||
-                new Set(publicPaths).size !== 12 || rows.join(',') !== '3,4,4' ||
+            if (selected.length !== 12 || publicPaths.length !== 13 ||
+                new Set(publicPaths).size !== 13 || rows.join(',') !== '4,4,4' ||
                 originalCount !== 15 ||
                 !publicPaths.every(source => source?.startsWith('/evidence/polisan/'))) {
               report.fail.push({route,view,reason:'Polisan Owner 12-photo art direction and 15 preserved source assets',
