@@ -229,10 +229,10 @@ check(mediaStats.every(stat => stat?.isFile() && stat.size > 20000), 'All six op
 // Conceptual nature stays in meaningful alternative text, not a developer QA caption.
 // Rejected construction/café images must never become the services lead image.
 check(files.home.includes("const ownerHeroMedia = '/evidence/hero/owner-luxury-airflow-20261010.png'") &&
-      files.services.includes('/evidence/hero/hiend-engineering-visual-owner-v43.webp') &&
-      files.services.includes('alt="Архитектурная визуализация скрытой системы воздуховодов в жилом интерьере"') &&
+      files.services.includes('/evidence/hero/services-owner-editorial-1774.webp') &&
+      files.services.includes('alt="Архитектурная концепция интерьера с направлением воздушных потоков"') &&
       !files.services.includes('home-owner-editorial-1672.webp') &&
-      !files.services.includes('services-owner-editorial-1774.webp') &&
+      !files.services.includes('hiend-engineering-visual-owner-v43.webp') &&
       !files.services.includes('<img src="/evidence/cafe/owner-cover-v43.webp"') &&
       !files.services.includes('/evidence/7park/duct-route.jpg') &&
       files.services.includes('services-hero__backdrop--single') &&
@@ -297,9 +297,14 @@ check(files.layout.includes("'/services/': '/evidence/hero/services-owner-editor
 
 check(portfolioSource.includes('class="portfolio-sport"') &&
       portfolioSource.includes('04 / Ваш объект') &&
-      portfolioSource.includes("const sportPhotos = ['/evidence/owner-portfolio/sport-komendantskiy/owner-selected-aerial.webp', ...ownerGallery('sport-komendantskiy')]") &&
+      portfolioSource.includes("const sportPhotos = [") &&
+      portfolioSource.includes("'/evidence/owner-portfolio/sport-komendantskiy/owner-selected-aerial.webp'") &&
+      portfolioSource.includes("'/evidence/owner-portfolio/sport-komendantskiy/02.webp'") &&
+      portfolioSource.includes("'/evidence/owner-portfolio/sport-komendantskiy/04.webp'") &&
+      !portfolioSource.includes("...ownerGallery('sport-komendantskiy')") &&
+      portfolioSource.includes('portfolio-sport__photo--technical') &&
       portfolioSource.includes('<h2 id="portfolio-sport-title">Центр адаптивного спорта</h2>'),
-      'Sport: independent, photo-backed feature; unverified exact identity not asserted');
+      'Sport: independently curated, photo-backed engineering sequence; unverified scope not asserted');
 for(const name of ['cover','02','03','04']){
   const img=await fs.stat(path.join(root,'apps/web/public/evidence/owner-portfolio/sport-komendantskiy',name+'.webp')).catch(()=>null);
   check(Boolean(img?.isFile()&&img.size>15000), 'Sports object selected provenance media exists: '+name);
