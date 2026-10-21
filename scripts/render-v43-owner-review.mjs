@@ -478,7 +478,7 @@ try {
           await viewer.locator('[data-photo-next]').click();
           const secondSrc = await viewer.locator('[data-photo-large]').getAttribute('src');
           const clean = await viewer.locator('button').count() === 3 &&
-            await viewer.locator('.case-photo-dialog__figure figcaption').innerText() === 'Фотодокументация объекта' &&
+            await viewer.locator('.case-photo-dialog__figure figcaption').innerText() === 'Фотографии работ' &&
             (await viewer.locator('.case-photo-dialog__top>span').innerText()).trim().length > 0;
           if (!secondSrc || secondSrc === shown || !clean) report.fail.push({route,view,reason:'Case viewer navigation / minimal photo UI',shown,secondSrc,clean});
           await page.keyboard.press('Escape');
@@ -791,7 +791,7 @@ try {
       await viewer.locator('[data-gallery-next]').click();
       const second=await img.getAttribute('src');
       const minimal = await viewer.locator('button').count() === 3 &&
-        await viewer.locator('.portfolio-archive-viewer__nav span').innerText() === 'Фотодокументация объекта' &&
+        await viewer.locator('.portfolio-archive-viewer__nav span').innerText() === 'Фотографии работ' &&
         (await viewer.locator('[data-gallery-title]').innerText()).trim().length > 0;
       await page.keyboard.press('Escape');
       await viewer.waitFor({state:'hidden'});
