@@ -3987,17 +3987,17 @@ dialog.ponsse-letter-dialog[open]{display:grid;grid-template-rows:auto minmax(0,
   .ponsse-letter-dialog__tools button{min-height:44px;padding:6px}
 }
 /* Footer: one readable tonal system with accessible contrast for all contacts. */
-.site-footer{background:#102939!important;color:#eef5f7!important;border:0;padding:clamp(46px,5vw,76px) 0 28px}
-.site-footer :is(p,span,strong){color:#d4e0e6}
-.site-footer .footer-brand__name,.site-footer .footer-brand__name :is(span,strong){color:#fff!important}
-.site-footer :is(.footer-phone,.footer-contact a,.footer-nav a){color:#f8fbfc!important;font-weight:540;text-decoration:none;opacity:1!important}
+.site-footer{background:#f7f9f9!important;color:#213746!important;border-top:1px solid #d2dde2;padding:clamp(46px,5vw,76px) 0 28px}
+.site-footer :is(p,span,strong){color:#425968}
+.site-footer .footer-brand__name,.site-footer .footer-brand__name :is(span,strong){color:#132b3d!important}
+.site-footer :is(.footer-phone,.footer-contact a,.footer-nav a){color:#1e3748!important;font-weight:540;text-decoration:none;opacity:1!important}
 .site-footer .footer-phone{font-size:clamp(1rem,1.15vw,1.125rem)!important;font-weight:500!important;letter-spacing:-.005em!important;line-height:1.45;margin-top:2px}
-.site-footer :is(.footer-contact a,.footer-nav a):hover{text-decoration:underline;text-underline-offset:5px;color:#fff!important}
+.site-footer :is(.footer-contact a,.footer-nav a):hover{text-decoration:underline;text-underline-offset:5px;color:#132b3d!important}
 .site-footer .footer-grid{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr) minmax(0,.65fr);gap:clamp(22px,4vw,80px)}
 .site-footer .footer-nav{display:grid;grid-template-columns:1fr;gap:13px}
 .site-footer .footer-contact{gap:12px}
-.site-footer .footer-contact>span,.site-footer .footer-nav strong{color:#b8ccd7!important;font-size:.77rem;letter-spacing:.04em}
-.site-footer .footer-bottom{border-color:#426073;color:#b8ccd7}
+.site-footer .footer-contact>span,.site-footer .footer-nav strong{color:#506978!important;font-size:.77rem;letter-spacing:.04em}
+.site-footer .footer-bottom{border-color:#c7d3da;color:#506978}
 @media(max-width:900px){.site-footer .footer-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.site-footer .footer-nav{grid-column:1/-1;grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.site-footer .footer-grid{grid-template-columns:1fr}.site-footer .footer-nav{grid-column:auto}}
 /* Service copy reads as a concise engineering editorial, not repeated marketing cards. */

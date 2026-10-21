@@ -9,6 +9,7 @@ body{background:#fff}
 :where(.object-detail,.evidence-case,.portfolio-hub,.practice-hub,.about-premium,.engagement,.hub-page) .conversion-close :where(.section-index,.section-index--orange){color:var(--av-editorial-orange-text)}
 :where(.object-detail,.evidence-case,.portfolio-hub,.practice-hub,.about-premium,.engagement,.hub-page) .conversion-close .button--light{background:#071c2b;color:#fff;border-color:#071c2b;box-shadow:none}
 :where(.object-detail,.evidence-case,.portfolio-hub,.practice-hub,.about-premium,.engagement,.hub-page) .conversion-close .home-actions>.button:not(:first-child){background:transparent;color:var(--av-editorial-ink);border:1px solid #84949d;box-shadow:none}
+.portfolio-hub .conversion-close .portfolio-close-copy{color:var(--av-editorial-secondary);max-width:64ch;line-height:1.65}
 :where(.evidence-case,.portfolio-hub,.practice-hub,.object-detail) .home-section{padding-block:clamp(44px,6vw,88px)}
 :where(.portfolio-hub,.evidence-case,.practice-hub) h2{letter-spacing:-.035em;text-wrap:balance}
 .consultant-conversation__intro{color:var(--av-editorial-secondary);font-size:.92rem;line-height:1.5;margin:4px 0 16px}
