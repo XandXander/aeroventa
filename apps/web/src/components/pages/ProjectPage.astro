@@ -10,7 +10,6 @@ const { content, fixture } = Astro.props;
       <p class="eyebrow">Реализованный объект</p>
       <h1>{content.h1}</h1>
       {content.excerpt && <p class="lede">{content.excerpt}</p>}
-      {fixture && <div class="notice"><strong>Implementation fixture:</strong> исторические сведения ещё проходят migration review. Эта сборка noindex.</div>}
     </div>
   </header>
   <div class="container prose project-body">
