@@ -52,3 +52,11 @@ body{background:#fff}
 @media(prefers-reduced-motion:reduce){
  .practice-featured__card,.portfolio-sport__photo,.portfolio-hero__neva-open{transition:none!important}
 }
+/* Short desktop viewport: editorial summary and first buyer case remain visible
+   without hiding copy or weakening the real 1440×768 browser assertion. */
+@media (min-width:1024px) and (max-height:800px) {
+ .practice-hub--articles .practice-index-intro>.home-shell{padding-block:18px 12px!important}
+ .practice-hub--articles .practice-featured{padding-top:22px!important}
+ .practice-hub--articles .practice-featured__heading{margin-bottom:12px!important}
+ .practice-hub--articles .practice-featured__heading h2{font-size:clamp(1.6rem,2.45vw,2.35rem)}
+}

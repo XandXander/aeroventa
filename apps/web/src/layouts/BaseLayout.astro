@@ -81,12 +81,29 @@ const editorialOgFallback: Record<string, string> = {
 };
 // Keep approved Directus social imagery, but never permit the rejected cafe
 // visual back into the generic services link preview, even via older content.
+const brandedShareCards: Record<string, string> = {
+  '/':'home','/services/':'services','/montazh-ventiliacii/':'ventilation',
+  '/portfolio/':'portfolio','/about/':'about','/contact/':'about',
+  '/montazh-po-proektu/':'project','/blog/':'ventilation',
+  '/blog/istorii-proektov/':'portfolio','/blog/detail/ntff-polisan/':'polisan',
+  '/blog/detail/kak-my-sdali-7-domov/':'sevenpark',
+  '/blog/detail/restoran-v-zhk-leontevskiy-mys/':'leont',
+  '/blog/detail/montazh-ventilyatsii-v-karelii/':'ponsse',
+  '/blog/detail/kvartira-na-zhukova/':'zhukov',
+  '/blog/detail/kafe-rimskogo-korsakova-3/':'cafe',
+  '/obekty/proizvodstvo/':'polisan','/obekty/kvartiry-i-doma/':'neva',
+  '/obekty/novostroyki/':'sevenpark','/obekty/restorany-i-kafe/':'leont',
+  '/obekty/':'portfolio'
+};
+const brandedShareImage = brandedShareCards[content.path] ? '/share/' + brandedShareCards[content.path] + '.jpg' : null;
 const rejectedServicesImage = content.path === '/services/' &&
   ['/evidence/cafe/owner-cover-v43.webp',
    'https://aeroventa.ru/evidence/cafe/owner-cover-v43.webp'].includes(content.og_image || '');
+// Publicly approved Directus imagery wins unless it is the explicitly rejected services cover.
+// Static fallback cards are deterministic 1200×630 images generated only from repository media.
 const ogImageSource = rejectedServicesImage
-  ? editorialOgFallback['/services/']
-  : (content.og_image || editorialOgFallback[content.path] || '/evidence/hero/services-owner-editorial-1774.webp');
+  ? (brandedShareImage || editorialOgFallback['/services/'])
+  : (content.og_image || brandedShareImage || editorialOgFallback[content.path] || '/evidence/hero/services-owner-editorial-1774.webp');
 const ogImage = ogImageSource ? new URL(ogImageSource, 'https://aeroventa.ru').toString() : null;
 const ogImageType = ogImage ? (/\.png(?:$|\?)/i.test(ogImage) ? 'image/png' : /\.jpe?g(?:$|\?)/i.test(ogImage) ? 'image/jpeg' : /\.webp(?:$|\?)/i.test(ogImage) ? 'image/webp' : null) : null;
 const ogImageAlt = `AEROVENTA — ${content.h1 || content.title}`;
@@ -121,6 +138,8 @@ const googleVerification = (import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION || '
     {ogImage && <meta property="og:image:secure_url" content={ogImage} />}
     {ogImage && <meta property="og:image:alt" content={ogImageAlt} />}
     {ogImageType && <meta property="og:image:type" content={ogImageType} />}
+    {brandedShareImage && ogImageSource === brandedShareImage && <meta property="og:image:width" content="1200" />}
+    {brandedShareImage && ogImageSource === brandedShareImage && <meta property="og:image:height" content="630" />}
     <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
     <meta name="twitter:title" content={ogTitle} />
     {ogDescription && <meta name="twitter:description" content={ogDescription} />}
