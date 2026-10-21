@@ -932,7 +932,8 @@ try {
       const restored=await open.evaluate(el=>document.activeElement===el);
       await diffuserOpen.click();
       await modal.waitFor({state:'visible'});
-      const sameGallery=await modal.locator('[data-gallery-photo]').getAttribute('src')===first &&
+      // Diffuser lead must start at its own frame, not restart at the aerial.
+      const sameGallery=await modal.locator('[data-gallery-photo]').getAttribute('src')===second &&
         await modal.locator('[data-gallery-next]').isVisible();
       await page.keyboard.press('Escape');
       const diffuserFocus=await diffuserOpen.evaluate(el=>document.activeElement===el);
