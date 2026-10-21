@@ -39,12 +39,12 @@ const { content, eyebrow, lede, constraints, drivers, evidence, questions, proof
         <p class="home-geo">Санкт-Петербург · Ленинградская область · Москва · Карелия</p>
         <div class="home-actions">
           <button type="button" class="button button--primary" data-contact-open data-source="object_detail" data-contact-intent="VENTILATION_PROJECT">Обсудить монтаж →</button>
-          <a class="button button--ghost" href="/montazh-po-proektu/">Подробнее о монтаже по проекту</a>
+          <a class="object-detail__secondary-link" href="/montazh-po-proektu/">Как работаем по проекту →</a>
         </div>
       </div>
       {heroMedia && (
         <figure class="object-detail__hero-media">
-          <img src={heroMedia.src} alt={heroMedia.alt} width={heroMedia.nativeWidth || 800} height={heroMedia.nativeHeight || 450} fetchpriority="high" decoding="async" />
+          {heroMedia.editorialSplit ? <button type="button" class="object-detail__photo-button" data-object-photo-open aria-haspopup="dialog" aria-controls="object-photo-dialog"><img src={heroMedia.src} alt={heroMedia.alt} width={heroMedia.nativeWidth || 800} height={heroMedia.nativeHeight || 450} fetchpriority="high" decoding="async" /></button> : <img src={heroMedia.src} alt={heroMedia.alt} width={heroMedia.nativeWidth || 800} height={heroMedia.nativeHeight || 450} fetchpriority="high" decoding="async" />}
           {heroMedia.caption && <figcaption>{heroMedia.caption}</figcaption>}
         </figure>
       )}
@@ -78,7 +78,7 @@ const { content, eyebrow, lede, constraints, drivers, evidence, questions, proof
   <section class="home-section object-constraints" aria-labelledby="object-constraints-title">
     <div class="home-shell">
       <p class="section-index">02 / Что меняет монтаж</p>
-      <h2 id="object-constraints-title">Особенности объекта важнее типового названия системы.</h2>
+      <h2 id="object-constraints-title">Что учитываем на объекте</h2>
       <div class="object-constraints__grid">
         {constraints.map(([number,title,text]) => (
           <article><span>{number}</span><h3>{title}</h3><p>{text}</p></article>
@@ -91,8 +91,8 @@ const { content, eyebrow, lede, constraints, drivers, evidence, questions, proof
     <div class="home-shell object-drivers__grid">
       <div>
         <p class="section-index section-index--orange">03 / Стоимость и срок</p>
-        <h2 id="object-drivers-title">Что определяет состав монтажных работ.</h2>
-        <p>Не публикуем универсальную ставку «за м²»: одинаковая площадь не означает одинаковые трассы, оборудование и условия работ.</p>
+        <h2 id="object-drivers-title">Объём и условия монтажа</h2>
+        <p>По чертежам и условиям площадки определяем перечень работ, оборудование и доступ к монтажным зонам. Эти данные нужны для расчёта.</p>
       </div>
       <div class="driver-list">
         {drivers.map((item,index) => <div><span>{String(index+1).padStart(2,'0')}</span><strong>{item}</strong></div>)}
@@ -104,7 +104,7 @@ const { content, eyebrow, lede, constraints, drivers, evidence, questions, proof
     <div class="home-shell object-questions__grid">
       <div>
         <p class="section-index">04 / До монтажа</p>
-        <h2 id="object-questions-title">Что уточнить до начала монтажа.</h2>
+        <h2 id="object-questions-title">Вопросы перед началом работ</h2>
         <a href="/faq/">Все инженерные вопросы →</a>
       </div>
       <div class="question-list">
@@ -134,7 +134,25 @@ const { content, eyebrow, lede, constraints, drivers, evidence, questions, proof
     </div>
   </section>
 </article>
-
+{heroMedia?.editorialSplit && <dialog id="object-photo-dialog" class="object-photo-dialog" aria-label="Фотография объекта"><button type="button" data-object-photo-close aria-label="Закрыть фотографию">×</button><img src={heroMedia.src} alt={heroMedia.alt} width={heroMedia.nativeWidth || 531} height={heroMedia.nativeHeight || 376}/><p>{heroMedia.caption}</p></dialog>}
+<script>
+  const opener=document.querySelector<HTMLButtonElement>('[data-object-photo-open]');
+  const dialog=document.querySelector<HTMLDialogElement>('#object-photo-dialog');
+  opener?.addEventListener('click',()=>dialog?.showModal());
+  dialog?.querySelector('[data-object-photo-close]')?.addEventListener('click',()=>dialog.close());
+  dialog?.addEventListener('click',e=>{if(e.target===dialog)dialog.close()});
+  dialog?.addEventListener('close',()=>opener?.focus({preventScroll:true}));
+</script>
+<style>
+.object-detail__secondary-link{display:inline-flex;align-items:center;min-height:44px;font-weight:600;text-underline-offset:5px}
+.object-detail__photo-button{display:block;width:100%;padding:0;border:0;background:transparent;cursor:zoom-in}
+.object-detail__photo-button:focus-visible{outline:3px solid #126eb1;outline-offset:3px}
+.object-photo-dialog{border:0;border-radius:12px;padding:clamp(15px,3vw,30px);background:#fff;max-width:min(92vw,620px);max-height:95dvh;overflow:auto}
+.object-photo-dialog::backdrop{background:rgba(8,23,40,.8)}
+.object-photo-dialog img{width:min(100%,531px);height:auto}
+.object-photo-dialog p{font-size:.85rem;color:#526b77}
+.object-photo-dialog button{position:absolute;top:4px;right:10px;border:0;background:#fff;font:inherit;font-size:2rem;cursor:pointer;width:44px;height:44px}
+</style>
 <style>
 /* Original Owner-supplied 531x376 facade: never fake its native resolution. */
 .object-detail--editorial-media .object-detail__hero-media {

@@ -7,19 +7,19 @@ const { content } = Astro.props;
 
 const cases = [
   { index:'01', title:'7 PARK', image:'/evidence/7park/object-exterior-day.jpg', location:'Павловск, Санкт-Петербург', scope:'7 домов · монтаж приточно-вытяжной вентиляции', detail:'18.11.2020 — 10.12.2020', href:'/blog/detail/kak-my-sdali-7-domov/', kind:'Новостройки' },
-  { index:'02', title:'Ресторан в ЖК «Леонтьевский Мыс»', image:'/evidence/leont/owner-cover-v43.webp', location:'Санкт-Петербург', scope:'Ресторан · приточно-вытяжная вентиляция + оборудование', detail:'Исторический срок: 2 недели', href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/', kind:'Рестораны' },
-  { index:'03', title:'НТФФ «Полисан»', image:'/evidence/polisan/owner-cover-v43.webp', location:'Санкт-Петербург, ул. Салова, 72', scope:'Фармацевтический объект · вентиляция + оборудование', detail:'Исторический период: 06.2017 — 06.2018', href:'/blog/detail/ntff-polisan/', kind:'Производство' },
-  { index:'04', title:'Квартира на Маршала Жукова', image:'/evidence/zhukov/owner-cover-v43.webp', location:'Санкт-Петербург', scope:'Квартира · приточно-вытяжная вентиляция', detail:'Исторический источник: ~100 м.п., 5 дней', href:'/blog/detail/kvartira-na-zhukova/', kind:'Квартиры' },
-  { index:'05', title:'PONSSE — Питкяранта', image:'/evidence/karelia/owner-cover-v43.webp', location:'Республика Карелия', scope:'Сервисно-образовательный центр · вентиляция + оборудование', detail:'Исторический срок: 2 недели', href:'/blog/detail/montazh-ventilyatsii-v-karelii/', kind:'Сервисно-образовательный центр' },
-  { index:'06', title:'Кафе на Римского-Корсакова, 3', image:'/evidence/cafe/owner-cover-v43.webp', location:'Санкт-Петербург', scope:'Кафе · приточно-вытяжная вентиляция + оборудование', detail:'Исторический источник: 200 м², 5 дней', href:'/blog/detail/kafe-rimskogo-korsakova-3/', kind:'Рестораны' }
+  { index:'02', title:'Ресторан в ЖК «Леонтьевский Мыс»', image:'/evidence/leont/owner-cover-v43.webp', location:'Санкт-Петербург', scope:'Ресторан · приточно-вытяжная вентиляция + оборудование', detail:'Монтаж · 2 недели', href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/', kind:'Рестораны' },
+  { index:'03', title:'НТФФ «Полисан»', image:'/evidence/polisan/owner-cover-v43.webp', location:'Санкт-Петербург, ул. Салова, 72', scope:'Фармацевтический объект · вентиляция + оборудование', detail:'Монтаж · 06.2017 — 06.2018', href:'/blog/detail/ntff-polisan/', kind:'Производство' },
+  { index:'04', title:'Квартира на Маршала Жукова', image:'/evidence/zhukov/owner-cover-v43.webp', location:'Санкт-Петербург', scope:'Квартира · приточно-вытяжная вентиляция', detail:'Объём / срок · ~100 м.п., 5 дней', href:'/blog/detail/kvartira-na-zhukova/', kind:'Квартиры' },
+  { index:'05', title:'PONSSE — Питкяранта', image:'/evidence/karelia/owner-cover-v43.webp', location:'Республика Карелия', scope:'Сервисно-образовательный центр · вентиляция + оборудование', detail:'Монтаж · 2 недели', href:'/blog/detail/montazh-ventilyatsii-v-karelii/', kind:'Сервисно-образовательный центр' },
+  { index:'06', title:'Кафе на Римского-Корсакова, 3', image:'/evidence/cafe/owner-cover-v43.webp', location:'Санкт-Петербург', scope:'Кафе · приточно-вытяжная вентиляция + оборудование', detail:'Объём / срок · 200 м², 5 дней', href:'/blog/detail/kafe-rimskogo-korsakova-3/', kind:'Рестораны' }
 ];
 
 // Seven distinct Owner-archive objects, photo backed; no fabricated scope or URLs.
 const newOwnerCases = [
   {
     "index": "07",
-    "title": "Апарт-отель и коворкинг · Бумажный",
-    "kind": "Апарт-отель и коворкинг",
+    "title": "Апарт-отель и коворкинг на Бумажном",
+    "kind": "Коммерческий объект",
     "location": "Санкт-Петербург",
     "cover": "/evidence/owner-portfolio/apart-hotel/cover.webp",
     "photos": [
@@ -180,14 +180,13 @@ const sportPhotos = ['/evidence/owner-portfolio/sport-komendantskiy/owner-select
           <a href={item.href} class="portfolio-card">
             <div class="portfolio-card__media"><img src={item.image} width="800" height="520" alt={`Реальные фотографии работ: ${item.title}`} loading="lazy" decoding="async" /></div>
             <div class="portfolio-card__body">
-            <div class="portfolio-card__top"><span>{item.index}</span><b>{item.kind}</b></div>
+            <div class="portfolio-card__top"><b>{item.kind}</b><span>{item.location}</span></div>
             <div>
-              <p>{item.location}</p>
               <h3>{item.title}</h3>
               <strong>{item.scope}</strong>
             </div>
             <div class="portfolio-card__bottom">
-              <span>{item.detail}</span><b>Смотреть работы →</b>
+              <b>Смотреть работы →</b>
             </div>
             </div>
           </a>
@@ -199,9 +198,9 @@ const sportPhotos = ['/evidence/owner-portfolio/sport-komendantskiy/owner-select
             aria-label={`Открыть фотографии: ${item.title}`}>
             <div class="portfolio-card__media"><img src={item.cover} width="1200" height="800" loading="lazy" decoding="async" alt={`Фотография объекта: ${item.title}`}/></div>
             <div class="portfolio-card__body">
-              <div class="portfolio-card__top"><span>{item.index}</span><b>{item.kind}</b></div>
-              <div><p>{item.location}</p><h3>{item.title}</h3></div>
-              <div class="portfolio-card__bottom"><span>Фотографии объекта</span><b>Смотреть фотографии →</b></div>
+              <div class="portfolio-card__top"><b>{item.kind}</b><span>{item.location}</span></div>
+              <div><h3>{item.title}</h3></div>
+              <div class="portfolio-card__bottom"><b>Смотреть фотографии →</b></div>
             </div>
           </button>
         ))}
@@ -459,7 +458,14 @@ const sportPhotos = ['/evidence/owner-portfolio/sport-komendantskiy/owner-select
 .portfolio-hub .portfolio-card__top>b,.portfolio-hub .portfolio-card__body h3,.portfolio-hub .portfolio-card__bottom span{min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:normal}
 .portfolio-hub .portfolio-hero__mosaic figcaption{max-width:100%;box-sizing:border-box;overflow-wrap:anywhere}
 
-</style>
+@media(max-width:600px){
+ .portfolio-hub .portfolio-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:25px}
+ .portfolio-hub .portfolio-grid>.portfolio-card{grid-column:auto;min-width:0;min-height:0}
+ .portfolio-hub .portfolio-card__body{padding:16px 3px 20px;gap:10px}
+ .portfolio-hub .portfolio-card__media{aspect-ratio:1.5}
+ .portfolio-hub .portfolio-card h3{font-size:clamp(1.25rem,5.5vw,1.72rem);line-height:1.2}
+ .portfolio-hub .portfolio-card__bottom{border:0;padding-top:7px}
+}</style>
 
 <style>
 /* Owner architectural composition: Leontievsky primary, authenticated Neva inset. */

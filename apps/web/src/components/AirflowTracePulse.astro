@@ -1,6 +1,4 @@
 ---
-import { SITE } from '@/lib/site';
-const tel = SITE.phone.replace(/[^+\d]/g, '');
 ---
 <div class="airflow-trace-ui" aria-hidden="true">
   <div class="airflow-entry-trace" data-airflow-entry data-mode="full">
@@ -21,17 +19,12 @@ const tel = SITE.phone.replace(/[^+\d]/g, '');
     <span class="airflow-header-trace__route airflow-header-trace__route--exhaust"><i></i></span>
   </div>
 </div>
-<nav class="mobile-contact-dock" data-mobile-contact-dock aria-label="Быстрый контакт">
-  <a href={`tel:${tel}`} class="mobile-contact-dock__call">Позвонить</a>
-  <a href="/montazh-po-proektu/" data-project-open data-source="mobile_dock" class="mobile-contact-dock__project" aria-haspopup="dialog" aria-controls="aeroventa-project-dialog">Передать проект <span aria-hidden="true">→</span></a>
-</nav>
 <script is:inline>
 (() => {
   const root = document.documentElement;
   const header = document.querySelector('.site-header');
   const entry = document.querySelector('[data-airflow-entry]');
   const entryHost = entry?.parentNode;
-  const mobileDock = document.querySelector('[data-mobile-contact-dock]');
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
   // Entry cue is independent from website readiness. The document is usable throughout.
   // Two separate routes convey supply and extract in opposite directions; never connected.
@@ -110,7 +103,6 @@ const tel = SITE.phone.replace(/[^+\d]/g, '');
     root.style.setProperty('--airflow-scroll',String(Math.min(1,Math.max(0,y/max))));
     if(header) header.classList.toggle('is-compact',y>28);
     if(entryBoundary)root.classList.toggle('is-past-first-fold',entryBoundary.getBoundingClientRect().bottom<80);
-    if(mobileDock)mobileDock.classList.toggle('is-visible',y>Math.min(280,innerHeight*.42));
     ticking=false;
   };
   window.addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(updateScrollState);}},{passive:true});

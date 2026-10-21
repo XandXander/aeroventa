@@ -54,7 +54,7 @@ const isStories = content.path === '/blog/istorii-proektov/';
       </div>
     </section>
     <div class="home-shell practice-index-footer">
-      <p>Другие исходные статьи сохраняются на исторических адресах. Фотографии и документы выполненных объектов представлены отдельно.</p>
+      <p>Практические материалы о строительных задачах и выполненных инженерных работах.</p>
       <a href="/portfolio/">Наши работы →</a>
     </div>
   </article>
@@ -68,7 +68,7 @@ const isStories = content.path === '/blog/istorii-proektov/';
     </header>
 
     <section class="home-section practical-index">
-      <div class="home-shell"><p class="section-index">01 / Сильные архивные материалы</p><h2>Четыре материала о реальных технических задачах.</h2>
+      <div class="home-shell"><p class="section-index">01 / Практические статьи</p><h2>Четыре материала о реальных технических задачах.</h2>
         <div class="practical-index__grid">
           {p0.map((item,index) => <a href={item.href}><img class="practical-index__photo" src={item.image} alt={item.imageAlt} width="720" height="480" loading="lazy" decoding="async"/><div class="practical-index__top"><span>{String(index+1).padStart(2,'0')}</span><b>{item.tag}</b></div><h3>{item.title}</h3><p>{item.text}</p><strong>Читать материал →</strong></a>)}
         </div>

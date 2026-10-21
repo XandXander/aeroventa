@@ -560,15 +560,6 @@
  .experience-dialog--contact .experience-dialog__head h2 {font-size:1.65rem;}
 }
 
-/* V43 mobile launcher clearance above contact dock when both controls are visible. */
-@media (max-width:760px) {
-  body:has(.mobile-contact-dock.is-visible) .consultant-launcher {
-    bottom:calc(84px + env(safe-area-inset-bottom,0px));
-    z-index:48;
-  }
-}
-
-
 @media(max-width:760px){.experience-dialog--contact .experience-dialog__shell{padding-bottom:max(24px,env(safe-area-inset-bottom,24px))}}
 
 

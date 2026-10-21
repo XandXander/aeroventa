@@ -9,7 +9,7 @@
  .home-hero--owner-airflow .home-lede{font-size:clamp(.94rem,1.1vw,1.1rem);line-height:1.45;max-width:47ch}
  .home-hero--owner-airflow .home-actions{gap:10px;margin-top:clamp(12px,1.7svh,20px)}
  .home-hero--owner-airflow .object-ribbon{min-height:var(--av-fold-ribbon);align-items:center}
- :is(.about-premium .about-hero,.services-hero,.portfolio-hero,.objects-hero,.object-detail__hero,.engagement-hero,.evidence-case .case-detail-hero){min-height:min(700px,calc(100svh - var(--av-fold-header)));height:auto;box-sizing:border-box}
+ :is(.about-premium .about-hero,.services-hero,.portfolio-hero,.objects-hero,.object-detail__hero,.engagement-hero,.evidence-case .case-detail-hero){min-height:0;height:auto;box-sizing:border-box}
  .practice-hub--articles .practice-index-intro{min-height:0;display:block}
  .practice-hub--articles .practice-index-intro>.home-shell{padding-block:clamp(24px,3.3vw,48px) clamp(17px,2.2vw,29px)}
  .practice-hub--articles .practice-index-intro h1{font-size:clamp(2.8rem,5.2vw,5.6rem);font-weight:550;line-height:1.04;letter-spacing:-.044em;margin:10px 0 15px}
@@ -113,7 +113,7 @@ body .consultant-launcher:focus-visible{outline:3px solid #ba774e;outline-offset
 }
 @media(max-width:760px){
  html:not(.is-past-first-fold) body:has(.home-hero--owner-airflow) .consultant-launcher{
-  bottom:calc(65px + env(safe-area-inset-bottom,0px));
+  bottom:max(15px,env(safe-area-inset-bottom,15px));
  }
 }
 body .consultant-launcher{appearance:none;font-family:inherit;cursor:pointer}
@@ -158,4 +158,23 @@ html:not(.is-past-first-fold) body:has(.about-hero) .consultant-launcher{
 /* Owner-first fold: an objects landing page must not reveal a clipped next section. */
 @media(min-width:761px){
  .objects-hero{min-height:calc(100svh - var(--av-fold-header))!important}
+}
+
+@media(max-width:760px){
+ .home-hero--owner-airflow .home-hero__grid{min-height:0;height:auto}
+ .home-hero--owner-airflow .home-hero__copy{padding-block:22px 24px}
+ .home-hero--owner-airflow .home-geo{font-size:.8rem;line-height:1.4}
+ .home-hero--owner-airflow .home-actions .button{width:100%;min-height:46px}
+ .object-detail__hero,.engagement-hero,.case-detail-hero{min-height:0}
+ .object-detail__hero-grid,.engagement-hero__grid{align-items:start;gap:20px}
+ .object-detail__hero h1,.engagement-hero h1{font-size:clamp(2.15rem,8.8vw,3.1rem);line-height:1.07}
+ .object-detail__hero-media{margin-top:12px}
+}
+@media(max-width:1050px){
+ html.av-mobile-menu-open{overflow:hidden}
+ html.av-mobile-menu-open .consultant-launcher{visibility:hidden!important;pointer-events:none!important}
+ .site-header:has(.mobile-menu[open]){z-index:80;background:#fff}
+ .site-header .mobile-menu[open] nav{position:fixed;left:0;right:0;top:56px;max-height:calc(100dvh - 56px);overflow-y:auto;overscroll-behavior:contain;padding:clamp(18px,4vw,32px) 20px max(24px,env(safe-area-inset-bottom,24px));background:#fff;border-bottom:1px solid #cad6dd;box-shadow:0 24px 36px #091f3133;display:grid;gap:4px}
+ .site-header .mobile-menu[open] nav a{padding:11px 4px;min-height:44px}
+ .site-header .mobile-menu[open] nav .button{justify-content:center;margin-top:9px}
 }

@@ -973,10 +973,6 @@ main { min-height: 60vh; }
 }
 .hero-airflow-path--exhaust { animation-direction:normal; }
 
-.mobile-contact-dock {
-  display:none;
-}
-
 @keyframes airflow-entry-fade {
   0% {opacity:0;transform:translateY(-4px)}
   7%,81% {opacity:1;transform:translateY(0)}
@@ -1013,51 +1009,12 @@ main { min-height: 60vh; }
   .airflow-trace-section::before,
   .airflow-trace-section::after { left:14px; top:10px; }
 
-  .mobile-contact-dock {
-    position:fixed;
-    z-index:46;
-    left:12px;
-    right:12px;
-    bottom:calc(10px + env(safe-area-inset-bottom, 0px));
-    min-height:52px;
-    display:grid;
-    grid-template-columns:.82fr 1.18fr;
-    border:1px solid rgba(123,136,147,.55);
-    background:rgba(255,255,255,.94);
-    backdrop-filter:blur(16px);
-    box-shadow:0 14px 38px rgba(8,23,40,.14);
-    opacity:0;
-    transform:translateY(18px);
-    pointer-events:none;
-    transition:opacity .2s ease,transform .2s ease;
-  }
-  .mobile-contact-dock.is-visible {
-    opacity:1;
-    transform:translateY(0);
-    pointer-events:auto;
-  }
-  .mobile-contact-dock :is(a,button) {
-    min-height:50px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
-    text-decoration:none;
-    font-weight:850;
-    font-size:.9rem;
-  }
-  .mobile-contact-dock :is(a,button):focus-visible { outline-offset:-4px; }
-  .mobile-contact-dock__call { border-right:1px solid var(--line); }
-  .mobile-contact-dock__project { background:var(--navy); color:#fff; }
-  html { scroll-padding-bottom:calc(88px + env(safe-area-inset-bottom, 0px)); }
-  body { padding-bottom:82px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior:auto; }
   .site-header,
   .site-header__inner,
-  .mobile-contact-dock,
   .airflow-trace-section::before { transition:none !important; }
   .airflow-entry-trace {display:none!important} .airflow-header-trace__route::before{opacity:1!important}
   .airflow-header-trace__route i {
