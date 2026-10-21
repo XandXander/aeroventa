@@ -211,6 +211,15 @@ const timeline = [
 .about-premium .about-hero__continuation .home-geo{margin:clamp(14px,1.8vw,25px) 0 0}
 .about-premium .about-hero__continuation .home-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:clamp(19px,2.4vw,35px)}
 .about-premium .about-hero__grid--editorial>.about-hero__team{grid-column:2;grid-row:1/span 2;align-self:center}
+/* Compact low-height desktop view without cropping the real team photograph. */
+@media(min-width:961px) and (max-height:699px){
+ .about-premium .about-hero{padding-block:clamp(14px,2.5svh,25px)}
+ .about-premium .about-hero__grid--editorial{column-gap:clamp(20px,3vw,42px)}
+ .about-premium .about-hero__team--group img{max-height:min(425px,calc(100svh - 155px));object-fit:contain}
+ .about-premium .about-hero__continuation .about-hero__lede{font-size:.96rem;line-height:1.5}
+ .about-premium .about-hero__continuation .home-geo{margin-top:10px}
+ .about-premium .about-hero__continuation .home-actions{margin-top:12px}
+}
 @media(max-width:960px){
  .about-premium .about-hero__grid--editorial{grid-template-columns:1fr;grid-template-rows:auto auto auto;gap:18px}
  .about-premium .about-hero__introduction{grid-column:1;grid-row:1}
