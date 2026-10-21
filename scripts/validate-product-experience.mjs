@@ -285,8 +285,14 @@ check(files.about.includes('03 / Опыт на объектах') &&
       portfolioSource.includes('03 / Спортивный объект') &&
       portfolioSource.includes('04 / Ваш объект') &&
       !caseSource.includes('<span>01 / Задача</span>'), 'ART-DELTA-02: consistent section counting');
-check(caseSource.includes('case-gallery__archive-note') &&
-      !caseSource.includes('<figcaption>{caption}</figcaption>\n              </figure>\\n            ))}'), 'ART-DELTA-03: no repetitive archive thumbnail captions');
+check(caseSource.includes('leontEngineeringGroups') &&
+      caseSource.includes('leontPhotoDescriptions') &&
+      caseSource.includes('leontContext.length !== 2') &&
+      caseSource.includes('leontEngineering.length !== 24') &&
+      !caseSource.includes('data-case-gallery-expand'), 'ART-DELTA-03: original restaurant photographs visible, source-checked and genuinely described');
+check(!files.globalCss.includes('.case-gallery__item:nth-child(n+7){display:none}') &&
+      files.globalCss.includes('.evidence-case .case-gallery__thumbs>.case-gallery__item:last-child:nth-child(3n+1)'),
+      'ART-DELTA-03B: no hidden verified photographs, balanced final gallery row');
 check(caseSource.includes("'/blog/detail/kafe-rimskogo-korsakova-3/': {gallery:") &&
       !caseSource.includes("'/blog/detail/kafe-na-rimskogo-korsakova/':"), 'ART-DELTA-04: cafe documentary key correct');
 check(portfolioSource.includes("kind:'Сервисно-образовательный центр'") &&
