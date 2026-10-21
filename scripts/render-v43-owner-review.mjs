@@ -752,10 +752,16 @@ try {
           numberedCaseSubsteps:[...document.querySelectorAll('.case-story__grid>div>span')].some(el=>/^0[1-9]\s*\//.test(el.textContent.trim()))
         };
       });
-      if(route==='/services/'&&
-        (dom.articles!==1||dom.orphan||dom.hubSplit!==0||dom.serviceRoutes!==3||
-        !dom.image.endsWith('/evidence/hero/services-owner-editorial-1774.webp')))
-        report.fail.push({reason:'ART-DELTA-01/06 compiled services article and social preview',route,width,dom});
+      if(route==='/services/'){
+        const previewImage=await page.request.get(baseUrl+'/share/services.jpg');
+        const previewBytes=previewImage.ok()?await previewImage.body():Buffer.alloc(0);
+        const validPreview=previewImage.ok()&&
+          /^image\/jpeg\b/i.test(previewImage.headers()['content-type']||'')&&
+          previewBytes.length>12000&&previewBytes[0]===0xff&&previewBytes[1]===0xd8;
+        if(dom.articles!==1||dom.orphan||dom.hubSplit!==0||dom.serviceRoutes!==3||
+           !dom.image.endsWith('/share/services.jpg')||!validPreview)
+          report.fail.push({reason:'ART-DELTA-01/06 compiled services article and real 1200x630 social preview',route,width,dom,validPreview});
+      }
       if(route==='/about/'&&!dom.labels.some(x=>x.startsWith('03 / Опыт на объектах')))
         report.fail.push({reason:'ART-DELTA-02 about numbering',width,labels:dom.labels});
       if(route==='/portfolio/'&&(!dom.labels.some(x=>x.startsWith('03 / Спортивный объект')) || !dom.labels.some(x=>x.startsWith('04 / Ваш объект'))))
