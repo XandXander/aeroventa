@@ -1174,7 +1174,7 @@ try {
     'services__desktop_1440','services__mobile_390',
     'about__desktop_1440','about__mobile_390',
     'portfolio__desktop_1440','portfolio__mobile_390',
-    'polisan__desktop_1440','drill_crown__desktop_1440',
+    'polisan__desktop_1440','leont__desktop_1440','leont__mobile_390','drill_crown__desktop_1440',
     'ponsse_letter_open__mobile_390','consultant_open__mobile_390',
     // Exact captured frames from the real Chrome motion lifecycle, not illustrations.
     'motion_first_start__1440','motion_first_assembly__1440','motion_first_pulse__1440',

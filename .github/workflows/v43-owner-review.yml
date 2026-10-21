@@ -63,7 +63,7 @@ jobs:
           const root='V43_OWNER_BROWSER_REVIEW/selected_preview';
           if (!fs.existsSync(root)) throw new Error('Selected screenshots missing');
           const files=fs.readdirSync(root).filter(f=>f.endsWith('.jpg')).sort();
-          if(files.length!==23) throw new Error('Expected 23 Owner previews (12 base + 11 motion/interactions), got '+files.length);
+          if(files.length!==25) throw new Error('Expected 25 Owner previews (14 base + 11 motion/interactions), got '+files.length);
           for(const file of files){
             const b64=fs.readFileSync(path.join(root,file)).toString('base64');
             const size=12000,total=Math.ceil(b64.length/size);
@@ -78,7 +78,7 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: v43-final-selected-owner-review
-          # Preserve 400-route regression locally, upload only 12 Owner-facing real render proofs.
+          # Preserve 400-route regression locally, upload only 14 Owner-facing real render proofs.
           # Never emit another 520 MB screenshot archive for this PR.
           path: |
             V43_OWNER_BROWSER_REVIEW/manifest.json
@@ -91,6 +91,8 @@ jobs:
             V43_OWNER_BROWSER_REVIEW/portfolio__desktop_1440.png
             V43_OWNER_BROWSER_REVIEW/portfolio__mobile_390.png
             V43_OWNER_BROWSER_REVIEW/polisan__desktop_1440.png
+            V43_OWNER_BROWSER_REVIEW/leont__desktop_1440.png
+            V43_OWNER_BROWSER_REVIEW/leont__mobile_390.png
             V43_OWNER_BROWSER_REVIEW/drill_crown__desktop_1440.png
             V43_OWNER_BROWSER_REVIEW/ponsse_letter_open__mobile_390.png
             V43_OWNER_BROWSER_REVIEW/consultant_open__mobile_390.png
