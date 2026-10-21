@@ -1,7 +1,8 @@
 ---
 import type { ContentRecord } from '@/lib/types';
-import { readdirSync } from 'node:fs';
+import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { createHash } from 'node:crypto';
 interface Props { content: ContentRecord; fixture: boolean; }
 const { content } = Astro.props;
 
@@ -121,15 +122,61 @@ const ownerGallery = (slug: string): string[] => {
   return [...new Set(valid)].map(n => '/evidence/owner-portfolio/' + slug + '/' + n);
 };
 const gallerySlugFor = (image: string): string => image.split('/')[3] || '';
-const archiveCases = newOwnerCases.map(item => ({ ...item, photos: sourceSlugs.has(gallerySlugFor(item.cover)) ? ownerGallery(gallerySlugFor(item.cover)) : item.photos }));
+// Photo selection is fail-closed: all seven sports / three Neva originals must
+// be physically present and SHA256-identical before the extended galleries publish.
+// Until transferred, the existing verified media remain visible without broken links.
+const curatedSource = {
+  sport: [
+    ['curated-01.webp','7efa67fd83b4480408ef1a7db14d7afb9ac7b77d14ea07a651c559edd62b38e5'], // 2022-09-15 11-14-01.JPG
+    ['curated-02.webp','20bd865684ebfcfc5417d3352ee69496ff21b2822dd31f6d8383850e270a8c64'], // 2022-08-17 15-58-18.JPG
+    ['curated-03.webp','6eda70201a8717f40c3e4e5f57a0e417b5cfe30c1334fdb293a23d9ddca11900'], // 2022-09-12 14-20-22.JPG
+    ['curated-04.webp','223e611ab8146fc81986a8bf7a9da67602595cf04331a0907f4f9a2168ef3adc'], // 2022-09-15 09-56-35.JPG
+    ['curated-05.webp','715e7a292602208f72aac5f246e79030e35e7e153a85aae5bca5e92e7a3d2daf'], // 2022-08-24 11-54-38.JPG
+    ['curated-06.webp','5a61c19422711a717c298e94c54be67c97eb1c71bbf06a61da5ae5e220927a11'], // photo_5226735321473556566_y.jpg
+    ['curated-07.webp','ddfc92adb143d33e2b8a597713b227ea4f92ccbb41cae2f1e394abd5e49409e6'], // 2022-09-12 14-20-07.JPG
+  ],
+  neva: [
+    ['curated-01.webp','656892ff57419731568278041cf603d8b51ded156a770015ee7b2493a05784a9'], // photo_5222735321473556574_y.webp
+    ['curated-02.webp','ab30e5bba2d685d638c4b3e2a58415d301a3f7683722b0a0feeb4687cde961ff'], // photo_5226735321473556571_y.png
+    ['curated-03.webp','6fe7826a0248b69ad5eb87fb9920b68d901b00e4fdc88bd5b35766673532e5be'], // photo_5226735321473556576_y.png
+  ]
+} as const;
+function checkedCuratedPhotos(group:'sport'|'neva'): string[] {
+  const folder=group==='sport'?'evidence/owner-portfolio/sport-komendantskiy':'evidence/residential/neva';
+  const items=curatedSource[group];
+  const locate=(name:string)=>[
+    resolve('apps/web/public',folder,name),
+    resolve('public',folder,name)
+  ].find(existsSync);
+  const found=items.map(([name])=>locate(name));
+  if(found.every(p=>!p))return [];
+  if(found.some(p=>!p))throw new Error('Curated '+group+' photos: incomplete source set');
+  for(let i=0;i<items.length;i++){
+    const [,expectedSha]=items[i];
+    const actual=createHash('sha256').update(readFileSync(found[i]!)).digest('hex');
+    if(actual!==expectedSha)throw new Error('Curated '+group+' photo integrity mismatch: '+items[i][0]);
+  }
+  return items.map(([name])=>'/'+folder+'/'+name);
+}
+const addedSportPhotos=checkedCuratedPhotos('sport');
+const addedNevaPhotos=checkedCuratedPhotos('neva');
+const archiveCases = newOwnerCases.map(item => ({
+  ...item,
+  photos: item.index==='14'
+    ? [item.cover,...addedNevaPhotos]
+    : sourceSlugs.has(gallerySlugFor(item.cover)) ? ownerGallery(gallerySlugFor(item.cover)) : item.photos
+}));
 // The two Owner-locked leading photographs precede the engineering sequence.
 // Additional archive originals are not presented until physically committed and verified.
 const sportPhotos = [
  '/evidence/owner-portfolio/sport-komendantskiy/owner-selected-aerial.webp',
  '/evidence/owner-portfolio/sport-komendantskiy/gallery-01.webp',
- '/evidence/owner-portfolio/sport-komendantskiy/02.webp',
- '/evidence/owner-portfolio/sport-komendantskiy/04.webp',
- '/evidence/owner-portfolio/sport-komendantskiy/cover.webp'
+ ...addedSportPhotos,
+ ...(addedSportPhotos.length===0 ? [
+   '/evidence/owner-portfolio/sport-komendantskiy/02.webp',
+   '/evidence/owner-portfolio/sport-komendantskiy/04.webp',
+   '/evidence/owner-portfolio/sport-komendantskiy/cover.webp'
+ ] : [])
 ];
 ---
 
@@ -273,7 +320,7 @@ const sportPhotos = [
     <div class="portfolio-archive-viewer__stage" tabindex="0"><img data-gallery-photo src="/evidence/owner-portfolio/apart-hotel/cover.webp" width="1200" height="800" loading="lazy" alt="Фотография объекта"/></div>
     <div class="portfolio-archive-viewer__nav" data-gallery-nav aria-label="Навигация по фотографиям">
       <button type="button" data-gallery-prev aria-label="Предыдущая фотография">‹</button>
-      <span>Фотографии работ</span>
+      <span data-gallery-position aria-live="off">Фото объекта</span>
       <button type="button" data-gallery-next aria-label="Следующая фотография">›</button>
     </div>
   </dialog>
@@ -299,6 +346,7 @@ const sportPhotos = [
     const title=dialog.querySelector<HTMLElement>('[data-gallery-title]');
     const close=dialog.querySelector<HTMLButtonElement>('[data-gallery-close]');
     const nav=dialog.querySelector<HTMLElement>('[data-gallery-nav]');
+    const position=dialog.querySelector<HTMLElement>('[data-gallery-position]');
     let photos:string[]=[];
     let index=0, zoom=1;
     let opener:HTMLElement|null=null;
@@ -325,12 +373,13 @@ const sportPhotos = [
       setZoom(1);
       image.src=photos[index];
       image.alt=(title?.textContent||'Объект')+' — фотография '+(index+1);
+      if(position)position.textContent='Фото '+(index+1)+' из '+photos.length;
     };
     for(const button of document.querySelectorAll<HTMLElement>('[data-archive-open]')){
       button.addEventListener('click',()=>{
         try{
           const value=JSON.parse(button.dataset.galleryImages||'[]');
-          const safe=/^(?:\/evidence\/owner-portfolio\/(?:apart-hotel|eurospar-vo|eurospar-sestroretsk|college-obvodny|novatech|akvilon-yanino|himprom|sport-komendantskiy)\/(?:owner-selected-aerial|cover|[0-9]{2,3}|gallery-[0-9]{2,3})\.(?:webp|jpe?g|png)|\/evidence\/residential\/owner-neva-facade-20261016\.jpg)$/i;
+          const safe=/^(?:\/evidence\/owner-portfolio\/(?:apart-hotel|eurospar-vo|eurospar-sestroretsk|college-obvodny|novatech|akvilon-yanino|himprom|sport-komendantskiy)\/(?:owner-selected-aerial|cover|[0-9]{2,3}|gallery-[0-9]{2,3}|curated-[0-9]{2})\.(?:webp|jpe?g|png)|\/evidence\/residential\/(?:owner-neva-facade-20261016\.jpg|neva\/curated-[0-9]{2}\.webp))$/i;
           if(!Array.isArray(value)||!value.length||!value.every((v:unknown)=>typeof v==='string'&&safe.test(v)))return;
           photos=value;opener=button;
           if(nav)nav.hidden=photos.length<2;
