@@ -397,6 +397,7 @@ const documentary = documentaryTitles[content.path] || {gallery:'Фотогра�
 const spec=specs[content.path];
 if(!spec) throw new Error('Case spec missing: '+content.path);
 const isPolisan=content.path === '/blog/detail/ntff-polisan/';
+const isLeont=content.path === '/blog/detail/restoran-v-zhk-leontevskiy-mys/';
 const isPonsse=content.path === '/blog/detail/montazh-ventilyatsii-v-karelii/';
 const isSevenPark=content.path === '/blog/detail/kak-my-sdali-7-domov/';
 /* 12 unique authenticated images; larger originals IMG_6653/6654/6656,
@@ -416,6 +417,14 @@ if(isPonsse&&(ponsseChosen.length!==12||new Set(ponsseChosen.map(x=>x[0])).size!
 const polisanRows=isPolisan ? [spec.media.slice(1,4),spec.media.slice(4,8),spec.media.slice(8,12)] : [];
 const existingPhotoSet=new Set([...spec.media,...(spec.archiveMedia||[])].map(x=>x[0]));
 const fullOriginalGallery=isPolisan ? [] : (verifiedOriginal?.original_media_paths.filter(src=>!existingPhotoSet.has(src))||[]);
+/** The two sign photographs are contextual views of the same supplied Ждановская 45 album.
+ * All 26 original frames remain in source-backed arrays and visible on the page. */
+const leontContext=isLeont ? (spec.archiveMedia || []).filter(([src]) => /\/img-(5236|5239)\.webp$/.test(src)) : [];
+const leontEngineering=isLeont ? (spec.archiveMedia || []).filter(([src]) => !/\/img-(5236|5239)\.webp$/.test(src)) : [];
+if(isLeont && (leontContext.length !== 2 || leontEngineering.length !== 24 ||
+  new Set([...leontContext,...leontEngineering].map(x=>x[0])).size !== 26)) {
+  throw new Error('Leontievsky Mys: exactly 26 unique original photos are required');
+}
 ---
 
 <article class="evidence-case">
@@ -457,9 +466,9 @@ const fullOriginalGallery=isPolisan ? [] : (verifiedOriginal?.original_media_pat
   </section>
   <section class="home-section case-gallery case-gallery--lead" aria-labelledby="case-gallery-title">
     <div class="home-shell">
-      <p class="section-index section-index--orange">Реальные фотографии</p>
+      <p class="section-index section-index--orange">{isLeont ? 'Ждановская, 45 · Санкт-Петербург' : 'Фото объекта'}</p>
       <h2 id="case-gallery-title">{documentary.gallery}</h2>
-      <p class="case-gallery__intro">{isSevenPark ? 'Документальные виды жилого квартала и отдельные кадры смонтированных инженерных узлов.' : isPolisan ? 'Кровельные установки, инженерные трассы и монтажные узлы — последовательно, от общего вида к деталям.' : 'Объект и выполненные монтажные работы.'}</p>
+      <p class="case-gallery__intro">{isLeont ? 'Архив строительства ресторана: кадры помещения и последовательность монтажа приточно-вытяжной вентиляции. Фотографии отражают этап работ, а не готовый интерьер.' : isSevenPark ? 'Документальные виды жилого квартала и отдельные кадры смонтированных инженерных узлов.' : isPolisan ? 'Кровельные установки, инженерные трассы и монтажные узлы — последовательно, от общего вида к деталям.' : 'Фотографии объекта и выполненного монтажа.'}</p>
       {isSevenPark && <div class="case-gallery__seven-park" aria-label="12 оригинальных фотографий объекта 7 PARK">
         {sevenParkSelected.map(([src,alt,caption],index)=>(
           <figure class:list={['case-gallery__seven-item',index>=9&&'case-gallery__seven-item--technical']}>
@@ -494,7 +503,7 @@ const fullOriginalGallery=isPolisan ? [] : (verifiedOriginal?.original_media_pat
           </div>
         ))}
       </div>}
-      {!isPolisan && !isSevenPark && !isPonsse && spec.media.length > 1 && <div class="case-gallery__grid case-gallery__grid--featured">
+      {!isPolisan && !isSevenPark && !isPonsse && !isLeont && spec.media.length > 1 && <div class="case-gallery__grid case-gallery__grid--featured">
         {spec.media.slice(1).map(([src, alt, caption]) => (
           <figure class="case-gallery__item">
             <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={alt} data-photo-caption={caption} aria-label={`Увеличить фотографию: ${caption}`}>
@@ -505,22 +514,36 @@ const fullOriginalGallery=isPolisan ? [] : (verifiedOriginal?.original_media_pat
         ))}
       </div>}
       {!isSevenPark && !isPonsse && Boolean(spec.archiveMedia?.length) && (
-        <section class="case-gallery__archive" data-case-archive aria-labelledby="case-photo-archive-title">
-          <h3 id="case-photo-archive-title">Монтаж в деталях</h3>
-          <div class="case-gallery__thumbs">
-            {(spec.archiveMedia || []).map(([src, alt, caption]) => (
+        <section class:list={['case-gallery__archive',isLeont && 'case-gallery__archive--leont']} aria-labelledby="case-photo-archive-title">
+          <h3 id="case-photo-archive-title">{isLeont ? 'Помещение ресторана и монтаж вентиляции' : 'Фотографии монтажных работ'}</h3>
+          {isLeont && <div class="case-gallery__chapter" aria-label="Контекст объекта на Ждановской, 45">
+            <h4>Объект · два архивных кадра</h4>
+            <p>Вывески в здании на Ждановской, 45. Кадры показывают место работ и не служат подтверждением завершённой отделки.</p>
+            <div class="case-gallery__thumbs case-gallery__thumbs--context">
+              {leontContext.map(([src,alt,caption]) => (
+                <figure class="case-gallery__item case-gallery__item--thumb">
+                  <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={alt} data-photo-caption={caption} aria-label={`Увеличить фотографию: ${caption}`}>
+                    <img src={src} alt={alt} width="734" height="551" loading="lazy" decoding="async" />
+                  </button>
+                  <figcaption>{caption}</figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>}
+          {isLeont && <div class="case-gallery__chapter case-gallery__chapter--engineering">
+            <h4>Вентиляционные трассы и узлы · 24 фотографии</h4>
+            <p>Монтажные кадры из оригинального архива. Нажмите на фотографию для просмотра полного изображения.</p>
+          </div>}
+          <div class="case-gallery__thumbs" aria-label={isLeont ? '24 оригинальные фотографии монтажа ресторана' : 'Фотографии объекта'}>
+            {(isLeont ? leontEngineering : (spec.archiveMedia || [])).map(([src, alt, caption]) => (
               <figure class="case-gallery__item case-gallery__item--thumb">
-                <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={alt} data-photo-archival="true" data-photo-caption={alt} aria-label={`Посмотреть фотографию: ${alt}`}>
-                  <img src={src} alt={alt} width="460" height="300" loading="lazy" decoding="async" />
+                <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={alt} data-photo-archival="true" data-photo-caption={caption} aria-label={`Посмотреть фотографию: ${alt}`}>
+                  <img src={src} alt={alt} width="734" height="551" loading="lazy" decoding="async" />
                 </button>
+                {isLeont && <figcaption>{caption}</figcaption>}
               </figure>
             ))}
           </div>
-          {(spec.archiveMedia || []).length > 6 && (
-            <button type="button" class="case-gallery__expand" data-case-gallery-expand
-              aria-expanded="false">Показать все фотографии · {(spec.archiveMedia || []).length} <span aria-hidden="true">↓</span></button>
-          )}
-          <p class="case-gallery__archive-note">Нажмите на снимок, чтобы рассмотреть монтаж и перелистать фотографии.</p>
         </section>
       )}
       {fullOriginalGallery.length>0 && (
@@ -646,15 +669,6 @@ const fullOriginalGallery=isPolisan ? [] : (verifiedOriginal?.original_media_pat
 </article>
 
 <script>
-  document.querySelectorAll<HTMLElement>('[data-case-archive]').forEach(section => {
-    const button=section.querySelector<HTMLButtonElement>('[data-case-gallery-expand]');
-    button?.addEventListener('click', () => {
-      const expanded=section.classList.toggle('is-expanded');
-      button.setAttribute('aria-expanded', String(expanded));
-      button.innerHTML=expanded ? 'Свернуть фотоархив <span aria-hidden="true">↑</span>' :
-        'Показать все фотографии · ' + section.querySelectorAll('[data-case-photo]').length + ' <span aria-hidden="true">↓</span>';
-    });
-  });
   const photos = [...document.querySelectorAll<HTMLButtonElement>('[data-case-photo]')];
   const viewer = document.getElementById('case-photo-viewer');
   if (viewer instanceof HTMLDialogElement && photos.length) {
@@ -761,7 +775,7 @@ const fullOriginalGallery=isPolisan ? [] : (verifiedOriginal?.original_media_pat
 <style>
 .case-detail-hero h1{font-size:clamp(2.4rem,4.6vw,5rem);line-height:1.07;letter-spacing:-.042em;text-wrap:balance;overflow-wrap:normal;word-break:normal}
 .case-gallery__grid--featured{gap:clamp(12px,1.5vw,24px)}
-.case-gallery__grid--featured .case-gallery__item:first-child img{aspect-ratio:1.8;object-fit:cover}
+.case-gallery__grid--featured .case-gallery__item:first-child img{aspect-ratio:1.52;object-fit:cover}
 .case-gallery__thumbs{gap:clamp(12px,1.6vw,20px)}
 .case-gallery__item{border:0;box-shadow:none}
 .case-gallery__item figcaption{background:transparent;font-weight:400}
@@ -791,6 +805,14 @@ const fullOriginalGallery=isPolisan ? [] : (verifiedOriginal?.original_media_pat
 @media(max-width:620px){.case-gallery__curated-row--three,.case-gallery__curated-row--four{grid-template-columns:1fr}.case-gallery__curated-item .case-gallery__open{aspect-ratio:1.5}.case-gallery__curated-row--portrait .case-gallery__open{aspect-ratio:4/5}}
 @media(prefers-reduced-motion:reduce){.case-gallery__curated-item img{transition:none}}
 
+/* Case gallery editorial chapters: the original 26 restaurant frames appear immediately. */
+.case-gallery__archive--leont .case-gallery__chapter{margin:26px 0 18px;}
+.case-gallery__archive--leont .case-gallery__chapter h4{font-size:clamp(1.05rem,1.4vw,1.4rem);font-weight:570;line-height:1.25;margin:0;}
+.case-gallery__archive--leont .case-gallery__chapter p{max-width:65ch;font-size:.86rem;line-height:1.65;color:#4a6573;margin:8px 0 0;}
+.case-gallery__archive--leont .case-gallery__thumbs--context{grid-template-columns:repeat(2,minmax(0,1fr));}
+.case-gallery__archive--leont .case-gallery__thumbs--context img{aspect-ratio:1.65;}
+.case-gallery__archive--leont .case-gallery__thumbs--context figcaption{background:transparent;font-size:.78rem;color:#546b78;padding:8px 0 0;}
+@media(max-width:620px){.case-gallery__archive--leont .case-gallery__thumbs--context{grid-template-columns:1fr;}}
 .case-gallery__verified-originals{margin-top:clamp(22px,3vw,48px);border-top:1px solid #c4d3da;padding-top:20px}
 .case-gallery__verified-originals summary{min-height:52px;display:flex;align-items:center;cursor:pointer;font-weight:570;font-size:.92rem;color:#36576a}
 .case-gallery__verified-originals summary:focus-visible{outline:2px solid #ac653e;outline-offset:3px}
