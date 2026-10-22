@@ -647,7 +647,7 @@ if(isLeont && (leontContext.length !== 2 || leontSelected.length !== 12 ||
         <button type="button" class="case-photo-dialog__close" data-photo-close aria-label="Закрыть">×</button>
       </div>
       <figure class="case-photo-dialog__figure">
-        <img data-photo-large src={spec.media[0][0]} alt={spec.media[0][1]} loading="lazy" />
+        <img data-photo-large src={spec.media[0][0]} alt={spec.media[0][1]} decoding="async" />
         <figcaption>Фотографии работ</figcaption>
       </figure>
       <nav class="case-photo-dialog__nav" aria-label="Перелистывание фотографий">
@@ -744,6 +744,8 @@ if(isLeont && (leontContext.length !== 2 || leontSelected.length !== 12 ||
 </article>
 
 <script>
+  import {createPhotoPreloader,setViewerPhoto} from "@/lib/gallery-runtime";
+  const cache=createPhotoPreloader(10);
   const photos = [...document.querySelectorAll<HTMLButtonElement>('[data-case-photo]')];
   const viewer = document.getElementById('case-photo-viewer');
   if (viewer instanceof HTMLDialogElement && photos.length) {
@@ -783,8 +785,9 @@ if(isLeont && (leontContext.length !== 2 || leontSelected.length !== 12 ||
       fit();
       activeIndex = (index + photos.length) % photos.length;
       const photo = photos[activeIndex];
-      if (large) { large.src = photo.dataset.photoSrc || ''; large.alt = photo.dataset.photoAlt || ''; }
-      if (description) description.textContent = photo.dataset.photoArchival === 'true' ? 'Исходная фотография монтажных работ' : (photo.dataset.photoCaption || photo.dataset.photoAlt || '');
+      setViewerPhoto(large, photo.dataset.photoSrc || '', photo.dataset.photoAlt || '');
+       cache.neighbors(photos.map(node=>node.dataset.photoSrc||''),activeIndex);
+      if (description) description.textContent = photo.dataset.photoCaption || photo.dataset.photoAlt || '';
       if (counter) counter.textContent = `${activeIndex + 1} / ${photos.length}`;
     };
     photos.forEach((button, index) => button.addEventListener('click', () => {
@@ -815,6 +818,7 @@ if(isLeont && (leontContext.length !== 2 || leontSelected.length !== 12 ||
     viewer.addEventListener('close', () => {
       fit();
       if (large) large.removeAttribute('src');
+       cache.clear();
       restoreReaderPosition();
       requestAnimationFrame(restoreReaderPosition);
     });

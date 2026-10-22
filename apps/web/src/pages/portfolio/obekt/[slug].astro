@@ -33,6 +33,8 @@ return projects.map(project=>({params:{slug:project.slug},props:{project,photos:
 }
 interface Props{project:{slug:string;title:string;kind:string;place:string;cover:string};photos:string[]}
 const {project,photos}=Astro.props;
+const galleryPhotos=project.slug==='na-izluchine-nevy'?photos.filter(src=>src!==project.cover):photos;
+if(project.slug==='na-izluchine-nevy'&&galleryPhotos.length!==6)throw Error('Neva requires six verified installation photos');
 const path='/portfolio/obekt/'+project.slug+'/';
 const content:ContentRecord={
  path,title:project.title+' — AEROVENTA',h1:project.title,content_type:'landing',business_role:'CORE_SERVICE_HUB',
@@ -41,7 +43,7 @@ const content:ContentRecord={
 };
 ---
 <BaseLayout content={content}>
-<article class="owner-case">
+<article class:list={["owner-case",project.slug==="na-izluchine-nevy"&&"owner-case--neva"]}>
 <header class="owner-case__hero"><div class="home-shell owner-case__grid">
  <div><p class="home-kicker">Наши работы / {project.kind}</p><h1>{project.title}</h1><p class="owner-case__place">{project.place}</p>
  <p>Фотографии объекта и инженерной среды. Подробный состав работ уточняется по документации и не определяется по внешнему виду снимков.</p>
@@ -51,8 +53,8 @@ const content:ContentRecord={
  <figure><button type="button" data-case-frame="0" aria-label="Открыть фотографию объекта"><img src={project.cover} alt={'Объект '+project.title} width="1200" height="800" loading="eager" decoding="async"/></button><figcaption>{project.title} · {project.place}</figcaption></figure>
 </div></header>
 <section class="owner-case__gallery home-shell" aria-label={'Галерея '+project.title}>
- <div class="owner-case__heading"><h2>Фотографии объекта</h2><span>{photos.length} кадров</span></div>
- <div class="owner-case__photos">{photos.map((url,i)=><button type="button" data-case-frame={i} aria-label={'Открыть кадр '+(i+1)+' из '+photos.length}><img src={url} width="900" height="700" alt={project.title+' · фотография '+(i+1)} loading="lazy" decoding="async"/></button>)}</div>
+ <div class="owner-case__heading"><h2>Фотографии объекта</h2><span>{galleryPhotos.length} кадров</span></div>
+ <div class="owner-case__photos">{galleryPhotos.map((url,i)=><button type="button" data-case-frame={project.slug==='na-izluchine-nevy'?i+1:i} aria-label={'Открыть кадр '+(i+1)+' из '+galleryPhotos.length}><img src={url} width="900" height="700" alt={project.title+' · фотография '+(i+1)} loading="lazy" decoding="async"/></button>)}</div>
 </section>
 <section class="owner-case__next home-shell"><h2>Ваш объект</h2><p>Пришлите проект или описание задачи. Уточним состав монтажа и необходимые исходные данные.</p><a href="/contact/" class="button button--primary">Связаться с AEROVENTA →</a></section>
 </article>
@@ -64,6 +66,8 @@ const content:ContentRecord={
 <script id="owner-case-image-data" type="application/json" set:html={JSON.stringify(photos)} />
 </BaseLayout>
 <script>
+import {createPhotoPreloader,setViewerPhoto} from '@/lib/gallery-runtime';
+const cache=createPhotoPreloader(10);
 const dialog=document.querySelector<HTMLDialogElement>('#owner-case-viewer');
 const photos:string[]=JSON.parse(document.querySelector('#owner-case-image-data')?.textContent||'[]');
 const large=dialog?.querySelector<HTMLImageElement>('[data-case-large]');
@@ -71,16 +75,16 @@ const counter=dialog?.querySelector<HTMLElement>('[data-case-count]');
 let index=0,source:HTMLElement|null=null;
 function show(n:number){
  if(!photos.length||!large)return;index=(n+photos.length)%photos.length;
- large.src=photos[index];large.alt='Кадр '+(index+1)+' из '+photos.length;
+ setViewerPhoto(large,photos[index],'Кадр '+(index+1)+' из '+photos.length);
  if(counter)counter.textContent=(index+1)+' из '+photos.length;
- for(const src of [photos[(index+1)%photos.length],photos[(index+photos.length-1)%photos.length]]){const p=new Image();p.src=src;}
+ cache.neighbors(photos,index);
 }
 document.querySelectorAll<HTMLElement>('[data-case-frame]').forEach(node=>node.addEventListener('click',()=>{source=node;show(Number(node.dataset.caseFrame)||0);dialog?.showModal();dialog?.querySelector<HTMLElement>('[data-case-close]')?.focus({preventScroll:true});}));
 dialog?.querySelector('[data-case-close]')?.addEventListener('click',()=>dialog.close());
 dialog?.querySelector('[data-case-prev]')?.addEventListener('click',()=>show(index-1));
 dialog?.querySelector('[data-case-next]')?.addEventListener('click',()=>show(index+1));
 dialog?.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'){e.preventDefault();show(index-1);}if(e.key==='ArrowRight'){e.preventDefault();show(index+1);}});
-dialog?.addEventListener('close',()=>{source?.focus({preventScroll:true});source=null;});
+dialog?.addEventListener('close',()=>{cache.clear();source?.focus({preventScroll:true});source=null;});
 </script>
 <style>
 .owner-case{background:#f7f9f9;color:#193949}.owner-case__hero{background:#edf1f2;padding:clamp(35px,5vw,77px) 0}
@@ -110,4 +114,9 @@ dialog?.addEventListener('close',()=>{source?.focus({preventScroll:true});source
 @media(max-width:850px){.owner-case__grid{grid-template-columns:1fr}.owner-case__photos{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:470px){.owner-case__photos{grid-template-columns:1fr}.owner-case__viewer-stage{padding-inline:38px}}
 @media(prefers-reduced-motion:reduce){.owner-case *{scroll-behavior:auto}}
+/* Neva: facade only in hero, six construction photos in balanced rows. */
+.owner-case--neva .owner-case__photos{grid-template-columns:repeat(3,minmax(0,1fr))}
+.owner-case--neva .owner-case__viewer-stage{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+@media(max-width:1000px){.owner-case--neva .owner-case__photos{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.owner-case--neva .owner-case__photos{grid-template-columns:1fr}}
 </style>

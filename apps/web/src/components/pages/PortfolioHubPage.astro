@@ -338,6 +338,7 @@ const sportPhotos = [
 </article>
 
 <script>
+  import { createPhotoPreloader, setViewerPhoto } from "@/lib/gallery-runtime";
   const dialog=document.querySelector<HTMLDialogElement>('#portfolio-archive-viewer');
   if (dialog) {
     const image=dialog.querySelector<HTMLImageElement>('[data-gallery-photo]');
@@ -366,15 +367,14 @@ const sportPhotos = [
       }
       dialog.dataset.zoom=String(zoom);
     };
-    const warm=(url:string)=>{const img=new Image();img.src=url;};
+    const cache=createPhotoPreloader(10);
     const show=(n:number)=>{
       if(!photos.length||!image)return;
       index=(n+photos.length)%photos.length;
       setZoom(1);
-      image.src=photos[index];
-      image.alt=(title?.textContent||'Объект')+' — фотография '+(index+1);
+      setViewerPhoto(image,photos[index],(title?.textContent||'Объект')+' — фотография '+(index+1));
       if(position)position.textContent='Фото '+(index+1)+' из '+photos.length;
-      if(photos.length>1){warm(photos[(index+1)%photos.length]);warm(photos[(index+photos.length-1)%photos.length]);}
+      cache.neighbors(photos,index);
     };
     for(const button of document.querySelectorAll<HTMLElement>('[data-archive-open]')){
       button.addEventListener('click',()=>{
@@ -424,7 +424,7 @@ const sportPhotos = [
     dialog.addEventListener('close',()=>{
       if(nav)nav.hidden=true;
       setZoom(1);if(image)image.removeAttribute('src');
-      photos=[];dialog.classList.remove('is-neva');opener?.focus({preventScroll:true});opener=null;
+      photos=[];cache.clear();dialog.classList.remove('is-neva');opener?.focus({preventScroll:true});opener=null;
     });
   }
 </script>
