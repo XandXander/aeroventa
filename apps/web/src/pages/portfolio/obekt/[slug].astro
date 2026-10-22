@@ -61,7 +61,7 @@ const content:ContentRecord={
  <a class="owner-case__back" href="/portfolio/">← Все объекты</a>
  {project.slug==='eurospar-vo' && <a class="owner-case__back" href="/portfolio/obekt/eurospar-sestroretsk/">Другой объект EUROSPAR · Сестрорецк →</a>}
  {project.slug==='eurospar-sestroretsk' && <a class="owner-case__back" href="/portfolio/obekt/eurospar-vo/">Другой объект EUROSPAR · Васильевский остров →</a>}</div>
- <figure><img src={project.cover} alt={'Объект '+project.title} width="1200" height="800" loading="eager" decoding="async"/><figcaption>{project.title} · {project.place}</figcaption></figure>
+ <figure><button type="button" data-case-cover aria-label={'Открыть главное фото: '+project.title}><img src={project.cover} alt={'Объект '+project.title} width="1200" height="800" loading="eager" decoding="async"/></button><figcaption>{project.title} · {project.place}</figcaption></figure>
 </div></header>
 <section class="owner-case__gallery home-shell" aria-label={'Галерея '+project.title}>
  <div class="owner-case__heading"><h2>Фотографии объекта</h2><span>{galleryPhotos.length} кадров</span></div>
@@ -92,6 +92,11 @@ function show(n:number){
  cache.neighbors(activePhotos,index);
 }
 document.querySelectorAll<HTMLElement>('[data-case-frame]').forEach(node=>node.addEventListener('click',()=>{source=node;activePhotos=photos;show(Number(node.dataset.caseFrame)||0);dialog?.showModal();dialog?.querySelector<HTMLElement>('[data-case-close]')?.focus({preventScroll:true});}));
+document.querySelector<HTMLElement>('[data-case-cover]')?.addEventListener('click',event=>{
+ source=event.currentTarget as HTMLElement;
+ const cover=dialog?.dataset.cover||photos[0];activePhotos=[cover,...photos.filter(photo=>photo!==cover)];
+ show(0);dialog?.showModal();dialog?.querySelector<HTMLElement>('[data-case-close]')?.focus({preventScroll:true});
+});
 dialog?.querySelector('[data-case-zoom]')?.addEventListener('click',()=>photoZoom.toggle());
 dialog?.querySelector('[data-case-close]')?.addEventListener('click',()=>dialog.close());
 dialog?.querySelector('[data-case-prev]')?.addEventListener('click',()=>show(index-1));

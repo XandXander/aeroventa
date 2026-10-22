@@ -250,7 +250,8 @@ try {
     await page.keyboard.press('0');expect(await page.locator('#owner-case-viewer').getAttribute('data-zoom')==='1','Neva fit failed');
     if(width===390){await swipeLeft('.owner-case__viewer-stage');expect((await page.locator('[data-case-count]').innerText())==='2 из 6','Neva touch swipe failed');}
     await page.keyboard.press('Escape');
-    expect(await opener.evaluate(e=>e===document.activeElement),'Neva focus restoration failed');return {decoded_unique_frames:seen};
+    expect(await opener.evaluate(e=>e===document.activeElement),'Neva focus restoration failed');
+    const cover=page.locator('[data-case-cover]');await cover.click();await decodedImage('[data-case-large]');expect((await page.locator('[data-case-large]').getAttribute('src')).includes('owner-neva-facade-20261016.jpg'),'Neva facade opens the wrong image');await page.locator('[data-case-next]').click();await decodedImage('[data-case-large]');expect(!(await page.locator('[data-case-large]').getAttribute('src')).includes('owner-neva-facade'),'Neva cover does not connect to interior photographs');await page.keyboard.press('Escape');expect(await cover.evaluate(e=>e===document.activeElement),'Neva cover focus restoration failed');return {decoded_unique_frames:seen,facade:true};
    });
    for(const name of ['apart-hotel','eurospar-vo','eurospar-sestroretsk','college-obvodny','novatech','akvilon-yanino','himprom'])await scenario('OWNER_OBJECT_GALLERY','/portfolio/obekt/'+name+'/',width,width>1000?650:844,async()=>{
     const opener=page.locator('[data-case-frame]').first();const total=await page.locator('[data-case-frame]').count();expect(total>1,'Object album incomplete');
