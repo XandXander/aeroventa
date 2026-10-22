@@ -141,6 +141,36 @@ if (await exists(path.join(dist, '.htaccess'))) {
   check(/RewriteRule \^404\\\.php\$ - \[R=404,L\]/.test(ht), 'Built .htaccess must force legacy /404.php to HTTP 404');
 }
 
+// Focused Owner O22 built-output gate, no new external requests or broad re-audit.
+const portfolioFile=htmlFileFor('/portfolio/');
+if(await exists(portfolioFile)){
+  const html=await fs.readFile(portfolioFile,'utf8');
+  check(/id="featured-case-title"[^>]*>7 PARK<\/h2>/.test(html),'Owner O22: 7 PARK must be section 01 lead');
+  const cards=[...html.matchAll(/<a\b[^>]*class="portfolio-card(?: [^"]*)?"[^>]*>/g)].map(m=>m[0]);
+  check(cards.length===12,'Owner O22: exactly twelve independent named project cards required');
+  const hrefs=cards.map(tag=>tag.match(/href="([^"]+)"/)?.[1]).filter(Boolean);
+  check(hrefs.length===12 && new Set(hrefs).size===12,'Owner O22: all 12 portfolio cards need distinct direct destinations');
+  for(const href of hrefs)check(await exists(htmlFileFor(href)), 'Owner O22: card direct route missing '+href);
+  check(html.includes('id="portfolio-sport-title"') && html.includes('Центр адаптивного спорта'),'Owner O22: independent sport section required');
+}
+const nevaFile=htmlFileFor('/portfolio/obekt/na-izluchine-nevy/');
+if(await exists(nevaFile)){
+  const html=await fs.readFile(nevaFile,'utf8');
+  const photos=[...html.matchAll(/<button\b[^>]*data-case-frame="\d+"[^>]*>/g)];
+  check(photos.length===8,'Owner Neva: one cover trigger plus seven real gallery frames');
+  for(const [name,expected] of [
+    ['curated-04.webp','e574fa2d3c8c31c9a885b02ca16189dffd32de67110983bbf11cf1d1902b4a81'],
+    ['curated-05.webp','fc8b4990985c8d4e107790aa1b276b21f37c0ec21ee3c80e670bca9f8727d359'],
+    ['curated-06.webp','91ebc5f2bccb2f9f2bba2b2b63967c83f26063b5977141ddb6678b113ac1f3c4']
+  ]){
+    const file=path.join(dist,'evidence/residential/neva',name);
+    if(!await exists(file)){failures.push('Owner Neva original missing: '+name);continue;}
+    const actual=crypto.createHash('sha256').update(await fs.readFile(file)).digest('hex');
+    check(actual===expected,'Owner Neva media SHA mismatch '+name);
+    check(html.includes('/evidence/residential/neva/'+name),'Owner Neva gallery reference missing: '+name);
+  }
+}
+
 const token = process.env.DIRECTUS_STATIC_TOKEN || '';
 if (token && await exists(dist)) {
   async function walk(dir) {

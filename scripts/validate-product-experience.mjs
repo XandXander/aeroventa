@@ -322,7 +322,7 @@ check(portfolioSource.includes('if(nav)nav.hidden=photos.length<2;') &&
       portfolioSource.includes('if(x===null||photos.length<2||zoom>1') &&
       portfolioSource.includes('portfolio-archive-viewer__nav[hidden]{display:none!important}') &&
       portfolioSource.includes('"title": "На излучине Невы"'),
-      'Owner Neva: original facade and no false arrows for single-photo gallery');
+      'Owner Neva: original facade retained and conditional arrows preserved for galleries');
 const polisanMediaSection = caseSource.split("'/blog/detail/ntff-polisan/': {")[1]?.split('    proves:')[0] || '';
 check(polisanMediaSection.includes('    media:[') &&
       polisanMediaSection.includes('      ["/evidence/polisan/owner-cover-v43.webp"') &&
@@ -331,13 +331,14 @@ check(polisanMediaSection.includes('    media:[') &&
       'Owner Polisan: chosen exterior case cover with authentic roof photos');
 check(portfolioSource.includes('aria-label="Разные реальные объекты AEROVENTA"') &&
       portfolioSource.includes('portfolio-hero__mosaic-third') &&
-      portfolioSource.includes("item.index !== '01' && item.index !== '03'") &&
-      portfolioSource.includes('id="featured-case-title">НТФФ «Полисан»') &&
-      !portfolioSource.includes('id="featured-case-title">7 PARK') &&
-      portfolioSource.includes('{archiveCases.map(item => (') &&
-      portfolioSource.includes('href={item.index===\'14\'?\'/portfolio/obekt/na-izluchine-nevy/\'') &&
-      portfolioSource.includes('class="portfolio-sport"'),
-      'Portfolio preserves Owner Polisan feature, eight authentic source objects, and separate sports; 7 PARK on HOME, case and Novostroyki');
+      portfolioSource.includes('id="featured-case-title">7 PARK') &&
+      portfolioSource.includes('{cases.map((item) => (') &&
+      portfolioSource.includes("archiveCases.filter(item => item.index !== '09')") &&
+      portfolioSource.includes('12 других реальных объектов') &&
+      portfolioSource.includes('href="/blog/detail/kak-my-sdali-7-domov/"') &&
+      portfolioSource.includes('class="portfolio-sport"') &&
+      portfolioSource.includes("if(addedNevaPhotos.length!==6)"),
+      'Owner O22: 7 PARK featured, 12 distinct real cases, separate sports and 6 integrity-checked Neva originals');
 for(const name of ['cover','02','03','04']){
   const img=await fs.stat(path.join(root,'apps/web/public/evidence/owner-portfolio/sport-komendantskiy',name+'.webp')).catch(()=>null);
   check(Boolean(img?.isFile()&&img.size>15000), 'Sports object selected provenance media exists: '+name);

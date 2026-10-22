@@ -20,7 +20,7 @@ function realImages(slug:string,cover:string):string[]{
  if(slug==='na-izluchine-nevy'){
   const folder='evidence/residential/neva';
   const locate=(file:string)=>roots.some(root=>existsSync(resolve(root,folder,file)));
-  return [cover,...['curated-01.webp','curated-02.webp','curated-03.webp'].filter(locate).map(file=>'/'+folder+'/'+file)];
+  return [cover,...['curated-01.webp','curated-02.webp','curated-03.webp','curated-04.webp','curated-05.webp','curated-06.webp'].filter(locate).map(file=>'/'+folder+'/'+file)];
  }
  const folder='evidence/owner-portfolio/'+slug;
  const found=roots.map(root=>resolve(root,folder)).find(existsSync);
@@ -45,7 +45,9 @@ const content:ContentRecord={
 <header class="owner-case__hero"><div class="home-shell owner-case__grid">
  <div><p class="home-kicker">Наши работы / {project.kind}</p><h1>{project.title}</h1><p class="owner-case__place">{project.place}</p>
  <p>Фотографии объекта и инженерной среды. Подробный состав работ уточняется по документации и не определяется по внешнему виду снимков.</p>
- <a class="owner-case__back" href="/portfolio/">← Все объекты</a></div>
+ <a class="owner-case__back" href="/portfolio/">← Все объекты</a>
+ {project.slug==='eurospar-vo' && <a class="owner-case__back" href="/portfolio/obekt/eurospar-sestroretsk/">Другой объект EUROSPAR · Сестрорецк →</a>}
+ {project.slug==='eurospar-sestroretsk' && <a class="owner-case__back" href="/portfolio/obekt/eurospar-vo/">Другой объект EUROSPAR · Васильевский остров →</a>}</div>
  <figure><button type="button" data-case-frame="0" aria-label="Открыть фотографию объекта"><img src={project.cover} alt={'Объект '+project.title} width="1200" height="800" loading="eager" decoding="async"/></button><figcaption>{project.title} · {project.place}</figcaption></figure>
 </div></header>
 <section class="owner-case__gallery home-shell" aria-label={'Галерея '+project.title}>
