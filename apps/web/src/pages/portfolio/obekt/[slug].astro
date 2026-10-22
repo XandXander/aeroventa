@@ -4,7 +4,8 @@ import type { ContentRecord } from '@/lib/types';
 import { readdirSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-const projects=[
+export function getStaticPaths(){
+ const projects=[
  {slug:'apart-hotel',title:'Апарт-отель и коворкинг на Бумажном',kind:'Коммерческий объект',place:'Санкт-Петербург',cover:'/evidence/owner-portfolio/apart-hotel/cover.webp'},
  {slug:'eurospar-vo',title:'EUROSPAR · Васильевский остров',kind:'Торговый объект',place:'Санкт-Петербург',cover:'/evidence/owner-portfolio/eurospar-vo/cover.webp'},
  {slug:'eurospar-sestroretsk',title:'EUROSPAR · Сестрорецк',kind:'Торговый объект',place:'Сестрорецк',cover:'/evidence/owner-portfolio/eurospar-sestroretsk/03.webp'},
@@ -28,10 +29,9 @@ function realImages(slug:string,cover:string):string[]{
  matches.sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
  return [...new Set([cover,...matches.map(file=>'/'+folder+'/'+file)])];
 }
-export function getStaticPaths(){
- return projects.map(project=>({params:{slug:project.slug},props:{project,photos:realImages(project.slug,project.cover)}}));
+return projects.map(project=>({params:{slug:project.slug},props:{project,photos:realImages(project.slug,project.cover)}}));
 }
-interface Props{project:typeof projects[number];photos:string[]}
+interface Props{project:{slug:string;title:string;kind:string;place:string;cover:string};photos:string[]}
 const {project,photos}=Astro.props;
 const path='/portfolio/obekt/'+project.slug+'/';
 const content:ContentRecord={
