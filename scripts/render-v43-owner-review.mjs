@@ -1085,13 +1085,20 @@ try {
       await chosen.click();
       await page.locator('#case-photo-viewer').waitFor({state:'visible'});
       const whileOpen=await page.evaluate(()=>scrollY);
+      // Native modal focus can schedule smooth document scrolling after the
+      // click handler returns. Observe the open state, not a single early frame.
+      const openPositions=await page.evaluate(()=>new Promise(resolve=>{
+        const positions=[],start=performance.now();
+        const sample=now=>{positions.push(scrollY);if(now-start<850)requestAnimationFrame(sample);else resolve(positions)};
+        requestAnimationFrame(sample);
+      }));
       await page.locator('[data-photo-next]').click();
       await page.keyboard.press('Escape');
       await page.locator('#case-photo-viewer').waitFor({state:'hidden'});
       const after=await page.evaluate(()=>scrollY);
       const returned=await chosen.evaluate(el=>el===document.activeElement);
-      if(Math.abs(before-whileOpen)>16||Math.abs(before-after)>16||after<100||!returned)
-        report.fail.push({reason:'PONSSE deep lightbox scroll/focus restoration',before,whileOpen,after,returned});
+      if(Math.abs(before-whileOpen)>16||openPositions.some(y=>Math.abs(before-y)>16)||Math.abs(before-after)>16||after<100||!returned)
+        report.fail.push({reason:'PONSSE deep lightbox scroll/focus restoration',before,whileOpen,openRange:[Math.min(...openPositions),Math.max(...openPositions)],after,returned});
     }catch(error){report.fail.push({reason:'PONSSE lightbox interaction',error:String(error)})}
     finally{await ctx.close()}
   }

@@ -797,7 +797,9 @@ if(isLeont && (leontContext.length !== 2 || leontSelected.length !== 12 ||
       show(index);
       if (!viewer.open) viewer.showModal();
       viewer.querySelector<HTMLButtonElement>('[data-photo-close]')?.focus({preventScroll:true});
-      if(Math.abs(window.scrollY-previousScroll)>1)window.scrollTo({top:previousScroll,behavior:'instant'});
+      // Cancel modal focus scrolling even before its first animation frame.
+      // An equality check here misses native smooth scrolls queued by showModal.
+      window.scrollTo({top:previousScroll,behavior:'instant'});
     }));
     viewer.querySelector('[data-photo-close]')?.addEventListener('click', closeViewer);
     viewer.addEventListener('cancel',event=>{event.preventDefault();closeViewer()});
