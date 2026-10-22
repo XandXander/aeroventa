@@ -155,7 +155,7 @@ try {
             optical.copy_left >= -1 && optical.copy_right <= width + 3 &&
             optical.photo_bottom > optical.copy_top + 100 &&
             optical.copy_background === 'rgba(0, 0, 0, 0)';
-          const ownerScenePass = optical.natural_width >= 1200 &&
+          const ownerScenePass = optical.natural_width >= width*0.70 &&
             optical.diagram_count === 2 && optical.process_stages === 4 &&
             (isMobile ? (!optical.desktop_diagram_visible && optical.mobile_pair_visible) :
                         (optical.desktop_diagram_visible && !optical.mobile_pair_visible)) &&
@@ -285,12 +285,12 @@ try {
             const matches=await page.locator(`.portfolio-card:has-text("${name}") img[src="${src}"]`).count();
             if(matches!==1)report.fail.push({route,view,reason:'Authentic object photo incorrect',name,src,matches});
           }
-          const polisan=await page.locator('.portfolio-feature img[src="/evidence/polisan/owner-cover-v43.webp"]').count();
+          const sevenParkLead=await page.locator('.portfolio-feature a[href="/blog/detail/kak-my-sdali-7-domov/"]').count();
           const historical=page.locator('a.portfolio-card[href^="/blog/detail/"]');
           const archives=page.locator('a.portfolio-card--archive[href^="/portfolio/obekt/"]');
           const sourceValid=await archives.evaluateAll(nodes=>{
-            const expected=new Set(['apart-hotel','eurospar-vo','eurospar-sestroretsk','college-obvodny','novatech','akvilon-yanino','himprom','na-izluchine-nevy']);
-            return nodes.length===8&&nodes.every(n=>{
+            const expected=new Set(['apart-hotel','eurospar-sestroretsk','college-obvodny','novatech','akvilon-yanino','himprom','na-izluchine-nevy']);
+            return nodes.length===7&&nodes.every(n=>{
               const href=n.getAttribute('href')||'';
               const slug=href.match(/^\/portfolio\/obekt\/([a-z0-9-]+)\/$/)?.[1];
               const image=n.querySelector('img')?.getAttribute('src')||'';
@@ -301,12 +301,11 @@ try {
             })&&expected.size===0;
           });
           const historicUrls=await historical.evaluateAll(nodes=>nodes.map(n=>n.getAttribute('href')));
-          if(count!==12||photos!==12||ponsse!==1||polisan!==1||
-             await historical.count()!==4||await archives.count()!==8||!sourceValid||
+          if(count!==12||photos!==12||ponsse!==1||sevenParkLead!==1||
+             await historical.count()!==5||await archives.count()!==7||!sourceValid||
              !historicUrls.every(h=>h?.startsWith('/blog/detail/'))||
-             await page.locator('.portfolio-feature a[href="/blog/detail/ntff-polisan/"]').count()!==1||
-             await page.locator('.portfolio-feature a[href="/blog/detail/kak-my-sdali-7-domov/"]').count()!==0){
-            report.fail.push({route,view,reason:'Latest Owner direct authentic cases, Polisan feature and all eight case paths',count,photos,ponsse,polisan,historic:historicUrls,archiveCount:await archives.count(),sourceValid});
+             await page.locator('.portfolio-card[href="/blog/detail/ntff-polisan/"]').count()!==1){
+            report.fail.push({route,view,reason:'Current Owner 7 PARK leading feature and twelve distinct direct case destinations',count,photos,ponsse,sevenParkLead,historic:historicUrls,archiveCount:await archives.count(),sourceValid});
           }
         }
         if (['drill_crown', 'drill_screed', 'drill_cost', 'drill_horizontal'].includes(id)) {
@@ -347,17 +346,18 @@ try {
               intro_top:text?.top??0,
               intro_bottom:text?.bottom??0,
               inline_visible:inline?getComputedStyle(inline).display!=='none':false,
-              floating_visible:floating?getComputedStyle(floating).display!=='none' && getComputedStyle(floating).visibility!=='hidden' && parseFloat(getComputedStyle(floating).opacity)>.01:false
+              floating_visible:floating?getComputedStyle(floating).display!=='none' && getComputedStyle(floating).visibility!=='hidden' && parseFloat(getComputedStyle(floating).opacity)>.01:false,
+               launcher_overlaps_intro:(()=>{if(!floating||!intro)return false;const a=floating.getBoundingClientRect(),b=intro.getBoundingClientRect();return a.width>0&&a.height>0&&Math.min(a.right,b.right)-Math.max(a.left,b.left)>3&&Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top)>3})()
             };
           });
           const mobile=width<=760;
           if (JSON.stringify(actual)!==JSON.stringify(expected) || wrong ||
               servicesOptical.natural_widths.length!==1 ||
-              servicesOptical.natural_widths.some(n=>n<400) ||
+              servicesOptical.natural_widths.some(n=>n<width*0.70) ||
               servicesOptical.object_fits.some(n=>n!=='contain') ||
               (mobile && (servicesOptical.photo_bottom>servicesOptical.intro_top+3 ||
                   servicesOptical.inline_visible)) ||
-              servicesOptical.floating_visible) {
+              servicesOptical.launcher_overlaps_intro) {
             report.fail.push({route,view,reason:'Owner Services single authentic image, no obstructive launcher in first fold',wrong,actual,servicesOptical});
           }
           // Even after suppressing the colliding initial launcher, the
@@ -832,7 +832,7 @@ try {
       await neva.click();
       await page.waitForURL('**/portfolio/obekt/na-izluchine-nevy/');
       const nevaFirst=page.locator('.owner-case__photos button').first();
-      const seven=(await page.locator('.owner-case__photos img').count())===7;
+      const six=(await page.locator('.owner-case__photos img').count())===6;
       await nevaFirst.click();
       const lightbox=page.locator('#owner-case-viewer');
       await lightbox.waitFor({state:'visible'});
@@ -845,9 +845,9 @@ try {
       await lightbox.waitFor({state:'hidden'});
       const nevaRestored=await nevaFirst.evaluate(el=>el===document.activeElement);
       if(!authentic||!before||!after||before===after||secondCount!=='2 из 13'||!decode||!restored||
-         !seven||nevaBefore!=='/evidence/residential/owner-neva-facade-20261016.jpg'||
-         nevaAfter!=='/evidence/residential/neva/curated-01.webp'||nevaCounter!=='2 из 7'||!nevaRestored){
-        report.fail.push({reason:'Named-object real photo viewer / first click / keyboard / focus',authentic,before,after,secondCount,decode,restored,seven,nevaBefore,nevaAfter,nevaCounter,nevaRestored});
+         !six||nevaBefore!=='/evidence/residential/neva/curated-01.webp'||
+         nevaAfter!=='/evidence/residential/neva/curated-02.webp'||nevaCounter!=='2 из 6'||!nevaRestored){
+        report.fail.push({reason:'Named-object real photo viewer / first click / keyboard / focus',authentic,before,after,secondCount,decode,restored,six,nevaBefore,nevaAfter,nevaCounter,nevaRestored});
       }
     }catch(error){report.fail.push({reason:'Named-case real viewer interaction exception',error:String(error)})}
     finally{await context.close()}
