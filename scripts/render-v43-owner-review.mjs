@@ -289,7 +289,7 @@ try {
           const historical=page.locator('a.portfolio-card[href^="/blog/detail/"]');
           const archives=page.locator('a.portfolio-card--archive[href^="/portfolio/obekt/"]');
           const sourceValid=await archives.evaluateAll(nodes=>{
-            const expected=new Set(['apart-hotel','eurospar-sestroretsk','college-obvodny','novatech','akvilon-yanino','himprom','na-izluchine-nevy']);
+            const expected=new Set(['apart-hotel','eurospar-vo','college-obvodny','novatech','akvilon-yanino','himprom','na-izluchine-nevy']);
             return nodes.length===7&&nodes.every(n=>{
               const href=n.getAttribute('href')||'';
               const slug=href.match(/^\/portfolio\/obekt\/([a-z0-9-]+)\/$/)?.[1];
@@ -304,7 +304,8 @@ try {
           if(count!==12||photos!==12||ponsse!==1||sevenParkLead!==1||
              await historical.count()!==5||await archives.count()!==7||!sourceValid||
              !historicUrls.every(h=>h?.startsWith('/blog/detail/'))||
-             await page.locator('.portfolio-card[href="/blog/detail/ntff-polisan/"]').count()!==1){
+             await page.locator('.portfolio-card[href="/blog/detail/ntff-polisan/"]').count()!==1||
+             await page.locator('a.portfolio-list__extra[href="/portfolio/obekt/eurospar-sestroretsk/"]').count()!==1){
             report.fail.push({route,view,reason:'Current Owner 7 PARK leading feature and twelve distinct direct case destinations',count,photos,ponsse,sevenParkLead,historic:historicUrls,archiveCount:await archives.count(),sourceValid});
           }
         }

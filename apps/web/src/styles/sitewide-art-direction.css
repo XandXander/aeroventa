@@ -187,3 +187,14 @@ main .section-index:not(.section-index--orange){color:#a74626}
   object-fit:fill!important;filter:none!important;transform:none!important;
  }
 }
+
+/* Related authentic project remains discoverable without silently changing
+   the Owner-approved twelve-card portfolio roster. */
+main .portfolio-list__extra{
+ margin-top:clamp(22px,3vw,44px);padding:16px 0;
+ display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;
+ border-top:1px solid var(--av-rule);border-bottom:1px solid var(--av-rule);
+ text-decoration:none;color:#244253;font-size:clamp(.85rem,1vw,1rem);
+}
+main .portfolio-list__extra b{font-weight:620;color:#915034}
+main .portfolio-list__extra:focus-visible{outline:3px solid #a75c37;outline-offset:3px}
