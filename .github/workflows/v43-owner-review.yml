@@ -53,6 +53,19 @@ jobs:
           exit 1
       - name: Render real compiled HTML at four viewports
         run: node scripts/render-v43-owner-review.mjs
+      - name: Sitewide 51-HTML route / 10-viewport geometry and real-click gallery regression
+        if: success()
+        env:
+          GITHUB_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/pr12-sitewide-regression.mjs
+      - name: Upload compact sitewide interaction and first-fold evidence
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: PR12-SITEWIDE-10-VIEWPORT-AND-REAL-CLICKS
+          path: PR12_SYSTEMIC_QA/
+          if-no-files-found: warn
+          retention-days: 7
       - name: Emit compact selected real-render previews into CI evidence log
         if: always()
         shell: bash
