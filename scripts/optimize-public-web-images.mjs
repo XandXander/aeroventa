@@ -63,4 +63,4 @@ const report={source_count:originals.length,html_images:images,images_with_new_s
 const reportPath=path.resolve(root,'../../../reports/WEB_IMAGE_DELIVERY_AUDIT.json');
 await fs.mkdir(path.dirname(reportPath),{recursive:true});
 await fs.writeFile(reportPath,JSON.stringify(report,null,2));
-console.log('WEB_IMAGE_DELIVERY',JSON.stringify({...report,items:undefined}));
+console.log('WEB_IMAGE_DELIVERY',JSON.stringify({...report,items:undefined,page_assets:undefined}));
