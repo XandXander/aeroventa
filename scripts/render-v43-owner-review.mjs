@@ -475,7 +475,7 @@ try {
         if (entry.status !== 200 || entry.overflow_px > 1 || entry.broken_images.length || pageErrors.length) {
           report.fail.push(entry);
         }
-        await page.screenshot({ path: path.join(root, id + '__' + view + '.png'), fullPage: true, animations: 'disabled' });
+        await page.screenshot({ path: path.join(root, id + '__' + view + '.png'), timeout:30000, fullPage: true, animations: 'disabled' });
         if (['seven_park','karelia_ponsse','polisan','leont','zhukov','cafe'].includes(id) && (view === 'desktop_1440' || view === 'mobile_390')) {
           const firstPhoto = page.locator('[data-case-photo]').first();
           const firstSrc = await firstPhoto.getAttribute('data-photo-src');
@@ -1014,25 +1014,38 @@ try {
   for(const [width,height] of [[1440,900],[390,844]]) {
     const ctx=await browser.newContext({viewport:{width,height},reducedMotion:'no-preference'});
     const page=await ctx.newPage();
+    // Sample the browser animation clock independently from screenshot encoding.
+    // A large PNG can take longer than the 1.85s entry cue itself.
+    await page.addInitScript(() => {
+      window.__avEntryFrames=[];
+      const sample=()=>{
+        const entry=document.querySelector('[data-airflow-entry]');
+        if(entry?.classList.contains('is-running')){
+          const duct=document.querySelector('.airflow-entry-trace__duct--supply');
+          const pulse=document.querySelector('.airflow-entry-trace__pulse--exhaust');
+          window.__avEntryFrames.push({mode:entry.dataset.mode,duct:parseFloat(getComputedStyle(duct).strokeDashoffset),pulse:parseFloat(getComputedStyle(pulse).strokeDashoffset)});
+        }
+        if(performance.now()<5000)requestAnimationFrame(sample);
+      };
+      requestAnimationFrame(sample);
+    });
     try {
       await page.goto(baseUrl+'/',{waitUntil:'domcontentloaded'});
       const animated=page.locator('[data-airflow-entry]');
       await page.waitForFunction(()=>document.querySelector('[data-airflow-entry]')?.classList.contains('is-running'),null,{timeout:1800});
       await page.screenshot({path:path.join(root,'motion_first_start__'+width+'.png'),animations:'allow'});
       await page.waitForTimeout(380);
-      const building=await page.evaluate(()=>{
-        const line=document.querySelector('.airflow-entry-trace__duct--supply');
-        return {mode:document.querySelector('[data-airflow-entry]')?.dataset.mode,offset:line&&parseFloat(getComputedStyle(line).strokeDashoffset),name:line&&getComputedStyle(line).animationName};
-      });
       await page.screenshot({path:path.join(root,'motion_first_assembly__'+width+'.png'),animations:'allow'});
       await page.waitForTimeout(650);
-      const pulse=await page.evaluate(()=>{
-        const line=document.querySelector('.airflow-entry-trace__pulse--exhaust');
-        return {offset:line&&parseFloat(getComputedStyle(line).strokeDashoffset),name:line&&getComputedStyle(line).animationName};
-      });
       await page.screenshot({path:path.join(root,'motion_first_pulse__'+width+'.png'),animations:'allow'});
-      if(building.mode!=='full'||building.name==='none'||pulse.name==='none'||!Number.isFinite(building.offset)||!Number.isFinite(pulse.offset))
-        report.fail.push({reason:'Brand loader must visibly assemble route, then pulse',width,building,pulse});
+      const frames=await page.evaluate(()=>window.__avEntryFrames);
+      const assembly=frames.filter(f=>f.mode==='full'&&f.duct>0&&f.duct<100);
+      const pulse=frames.filter(f=>f.mode==='full'&&f.pulse>0&&f.pulse<100);
+      const moving=rows=>rows.length>=2&&Math.abs(rows[0].duct-rows.at(-1).duct)>.01;
+      if(!moving(assembly)||pulse.length<2||Math.abs(pulse[0].pulse-pulse.at(-1).pulse)<.01)
+        report.fail.push({reason:'Brand loader must visibly assemble route, then pulse',width,assembly,pulse});
+      report.motion_clock_samples??=[];
+      report.motion_clock_samples.push({width,frames});
       await animated.waitFor({state:'detached',timeout:4000});
       await page.reload({waitUntil:'domcontentloaded'});
       await page.waitForFunction(()=>document.querySelector('[data-airflow-entry]')?.classList.contains('is-running'),null,{timeout:1700});

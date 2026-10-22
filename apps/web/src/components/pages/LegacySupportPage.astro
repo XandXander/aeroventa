@@ -21,7 +21,7 @@ type Spec = {
 const p0Cards: Card[] = [
   {tag:'Полевой опыт',title:'Застрявшая алмазная коронка',text:'Причины заклинивания, безопасная последовательность действий.',href:'/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/'},
   {tag:'Реальный объект',title:'Бурение в стяжке под стояки',text:'Слоистое перекрытие, крепление, отделка и исходные данные.',href:'/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/'},
-  {tag:'Стоимость',title:'От чего зависит цена бурения',text:'Геометрия, материал, доступ, защита и состав работ — без старого прайса.',href:'/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/'},
+  {tag:'Стоимость',title:'От чего зависит цена бурения',text:'Геометрия, материал, доступ, защита и состав работ.',href:'/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/'},
   {tag:'Вентиляция',title:'Проходка стены под вентиляцию',text:'Почему сначала определяют трассу и узел, а уже потом отверстие.',href:'/blog/detail/gorizontalnoe-almaznoe-burenie/'},
 ];
 
@@ -72,11 +72,11 @@ const specs: Record<string, Spec> = {
     state:'Только актуальная информация',
     stateText:'Открытые штатные вакансии сейчас не заявлены. Специалисты и монтажные бригады могут направить предложение о сотрудничестве.',
     sections:[
-      {index:'01',title:'Кого имеет смысл писать',text:'Если вы работаете с монтажом вентиляции и хотите предложить сотрудничество, можно коротко прислать опыт и географию работы.',items:['Какие системы и объекты монтировали.','Опыт с воздуховодами / оборудованием / крупными объектами.','Город и готовность к выездам.','Контакт для связи.']},
+      {index:'01',title:'Что рассказать о себе',text:'Если вы работаете с монтажом вентиляции и хотите предложить сотрудничество, коротко опишите опыт и географию работы.',items:['Какие системы и объекты монтировали.','Опыт с воздуховодами, оборудованием и крупными объектами.','Город и готовность к выездам.','Контакт для связи.']},
       {index:'02',title:'Формат сотрудничества',text:'Открытые задачи и условия сотрудничества обсуждаем с учётом вида работ, сроков и объёма.'}
     ],
     closeTitle:'Хотите предложить сотрудничество?',
-    closeText:'Отправьте краткое описание опыта на общий e-mail AEROVENTA. Это не обещание открытой вакансии, а нормальный канал для профессионального контакта.',
+    closeText:'Напишите на корпоративную почту: ваш опыт, примеры выполненных работ, город и контакт для ответа.',
     closeHref:`mailto:${SITE.email}?subject=${encodeURIComponent('AEROVENTA — предложение о сотрудничестве')}`,
     closeLabel:'Написать на e-mail →'
   },
@@ -103,7 +103,7 @@ const specs: Record<string, Spec> = {
     stateText:'Познакомьтесь с командой, нашим подходом к монтажу и объектами, на которых работали специалисты AEROVENTA.',
     cards:[
       {tag:'Как работаем',title:'Команда и принцип работы',text:'Постоянное ядро + проверенное усиление под объект.',href:'/about/'},
-      {tag:'Проекты',title:'Реальные объекты',text:'Факты вместо корпоративной витрины.',href:'/portfolio/'},
+      {tag:'Проекты',title:'Реальные объекты',text:'Фотографии и состав выполненных работ.',href:'/portfolio/'},
       {tag:'Практика',title:'Материалы с площадки',text:'Полевой опыт и инженерные решения.',href:'/blog/'}
     ],
     closeTitle:'Узнайте больше о наших проектах',
@@ -151,6 +151,17 @@ const specs: Record<string, Spec> = {
   }
 };
 
+const cardPhotos: Record<string, string> = {
+  '/blog/detail/kak-my-sdali-7-domov/':'/evidence/7park/object-exterior-day.jpg',
+  '/blog/detail/restoran-v-zhk-leontevskiy-mys/':'/evidence/leont/owner-cover-v43.webp',
+  '/blog/detail/ntff-polisan/':'/evidence/polisan/owner-cover-v43.webp',
+  '/blog/detail/kvartira-na-zhukova/':'/evidence/zhukov/owner-cover-v43.webp',
+  '/blog/detail/montazh-ventilyatsii-v-karelii/':'/evidence/karelia/object-exterior.jpg',
+  '/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/':'/upload/medialibrary/548/5488fb415056eee52ac63ff9d4850c63.jpg',
+  '/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/':'/upload/medialibrary/0a2/0a2f0d1be2900e0a1fe74bcd9604e3f8.jpg',
+  '/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/':'/upload/medialibrary/fb3/fb3d693282a8085971dd4e2fe87bf28e.jpg',
+  '/blog/detail/gorizontalnoe-almaznoe-burenie/':'/upload/medialibrary/e1c/e1cd51110183f9c6b2e704b70664eba1.jpg',
+};
 const spec=specs[content.path];
 if(!spec) throw new Error('Support spec missing: '+content.path);
 ---
@@ -181,8 +192,8 @@ if(!spec) throw new Error('Support spec missing: '+content.path);
       <div class="home-shell">
         <p class="section-index">Материалы по теме</p>
         <h2 class="sr-only">Материалы по теме</h2>
-        <div class="support-cards__grid">
-          {spec.cards.map((item,index) => <a href={item.href}><span>{String(index+1).padStart(2,'0')} / {item.tag}</span><h3>{item.title}</h3><p>{item.text}</p><b>Открыть →</b></a>)}
+        <div class="support-cards__grid" data-card-count={spec.cards.length}>
+          {spec.cards.map((item,index) => <a href={item.href}>{cardPhotos[item.href] && <img src={cardPhotos[item.href]} alt={item.title} width="800" height="450" loading="lazy" decoding="async" />}<span>{String(index+1).padStart(2,'0')} / {item.tag}</span><h3>{item.title}</h3><p>{item.text}</p><b>Открыть →</b></a>)}
         </div>
       </div>
     </section>

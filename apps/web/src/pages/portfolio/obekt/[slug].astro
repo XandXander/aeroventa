@@ -50,7 +50,7 @@ const content:ContentRecord={
  <a class="owner-case__back" href="/portfolio/">← Все объекты</a>
  {project.slug==='eurospar-vo' && <a class="owner-case__back" href="/portfolio/obekt/eurospar-sestroretsk/">Другой объект EUROSPAR · Сестрорецк →</a>}
  {project.slug==='eurospar-sestroretsk' && <a class="owner-case__back" href="/portfolio/obekt/eurospar-vo/">Другой объект EUROSPAR · Васильевский остров →</a>}</div>
- <figure><img src={project.cover} alt={'Объект '+project.title} width="1200" height="800" loading="eager" decoding="async"/><figcaption>{project.title} · {project.place}</figcaption></figure>
+ <figure><button type="button" data-case-cover aria-label={"Открыть главное фото: "+project.title}><img src={project.cover} alt={'Объект '+project.title} width="1200" height="800" loading="eager" decoding="async"/></button><figcaption>{project.title} · {project.place}</figcaption></figure>
 </div></header>
 <section class="owner-case__gallery home-shell" aria-label={'Галерея '+project.title}>
  <div class="owner-case__heading"><h2>Фотографии объекта</h2><span>{galleryPhotos.length} кадров</span></div>
@@ -58,9 +58,9 @@ const content:ContentRecord={
 </section>
 <section class="owner-case__next home-shell"><h2>Ваш объект</h2><p>Пришлите проект или описание задачи. Уточним состав монтажа и необходимые исходные данные.</p><a href="/contact/" class="button button--primary">Связаться с AEROVENTA →</a></section>
 </article>
-<dialog id="owner-case-viewer" aria-label={'Просмотр фотографий '+project.title}>
+<dialog id="owner-case-viewer" data-cover={project.cover} aria-label={'Просмотр фотографий '+project.title}>
 <div class="owner-case__viewer-title"><strong>{project.title}</strong><button type="button" data-case-close aria-label="Закрыть галерею">×</button></div>
-<div class="owner-case__viewer-stage"><img src={project.cover} data-case-large alt={project.title} width="1200" height="800"/></div>
+<div class="owner-case__viewer-stage"><button class="owner-case__zoom" type="button" data-case-zoom aria-label="Показать фотографию в исходном размере" aria-pressed="false"><img src={project.cover} data-case-large alt={project.title} width="1200" height="800"/></button></div>
 <nav class="owner-case__viewer-nav" aria-label="Перелистывание фотографий"><button type="button" data-case-prev aria-label="Предыдущая фотография">‹</button><span data-case-count>1 из {galleryPhotos.length}</span><button type="button" data-case-next aria-label="Следующая фотография">›</button></nav>
 </dialog>
 <script id="owner-case-image-data" type="application/json" set:html={JSON.stringify(galleryPhotos)} />
@@ -72,19 +72,32 @@ const dialog=document.querySelector<HTMLDialogElement>('#owner-case-viewer');
 const photos:string[]=JSON.parse(document.querySelector('#owner-case-image-data')?.textContent||'[]');
 const large=dialog?.querySelector<HTMLImageElement>('[data-case-large]');
 const counter=dialog?.querySelector<HTMLElement>('[data-case-count]');
-let index=0,source:HTMLElement|null=null;
-function show(n:number){
- if(!photos.length||!large)return;index=(n+photos.length)%photos.length;
- setViewerPhoto(large,photos[index],'Кадр '+(index+1)+' из '+photos.length);
- if(counter)counter.textContent=(index+1)+' из '+photos.length;
- cache.neighbors(photos,index);
+const zoomButton=dialog?.querySelector<HTMLButtonElement>('[data-case-zoom]');
+let activePhotos=photos,index=0,source:HTMLElement|null=null;
+function resetZoom(){
+ dialog?.classList.remove('is-zoomed');
+ zoomButton?.setAttribute('aria-pressed','false');
+ zoomButton?.setAttribute('aria-label','Показать фотографию в исходном размере');
+ dialog?.querySelector('.owner-case__viewer-stage')?.scrollTo(0,0);
 }
-document.querySelectorAll<HTMLElement>('[data-case-frame]').forEach(node=>node.addEventListener('click',()=>{source=node;show(Number(node.dataset.caseFrame)||0);dialog?.showModal();dialog?.querySelector<HTMLElement>('[data-case-close]')?.focus({preventScroll:true});}));
+zoomButton?.addEventListener('click',()=>{
+ const zoomed=dialog?.classList.toggle('is-zoomed')||false;
+ zoomButton.setAttribute('aria-pressed',String(zoomed));
+ zoomButton.setAttribute('aria-label',zoomed?'Вписать фотографию в экран':'Показать фотографию в исходном размере');
+});
+function show(n:number){
+ if(!activePhotos.length||!large)return;resetZoom();index=(n+activePhotos.length)%activePhotos.length;
+ setViewerPhoto(large,activePhotos[index],'Кадр '+(index+1)+' из '+activePhotos.length);
+ if(counter)counter.textContent=(index+1)+' из '+activePhotos.length;
+ cache.neighbors(activePhotos,index);
+}
+document.querySelectorAll<HTMLElement>('[data-case-frame]').forEach(node=>node.addEventListener('click',()=>{source=node;activePhotos=photos;show(Number(node.dataset.caseFrame)||0);dialog?.showModal();dialog?.querySelector<HTMLElement>('[data-case-close]')?.focus({preventScroll:true});}));
+document.querySelector<HTMLElement>('[data-case-cover]')?.addEventListener('click',event=>{source=event.currentTarget as HTMLElement;activePhotos=[dialog?.dataset.cover||photos[0],...photos.filter(p=>p!==dialog?.dataset.cover)];show(0);dialog?.showModal();dialog?.querySelector<HTMLElement>('[data-case-close]')?.focus({preventScroll:true});});
 dialog?.querySelector('[data-case-close]')?.addEventListener('click',()=>dialog.close());
 dialog?.querySelector('[data-case-prev]')?.addEventListener('click',()=>show(index-1));
 dialog?.querySelector('[data-case-next]')?.addEventListener('click',()=>show(index+1));
 dialog?.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'){e.preventDefault();show(index-1);}if(e.key==='ArrowRight'){e.preventDefault();show(index+1);}});
-dialog?.addEventListener('close',()=>{cache.clear();source?.focus({preventScroll:true});source=null;});
+dialog?.addEventListener('close',()=>{resetZoom();cache.clear();source?.focus({preventScroll:true});source=null;});
 </script>
 <style>
 .owner-case{background:#f7f9f9;color:#193949}.owner-case__hero{background:#edf1f2;padding:clamp(35px,5vw,77px) 0}
@@ -107,8 +120,12 @@ dialog?.addEventListener('close',()=>{cache.clear();source?.focus({preventScroll
 .owner-case__viewer-title strong{font-size:.86rem;text-align:center}
 .owner-case__viewer-title button{position:absolute;top:5px;right:10px;width:46px;height:46px;border:0;background:transparent;color:#15374a;font-size:2rem;cursor:pointer}
 .owner-case__viewer-stage{display:grid;place-items:center;width:100%;height:100%;padding:67px clamp(44px,6vw,90px) 62px;box-sizing:border-box}
+.owner-case__zoom{display:grid;place-items:center;width:100%;height:100%;min-width:0;min-height:0;padding:0;border:0;background:transparent;cursor:zoom-in}
 .owner-case__viewer-stage img{display:block;width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain}
-.owner-case__viewer-nav{position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;pointer-events:none}
+#owner-case-viewer.is-zoomed .owner-case__viewer-stage{display:block;overflow:auto;overscroll-behavior:contain}
+#owner-case-viewer.is-zoomed .owner-case__zoom{display:block;width:max-content;height:auto;cursor:zoom-out}
+#owner-case-viewer.is-zoomed img{max-width:none;max-height:none}
+.owner-case__viewer-nav{z-index:3;position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;pointer-events:none}
 .owner-case__viewer-nav button{pointer-events:auto;min-width:45px;min-height:58px;padding:0;border:0;background:#dce7ea;color:#15374a;font-size:2.5rem;cursor:pointer}
 .owner-case__viewer-nav span{position:absolute;left:50%;bottom:calc(13px + env(safe-area-inset-bottom));transform:translateX(-50%);padding:5px 11px;font-size:.8rem;background:#dce7ea}
 @media(max-width:850px){.owner-case__grid{grid-template-columns:1fr}.owner-case__photos{grid-template-columns:repeat(2,minmax(0,1fr))}}

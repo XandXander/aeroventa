@@ -100,7 +100,7 @@
   font-weight:800;
 }
 .field label span {
-  color:#778591;
+  color:#536976;
   font-weight:600;
 }
 .field input,
@@ -125,7 +125,7 @@
   box-shadow:0 0 0 3px rgba(20,140,255,.16);
 }
 .field__hint {
-  color:#6d7a86;
+  color:#536976;
   font-size:.8rem;
   line-height:1.4;
 }
@@ -494,7 +494,7 @@
 .consultant-conversation__input:focus-within {outline:2px solid #3585b1;outline-offset:1px;}
 .consultant-conversation__input textarea {display:block;resize:vertical;flex:1;min-width:0;max-height:130px;min-height:43px;line-height:1.45;padding:9px 7px;font:inherit;font-size:.89rem;border:0;outline:none;background:transparent;color:#173146;}
 .consultant-conversation__input button {border:0;flex:0 0 44px;width:44px;height:44px;border-radius:11px;color:#fff;background:#0c3855;font-weight:800;font-size:1.5rem;cursor:pointer;}
-.consultant-conversation__input button:focus-visible,.consultant-conversation__foot button:focus-visible,.consultant-structured summary:focus-visible {outline:2px solid #eb8246;outline-offset:2px;}
+.consultant-conversation__input button:focus-visible,.consultant-conversation__foot button:focus-visible,.consultant-structured summary:focus-visible {outline:2px solid var(--av-focus,#9f4224);outline-offset:2px;}
 .consultant-conversation__foot {display:flex;justify-content:flex-end;gap:12px;align-items:center;padding:9px 15px 16px;}
 .consultant-conversation__foot button {border:0;background:none;color:#063953;font-size:.78rem;font-weight:800;text-align:right;white-space:nowrap;cursor:pointer;}
 .consultant-structured {margin-top:16px;border:1px solid #d5e2eb;border-radius:15px;background:#fff;overflow:hidden;}
@@ -522,18 +522,6 @@
  * action remains available; the consultant launcher appears after the first fold. */
 /* Global launcher remains available from the first fold on services as well. */
 /* Consultant launcher outside navigation, no automatic popup or model claim. */
-.consultant-launcher {position:fixed;z-index:29;right:max(22px,env(safe-area-inset-right,22px));bottom:max(20px,env(safe-area-inset-bottom,20px));display:inline-flex;align-items:center;gap:12px;min-height:52px;padding:7px 19px 7px 8px;border:1px solid #c9dae5;border-radius:999px;background:#fff;color:#12344c;text-decoration:none;box-shadow:0 10px 28px rgba(7,28,43,.15);font-size:.84rem;font-weight:760;}
-.consultant-launcher:hover {border-color:#8cb8ce;background:#f7fbfd;}
-.consultant-launcher__symbol {display:grid;place-items:center;width:37px;height:37px;flex:0 0 37px;border-radius:50%;background:#17648d;color:#fff;font-size:1.45rem;font-weight:600;}
-@media (max-width:760px) {
-.consultant-launcher {right:max(13px,env(safe-area-inset-right,13px));bottom:max(13px,env(safe-area-inset-bottom,13px));min-height:52px;max-width:calc(100vw - 26px);}
-.consultant-launcher__label {font-size:.76rem;}
-}
-@media (max-width:360px) {
-.consultant-launcher {padding:6px;width:51px;height:51px;justify-content:center;}
-.consultant-launcher__label {position:absolute;clip:rect(0,0,0,0);width:1px;height:1px;overflow:hidden;white-space:nowrap;}
-}
-@media (prefers-reduced-motion:reduce) {.consultant-launcher {transition:none;}}
 
 /* V43 Owner contact sheet: compact, intentional, no inner scrolling in default state. */
 .experience-dialog--contact {
@@ -605,11 +593,7 @@
 .consultant-conversation__foot span{font-weight:450}
 .consultant-structured{margin-top:10px;border:0;border-top:1px solid #dce6ec;border-radius:0}
 .consultant-structured summary{padding:13px 5px;font-weight:570}
-.consultant-launcher{font-weight:660}
 @media(max-width:760px){
- body:has(.home-hero--owner-airflow) .consultant-launcher,
- body:has(.services-hero--owner-editorial) .consultant-launcher,
- body:has(.about-premium) .consultant-launcher{display:inline-flex}
  .consultant-conversation__history:not(:empty){max-height:32dvh}
 }
 
@@ -684,7 +668,7 @@ img[src="/evidence/7park/object-exterior-day.jpg"]{
 .evidence-case .case-detail-facts h2{grid-column:1;font-size:clamp(1.7rem,2.65vw,3rem);line-height:1.12;max-width:19ch;letter-spacing:-.035em;font-weight:540;margin:16px 0 0;text-wrap:balance}
 .evidence-case .case-detail-facts__grid{grid-column:2;grid-row:1 / span 2;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 clamp(25px,3vw,49px);margin:0;border:0;background:transparent}
 .evidence-case .case-detail-facts__grid>div{min-width:0!important;max-width:none!important;width:100%!important;padding:19px 0 23px!important;border:0!important;border-top:1px solid #ccd7dc!important;background:transparent!important}
-.evidence-case .case-detail-facts dt{font-weight:540;font-size:.72rem;letter-spacing:.065em;text-transform:uppercase;color:#667e89;margin:0 0 8px}
+.evidence-case .case-detail-facts dt{font-weight:540;font-size:.72rem;letter-spacing:.065em;text-transform:uppercase;color:#536976;margin:0 0 8px}
 .evidence-case .case-detail-facts dd{font-size:clamp(1rem,1.24vw,1.2rem);font-weight:550;line-height:1.38;color:#163246;overflow-wrap:anywhere}
 /* Related projects — quiet editorial index, not another text card wall. */
 .evidence-case .case-detail-related{background:#fff;padding-block:clamp(41px,5vw,78px)}
@@ -705,17 +689,8 @@ img[src="/evidence/7park/object-exterior-day.jpg"]{
  .evidence-case .case-detail-facts__grid>div{min-width:0;max-width:none;flex:none;padding:13px 0 17px!important}
 }
 /* Always-visible consultant: desktop and mobile use the same real button. */
-body .consultant-launcher{position:fixed;display:inline-flex;z-index:49;right:max(16px,env(safe-area-inset-right,16px));bottom:max(17px,env(safe-area-inset-bottom,17px));margin:0;width:auto;max-width:calc(100vw - 32px);transform:none}
-body .consultant-launcher:focus-visible{outline:3px solid #ba774e;outline-offset:4px}
 @media(max-width:760px){
- body:has(.home-hero--owner-airflow) .consultant-launcher,body:has(.services-hero--owner-editorial) .consultant-launcher,body:has(.about-premium) .consultant-launcher,body:has(.home-consultant-inline) .consultant-launcher,body:has(.services-consultant-inline) .consultant-launcher{display:inline-flex;position:fixed;z-index:49;right:max(12px,env(safe-area-inset-right,12px));bottom:max(15px,env(safe-area-inset-bottom,15px));margin:0}
- body .consultant-launcher{min-width:52px;min-height:52px;width:52px;max-width:52px;justify-content:center;padding:6px;box-shadow:0 5px 18px rgba(18,41,54,.14)}
- body .consultant-launcher__label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
  .home-consultant-inline,.services-consultant-inline{display:none!important}
-}
-@media(max-width:360px){
- body .consultant-launcher{width:52px;max-width:52px;justify-content:center;padding:6px}
- body .consultant-launcher__label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 }
 /* Controlled sheet states derived from AUNELA; native dialog semantics retained. */
 .experience-dialog[data-state="opening"]{animation:av-owner-sheet-open .38s cubic-bezier(.22,.78,.22,1) both;transform-origin:90% 88%}
@@ -732,17 +707,6 @@ body .consultant-launcher:focus-visible{outline:3px solid #ba774e;outline-offset
 }
 
 /* Keep the visible launcher clear of HOME object categories on first entry. */
-@media(min-width:761px){
- html:not(.is-past-first-fold) body:has(.home-hero--owner-airflow) .consultant-launcher{
-  bottom:calc(var(--av-fold-ribbon) + max(16px,env(safe-area-inset-bottom,16px)));
- }
-}
-@media(max-width:760px){
- html:not(.is-past-first-fold) body:has(.home-hero--owner-airflow) .consultant-launcher{
-  bottom:max(15px,env(safe-area-inset-bottom,15px));
- }
-}
-body .consultant-launcher{appearance:none;font-family:inherit;cursor:pointer}
 
 /* Case HERO uses its full first-screen field instead of leaving unused blank space below a top-aligned photograph. */
 @media(min-width:961px){
@@ -759,10 +723,6 @@ body .consultant-launcher{appearance:none;font-family:inherit;cursor:pointer}
 
 /* Owner 2026-10-20 supersedes the historical "hidden until scroll" policy.
    Explicitly override legacy visibility/pointer blocking for all first-fold layouts. */
-html:not(.is-past-first-fold) body:has(.home-hero--owner-airflow) .consultant-launcher,
-html:not(.is-past-first-fold) body:has(.about-hero) .consultant-launcher{
-  visibility:visible!important;opacity:1!important;pointer-events:auto!important;
-}
 /* Services: keep the 3 in-fold category links unblocked; actual contact CTA stays visible.
    Restore consultant after scrolling below the first-fold route register. */
 /* Removed the superseded "hide consultant until scroll" rule (Owner sitewide gate). */
@@ -801,9 +761,7 @@ html:not(.is-past-first-fold) body:has(.about-hero) .consultant-launcher{
 @media(max-width:1050px){
  /* Native details[open] is immediate; its JS toggle event may be deferred. */
  html:has(.mobile-menu[open]){overflow:hidden}
- html:has(.mobile-menu[open]) .consultant-launcher{visibility:hidden!important;pointer-events:none!important}
  html.av-mobile-menu-open{overflow:hidden}
- html.av-mobile-menu-open .consultant-launcher{visibility:hidden!important;pointer-events:none!important}
  .site-header:has(.mobile-menu[open]){z-index:80;background:#fff}
  .site-header .mobile-menu[open] nav{position:fixed;left:0;right:0;top:56px;max-height:calc(100dvh - 56px);overflow-y:auto;overscroll-behavior:contain;padding:clamp(18px,4vw,32px) 20px max(24px,env(safe-area-inset-bottom,24px));background:#fff;border-bottom:1px solid #cad6dd;box-shadow:0 24px 36px #091f3133;display:grid;gap:4px}
  .site-header .mobile-menu[open] nav a{padding:11px 4px;min-height:44px}

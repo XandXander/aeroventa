@@ -9,7 +9,8 @@ const publicRoot = path.join(root,'apps/web/public');
 const outputRoot = path.join(publicRoot,'share');
 const cards = [
  ['home','evidence/hero/owner-luxury-airflow-20261010.png','Инженерный комфорт'],
- ['services','evidence/hero/services-owner-editorial-1774.webp','Монтаж вентиляции'],
+ ['services','evidence/hero/project-not-ready-owner-concept-1672.webp','Монтаж вентиляции'],
+ ['discovery','evidence/hero/home-owner-editorial-1672.webp','Вентиляция: с чего начать'],
  ['ventilation','evidence/polisan/archive/20180601-133711.webp','Монтаж вентиляции'],
  ['portfolio','evidence/leont/owner-cover-v43.webp','Реальные объекты'],
  ['about','evidence/team/owner-team-group-20261015.webp','Команда AEROVENTA'],
@@ -21,7 +22,13 @@ const cards = [
  ['zhukov','evidence/zhukov/owner-cover-v43.webp','Маршала Жукова'],
  ['cafe','evidence/cafe/owner-interior-v43.webp','Кафе на Римского-Корсакова'],
  ['akvilon','evidence/owner-portfolio/akvilon-yanino/cover.webp','ЖК «Аквилон» · Янино'],
- ['neva','evidence/residential/owner-neva-facade-20261016.jpg','На излучине Невы']
+ ['neva','evidence/residential/owner-neva-facade-20261016.jpg','На излучине Невы'],
+ ['apart-hotel','evidence/owner-portfolio/apart-hotel/cover.webp','Апарт-отель и коворкинг'],
+ ['eurospar-vo','evidence/owner-portfolio/eurospar-vo/cover.webp','EUROSPAR · Васильевский остров'],
+ ['eurospar-sestroretsk','evidence/owner-portfolio/eurospar-sestroretsk/03.webp','EUROSPAR · Сестрорецк'],
+ ['college','evidence/owner-portfolio/college-obvodny/cover.webp','Колледж туризма'],
+ ['novatech','evidence/owner-portfolio/novatech/03.webp','Новатех'],
+ ['himprom','evidence/owner-portfolio/himprom/03.webp','Химпром']
 ];
 const xmlEscape=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 await mkdir(outputRoot,{recursive:true});

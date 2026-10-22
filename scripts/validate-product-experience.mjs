@@ -26,6 +26,7 @@ const files = {
   airflow: await read('apps/web/src/components/AirflowTracePulse.astro'),
   css: await read('apps/web/src/styles/experience.css'),
   globalCss: await read('apps/web/src/styles/global.css'),
+  artCss: await read('apps/web/src/styles/sitewide-art-direction.css'),
   favicon: await read('apps/web/public/favicon.svg'),
   brandWordmark: await read('apps/web/public/brand/aeroventa-wordmark.svg'),
   brandMark: await read('apps/web/public/brand/aeroventa-mark.svg'),
@@ -70,7 +71,7 @@ check(files.home.indexOf('class="case-feature"') < files.home.indexOf('id="objec
       files.home.indexOf('id="objects"') < files.home.indexOf('class="home-ponsse"') &&
       files.home.indexOf('class="home-ponsse"') < files.home.indexOf('class="home-section decision-preview"'), 'Historical PONSSE block follows one real intervening section after 7 PARK');
 check(files.home.includes('/evidence/karelia/ponsse-letter-20220405.png'), 'Original PONSSE 2022 letter stays intact on home');
-check(files.globalCss.includes('.home-ponsse__grid') && files.globalCss.includes('grid-template-columns:minmax(0,36%)'), 'Owner-approved source scene restored beside text and PONSSE editorial styled');
+check(files.globalCss.includes('.home-ponsse__grid') && files.home.includes('engineering-scene-accepted-v43.webp') && !files.home.includes('solution-diagram__callouts') && !files.home.includes('solution-diagram__crop'), 'Approved process source is preserved without the regressed crop and duplicate lettering');
 check(files.contactForm.includes('compact ? 3 : 4') && files.css.includes('experience-dialog--contact'), 'Bounded contact UX with preserved lead form');
 check(files.premium.includes('lastDialogTrigger') && files.premium.includes("opener.focus({ preventScroll: true })"), 'Dialog keyboard focus restored');
 check(files.layout.includes('PUBLIC_YANDEX_WEBMASTER_VERIFICATION'), 'Yandex Webmaster verification seam exists');
@@ -138,7 +139,8 @@ check(files.premium.includes('Не является сметой, проекто
 check(files.premium.includes('if (!endpoint)'), 'Lead form has safe no-endpoint fallback');
 check(files.premium.includes('mailto:'), 'Lead fallback keeps direct human contact');
 
-check(!files.header.includes('data-consultant-open') && files.premium.includes('data-source="persistent_launcher"'), 'Consultant entry is standalone, outside navigation');
+const headerNavBlocks = [...files.header.matchAll(/<nav\b[^>]*>([\s\S]*?)<\/nav>/g)].map(match => match[1]);
+check(files.header.includes('data-source="persistent_launcher"') && !files.premium.includes('data-source="persistent_launcher"') && headerNavBlocks.every(nav => !nav.includes('data-source="persistent_launcher"')), 'One persistent consultant entry is outside navigation and the content plane');
 check(!files.footer.includes('data-consultant-open') && !files.footer.includes('data-contact-open') && files.footer.includes('mailto:'), 'Footer uses direct human contact without repetitive CTA or consultant menu');
 check(files.lead.includes('data-contact-open'), 'Lead CTA opens modern contact form');
 check(files.contactPage.includes('<ContactForm'), 'Contact page includes semantic form');
@@ -168,7 +170,7 @@ check(files.header.includes('Обсудить задачу <span aria-hidden="tr
 check(files.home.includes('href="/contact/" data-contact-open data-source="home_primary"') && files.home.includes('href="/montazh-po-proektu/" data-contact-open data-project-status="ready"') && files.home.includes('Есть проект — запросить смету'), 'Homepage CTAs open contextual same-page contact, retain href fallback and Owner wording');
 check(files.home.includes('AEROVENTA — инженерные системы вентиляции в СПб и Ленобласти'), 'Home SEO title distinct from primary installation service title');
 check(files.layout.includes('retainedDescriptionFallback') && files.layout.includes('seoDescription') && files.layout.includes('content.seo_description?.trim()'), 'Five legacy SEO descriptions use safe metadata fallbacks, preserving Directus priority');
-check(files.layout.includes('editorialOgFallback') && files.layout.includes('content.og_image || brandedShareImage || editorialOgFallback[content.path]') && files.layout.includes("'/blog/detail/ntff-polisan/':'polisan'") && files.layout.includes("'/blog/detail/kak-my-sdali-7-domov/':'sevenpark'"), 'Social sharing uses case-context media if Directus has not supplied an image');
+check(files.layout.includes('editorialOgFallback') && files.layout.includes('(approvedSocial && content.og_image) || brandedShareImage') && files.layout.includes('PUBLIC_SOCIAL_ORIGIN') && files.layout.includes("'/blog/detail/ntff-polisan/':'polisan'") && files.layout.includes("'/blog/detail/kak-my-sdali-7-domov/':'sevenpark'"), 'Social sharing retains approved media, contextual cards and an explicit staging origin');
 check(!files.home.includes('<svg class="hero-engineering__overlay"') && files.home.includes('class="solution-mobile-pair"') && files.home.includes('class="home-shell process-strip"'), 'HERO has no invented arrows; mobile native split illustration and original stages remain present');
 check(files.home.includes('/evidence/hero/engineering-scene-accepted-v43.webp') && files.home.includes('Комплексный подход к вентиляции'), 'Owner-locked original engineering illustration restored without replacing HOME HERO');
 check(!files.home.includes('object-ribbon__number') && (files.home.match(/\['(?:Квартиры|Офисы|Рестораны|Магазины|Производства|Новостройки)/g) ?? []).length === 6, 'Object navigation has six named destinations without catalogue counters');
@@ -244,9 +246,9 @@ for(const p of ['evidence/cafe/owner-cover-v43.webp']){
 }
 check(files.home.includes('class="home-consultant-inline"') &&
       files.services.includes('class="services-consultant-inline"') &&
-      files.css.includes('body:has(.home-hero--owner-airflow) .consultant-launcher') &&
-      files.css.includes('body:has(.services-hero--owner-editorial) .consultant-launcher'),
-      'Mobile consultant access remains reachable inline without fixed overlap on both changed heroes');
+      files.header.includes('consultant-launcher--header') &&
+      files.artCss.includes('.consultant-launcher{\n position:static;'),
+      'Inline consultant access is retained and the persistent entry has a header slot');
 
 const heroFigure = files.home.match(/<figure class="hero-engineering">([\s\S]*?)<\/figure>/)?.[1] ?? '';
 const caseSection = files.home.match(/<section class="case-feature"[\s\S]*?<\/section>/)?.[0] ?? '';

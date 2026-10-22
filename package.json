@@ -33,6 +33,12 @@
     "directus:vnext:preflight:local": "npm run directus:vnext:plan && npm run directus:vnext:validate",
     "directus:vnext:inspect": "node scripts/directus-vnext-inspect-readonly.mjs",
     "directus:vnext:native:build": "node scripts/build-directus-vnext-native-target.mjs",
-    "directus:vnext:native:validate": "node scripts/validate-directus-vnext-native-target.mjs"
+    "directus:vnext:native:validate": "node scripts/validate-directus-vnext-native-target.mjs",
+    "check:web": "npm --workspace @aeroventa/web run check"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.12",
+    "@types/node": "24.19.2",
+    "typescript": "6.0.3"
   }
 }

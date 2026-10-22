@@ -57,6 +57,11 @@ for(const [width,height] of vp){
     };
    });
    stats.push({route,width,height,...state});
+   // A positioned photo must not create an invisible second track on mobile.
+   if(width<=1050){
+    const layout=await page.locator('.object-detail__hero-grid').evaluateAll(nodes=>nodes.map(el=>({display:getComputedStyle(el).display,width:el.getBoundingClientRect().width,titleWidth:el.querySelector('h1')?.getBoundingClientRect().width||0})));
+    for(const grid of layout)if(grid.display!=='flex'||grid.titleWidth<grid.width*.8)issues.push({route,width,height,type:'OBJECT_HERO_IMPLICIT_TRACK',...grid});
+   }
    if(!state.h1)issues.push({route,width,height,type:'NO_H1'});
    if(state.pageWidth>width+4)issues.push({route,width,height,type:'HORIZONTAL_OVERFLOW',delta:state.pageWidth-width});
    if(state.top< -6||state.bottom>height+12)issues.push({route,width,height,type:'H1_OUTSIDE_FIRST_FOLD',top:state.top,bottom:state.bottom});

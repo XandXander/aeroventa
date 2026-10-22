@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "node ../../scripts/prepare-responsive-hero.mjs && node ../../scripts/generate-social-cards.mjs && astro build && node ../../scripts/postbuild.mjs",
+    "build": "node ../../scripts/clean-web-build.mjs && node ../../scripts/prepare-responsive-hero.mjs && node ../../scripts/generate-social-cards.mjs && astro build && node ../../scripts/postbuild.mjs",
     "preview": "astro preview",
     "check": "astro check"
   },

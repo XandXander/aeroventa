@@ -9,3 +9,8 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
+
+interface Window {
+  aeroventaTrack: (name: string, payload?: Record<string, unknown>) => void;
+  ym?: ((...args: unknown[]) => void) & { a?: unknown[][]; l?: number };
+}

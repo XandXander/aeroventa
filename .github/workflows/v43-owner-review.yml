@@ -32,6 +32,8 @@ jobs:
       - name: Validate and compile fixture site
         env:
           AEROVENTA_RELEASE_MODE: fixture
+          AEROVENTA_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          PUBLIC_SOCIAL_ORIGIN: https://staging.aeroventa.ru
         run: |
           npm run generate:hosting-rules
           npm run validate

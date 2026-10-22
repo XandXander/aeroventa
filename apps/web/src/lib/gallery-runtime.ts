@@ -23,8 +23,6 @@ export function setViewerPhoto(img:HTMLImageElement|undefined|null, src:string, 
  if(!img)return;
  // The next index is registered before image decode starts; no load-await or button disabling.
  img.setAttribute('aria-busy','true');
- // Never show a previous object's photo while the newly selected resource loads.
- img.removeAttribute('src');
  const expected=src;
  img.onload=()=>{if(img.getAttribute('src')===expected)img.removeAttribute('aria-busy')};
  img.onerror=()=>{if(img.getAttribute('src')===expected){img.removeAttribute('aria-busy');img.dataset.loadError='true'}};

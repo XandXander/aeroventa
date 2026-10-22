@@ -119,7 +119,7 @@ const { content, eyebrow, lede, constraints, drivers, evidence, questions, proof
     <div class="home-shell">
       <p class="section-index section-index--orange">05 / Следующий шаг</p>
       <h2 id="object-close-title">Пришлите проект или исходные данные.</h2>
-      <div class="engagement-index engagement-index--dark engagement-index--close">
+      <div class="engagement-index engagement-index--close">
         <a href="/montazh-po-proektu/">
           <span>01</span>
           <div><strong>Готовая проектная документация</strong><p>Перейти к монтажному объёму, вопросам исполнения и коммерческому предложению.</p></div>
@@ -174,5 +174,13 @@ const { content, eyebrow, lede, constraints, drivers, evidence, questions, proof
 }
 @media(max-width:900px){
   .object-detail--editorial-media .object-detail__hero-media {max-width:531px;margin-inline:auto;}
+}
+
+/* A mobile image must not create an implicit second grid track. */
+@media(max-width:1050px){
+ .object-detail .object-detail__hero-grid{display:flex;flex-direction:column;align-items:stretch;gap:20px}
+ .object-detail .object-detail__hero-grid>div:first-child{order:0;width:100%}
+ .object-detail .object-detail__hero-media{order:1;grid-column:auto;grid-row:auto;width:100%;margin:0}
+ .object-detail .object-detail__hero-grid>div:nth-child(2){order:2;width:100%}
 }
 </style>

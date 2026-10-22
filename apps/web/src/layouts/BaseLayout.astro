@@ -15,6 +15,15 @@ interface Props { content: ContentRecord; }
 const { content } = Astro.props;
 const preview = import.meta.env.AEROVENTA_RELEASE_MODE === 'preview';
 const canonical = canonicalUrl(content.path, content.canonical_override);
+// Staging sharing must point at staging assets, while the migration canonical
+// remains the approved production URL. No arbitrary hosts or credentials.
+const socialOrigin = (import.meta.env.PUBLIC_SOCIAL_ORIGIN || 'https://aeroventa.ru').trim();
+if (!['https://aeroventa.ru', 'https://staging.aeroventa.ru'].includes(socialOrigin)) {
+  throw new Error('PUBLIC_SOCIAL_ORIGIN must be an approved AEROVENTA HTTPS origin');
+}
+const socialUrl = new URL(new URL(canonical).pathname, socialOrigin).toString();
+const sourceSha = import.meta.env.AEROVENTA_SOURCE_SHA?.trim();
+if (sourceSha && !/^[0-9a-f]{40}$/.test(sourceSha)) throw new Error('Invalid AEROVENTA_SOURCE_SHA');
 const robots = preview ? 'noindex,nofollow,noarchive,nosnippet' : robotsValue(content);
 const schema = preview ? null : jsonLd(content);
 // Controlled fallbacks for five historical HTML-200 routes. Approved Directus copy wins.
@@ -32,8 +41,9 @@ const retainedDescriptionFallback: Record<string, string> = {
 };
 const cleanPublicSummary = (text: string) => text.replace(/Исторический источник/gi,'Материал').replace(/Архивная публикация/gi,'Статья').replace(/Тихий архив/gi,'История компании').trim();
 const seoDescription = cleanPublicSummary(content.seo_description?.trim() || retainedDescriptionFallback[content.path] || '');
-const ogTitle = content.og_title || content.seo_title || content.title;
-const ogDescription = cleanPublicSummary(content.og_description?.trim() || seoDescription);
+const approvedSocial = content.status === 'published' && Boolean(content.owner_approved_at);
+const ogTitle = (approvedSocial && content.og_title) || content.seo_title || content.title;
+const ogDescription = cleanPublicSummary((approvedSocial && content.og_description?.trim()) || seoDescription);
 const editorialOgFallback: Record<string, string> = {
   '/': '/evidence/hero/owner-luxury-airflow-20261010.png',
   '/services/': '/evidence/hero/services-owner-editorial-1774.webp',
@@ -92,7 +102,16 @@ const brandedShareCards: Record<string, string> = {
   '/blog/detail/kafe-rimskogo-korsakova-3/':'cafe',
   '/obekty/proizvodstvo/':'polisan','/obekty/kvartiry-i-doma/':'neva',
   '/obekty/novostroyki/':'akvilon','/obekty/novostroyki-i-zhilye-kompleksy/':'akvilon','/obekty/restorany-i-kafe/':'leont',
-  '/obekty/':'portfolio'
+  '/obekty/':'portfolio',
+  '/obekt-bez-gotovogo-proekta/':'discovery',
+  '/portfolio/obekt/apart-hotel/':'apart-hotel',
+  '/portfolio/obekt/eurospar-vo/':'eurospar-vo',
+  '/portfolio/obekt/eurospar-sestroretsk/':'eurospar-sestroretsk',
+  '/portfolio/obekt/college-obvodny/':'college',
+  '/portfolio/obekt/novatech/':'novatech',
+  '/portfolio/obekt/akvilon-yanino/':'akvilon',
+  '/portfolio/obekt/himprom/':'himprom',
+  '/portfolio/obekt/na-izluchine-nevy/':'neva',
 };
 const brandedShareImage = brandedShareCards[content.path] ? '/share/' + brandedShareCards[content.path] + '.jpg' : null;
 const rejectedServicesImage = content.path === '/services/' &&
@@ -102,8 +121,13 @@ const rejectedServicesImage = content.path === '/services/' &&
 // Static fallback cards are deterministic 1200×630 images generated only from repository media.
 const ogImageSource = rejectedServicesImage
   ? (brandedShareImage || editorialOgFallback['/services/'])
-  : (content.og_image || brandedShareImage || editorialOgFallback[content.path] || '/evidence/hero/services-owner-editorial-1774.webp');
-const ogImage = ogImageSource ? new URL(ogImageSource, 'https://aeroventa.ru').toString() : null;
+  : ((approvedSocial && content.og_image) || brandedShareImage || editorialOgFallback[content.path] || '/evidence/hero/services-owner-editorial-1774.webp');
+const ogImageUrl = ogImageSource ? new URL(ogImageSource, 'https://aeroventa.ru') : null;
+if (ogImageUrl && ['https://aeroventa.ru', 'https://staging.aeroventa.ru'].includes(ogImageUrl.origin)) {
+  ogImageUrl.protocol = new URL(socialOrigin).protocol;
+  ogImageUrl.host = new URL(socialOrigin).host;
+}
+const ogImage = ogImageUrl?.toString() || null;
 const ogImageType = ogImage ? (/\.png(?:$|\?)/i.test(ogImage) ? 'image/png' : /\.jpe?g(?:$|\?)/i.test(ogImage) ? 'image/jpeg' : /\.webp(?:$|\?)/i.test(ogImage) ? 'image/webp' : null) : null;
 const ogImageAlt = `AEROVENTA — ${content.h1 || content.title}`;
 const yandexVerification = (import.meta.env.PUBLIC_YANDEX_WEBMASTER_VERIFICATION || '').trim();
@@ -115,6 +139,7 @@ const googleVerification = (import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION || '
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="theme-color" content="#ffffff" />
+    {sourceSha && <meta name="aeroventa-source-sha" content={sourceSha} />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preload" href="/fonts/onest-variable.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href={globalCssUrl} />
@@ -128,7 +153,7 @@ const googleVerification = (import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION || '
     {googleVerification && <meta name="google-site-verification" content={googleVerification} />}
     <meta property="og:title" content={ogTitle} />
     {ogDescription && <meta property="og:description" content={ogDescription} />}
-    <meta property="og:url" content={canonical} />
+    <meta property="og:url" content={socialUrl} />
     <meta property="og:type" content={['article', 'news'].includes(content.content_type) ? 'article' : 'website'} />
     <meta property="og:site_name" content="AEROVENTA" />
     <meta property="og:locale" content="ru_RU" />
@@ -142,6 +167,7 @@ const googleVerification = (import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION || '
     <meta name="twitter:title" content={ogTitle} />
     {ogDescription && <meta name="twitter:description" content={ogDescription} />}
     {ogImage && <meta name="twitter:image" content={ogImage} />}
+    {ogImage && <meta name="twitter:image:alt" content={ogImageAlt} />}
     {schema && <script type="application/ld+json" set:html={serializeJsonLd(schema)}></script>}
   </head>
   <body class={preview ? 'draft-preview' : undefined}>
@@ -161,5 +187,23 @@ const googleVerification = (import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION || '
     <Footer />
     <PremiumExperience pagePath={content.path} />
     <PonsseDocumentExperience />
+<script>
+  // Native modality makes the page inert; wrap both Tab directions inside the
+  // visible controls as well, including after dynamic consultant responses.
+  document.querySelectorAll<HTMLDialogElement>('dialog').forEach(dialog => {
+    dialog.addEventListener('keydown', event => {
+      if (event.key !== 'Tab' || event.defaultPrevented || !dialog.open) return;
+      const controls = Array.from(dialog.querySelectorAll<HTMLElement>(
+        'a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),summary,[tabindex]:not([tabindex="-1"])'
+      )).filter(el => el.tabIndex >= 0 && el.getClientRects().length > 0 && getComputedStyle(el).visibility !== 'hidden');
+      const first = controls[0], last = controls.at(-1);
+      if (!first || !last) { event.preventDefault(); return; }
+      if (!dialog.contains(document.activeElement) || (event.shiftKey ? document.activeElement === first : document.activeElement === last)) {
+        event.preventDefault();
+        (event.shiftKey ? last : first).focus();
+      }
+    });
+  });
+</script>
   </body>
 </html>
