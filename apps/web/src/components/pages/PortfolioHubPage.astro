@@ -172,12 +172,10 @@ const sportPhotos = [
  '/evidence/owner-portfolio/sport-komendantskiy/owner-selected-aerial.webp',
  '/evidence/owner-portfolio/sport-komendantskiy/gallery-01.webp',
  ...addedSportPhotos,
- ...(addedSportPhotos.length===0 ? [
-   '/evidence/owner-portfolio/sport-komendantskiy/02.webp',
-   '/evidence/owner-portfolio/sport-komendantskiy/04.webp',
-   '/evidence/owner-portfolio/sport-komendantskiy/cover.webp'
- ] : [])
-];
+ '/evidence/owner-portfolio/sport-komendantskiy/02.webp',
+ '/evidence/owner-portfolio/sport-komendantskiy/03.webp',
+ '/evidence/owner-portfolio/sport-komendantskiy/04.webp'
+].filter((src,i,all)=>all.indexOf(src)===i);
 ---
 
 <article class="portfolio-hub">
@@ -206,31 +204,14 @@ const sportPhotos = [
   </header>
 
   <section class="portfolio-feature" aria-labelledby="featured-case-title">
-    <div class="home-shell portfolio-feature__grid">
-      <div>
-        <p class="section-index section-index--orange">01 / Производственный объект</p>
-        <h2 id="featured-case-title">НТФФ «Полисан»</h2>
-        <p class="portfolio-feature__sub">Санкт-Петербург · монтаж приточно-вытяжной вентиляции на фармацевтическом объекте</p>
-        <a class="button button--case" href="/blog/detail/ntff-polisan/">Открыть кейс →</a>
-      </div>
-      <div class="portfolio-feature__photography" aria-label="Фасад объекта и настоящее вентиляционное оборудование">
-        <figure class="portfolio-feature__visual portfolio-feature__visual--photo">
-          <img src="/evidence/polisan/owner-cover-v43.webp" alt="Фасад НТФФ «Полисан»" width="800" height="450" loading="lazy" />
-          <figcaption>НТФФ «Полисан» · общий вид</figcaption>
-        </figure>
-        <figure class="portfolio-feature__detail">
-          <img src="/evidence/polisan/archive/20180601-133720.webp" alt="Вентиляционное оборудование на кровле НТФФ «Полисан»" width="734" height="413" loading="lazy" />
-          <figcaption>Оборудование · реальный монтаж</figcaption>
-        </figure>
-      </div>
-      <dl class="case-facts">
-        <div><dt>Объект</dt><dd>Фармацевтическое предприятие</dd></div>
-        <div><dt>Период</dt><dd>Июнь 2017 — июнь 2018</dd></div>
-        <div><dt>Адрес</dt><dd>Санкт-Петербург, ул. Салова, 72</dd></div>
-        <div><dt>Работы</dt><dd>Монтаж приточно-вытяжной вентиляции и оборудования</dd></div>
-      </dl>
-    </div>
-  </section>
+<div class="home-shell portfolio-feature__grid">
+<div><p class="section-index section-index--orange">01 / Жилой квартал</p><h2 id="featured-case-title">7 PARK</h2><p class="portfolio-feature__sub">Павловск · монтаж приточно-вытяжной вентиляции в семи домах</p><a class="button button--case" href="/blog/detail/kak-my-sdali-7-domov/">Смотреть проект →</a></div>
+<div class="portfolio-feature__photography" aria-label="Реальные фото жилого квартала и работ">
+<figure class="portfolio-feature__visual portfolio-feature__visual--photo"><img src="/evidence/7park/object-exterior-day.jpg" alt="Жилой квартал 7 PARK" width="800" height="450" loading="lazy"/><figcaption>7 PARK · Павловск</figcaption></figure>
+<figure class="portfolio-feature__detail"><img src="/evidence/7park/duct-route.jpg" alt="Монтаж воздуховода на объекте 7 PARK" width="734" height="413" loading="lazy"/><figcaption>Монтаж вентиляции</figcaption></figure>
+</div>
+<dl class="case-facts"><div><dt>Объект</dt><dd>Жилой квартал · 7 домов</dd></div><div><dt>Период</dt><dd>18.11.2020 — 10.12.2020</dd></div><div><dt>Место</dt><dd>Павловск, Санкт-Петербург</dd></div><div><dt>Работы</dt><dd>Монтаж приточно-вытяжной вентиляции</dd></div></dl>
+</div></section>
 
   <section class="home-section portfolio-list" aria-labelledby="cases-title">
     <div class="home-shell">
@@ -242,7 +223,7 @@ const sportPhotos = [
       </div>
       <p class="portfolio-list__introduction">Жилые, коммерческие и производственные объекты. Фотографии показывают сами площадки и отдельные этапы монтажа вентиляции.</p>
       <div class="portfolio-grid">
-        {cases.filter((item) => item.index !== '01' && item.index !== '03').map((item) => (
+        {cases.map((item) => (
           <a href={item.href} class="portfolio-card">
             <div class="portfolio-card__media"><img src={item.image} width="800" height="520" alt={`Объект AEROVENTA: ${item.title}`} loading="lazy" decoding="async" /></div>
             <div class="portfolio-card__body">
@@ -257,18 +238,15 @@ const sportPhotos = [
             </div>
           </a>
         ))}
-        {archiveCases.map(item => (
-          <button type="button" id={`owner-${item.index}`} class="portfolio-card portfolio-card--archive" data-archive-open
-            data-gallery-images={JSON.stringify(item.photos)} data-gallery-title={item.title}
-            aria-haspopup="dialog" aria-controls="portfolio-archive-viewer"
-            aria-label={`Открыть фотографии: ${item.title}`}>
+        {archiveCases.filter(item=>item.index!=='08').map(item => (
+          <a id={`owner-${item.index}`} class="portfolio-card portfolio-card--archive" href={item.index==='14'?'/portfolio/obekt/na-izluchine-nevy/':`/portfolio/obekt/${gallerySlugFor(item.cover)}/`} aria-label={`Открыть объект: ${item.title}`}>
             <div class="portfolio-card__media"><img src={item.cover} width="1200" height="800" loading="lazy" decoding="async" alt={`Фотография объекта: ${item.title}`}/></div>
             <div class="portfolio-card__body">
               <div class="portfolio-card__top"><b>{item.kind}</b><span>{item.location}</span></div>
               <div><h3>{item.title}</h3></div>
-              <div class="portfolio-card__bottom"><b>Смотреть фотографии →</b></div>
+              <div class="portfolio-card__bottom"><b>Открыть объект →</b></div>
             </div>
-          </button>
+          </a>
         ))}
       </div>
     </div>
@@ -317,7 +295,7 @@ const sportPhotos = [
       <strong data-gallery-title></strong>
       <button type="button" data-gallery-close aria-label="Закрыть просмотр">×</button>
     </div>
-    <div class="portfolio-archive-viewer__stage" tabindex="0"><img data-gallery-photo src="/evidence/owner-portfolio/apart-hotel/cover.webp" width="1200" height="800" loading="lazy" alt="Фотография объекта"/></div>
+    <div class="portfolio-archive-viewer__stage" tabindex="0"><img data-gallery-photo src="/evidence/owner-portfolio/apart-hotel/cover.webp" width="1200" height="800" loading="eager" decoding="async" alt="Фотография объекта"/></div>
     <div class="portfolio-archive-viewer__nav" data-gallery-nav aria-label="Навигация по фотографиям">
       <button type="button" data-gallery-prev aria-label="Предыдущая фотография">‹</button>
       <span data-gallery-position aria-live="off">Фото объекта</span>
@@ -367,6 +345,7 @@ const sportPhotos = [
       }
       dialog.dataset.zoom=String(zoom);
     };
+    const warm=(url:string)=>{const img=new Image();img.src=url;};
     const show=(n:number)=>{
       if(!photos.length||!image)return;
       index=(n+photos.length)%photos.length;
@@ -374,6 +353,7 @@ const sportPhotos = [
       image.src=photos[index];
       image.alt=(title?.textContent||'Объект')+' — фотография '+(index+1);
       if(position)position.textContent='Фото '+(index+1)+' из '+photos.length;
+      if(photos.length>1){warm(photos[(index+1)%photos.length]);warm(photos[(index+photos.length-1)%photos.length]);}
     };
     for(const button of document.querySelectorAll<HTMLElement>('[data-archive-open]')){
       button.addEventListener('click',()=>{
@@ -382,6 +362,7 @@ const sportPhotos = [
           const safe=/^(?:\/evidence\/owner-portfolio\/(?:apart-hotel|eurospar-vo|eurospar-sestroretsk|college-obvodny|novatech|akvilon-yanino|himprom|sport-komendantskiy)\/(?:owner-selected-aerial|cover|[0-9]{2,3}|gallery-[0-9]{2,3}|curated-[0-9]{2})\.(?:webp|jpe?g|png)|\/evidence\/residential\/(?:owner-neva-facade-20261016\.jpg|neva\/curated-[0-9]{2}\.webp))$/i;
           if(!Array.isArray(value)||!value.length||!value.every((v:unknown)=>typeof v==='string'&&safe.test(v)))return;
           photos=value;opener=button;
+           dialog.classList.toggle('is-neva',button.dataset.galleryTitle==='На излучине Невы');
           if(nav)nav.hidden=photos.length<2;
           if(title)title.textContent=button.dataset.galleryTitle||'Объект';
           const requestedStart=Number(button.dataset.galleryStart ?? '0');
@@ -422,7 +403,7 @@ const sportPhotos = [
     dialog.addEventListener('close',()=>{
       if(nav)nav.hidden=true;
       setZoom(1);if(image)image.removeAttribute('src');
-      photos=[];opener?.focus({preventScroll:true});opener=null;
+      photos=[];dialog.classList.remove('is-neva');opener?.focus({preventScroll:true});opener=null;
     });
   }
 </script>
@@ -600,3 +581,4 @@ const sportPhotos = [
  .portfolio-sport__photography>.portfolio-sport__photo{aspect-ratio:1.55!important}
 }
 </style>
+<style>.portfolio-archive-viewer.is-neva{background:#edf2f3;color:#1b3746}.portfolio-archive-viewer.is-neva .portfolio-archive-viewer__top{background:linear-gradient(#edf2f3,transparent)}.portfolio-archive-viewer.is-neva .portfolio-archive-viewer__top strong,.portfolio-archive-viewer.is-neva .portfolio-archive-viewer__nav button,.portfolio-archive-viewer.is-neva .portfolio-archive-viewer__top [data-gallery-close]{color:#15374a}.portfolio-archive-viewer__nav span{bottom:calc(16px + env(safe-area-inset-bottom));padding:5px 11px;border-radius:10px;background:#183748;color:#fff}.portfolio-archive-viewer.is-neva .portfolio-archive-viewer__nav span{background:#dce6e9;color:#15374a}</style>

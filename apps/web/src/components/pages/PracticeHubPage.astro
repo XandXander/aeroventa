@@ -11,7 +11,7 @@ const p0 = [
 ];
 
 const cases = [
-  {tag:'Жилой комплекс',title:'ЖК «Аквилон» · Янино',meta:'Ленинградская область · монтаж вентиляции',image:'/evidence/owner-portfolio/akvilon-yanino/cover.webp',imageAlt:'Реальное строящееся здание ЖК «Аквилон» в Янино',href:'/portfolio/#owner-12'},
+  {tag:'Жилой комплекс',title:'ЖК «Аквилон» · Янино',meta:'Ленинградская область · монтаж вентиляции',image:'/evidence/owner-portfolio/akvilon-yanino/cover.webp',imageAlt:'Реальное строящееся здание ЖК «Аквилон» в Янино',href:'/portfolio/obekt/akvilon-yanino/'},
   {tag:'Ресторан',title:'ЖК «Леонтьевский Мыс»',image:'/evidence/leont/owner-cover-v43.webp',imageAlt:'Выполненный объект AEROVENTA — ресторан в ЖК Леонтьевский Мыс',meta:'Санкт-Петербург · приточно-вытяжная вентиляция + оборудование',href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/'},
   {tag:'Производство',title:'НТФФ «Полисан»',meta:'Санкт-Петербург · монтаж на фармацевтическом объекте',image:'/evidence/polisan/archive/20180601-133711.webp',imageAlt:'Архивный фотокадр работ на объекте НТФФ Полисан',href:'/blog/detail/ntff-polisan/'},
   {tag:'Квартира',title:'Маршала Жукова',image:'/evidence/zhukov/duct-installation-01.jpg',imageAlt:'Монтаж вентиляции в квартире на Маршала Жукова',meta:'Санкт-Петербург · приточно-вытяжная вентиляция',href:'/blog/detail/kvartira-na-zhukova/'},
@@ -33,27 +33,6 @@ const isStories = content.path === '/blog/istorii-proektov/';
         <p>Практика монтажа и алмазного бурения: конкретные ситуации, исходные условия, технические решения.</p>
       </div>
     </header>
-    <section class="home-section practice-featured" id="ventilation-stories" aria-labelledby="practice-featured-title">
-      <div class="home-shell">
-        <header class="practice-featured__heading">
-          <div>
-            <p class="section-index">Монтаж вентиляции</p>
-            <h2 id="practice-featured-title">Работы на реальных объектах</h2>
-            <p>Жилые комплексы, производственные площадки, кафе и квартиры: состав работ и фотографии из наших проектов.</p>
-          </div>
-          <a href="/blog/istorii-proektov/">Все истории объектов →</a>
-        </header>
-        <div class="practice-featured__grid">
-          {cases.slice(0,4).map(item => (
-            <a class="practice-featured__card" href={item.href}>
-              <img src={item.image} alt={item.imageAlt} width="800" height="520" loading="lazy" decoding="async"/>
-              <span>{item.tag}</span><h3>{item.title}</h3><p>{item.meta}</p>
-              <b>Смотреть объект →</b>
-            </a>
-          ))}
-        </div>
-      </div>
-    </section>
     <section class="practice-article-index" id="articles-list" aria-label="Технические статьи">
       <div class="home-shell practice-featured__heading practice-featured__heading--archive">
         <div><p class="section-index">Технический опыт</p><h2>Алмазное бурение: статьи из практики</h2></div>
@@ -71,6 +50,27 @@ const isStories = content.path === '/blog/istorii-proektov/';
             <span class="practice-article-index__action" aria-hidden="true">↗</span>
           </a>
         ))}
+      </div>
+    </section>
+    <section class="home-section practice-featured" id="ventilation-stories" aria-labelledby="practice-featured-title">
+      <div class="home-shell">
+        <header class="practice-featured__heading">
+          <div>
+            <p class="section-index">Монтаж вентиляции</p>
+            <h2 id="practice-featured-title">Истории реализованных объектов</h2>
+            <p>Жилые комплексы, производственные площадки, кафе и квартиры: состав работ и фотографии из наших проектов.</p>
+          </div>
+          <a href="/blog/istorii-proektov/">Все истории объектов →</a>
+        </header>
+        <div class="practice-featured__grid">
+          {cases.slice(0,4).map(item => (
+            <a class="practice-featured__card" href={item.href}>
+              <img src={item.image} alt={item.imageAlt} width="800" height="520" loading="lazy" decoding="async"/>
+              <span>{item.tag}</span><h3>{item.title}</h3><p>{item.meta}</p>
+              <b>Смотреть объект →</b>
+            </a>
+          ))}
+        </div>
       </div>
     </section>
     <div class="home-shell practice-index-footer">

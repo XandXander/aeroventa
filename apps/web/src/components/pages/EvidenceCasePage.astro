@@ -164,7 +164,7 @@ const specs: Record<string, CaseSpec> = {
     ],
     related:[
       ['Рестораны и кафе','/obekty/restorany-i-kafe/','Объектная страница с особенностями и факторами стоимости.'],
-      ['Кафе на Римского-Корсакова','/blog/detail/kafe-rimskogo-korsakova-3/','Второй подтверждённый ресторанный кейс.'],
+      ['Кафе на Римского-Корсакова','/blog/detail/kafe-rimskogo-korsakova-3/','Другой объект с монтажом вентиляции и фотографиями выполненных работ.'],
       ['Все объекты','/portfolio/','Примеры выполненных работ.']
     ]
   },
@@ -377,7 +377,7 @@ const specs: Record<string, CaseSpec> = {
     ],
     related:[
       ['Рестораны и кафе','/obekty/restorany-i-kafe/','Объектная страница с особенностями и факторами стоимости.'],
-      ['Ресторан в Леонтьевском Мысе','/blog/detail/restoran-v-zhk-leontevskiy-mys/','Второй подтверждённый ресторанный кейс.'],
+      ['Ресторан в Леонтьевском Мысе','/blog/detail/restoran-v-zhk-leontevskiy-mys/','Другой объект с монтажом вентиляции и фотографиями выполненных работ.'],
       ['Все объекты','/portfolio/','Примеры выполненных работ.']
     ]
   }
@@ -403,10 +403,10 @@ const isSevenPark=content.path === '/blog/detail/kak-my-sdali-7-domov/';
 /* 12 unique authenticated images; larger originals IMG_6653/6654/6656,
    other frames are source-verified 551–734px images for restrained grid use. */
 const sevenParkSelected=isSevenPark?[
-  'img_6653','img_6656','img_6654',
-  'img_4316','img_4318','img_4322',
-  'img_4288','img_4289','img_4320',
-  'img_4292','img_4297','img_4300',
+  'img_6653','img_4292','img_4295',
+  'img_6656','img_4297','img_4300',
+  'img_6654','img_4291','img_4316',
+  'img_4299','img_4322','img_4301',
 ].map(name=>spec.archiveMedia?.find(entry=>entry[0].endsWith('/'+name+'.webp'))).filter((entry):entry is [string,string,string]=>Boolean(entry)):[];
 if(isSevenPark&&(sevenParkSelected.length!==12||new Set(sevenParkSelected.map(x=>x[0])).size!==12))throw new Error('Seven Park gallery requires 12 unique source photos');
 const ponsseChosen=isPonsse ? [
