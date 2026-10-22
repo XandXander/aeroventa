@@ -57,7 +57,7 @@ try {
   report.pixel_contrast=[];
   const luminance=rgb=>rgb.map(c=>{c/=255;return c<=.04045?c/12.92:((c+.055)/1.055)**2.4}).reduce((s,c,i)=>s+c*[.2126,.7152,.0722][i],0);
   const ratio=(a,b)=>{const x=luminance(a),y=luminance(b);return(Math.max(x,y)+.05)/(Math.min(x,y)+.05)};
-  for(const width of [390,1440])for(const route of ['/','/montazh-ventiliacii/','/montazh-po-proektu/','/obekt-bez-gotovogo-proekta/','/portfolio/','/obekty/kvartiry-i-doma/','/obekty/restorany-i-kafe/','/obekty/proizvodstvo/']){
+  for(const width of [390,1440,1920])for(const route of routes){
    await page.setViewportSize({width,height:900});await page.goto(origin+route,{waitUntil:'networkidle'});await settle();
    await page.addScriptTag({content:axeSource});
    const selectors=await page.evaluate(async()=>{const a=await window.axe.run(document,{runOnly:{type:'rule',values:['color-contrast']}});return a.incomplete.flatMap(v=>v.nodes).filter(n=>n.failureSummary?.includes('background color could not be determined')).map(n=>n.target[0]);});
@@ -251,6 +251,14 @@ try {
     if(width===390){await swipeLeft('.owner-case__viewer-stage');expect((await page.locator('[data-case-count]').innerText())==='2 из 6','Neva touch swipe failed');}
     await page.keyboard.press('Escape');
     expect(await opener.evaluate(e=>e===document.activeElement),'Neva focus restoration failed');return {decoded_unique_frames:seen};
+   });
+   for(const name of ['apart-hotel','eurospar-vo','eurospar-sestroretsk','college-obvodny','novatech','akvilon-yanino','himprom'])await scenario('OWNER_OBJECT_GALLERY','/portfolio/obekt/'+name+'/',width,width>1000?650:844,async()=>{
+    const opener=page.locator('[data-case-frame]').first();const total=await page.locator('[data-case-frame]').count();expect(total>1,'Object album incomplete');
+    await opener.click();await decodedImage('[data-case-large]');const before=await page.locator('[data-case-large]').getAttribute('src');
+    await page.locator('[data-case-next]').click();await decodedImage('[data-case-large]');expect(before!==await page.locator('[data-case-large]').getAttribute('src'),'Object album first click failed');
+    const fit=await page.locator('[data-case-large]').boundingBox();await page.locator('[data-case-zoom]').click();const enlarged=await page.locator('[data-case-large]').boundingBox();expect(enlarged.width>fit.width*1.1,'Object zoom button failed');
+    await page.locator('[data-case-zoom]').click();await page.keyboard.press('Escape');expect(await opener.evaluate(e=>e===document.activeElement),'Object album focus restoration failed');
+    await page.locator('[data-case-cover]').click();await decodedImage('[data-case-large]');expect(await page.locator('[data-case-large]').getAttribute('src')===await page.locator('#owner-case-viewer').getAttribute('data-cover'),'Wrong object cover opened');await page.keyboard.press('Escape');return {total,first_click:true,cover:true,zoom_button:true};
    });
    for(const route of ['/blog/detail/kak-my-sdali-7-domov/','/blog/detail/restoran-v-zhk-leontevskiy-mys/','/blog/detail/ntff-polisan/','/blog/detail/montazh-ventilyatsii-v-karelii/'])await scenario('CASE_GALLERY',route,width,width>1000?650:844,async()=>{
     const opener=page.locator('[data-case-photo]').first();const total=await page.locator('[data-case-photo]').count();

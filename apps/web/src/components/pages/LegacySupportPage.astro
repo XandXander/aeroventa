@@ -1,8 +1,12 @@
 ---
 import { SITE } from '@/lib/site';
+import verifiedArchive from '../../../../../migration/bitrix-verified-articles-20260817.json';
 import type { ContentRecord } from '@/lib/types';
 interface Props { content: ContentRecord; fixture: boolean; }
 const { content } = Astro.props;
+const originalArticle=content.path==='/blog/detail/novoe-almaznoe-burenie/'
+ ? verifiedArchive.articles.find(article=>article.route===content.path) : undefined;
+if(content.path==='/blog/detail/novoe-almaznoe-burenie/'&&!originalArticle)throw new Error('Verified historical article source is required');
 
 type Card = { tag:string; title:string; text:string; href:string };
 type Spec = {
@@ -174,7 +178,12 @@ if(!spec) throw new Error('Support spec missing: '+content.path);
     </div>
   </header>
 
-  {spec.sections && (
+  {originalArticle && <section class="home-section support-original" aria-labelledby="support-original-title">
+    <div class="home-shell"><p class="section-index">Из истории компании</p><h2 id="support-original-title">Как появилось направление алмазного бурения</h2>
+    <div class="prose" set:html={originalArticle.source_article_html_sanitized}/></div>
+  </section>}
+
+  {spec.sections && !originalArticle && (
     <div class="support-sections">
       {spec.sections.map((section) => (
         <section class="support-section">
@@ -208,3 +217,12 @@ if(!spec) throw new Error('Support spec missing: '+content.path);
     </div>
   </section>
 </article>
+
+<style>
+.support-original{background:#fff;color:#203a49}
+.support-original>.home-shell{max-width:1180px}
+.support-original .prose{max-width:74ch;margin-top:26px;font-size:1rem;line-height:1.8}
+.support-original .prose :global(h2){font-size:clamp(1.2rem,2.3vw,1.65rem);line-height:1.45;max-width:48ch;margin-block:1.5em 1em;font-weight:550;letter-spacing:-.015em}
+.support-original .prose :global(a){color:#245570;text-underline-offset:4px}
+.support-original .prose :global(:is(b,i,u)){font:inherit;text-decoration:inherit}
+</style>
