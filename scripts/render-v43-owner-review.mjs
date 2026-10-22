@@ -271,66 +271,42 @@ try {
           }
         }
         if (id === 'portfolio') {
-          const cards = page.locator('.portfolio-card');
-          const count = await cards.count();
-          const photos = await cards.locator('img').count();
-          const ponsse = await page.locator('.portfolio-card:has-text("PONSSE")').count();
-          const requiredCovers = {
-            'Ресторан в ЖК': '/evidence/leont/owner-cover-v43.webp',
-            'Маршала Жукова': '/evidence/zhukov/owner-cover-v43.webp',
-            'PONSSE': '/evidence/karelia/owner-cover-v43.webp',
-            'Римского-Корсакова': '/evidence/cafe/owner-cover-v43.webp',
+          const cards=page.locator('.portfolio-grid>.portfolio-card');
+          const count=await cards.count();
+          const photos=await cards.locator('img').count();
+          const ponsse=await page.locator('.portfolio-card:has-text("PONSSE")').count();
+          const requiredCovers={
+            'Ресторан в ЖК':'/evidence/leont/owner-cover-v43.webp',
+            'Маршала Жукова':'/evidence/zhukov/owner-cover-v43.webp',
+            'PONSSE':'/evidence/karelia/owner-cover-v43.webp',
+            'Римского-Корсакова':'/evidence/cafe/owner-cover-v43.webp'
           };
-          for (const [name, src] of Object.entries(requiredCovers)) {
-            const count = await page.locator(`.portfolio-card:has-text("${name}") img[src="${src}"]`).count();
-            if (count !== 1) report.fail.push({route,view,reason:'Owner authentic cover mismatch',name,src,count});
+          for(const [name,src] of Object.entries(requiredCovers)){
+            const matches=await page.locator(`.portfolio-card:has-text("${name}") img[src="${src}"]`).count();
+            if(matches!==1)report.fail.push({route,view,reason:'Authentic object photo incorrect',name,src,matches});
           }
-          // Latest Owner P0: Polisan is an editorial feature with the actual facade,
-          // not a duplicate roof-image card; 7 PARK is kept on HOME and its own case.
-          const polisanFeature=page.locator('.portfolio-feature img[src="/evidence/polisan/owner-cover-v43.webp"]');
-          if(await polisanFeature.count()!==1)
-            report.fail.push({route,view,reason:'Owner Polisan chosen facade must be visible as portfolio editorial feature'});
-          const historical = page.locator('a.portfolio-card[href^="/blog/detail/"]');
-          const archives = page.locator('button.portfolio-card[data-archive-open][aria-controls="portfolio-archive-viewer"]');
-          const historicUrls = await historical.evaluateAll(nodes=>nodes.map(n=>n.getAttribute('href')));
-          const sourceValid = await archives.evaluateAll(nodes=>{
-            // The original three photos stay source-locked; the 68 SHA-verified
-            // gallery photographs are now committed at their canonical paths.
-            const expected = new Map([
-              ['apart-hotel',13], ['eurospar-vo',9],
-              ['eurospar-sestroretsk',11], ['college-obvodny',15],
-              ['novatech',10], ['akvilon-yanino',19], ['himprom',11],
-            ]);
-            let nevaCount=0;
-            const allValid=nodes.every(n=>{
-              const cover = n.querySelector('img')?.getAttribute('src') || '';
-              const urls = JSON.parse(n.getAttribute('data-gallery-images')||'[]');
-              if(cover==='/evidence/residential/owner-neva-facade-20261016.jpg'){
-                nevaCount++;
-                const nevaPrefix='/evidence/residential/neva/';
-                return urls.length===4 && urls[0]===cover &&
-                  new Set(urls).size===4 &&
-                  urls.slice(1).every((u,i)=>u===nevaPrefix+'curated-'+String(i+1).padStart(2,'0')+'.webp');
-              }
-              const slug = cover.match(/^\/evidence\/owner-portfolio\/([a-z0-9-]+)\//)?.[1];
-              if (!expected.has(slug)) return false;
-              const prefix = '/evidence/owner-portfolio/' + slug + '/';
-              const valid = urls.length === expected.get(slug) &&
-                urls[0] === prefix + 'cover.webp' &&
-                new Set(urls).size === urls.length &&
-                urls.every(u=>u.startsWith(prefix) &&
-                  /^(?:cover|0[2-9]|[1-9][0-9]|gallery-[0-9]{2,3})\.webp$/.test(u.slice(prefix.length)));
-              expected.delete(slug);
-              return valid;
-            });
-            return nodes.length===8 && nevaCount===1 && allValid && expected.size===0;
+          const polisan=await page.locator('.portfolio-feature img[src="/evidence/polisan/owner-cover-v43.webp"]').count();
+          const historical=page.locator('a.portfolio-card[href^="/blog/detail/"]');
+          const archives=page.locator('a.portfolio-card--archive[href^="/portfolio/obekt/"]');
+          const sourceValid=await archives.evaluateAll(nodes=>{
+            const expected=new Set(['apart-hotel','eurospar-vo','eurospar-sestroretsk','college-obvodny','novatech','akvilon-yanino','himprom','na-izluchine-nevy']);
+            return nodes.length===8&&nodes.every(n=>{
+              const href=n.getAttribute('href')||'';
+              const slug=href.match(/^\/portfolio\/obekt\/([a-z0-9-]+)\/$/)?.[1];
+              const image=n.querySelector('img')?.getAttribute('src')||'';
+              if(!slug||!expected.delete(slug))return false;
+              return slug==='na-izluchine-nevy'
+                ? image==='/evidence/residential/owner-neva-facade-20261016.jpg'
+                : image.startsWith('/evidence/owner-portfolio/'+slug+'/');
+            })&&expected.size===0;
           });
-          if (count !== 12 || photos !== 12 || ponsse !== 1 ||
-              await historical.count() !== 4 || await archives.count() !== 8 ||
-              !sourceValid || !historicUrls.every(h=>h?.startsWith('/blog/detail/')) ||
-              await page.locator('.portfolio-feature a[href="/blog/detail/ntff-polisan/"]').count() !== 1 ||
-              await page.locator('.portfolio-feature a[href="/blog/detail/kak-my-sdali-7-domov/"]').count() !== 0) {
-            report.fail.push({route,view,reason:'Owner diversified archive portfolio + Polisan editorial feature, 7 PARK not featured',count,photos,ponsse,historic:historicUrls,archiveCount:await archives.count(),sourceValid});
+          const historicUrls=await historical.evaluateAll(nodes=>nodes.map(n=>n.getAttribute('href')));
+          if(count!==12||photos!==12||ponsse!==1||polisan!==1||
+             await historical.count()!==4||await archives.count()!==8||!sourceValid||
+             !historicUrls.every(h=>h?.startsWith('/blog/detail/'))||
+             await page.locator('.portfolio-feature a[href="/blog/detail/ntff-polisan/"]').count()!==1||
+             await page.locator('.portfolio-feature a[href="/blog/detail/kak-my-sdali-7-domov/"]').count()!==0){
+            report.fail.push({route,view,reason:'Latest Owner direct authentic cases, Polisan feature and all eight case paths',count,photos,ponsse,polisan,historic:historicUrls,archiveCount:await archives.count(),sourceValid});
           }
         }
         if (['drill_crown', 'drill_screed', 'drill_cost', 'drill_horizontal'].includes(id)) {
@@ -828,51 +804,52 @@ try {
     }catch(e){report.fail.push({reason:'ART-DELTA compiled browser exception',route,width,error:String(e)})}
     finally{await context.close()}
   }
-  // ARCHIVE CASE INTERACTION: real in-page gallery, zoom, next and restored focus.
+  // Direct named-case destinations and accessible actual image viewer interaction.
   {
     const context=await browser.newContext({viewport:{width:1440,height:900}});
     const page=await context.newPage();
     try{
       await page.goto(baseUrl+'/portfolio/',{waitUntil:'load'});
-      const opener=page.locator('button.portfolio-card[data-archive-open]').first();
-      await opener.click();
-      const viewer=page.locator('#portfolio-archive-viewer');
+      const link=page.locator('a.portfolio-card--archive[href="/portfolio/obekt/apart-hotel/"]');
+      await link.click();
+      await page.waitForURL('**/portfolio/obekt/apart-hotel/');
+      const first=page.locator('.owner-case__photos button').first();
+      const authentic=(await page.locator('.owner-case__photos img').count())===13;
+      await first.click();
+      const viewer=page.locator('#owner-case-viewer');
       await viewer.waitFor({state:'visible'});
-      const img=viewer.locator('[data-gallery-photo]');
-      const original=await img.getAttribute('src');
-      const photoOk=await img.evaluate(async el=>{try{await el.decode();return el.naturalWidth>0;}catch{return false}});
-      await viewer.locator('[data-gallery-next]').click();
-      const second=await img.getAttribute('src');
-      const minimal = await viewer.locator('button').count() === 3 &&
-        (await viewer.locator('[data-gallery-position]').innerText()).trim() === 'Фото 2 из 13' &&
-        (await viewer.locator('[data-gallery-title]').innerText()).trim().length > 0;
+      const image=viewer.locator('[data-case-large]');
+      const before=await image.getAttribute('src');
+      await viewer.locator('[data-case-next]').click();
+      const after=await image.getAttribute('src');
+      const secondCount=(await viewer.locator('[data-case-count]').innerText()).trim();
+      const decode=await image.evaluate(async el=>{try{await el.decode();return el.naturalWidth>0}catch{return false}});
       await page.keyboard.press('Escape');
       await viewer.waitFor({state:'hidden'});
-      const restored=await opener.evaluate(el=>el===document.activeElement);
-      // The Owner facade + three source-hashed interior photographs form one real gallery.
-      const neva=page.locator('button.portfolio-card--archive:has-text("На излучине Невы")');
+      const restored=await first.evaluate(el=>el===document.activeElement);
+      await page.goto(baseUrl+'/portfolio/',{waitUntil:'load'});
+      const neva=page.locator('a.portfolio-card--archive[href="/portfolio/obekt/na-izluchine-nevy/"]');
       await neva.click();
-      await viewer.waitFor({state:'visible'});
-      const nevaImage=await img.getAttribute('src');
-      const nevaNav=await viewer.locator('[data-gallery-nav]').isVisible();
-      const nevaFirstCount=(await viewer.locator('[data-gallery-position]').innerText()).trim();
+      await page.waitForURL('**/portfolio/obekt/na-izluchine-nevy/');
+      const nevaFirst=page.locator('.owner-case__photos button').first();
+      const four=(await page.locator('.owner-case__photos img').count())===4;
+      await nevaFirst.click();
+      const lightbox=page.locator('#owner-case-viewer');
+      await lightbox.waitFor({state:'visible'});
+      const nevaImage=lightbox.locator('[data-case-large]');
+      const nevaBefore=await nevaImage.getAttribute('src');
       await page.keyboard.press('ArrowRight');
-      const nevaAfterArrow=await img.getAttribute('src');
-      const nevaPhotoOk=await img.evaluate(async el=>{try{await el.decode();return el.naturalWidth>0;}catch{return false}});
-      const nevaSecondCount=(await viewer.locator('[data-gallery-position]').innerText()).trim();
-      await viewer.locator('[data-gallery-prev]').click();
-      const nevaBack=await img.getAttribute('src');
+      const nevaAfter=await nevaImage.getAttribute('src');
+      const nevaCounter=(await lightbox.locator('[data-case-count]').innerText()).trim();
       await page.keyboard.press('Escape');
-      await viewer.waitFor({state:'hidden'});
-      const nevaFocus=await neva.evaluate(el=>el===document.activeElement);
-      if(!photoOk||!original||!second||original===second||!minimal||!restored||
-         nevaImage!=='/evidence/residential/owner-neva-facade-20261016.jpg'||!nevaNav||
-         nevaAfterArrow!=='/evidence/residential/neva/curated-01.webp'||!nevaPhotoOk||
-         nevaFirstCount!=='Фото 1 из 4'||nevaSecondCount!=='Фото 2 из 4'||
-         nevaBack!==nevaImage||!nevaFocus){
-        report.fail.push({reason:'Owner portfolio minimalist gallery interaction',photoOk,original,second,minimal,restored,nevaNav,nevaFirstCount,nevaSecondCount,nevaFocus});
+      await lightbox.waitFor({state:'hidden'});
+      const nevaRestored=await nevaFirst.evaluate(el=>el===document.activeElement);
+      if(!authentic||!before||!after||before===after||secondCount!=='2 из 13'||!decode||!restored||
+         !four||nevaBefore!=='/evidence/residential/owner-neva-facade-20261016.jpg'||
+         nevaAfter!=='/evidence/residential/neva/curated-01.webp'||nevaCounter!=='2 из 4'||!nevaRestored){
+        report.fail.push({reason:'Named-object real photo viewer / first click / keyboard / focus',authentic,before,after,secondCount,decode,restored,four,nevaBefore,nevaAfter,nevaCounter,nevaRestored});
       }
-    }catch(error){report.fail.push({reason:'Owner portfolio gallery interaction exception',error:String(error)})}
+    }catch(error){report.fail.push({reason:'Named-case real viewer interaction exception',error:String(error)})}
     finally{await context.close()}
   }
   // OWNER-sensitive geometry regression. Adds diverse viewport heights, browser

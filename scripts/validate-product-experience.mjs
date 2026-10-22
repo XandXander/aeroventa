@@ -331,12 +331,13 @@ check(polisanMediaSection.includes('    media:[') &&
       'Owner Polisan: chosen exterior case cover with authentic roof photos');
 check(portfolioSource.includes('aria-label="Разные реальные объекты AEROVENTA"') &&
       portfolioSource.includes('portfolio-hero__mosaic-third') &&
-      portfolioSource.includes('id="featured-case-title">7 PARK') &&
-      portfolioSource.includes("'{cases.map") === false &&
-      portfolioSource.includes('{cases.map((item) => (') &&
-      portfolioSource.includes("archiveCases.filter(item=>item.index!=='08')") &&
-      portfolioSource.includes('href="/blog/detail/kak-my-sdali-7-domov/"'),
-      'Latest Owner O22: 7 PARK leads; 12 other real projects and separate sports centre preserved');
+      portfolioSource.includes("item.index !== '01' && item.index !== '03'") &&
+      portfolioSource.includes('id="featured-case-title">НТФФ «Полисан»') &&
+      !portfolioSource.includes('id="featured-case-title">7 PARK') &&
+      portfolioSource.includes('{archiveCases.map(item => (') &&
+      portfolioSource.includes('href={item.index===\'14\'?\'/portfolio/obekt/na-izluchine-nevy/\'') &&
+      portfolioSource.includes('class="portfolio-sport"'),
+      'Portfolio preserves Owner Polisan feature, eight authentic source objects, and separate sports; 7 PARK on HOME, case and Novostroyki');
 for(const name of ['cover','02','03','04']){
   const img=await fs.stat(path.join(root,'apps/web/public/evidence/owner-portfolio/sport-komendantskiy',name+'.webp')).catch(()=>null);
   check(Boolean(img?.isFile()&&img.size>15000), 'Sports object selected provenance media exists: '+name);
