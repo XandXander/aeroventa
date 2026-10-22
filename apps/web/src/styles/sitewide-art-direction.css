@@ -12,12 +12,14 @@
  --av-rule:#cbd6d9;
  --av-meta:#496271;
  --av-accent-text:#9d4329;
+ --av-focus:#9d4329;
 }
 .case-feature,.service-drivers,.service-proof-card--accent,
 .practical-rules,.covid-current__now,
 .engagement-close:not(.engagement-close--light){
  --av-meta:#c5d4dc;
  --av-accent-text:#f0b48e;
+ --av-focus:#f0b48e;
 }
 main :is(.conversion-close,.engagement-section--ink){
  background:var(--av-surface-soft);
@@ -243,7 +245,7 @@ main .portfolio-list__extra:focus-visible{outline:3px solid #a75c37;outline-offs
    service heading to a larger size than the action area can accommodate. */
 
 :where(a,button,summary):focus-visible{outline:3px solid var(--av-focus,#9d4329);outline-offset:4px}
-.home-hero--owner-airflow .home-hero__copy{--av-focus:#efbd9e}
+@media(min-width:761px){.home-hero--owner-airflow .home-hero__copy{--av-focus:#efbd9e}}
 
 /* Section roles can vary without a blanket important heading scale. */
 main .decision-preview h2{font-size:clamp(1.85rem,2.8vw,2.75rem);max-width:24ch;line-height:1.15}
@@ -257,3 +259,6 @@ main :is(.engagement-close,.conversion-close) h2{font-size:clamp(1.8rem,2.65vw,2
  main .decision-preview h2{font-size:clamp(1.65rem,7vw,2.2rem)}
  main :is(.engagement-close,.conversion-close) h2{font-size:clamp(1.7rem,7vw,2.2rem)}
 }
+
+main .section-heading>a{min-width:0;max-width:100%;white-space:normal;overflow-wrap:break-word}
+.case-photo-dialog button:focus-visible,.portfolio-archive-viewer.is-neva button:focus-visible{outline-color:#216a8c}

@@ -1985,7 +1985,7 @@ main { min-height: 60vh; }
 }
 .question-list a {
   min-height:76px;
-  grid-template-columns:42px minmax(0,1fr) 24px;
+  grid-template-columns:42px minmax(0,1fr) max-content;
   border-bottom:1px solid #b8c2c9;
   font-size:1rem;
 }
@@ -3006,7 +3006,7 @@ html::-webkit-scrollbar-thumb:hover {background:#7c93a2;}
 
 /* V43 source recovery: inline decision answers, direct contacts, visible source-backed galleries. */
 .question-list .home-faq-item { border-bottom:1px solid #cbd3d9; }
-.home-faq-item summary { min-height:74px;display:grid;grid-template-columns:42px minmax(0,1fr) 24px;align-items:center;gap:14px;cursor:pointer;list-style:none;padding:9px 0; }
+.home-faq-item summary { min-height:74px;display:grid;grid-template-columns:42px minmax(0,1fr) max-content;align-items:center;gap:14px;cursor:pointer;list-style:none;padding:9px 0; }
 .home-faq-item summary::-webkit-details-marker { display:none; }
 .home-faq-item summary span { font-size:.75rem;color:var(--av-meta); }
 .home-faq-item summary strong { font-size:clamp(.94rem,1.3vw,1.07rem);line-height:1.4; }
@@ -3046,7 +3046,7 @@ html::-webkit-scrollbar-thumb:hover {background:#7c93a2;}
   .case-gallery__thumbs { grid-template-columns:repeat(3,minmax(0,1fr)); }
 }
 @media(max-width:760px) {
-  .home-faq-item summary { grid-template-columns:30px minmax(0,1fr) 22px; }
+  .home-faq-item summary { grid-template-columns:30px minmax(0,1fr) max-content; }
   .home-faq-item__answer { padding:0 4px 20px 35px; }
   .case-gallery__thumbs { grid-template-columns:repeat(2,minmax(0,1fr)); }
   .contact-premium--direct .contact-hero { padding:28px 0; }
@@ -4403,7 +4403,7 @@ dialog.ponsse-letter-dialog.is-document-zoomed .ponsse-letter-dialog__sheet img{
 .home-solution{padding-block:clamp(42px,5vw,76px);background:#f8fafb}
 .solution-grid{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.65fr);align-items:center;gap:clamp(28px,4vw,64px);min-height:0}
 .solution-grid>.section-copy{min-width:0;max-width:37ch}
-.solution-grid .section-copy h2{font-size:clamp(1.85rem,3vw,3.05rem);line-height:1.14;letter-spacing:-.035em;font-weight:580;text-wrap:balance}
+.solution-grid .section-copy h2{overflow-wrap:break-word;font-size:clamp(1.85rem,3vw,3.05rem);line-height:1.14;letter-spacing:-.035em;font-weight:580;text-wrap:balance}
 .solution-grid .section-copy>p:not(.section-index){font-size:1.05rem;line-height:1.65;color:#496271}
 .solution-grid .section-index{color:var(--av-accent-text)}
 .solution-grid .solution-cta{margin-top:18px}
