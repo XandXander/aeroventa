@@ -19,6 +19,9 @@ if (releaseMode === 'preview') {
   console.log('Applied V13 preview robots.txt: Disallow: /');
 }
 
+// Deliver responsive, traceable copies before validating the generated HTML.
+await import('./optimize-public-web-images.mjs');
+
 await new Promise((resolve, reject) => {
   const child = spawn(process.execPath, [path.join(root, 'scripts/validate-built-site.mjs')], {
     stdio: 'inherit',
