@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import crypto from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import sharp from 'sharp';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..');
@@ -78,6 +79,30 @@ if (notFoundFile) {
 
 check(await exists(path.join(dist, 'sitemap.xml')), 'sitemap.xml is missing');
 check(await exists(path.join(dist, 'robots.txt')), 'robots.txt is missing');
+
+// Social source readiness is distinct from access by an external crawler.
+// Cover every substantive fixture route, including legacy article fallbacks.
+if (releaseMode === 'fixture') {
+  for (const file of (await fs.readdir(dist, { recursive: true })).filter(f => f.endsWith('index.html'))) {
+    const html = await fs.readFile(path.join(dist, file), 'utf8');
+    if (/http-equiv=["']refresh/i.test(html)) continue;
+    const meta = Object.fromEntries([...html.matchAll(/<meta\b([^>]+)>/g)].map(([, tag]) => {
+      const attr = Object.fromEntries([...tag.matchAll(/([\w:-]+)="([^"]*)"/g)].map(([, key, value]) => [key, value]));
+      return [attr.property || attr.name, attr.content];
+    }));
+    const label = file.replace(/index\.html$/, '') || '/';
+    for (const key of ['og:title', 'og:description', 'og:url', 'og:image', 'og:image:alt', 'twitter:image:alt'])
+      check(Boolean(meta[key]), `Social metadata missing ${key}: ${label}`);
+    check(meta['twitter:card'] === 'summary_large_image' && meta['twitter:image'] === meta['og:image'], `Social card mismatch: ${label}`);
+    check(meta['og:image:type'] === 'image/jpeg' && meta['og:image:width'] === '1200' && meta['og:image:height'] === '630', `Social JPEG/dimensions missing: ${label}`);
+    try {
+      const image = new URL(meta['og:image']);
+      check(['https://aeroventa.ru', 'https://staging.aeroventa.ru'].includes(image.origin) && /^\/share\/[a-z-]+\.jpg$/.test(image.pathname), `Social image URL invalid: ${label}`);
+      const info = await sharp(path.join(dist, image.pathname.replace(/^\//, ''))).metadata();
+      check(info.format === 'jpeg' && info.width === 1200 && info.height === 630, `Social image bytes/dimensions invalid: ${label}`);
+    } catch { failures.push(`Social image unavailable: ${label}`); }
+  }
+}
 
 const html200 = routes.filter((r) => Number(r.http_outcome) === 200 && !String(r.path).startsWith('/upload/'));
 const retainedSeoTitles = new Map();

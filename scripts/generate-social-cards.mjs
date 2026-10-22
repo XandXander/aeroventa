@@ -28,7 +28,12 @@ const cards = [
  ['eurospar-sestroretsk','evidence/owner-portfolio/eurospar-sestroretsk/03.webp','EUROSPAR · Сестрорецк'],
  ['college','evidence/owner-portfolio/college-obvodny/cover.webp','Колледж туризма'],
  ['novatech','evidence/owner-portfolio/novatech/03.webp','Новатех'],
- ['himprom','evidence/owner-portfolio/himprom/03.webp','Химпром']
+ ['himprom','evidence/owner-portfolio/himprom/03.webp','Химпром'],
+ ['articles','upload/medialibrary/548/5488fb415056eee52ac63ff9d4850c63.jpg','Статьи и инженерная практика'],
+ ['drill-crown','upload/medialibrary/548/5488fb415056eee52ac63ff9d4850c63.jpg','Застрявшая алмазная коронка'],
+ ['drill-screed','upload/medialibrary/0a2/0a2f0d1be2900e0a1fe74bcd9604e3f8.jpg','Алмазное бурение в стяжке'],
+ ['drill-cost','upload/medialibrary/fb3/fb3d693282a8085971dd4e2fe87bf28e.jpg','Стоимость алмазного бурения'],
+ ['drill-horizontal','upload/medialibrary/e1c/e1cd51110183f9c6b2e704b70664eba1.jpg','Горизонтальное бурение']
 ];
 const xmlEscape=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 await mkdir(outputRoot,{recursive:true});
