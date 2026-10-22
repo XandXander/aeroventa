@@ -789,7 +789,8 @@ try {
           archiveThumbs:document.querySelectorAll('.case-gallery__archive .case-gallery__thumbs button[data-case-photo]').length,
           archiveCaptions:document.querySelectorAll('.case-gallery__archive .case-gallery__thumbs figcaption').length,
           archiveToggle:document.querySelectorAll('.case-gallery__archive [data-case-gallery-expand]').length,
-          visibleArchiveThumbs:[...document.querySelectorAll('.case-gallery__archive .case-gallery__thumbs button[data-case-photo]')].filter(el=>{
+          selectedArchiveThumbs:document.querySelectorAll('.case-gallery__selected--leont>.case-gallery__item').length,
+           visibleArchiveThumbs:[...document.querySelectorAll('.case-gallery__archive .case-gallery__thumbs button[data-case-photo]')].filter(el=>{
              const style=getComputedStyle(el.closest('figure')||el);
              const box=el.getBoundingClientRect();
              return style.display!=='none' && style.visibility!=='hidden' && box.width>0 && box.height>0;
@@ -814,9 +815,8 @@ try {
       // The 2026-10-17 Polisan Owner decision supersedes earlier archive-thumb UI checks.
       // Its curated 12 unique frames + retained 15 archive files are explicitly checked above.
       if(route.includes('/blog/detail/')&&route!=='/blog/detail/ntff-polisan/'&&
-        (dom.archiveThumbs<1 || dom.archiveThumbs!==dom.visibleArchiveThumbs ||
-         dom.archiveToggle!==0 || dom.numberedCaseSubsteps ||
-         (route.includes('/restoran-v-zhk-leontevskiy-mys/') ? (dom.archiveThumbs!==26 || dom.archiveCaptions!==26) : dom.archiveCaptions!==0)))
+        (dom.archiveThumbs<1 || dom.archiveToggle!==0 || dom.numberedCaseSubsteps ||
+         (route.includes('/restoran-v-zhk-leontevskiy-mys/') ? (dom.archiveThumbs!==26 || dom.archiveCaptions!==26 || dom.selectedArchiveThumbs!==12 || dom.visibleArchiveThumbs!==12) : (dom.archiveThumbs!==dom.visibleArchiveThumbs || dom.archiveCaptions!==0))))
         report.fail.push({reason:'ART-DELTA-02/03 all photographs physically visible; restaurant 2+12+12 annotated original frames',route,width,dom});
       if(route.includes('/kafe-rimskogo-korsakova-3/')&&!dom.articleTitle.includes('Кафе на Римского-Корсакова, 3'))
         report.fail.push({reason:'ART-DELTA-04 actual cafe editorial title',route,width,dom});

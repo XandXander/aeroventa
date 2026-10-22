@@ -285,7 +285,9 @@ check(files.about.includes('03 / Опыт на объектах') &&
       portfolioSource.includes('03 / Спортивный объект') &&
       portfolioSource.includes('04 / Ваш объект') &&
       !caseSource.includes('<span>01 / Задача</span>'), 'ART-DELTA-02: consistent section counting');
-check(caseSource.includes('leontSelectedIds') &&
+check(caseSource.includes('case-gallery__selected--leont') &&
+      caseSource.includes('case-gallery__more--leont') &&
+      caseSource.includes('leontSelectedIds') &&
       caseSource.includes('leontSelected.length !== 12') &&
       caseSource.includes('leontRemaining.length !== 12') &&
       caseSource.includes('leontPhotoDescriptions') &&

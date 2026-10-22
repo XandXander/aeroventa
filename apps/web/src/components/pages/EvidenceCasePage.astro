@@ -580,10 +580,10 @@ if(isLeont && (leontContext.length !== 2 || leontSelected.length !== 12 ||
         <section class:list={['case-gallery__archive',isLeont && 'case-gallery__archive--leont']} aria-labelledby="case-photo-archive-title">
           <h3 id="case-photo-archive-title">{isLeont ? 'Помещение ресторана и монтаж вентиляции' : 'Фотографии монтажных работ'}</h3>
           {isLeont ? (<>
-            <div class="case-gallery__chapter" aria-label="Отобранные фотографии монтажа">
+            <div class="case-gallery__chapter" aria-label="Редакционная подборка фотографий монтажа">
               <h4>Монтаж вентиляции · 12 фотографий</h4>
-              <p>Отобранные оригинальные кадры: общие планы, трассы, узлы, освещение и работа монтажников.</p>
-              <div class="case-gallery__thumbs">
+              <p>Отобранные виды помещения, магистралей, оборудования и деталей монтажа.</p>
+              <div class="case-gallery__thumbs case-gallery__selected--leont">
                 {leontSelected.map(([src])=>(
                   <figure class="case-gallery__item case-gallery__item--thumb">
                     <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={leontCaption(src)} data-photo-archival="true" data-photo-caption={leontCaption(src)} aria-label={`Открыть фотографию: ${leontCaption(src)}`}>
@@ -594,11 +594,11 @@ if(isLeont && (leontContext.length !== 2 || leontSelected.length !== 12 ||
                 ))}
               </div>
             </div>
-            <div class="case-gallery__chapter" aria-label="Дополнительные фотографии монтажа">
-              <h4>Остальные ракурсы монтажа · 12 фотографий</h4>
-              <p>Документальная последовательность исходных кадров. Все фотографии доступны прямо на странице и в полноэкранном просмотре.</p>
+            <details class="case-gallery__more--leont">
+              <summary>Посмотреть ещё 14 оригинальных фотографий</summary>
+              <p>Дополнительные ракурсы монтажа и два кадра здания из документального архива.</p>
               <div class="case-gallery__thumbs">
-                {leontRemaining.map(([src])=>(
+                {[...leontRemaining,...leontContext].map(([src])=>(
                   <figure class="case-gallery__item case-gallery__item--thumb">
                     <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={leontCaption(src)} data-photo-archival="true" data-photo-caption={leontCaption(src)} aria-label={`Открыть фотографию: ${leontCaption(src)}`}>
                       <img src={src} alt={leontCaption(src)} width="734" height="551" loading="lazy" decoding="async" />
@@ -607,21 +607,7 @@ if(isLeont && (leontContext.length !== 2 || leontSelected.length !== 12 ||
                   </figure>
                 ))}
               </div>
-            </div>
-            <div class="case-gallery__chapter" aria-label="Контекст здания">
-              <h4>Контекст здания · 2 фотографии</h4>
-              <p>Вывески из фотоархива страницы на Ждановской, 45. Это не кадры готового интерьера ресторана.</p>
-              <div class="case-gallery__thumbs case-gallery__thumbs--context">
-                {leontContext.map(([src])=>(
-                  <figure class="case-gallery__item case-gallery__item--thumb">
-                    <button type="button" class="case-gallery__open" data-case-photo data-photo-src={src} data-photo-alt={leontCaption(src)} data-photo-caption={leontCaption(src)} aria-label={`Открыть фотографию: ${leontCaption(src)}`}>
-                      <img src={src} alt={leontCaption(src)} width="734" height="551" loading="lazy" decoding="async" />
-                    </button>
-                    <figcaption>{leontCaption(src)}</figcaption>
-                  </figure>
-                ))}
-              </div>
-            </div>
+            </details>
           </>) : (
             <div class="case-gallery__thumbs" aria-label="Фотографии объекта">
               {(spec.archiveMedia || []).map(([src,alt,caption])=>(

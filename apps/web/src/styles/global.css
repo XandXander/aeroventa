@@ -4460,6 +4460,23 @@ header.services-hero--owner-editorial>figure.services-hero__backdrop--single fig
 .evidence-case .case-gallery__archive--leont .case-gallery__thumbs--context{grid-template-columns:repeat(2,minmax(0,1fr))}
 .evidence-case .case-gallery__archive--leont .case-gallery__thumbs--context>.case-gallery__item:nth-child(n){grid-column:auto}
 .evidence-case .case-gallery__archive--leont .case-gallery__thumbs--context img{aspect-ratio:1.65}
+/* Twelve source-backed restaurant frames, one strong lead and a complete plate. */
+.evidence-case .case-gallery__archive--leont .case-gallery__thumbs.case-gallery__selected--leont{grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:clamp(120px,12vw,210px);grid-auto-flow:row dense}
+.evidence-case .case-gallery__archive--leont .case-gallery__selected--leont>.case-gallery__item:nth-child(n){grid-column:auto;grid-row:auto;display:flex;flex-direction:column;height:100%;min-width:0}
+.evidence-case .case-gallery__archive--leont .case-gallery__selected--leont>.case-gallery__item:first-child{grid-column:span 2;grid-row:span 2}
+.evidence-case .case-gallery__archive--leont .case-gallery__selected--leont>.case-gallery__item:last-child{grid-column:span 2}
+.evidence-case .case-gallery__archive--leont .case-gallery__selected--leont .case-gallery__open{flex:1;min-height:0;display:block;overflow:hidden}
+.evidence-case .case-gallery__archive--leont .case-gallery__selected--leont img{width:100%;height:100%;aspect-ratio:auto;object-fit:cover}
+.evidence-case .case-gallery__archive--leont .case-gallery__selected--leont figcaption{font-size:.75rem;line-height:1.3;padding:7px 0 3px}
+.evidence-case .case-gallery__archive--leont .case-gallery__more--leont{margin:32px 0 0;padding:16px 0 0;border-top:1px solid #c5d2d8}
+.evidence-case .case-gallery__archive--leont .case-gallery__more--leont summary{cursor:pointer;min-height:48px;padding:12px 0;color:#28506a;font-size:.91rem;font-weight:620}
+.evidence-case .case-gallery__archive--leont .case-gallery__more--leont>p{max-width:65ch;color:#506875;font-size:.84rem;line-height:1.5}
+.evidence-case .case-gallery__archive--leont .case-gallery__more--leont .case-gallery__thumbs{margin-top:16px}
+@media(max-width:760px){
+.evidence-case .case-gallery__archive--leont .case-gallery__thumbs.case-gallery__selected--leont{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:clamp(130px,26vw,194px)}
+.evidence-case .case-gallery__archive--leont .case-gallery__selected--leont>.case-gallery__item:first-child{grid-column:span 2;grid-row:span 2}
+.evidence-case .case-gallery__archive--leont .case-gallery__selected--leont>.case-gallery__item:last-child{grid-column:span 2;grid-row:auto}
+}
 .evidence-case .case-gallery__verified-originals summary{font-weight:550;font-size:.87rem;letter-spacing:0}
 .evidence-case .case-detail-facts{padding:clamp(25px,3.5vw,48px) 0;background:#f2f5f6}
 .evidence-case .case-detail-facts h2{font-size:clamp(1.25rem,2.15vw,2.15rem);letter-spacing:-.02em;font-weight:590}
