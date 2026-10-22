@@ -3637,10 +3637,10 @@ body{font-weight:440;line-height:1.57}
 html{scroll-padding-top:84px}
 body{color:var(--editorial-ink);line-height:1.55;-webkit-font-smoothing:antialiased}
 .home-shell,.container{width:min(var(--editorial-content),calc(100% - 2*var(--editorial-gutter)));margin-inline:auto}
-:where(main) :is(h1,h2,h3){font-weight:620!important;letter-spacing:-.028em!important;line-height:1.13;overflow-wrap:normal;word-break:normal;hyphens:none;text-wrap:balance}
-main h1{font-size:clamp(2.25rem,4.2vw,4.55rem)!important}
-main h2{font-size:clamp(1.72rem,2.75vw,3rem)!important}
-main h3{font-size:clamp(1.12rem,1.5vw,1.65rem)!important}
+:where(main) :is(h1,h2,h3){font-weight:620;letter-spacing:-.028em;line-height:1.13;overflow-wrap:normal;word-break:normal;hyphens:none;text-wrap:balance}
+main h1{font-size:clamp(2.25rem,4.2vw,4.55rem)}
+main h2{font-size:clamp(1.72rem,2.75vw,3rem)}
+main h3{font-size:clamp(1.12rem,1.5vw,1.65rem)}
 main :is(p,li,dd){overflow-wrap:break-word}
 .home-kicker,.section-index{font-weight:630!important;font-size:clamp(.72rem,.85vw,.82rem)!important;letter-spacing:.055em!important}
 .button,.header-project,.portfolio-card__bottom b{font-weight:640!important}
@@ -3683,9 +3683,9 @@ dialog.ponsse-letter-dialog[open]{display:grid;grid-template-rows:auto minmax(0,
 .ponsse-letter-dialog.is-document-zoomed .ponsse-letter-dialog__sheet img{width:calc(640px*var(--document-scale,1.4));height:auto;max-height:none;max-width:none}
 @media(max-width:760px){
   .home-shell,.container{width:min(100% - 32px,680px)}
-  main h1{font-size:clamp(2.05rem,8.1vw,3rem)!important}
-  main h2{font-size:clamp(1.65rem,6.1vw,2.3rem)!important}
-  main h3{font-size:clamp(1.05rem,4.6vw,1.5rem)!important}
+  main h1{font-size:clamp(2.05rem,8.1vw,3rem)}
+  main h2{font-size:clamp(1.65rem,6.1vw,2.3rem)}
+  main h3{font-size:clamp(1.05rem,4.6vw,1.5rem)}
   .home-hero--owner-airflow{min-height:0;overflow:visible}
   .home-hero--owner-airflow .home-hero__grid{min-height:0}
   .home-hero--owner-airflow .hero-engineering{min-height:0}

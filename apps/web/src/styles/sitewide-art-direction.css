@@ -244,3 +244,16 @@ main .portfolio-list__extra:focus-visible{outline:3px solid #a75c37;outline-offs
 
 :where(a,button,summary):focus-visible{outline:3px solid var(--av-focus,#9d4329);outline-offset:4px}
 .home-hero--owner-airflow .home-hero__copy{--av-focus:#efbd9e}
+
+/* Section roles can vary without a blanket important heading scale. */
+main .decision-preview h2{font-size:clamp(1.85rem,2.8vw,2.75rem);max-width:24ch;line-height:1.15}
+main :is(.object-evidence,.object-constraints,.object-method,.object-questions,.object-drivers) h2{font-size:clamp(1.65rem,2.6vw,2.65rem);line-height:1.16;max-width:30ch}
+main :is(.engagement-close,.conversion-close) h2{font-size:clamp(1.8rem,2.65vw,2.7rem);line-height:1.15;max-width:30ch}
+.services-work-photo{margin:0 0 30px}
+.services-work-photo img{display:block;width:100%;height:auto;max-height:360px;aspect-ratio:4/3;object-fit:cover}
+.services-work-photo figcaption{margin-top:10px;color:#405664;font-size:.85rem;line-height:1.5}
+.services-work-photo a{text-underline-offset:4px}
+@media(max-width:760px){
+ main .decision-preview h2{font-size:clamp(1.65rem,7vw,2.2rem)}
+ main :is(.engagement-close,.conversion-close) h2{font-size:clamp(1.7rem,7vw,2.2rem)}
+}

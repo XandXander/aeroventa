@@ -174,7 +174,7 @@ if(!spec) throw new Error('Support spec missing: '+content.path);
   <header class="support-hero">
     <div class="home-shell support-hero__grid">
       <div><p class="home-kicker">{spec.eyebrow}</p><h1>{content.h1}</h1></div>
-      <div><p class="support-hero__lede">{spec.lede}</p><div class="support-state"><span>{spec.state}</span><p>{spec.stateText}</p></div></div>
+      <div><p class="support-hero__lede">{spec.lede}</p>{!originalArticle && <div class="support-state"><span>{spec.state}</span><p>{spec.stateText}</p></div>}</div>
     </div>
   </header>
 
@@ -219,6 +219,7 @@ if(!spec) throw new Error('Support spec missing: '+content.path);
 </article>
 
 <style>
+.support-page .support-hero h1{font-size:clamp(2.15rem,4.1vw,3.8rem);line-height:1.12;max-width:24ch}
 .support-original{background:#fff;color:#203a49}
 .support-original>.home-shell{max-width:1180px}
 .support-original .prose{max-width:74ch;margin-top:26px;font-size:1rem;line-height:1.8}
