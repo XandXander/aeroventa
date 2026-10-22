@@ -4114,7 +4114,7 @@ dialog.ponsse-letter-dialog.is-document-zoomed .ponsse-letter-dialog__sheet img{
 .home-hero--owner-airflow .hero-engineering__frame{opacity:.2}
 .home-hero--owner-airflow .home-hero__copy{grid-area:1/1;z-index:3;position:relative;width:min(100%,750px);padding:clamp(54px,6vw,90px) clamp(18px,4vw,62px) clamp(54px,6vw,90px) 0;justify-content:center}
 .home-hero--owner-airflow h1{color:#fff;max-width:12.5ch;font-size:clamp(2.9rem,5.2vw,5.2rem);line-height:1.08;font-weight:520;letter-spacing:-.042em}
-.home-hero--owner-airflow .home-lede,.home-hero--owner-airflow .home-geo{color:#e8eff1;max-width:44ch}
+.home-hero--owner-airflow .home-lede,.home-hero--owner-airflow .home-geo{color:#fff;max-width:44ch}
 .home-hero--owner-airflow .home-kicker{color:#f0b48e}
 .home-hero--owner-airflow .button--primary{background:#fff;color:#132e40}
 .home-hero--owner-airflow .button--ghost{background:rgba(0,0,0,.15);border-color:rgba(255,255,255,.55);color:#fff}
