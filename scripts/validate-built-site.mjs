@@ -157,7 +157,10 @@ const nevaFile=htmlFileFor('/portfolio/obekt/na-izluchine-nevy/');
 if(await exists(nevaFile)){
   const html=await fs.readFile(nevaFile,'utf8');
   const photos=[...html.matchAll(/<button\b[^>]*data-case-frame="\d+"[^>]*>/g)];
-  check(photos.length===8,'Owner Neva: one cover trigger plus seven real gallery frames');
+  check(photos.length===7,'Owner Neva: facade in HERO only, plus exactly six gallery triggers');
+  const thumbs=html.match(/<div class="owner-case__photos">([\s\S]*?)<\/div>/)?.[1]||'';
+  check((thumbs.match(/data-case-frame=/g)||[]).length===6,'Owner Neva: six photos in lower grid');
+  check(!/owner-neva-facade-20261016\.jpg/.test(thumbs),'Owner Neva: facade cannot repeat in lower gallery');
   for(const [name,expected] of [
     ['curated-04.webp','e574fa2d3c8c31c9a885b02ca16189dffd32de67110983bbf11cf1d1902b4a81'],
     ['curated-05.webp','fc8b4990985c8d4e107790aa1b276b21f37c0ec21ee3c80e670bca9f8727d359'],
