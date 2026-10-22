@@ -22,6 +22,8 @@
     };
     document.querySelectorAll<HTMLElement>('[aria-controls="'+dialog.id+'"]').forEach(trigger=>{
       trigger.addEventListener('click',e=>{
+        // Letter zoom must retain the native document, not a phone thumbnail.
+        img?.removeAttribute('srcset');img?.removeAttribute('sizes');
         e.preventDefault();opener=trigger;setZoom(1);
         if(!dialog.open)dialog.showModal();
         close?.focus({preventScroll:true});

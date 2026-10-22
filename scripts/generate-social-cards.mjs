@@ -10,8 +10,7 @@ const outputRoot = path.join(publicRoot,'share');
 const cards = [
  ['home','evidence/hero/owner-luxury-airflow-20261010.png','Инженерный комфорт'],
  ['services','evidence/hero/project-not-ready-owner-concept-1672.webp','Монтаж вентиляции'],
- ['discovery','evidence/hero/home-owner-editorial-1672.webp','Вентиляция: с чего начать'],
- ['ventilation','evidence/polisan/archive/20180601-133711.webp','Монтаж вентиляции'],
+ ['ventilation','evidence/hero/hiend-engineering-visual-owner-v43.webp','Монтаж вентиляции'],
  ['portfolio','evidence/leont/owner-cover-v43.webp','Реальные объекты'],
  ['about','evidence/team/owner-team-group-20261015.webp','Команда AEROVENTA'],
  ['project','evidence/polisan/archive/20180601-133720.webp','Работа по проекту'],
@@ -23,17 +22,19 @@ const cards = [
  ['cafe','evidence/cafe/owner-interior-v43.webp','Кафе на Римского-Корсакова'],
  ['akvilon','evidence/owner-portfolio/akvilon-yanino/cover.webp','ЖК «Аквилон» · Янино'],
  ['neva','evidence/residential/owner-neva-facade-20261016.jpg','На излучине Невы'],
- ['apart-hotel','evidence/owner-portfolio/apart-hotel/cover.webp','Апарт-отель и коворкинг'],
+ ['discovery','evidence/owner-portfolio/apart-hotel/cover.webp','До готового проекта'],
+ ['articles','upload/medialibrary/fb3/fb3d693282a8085971dd4e2fe87bf28e.jpg','Статьи из практики'],
+ ['apart','evidence/owner-portfolio/apart-hotel/cover.webp','Апарт-отель на Бумажном'],
  ['eurospar-vo','evidence/owner-portfolio/eurospar-vo/cover.webp','EUROSPAR · Васильевский остров'],
- ['eurospar-sestroretsk','evidence/owner-portfolio/eurospar-sestroretsk/03.webp','EUROSPAR · Сестрорецк'],
+ ['eurospar-sestroretsk','evidence/owner-portfolio/eurospar-sestroretsk/cover.webp','EUROSPAR · Сестрорецк'],
  ['college','evidence/owner-portfolio/college-obvodny/cover.webp','Колледж туризма'],
- ['novatech','evidence/owner-portfolio/novatech/03.webp','Новатех'],
+ ['novatech','evidence/owner-portfolio/novatech/cover.webp','Новатех'],
  ['himprom','evidence/owner-portfolio/himprom/03.webp','Химпром'],
- ['articles','upload/medialibrary/548/5488fb415056eee52ac63ff9d4850c63.jpg','Статьи и инженерная практика'],
- ['drill-crown','upload/medialibrary/548/5488fb415056eee52ac63ff9d4850c63.jpg','Застрявшая алмазная коронка'],
- ['drill-screed','upload/medialibrary/0a2/0a2f0d1be2900e0a1fe74bcd9604e3f8.jpg','Алмазное бурение в стяжке'],
+ ['warehouses','evidence/warehouses/avers-razbegaevo/03.webp','Вентиляция складов'],
+ ['drill-core','upload/medialibrary/548/5488fb415056eee52ac63ff9d4850c63.jpg','Застрявшая алмазная коронка'],
+ ['drill-screed','upload/medialibrary/0a2/0a2f0d1be2900e0a1fe74bcd9604e3f8.jpg','Бурение в стяжке'],
  ['drill-cost','upload/medialibrary/fb3/fb3d693282a8085971dd4e2fe87bf28e.jpg','Стоимость алмазного бурения'],
- ['drill-horizontal','upload/medialibrary/e1c/e1cd51110183f9c6b2e704b70664eba1.jpg','Горизонтальное бурение']
+ ['drill-wall','upload/medialibrary/e1c/e1cd51110183f9c6b2e704b70664eba1.jpg','Проходка под вентиляцию']
 ];
 const xmlEscape=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 await mkdir(outputRoot,{recursive:true});

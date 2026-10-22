@@ -4,7 +4,7 @@ interface Props { content: ContentRecord; fixture: boolean; }
 const { content } = Astro.props;
 
 const objectLinks = [
-  ['Производство','Проект, режим работы объекта, доступ, трассы и границы состава монтажных работ.','/obekty/proizvodstvo/'],
+  ['Производство','Проект, режим работы предприятия, оборудование и доступ к монтажным зонам.','/obekty/proizvodstvo/'],
   ['Рестораны и кафе','Кухня, зал, оборудование, стадия отделки и работа с уже начатой отделкой.','/obekty/restorany-i-kafe/'],
   ['Новостройки','Повторяющийся объём по корпусам и работы по проекту.','/obekty/novostroyki/'],
   ['Квартиры и дома','Шум, пространство, отделка, аккуратная прокладка трасс и понятный объём работ.','/obekty/kvartiry-i-doma/'],
@@ -66,6 +66,16 @@ const objectLinks = [
         <h3>Что согласовывается отдельно</h3>
         <p>Проектирование, пусконаладка, балансировка, автоматика и смежные работы не включаются автоматически: их объём согласовывается для конкретного объекта. Алмазное бурение при необходимости выполняется как партнёрская или смежная работа.</p>
       </div>
+      <div class="services-competence__proof" aria-label="Примеры выполненного монтажа">
+        <figure>
+          <a href="/blog/detail/montazh-ventilyatsii-v-karelii/"><img src="/evidence/karelia/archive/img-8306.webp" width="1200" height="900" alt="Вентиляционное оборудование и трассы в сервисном центре PONSSE" loading="lazy" decoding="async" /></a>
+          <figcaption><a href="/blog/detail/montazh-ventilyatsii-v-karelii/">PONSSE · монтаж вентиляции в сервисном центре ↗</a></figcaption>
+        </figure>
+        <figure>
+          <a href="/blog/detail/kafe-rimskogo-korsakova-3/"><img src="/evidence/cafe/owner-interior-v43.webp" width="1200" height="800" alt="Интерьер кафе на Римского-Корсакова, 3, где выполнялся монтаж вентиляции" loading="lazy" decoding="async" /></a>
+          <figcaption><a href="/blog/detail/kafe-rimskogo-korsakova-3/">Кафе на Римского-Корсакова · объект и монтаж ↗</a></figcaption>
+        </figure>
+      </div>
     </div>
   </section>
 
@@ -110,6 +120,12 @@ const objectLinks = [
 .services-competence__layout{gap:clamp(32px,6vw,110px)}
 .services-competence__intro h2{font-size:clamp(1.9rem,3.15vw,3.3rem);font-weight:555;line-height:1.16;letter-spacing:-.036em}
 .services-hero--owner-editorial h1{font-weight:555;line-height:1.09}
+.services-competence__proof{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(22px,3vw,44px)}
+.services-competence__proof figure{margin:0;min-width:0}
+.services-competence__proof img{width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;display:block}
+.services-competence__proof figcaption{padding-top:12px;font-size:.85rem;color:#405c6b;line-height:1.5}
+.services-competence__proof figcaption a{text-underline-offset:4px}
+@media(max-width:620px){.services-competence__proof{grid-template-columns:1fr}}
 @media(max-width:760px){.services-directions__list{grid-template-columns:1fr;gap:0}.services-directions__item{padding:19px 0!important}}
 
 </style>

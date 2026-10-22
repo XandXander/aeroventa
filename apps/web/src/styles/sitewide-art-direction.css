@@ -1,5 +1,8 @@
-/* Shared surfaces pair their foregrounds with their backgrounds. Component
-   layout stays in the existing styles; retired experiments are removed there. */
+/*
+ * 2026-10-22 systemic art-direction layer. Shared visual primitives only.
+ * No alteration of approved HOME HERO / TRACE / PULSE identities.
+ * Restrained architectural daylight surfaces, legible actions, intrinsic scroll.
+ */
 :root{
  --av-surface-paper:#f7f9f8;
  --av-surface-soft:#e9eff0;
@@ -7,154 +10,133 @@
  --av-typography:#203a49;
  --av-secondary:#536976;
  --av-rule:#cbd6d9;
- --av-accent-text:#9f4224;
- --av-focus:#9f4224;
+ --av-meta:#496271;
+ --av-accent-text:#9d4329;
 }
-main :is(.conversion-close,.engagement-section--ink,.engagement-close,.faq-agent){
- background:var(--av-surface-soft);color:var(--av-typography);
+.case-feature,.service-drivers,.service-proof-card--accent,
+.practical-rules,.covid-current__now,
+.engagement-close:not(.engagement-close--light){
+ --av-meta:#c5d4dc;
+ --av-accent-text:#f0b48e;
+}
+main :is(.conversion-close,.engagement-section--ink){
+ background:var(--av-surface-soft);
+ color:var(--av-typography);
  border-block:1px solid var(--av-rule);
 }
-main :is(.conversion-close,.engagement-section--ink,.engagement-close,.faq-agent) h2{
- color:var(--av-typography);font-weight:560;max-width:25ch;text-wrap:balance;overflow-wrap:anywhere;
+main .conversion-close .section-index--orange,
+main .engagement-section--ink .section-index--orange{color:#965336}
+main .conversion-close h2,
+main .engagement-section--ink h2{color:var(--av-typography);font-weight:560;max-width:25ch;text-wrap:balance}
+main .conversion-close p,
+main .engagement-section--ink p{color:var(--av-secondary)}
+main .conversion-close :is(.button--light,.button--ghost),
+main .engagement-section--ink :is(.button--light,.button--ghost){
+ color:var(--av-typography);border:1px solid #9cb0ba;background:transparent;
 }
-main :is(.conversion-close,.engagement-section--ink,.engagement-close,.faq-agent) p{color:var(--av-secondary)}
-main :is(.conversion-close,.engagement-section--ink,.engagement-close,.faq-agent) :is(.section-index,.section-index--orange){color:var(--av-accent-text)}
-main :is(.conversion-close,.engagement-close,.faq-agent) :is(.button--light,.button--ghost){
- color:var(--av-typography);border:1px solid #829ba8;background:transparent;box-shadow:none;
-}
-main :is(.conversion-close,.engagement-close,.faq-agent) :is(.button--light,.button--ghost):hover{
+main .conversion-close :is(.button--light,.button--ghost):hover,
+main .engagement-section--ink :is(.button--light,.button--ghost):hover{
  background:#d9e5e8;border-color:#567587;
 }
-main :is(.engagement-close,.faq-agent){padding-block:clamp(40px,5vw,68px)}
-main .engagement-index{color:var(--av-typography);border-color:var(--av-rule)}
-main .engagement-index a{color:inherit;border-color:var(--av-rule)}
-main .engagement-index a:hover{background:#dfe8eb}
-main .engagement-index a :is(strong,b){color:var(--av-typography)}
-main .engagement-index a :is(span,p){color:var(--av-secondary)}
-main .engagement-section--ink .engagement-rule{background:transparent;border:0}
-main .engagement-section--ink .engagement-rule p{border-color:var(--av-rule);color:var(--av-secondary)}
-main .engagement-section--ink .engagement-rule strong{color:var(--av-typography)}
-main .portfolio-hub .portfolio-feature{
- background:var(--av-surface-warm);color:var(--av-typography);border-block:1px solid var(--av-rule);
+main .engagement-section--ink .engagement-rule--dark{
+ background:#fff;color:var(--av-typography);border-color:var(--av-rule);
 }
-main .portfolio-feature :is(.portfolio-feature__sub,.portfolio-feature__facts dt,.portfolio-feature__facts dd,.case-facts dt,.case-facts dd){color:var(--av-typography)}
-main .portfolio-feature .case-facts>div{border-color:var(--av-rule)}
+main .engagement-section--ink .engagement-rule--dark p{color:var(--av-secondary)}
+main .portfolio-hub .portfolio-feature{
+ background:var(--av-surface-warm);color:var(--av-typography);
+ border-block:1px solid var(--av-rule);
+}
+main .portfolio-feature__sub,
+main .portfolio-feature .case-facts :is(dt,dd){color:var(--av-typography)}
+main .portfolio-feature .case-facts > div{border-color:var(--av-rule)}
+main .portfolio-feature .case-facts dt{color:var(--av-meta)}
 main .portfolio-feature .button--case{color:#193b50;border-color:#829fac;background:transparent}
 main .portfolio-feature .button--case:hover{background:#e1e8e9}
-main :is(.object-drivers,.case-detail-facts,.case-detail-related){background:var(--av-surface-paper);color:var(--av-typography)}
-main :is(.case-detail-related__grid,.object-evidence__grid):has(>a:nth-child(2):last-child){grid-template-columns:repeat(2,minmax(0,1fr))}
+main .object-drivers,
+main .case-detail-facts,
+main .case-detail-related{background:var(--av-surface-paper);color:var(--av-typography)}
+main .case-detail-related__grid:has(> a:nth-child(2):last-child){grid-template-columns:repeat(2,minmax(0,1fr))}
+main .object-evidence__grid:has(> a:nth-child(2):last-child){grid-template-columns:repeat(2,minmax(0,1fr))}
+main :is(.object-detail__hero,.case-detail-hero,.contact-hero,.service-premium__hero){
+ padding-block:clamp(36px,4.4vw,74px) clamp(28px,3vw,52px);
+}
+main :is(.object-detail__hero,.case-detail-hero,.contact-hero) h1{
+ font-size:clamp(2.25rem,4.2vw,4.7rem);
+ line-height:1.1;
+ letter-spacing:-.047em;
+ text-wrap:balance;
+ overflow-wrap:normal;
+ hyphens:none;
+}
+main :is(.object-detail__hero-grid,.case-detail-hero__grid,.contact-hero__grid){
+ align-items:center;gap:clamp(24px,3.5vw,65px)
+}
 main .object-evidence__grid a{box-shadow:none;border:1px solid #dee7e9}
 main .object-evidence__grid a:hover{background:#f5f8f8}
-main :is(.section-index,.home-kicker){color:var(--av-accent-text)}
-main :is(.case-feature,.service-drivers,.practical-rules,.covid-current__now){--av-accent-text:#efbd9e;--av-focus:#efbd9e}
-main .service-drivers .driver-list span{color:#b8cbd6}
-body{overflow-wrap:anywhere}
-main :is(h1,h2,h3){hyphens:none;word-break:normal;overflow-wrap:anywhere}
-main :is(.object-detail__hero,.case-detail-hero,.contact-hero,.service-premium__hero){padding-block:clamp(36px,4.4vw,74px) clamp(28px,3vw,52px)}
-main :is(.object-detail__hero,.case-detail-hero,.contact-hero) h1{
- font-size:clamp(2.25rem,4.2vw,4.7rem);line-height:1.1;letter-spacing:-.047em;text-wrap:balance;overflow-wrap:anywhere;
-}
-main :is(.object-detail__hero-grid,.case-detail-hero__grid,.contact-hero__grid){align-items:center;gap:clamp(24px,3.5vw,65px)}
-main .service-premium__hero h1{font-size:clamp(2.15rem,3.55vw,3.65rem);line-height:1.12;letter-spacing:-.04em;max-width:25ch}
-main .engagement--discovery .engagement-hero__copy h1{font-size:clamp(2.2rem,3.6vw,3.85rem);line-height:1.12;max-width:19ch}
-main :is(.process-strip b,.object-ribbon__number,.object-context-card__number,.service-conflict__steps span,.object-method__steps span,.engagement-steps>li>span){
- font-size:clamp(.8rem,.95vw,1rem);line-height:1.35;font-weight:650;letter-spacing:0;font-variant-numeric:tabular-nums;
-}
-/* The process drawing has one intrinsic-size frame, independent of hero
-   absolute positioning. Its original lettering and airflow paths stay intact. */
-.home-solution{background:#f8fafb;padding-block:clamp(36px,5vw,68px) 26px}
-.home-solution .solution-grid{display:grid;grid-template-columns:minmax(0,.75fr) minmax(0,1.55fr);gap:clamp(24px,3vw,48px);align-items:center;position:relative;min-height:0}
-.home-solution .section-copy{position:static;min-width:0;max-width:38ch;padding:0;z-index:auto}
-.home-solution .section-copy h2{font-size:clamp(1.95rem,3.1vw,3.3rem);font-weight:560;line-height:1.13;letter-spacing:-.035em;max-width:17ch}
-.home-solution .section-copy p:not(.section-index){font-size:clamp(.98rem,1.1vw,1.1rem);line-height:1.6;color:#405664}
-.home-solution .solution-diagram{display:block;position:static;inset:auto;width:100%;max-width:1036px;height:auto;min-height:0;margin:0;aspect-ratio:1036/338;background:transparent;border:0;overflow:visible}
-.home-solution .solution-diagram img{display:block;position:static;width:100%;height:auto;object-fit:contain;filter:none;transform:none}
-.solution-mobile-pair{display:none}
-.home-solution .process-strip{margin-top:clamp(28px,3vw,44px)}
-/* Persistent consultant belongs to the sticky header, in its own slot. It
-   never shares the content plane with form fields, captions or gallery controls. */
-.site-header__inner{gap:clamp(8px,1vw,16px)}
-.site-header__inner .brand{flex:0 1 190px;min-width:100px}
-.site-header__inner .brand-mark-locked{max-width:100%}
-.consultant-launcher{
- position:static;display:inline-flex;align-items:center;justify-content:center;gap:8px;flex:0 1 auto;
- min-width:44px;min-height:44px;width:auto;height:auto;margin:0;padding:8px 11px;
- border:1px solid #bdcdd5;border-radius:8px;background:#fff;color:#216a8c;
- font:600 .79rem/1.25 Onest,system-ui,sans-serif;white-space:normal;cursor:pointer;
-}
-.consultant-launcher__symbol{display:grid;place-items:center;width:22px;height:22px}
-.consultant-launcher__short{display:none}
-.consultant-launcher:hover{background:#eaf0f1;border-color:#216a8c}
-.consultant-launcher:active{background:#dce8ed}
-.consultant-launcher:focus-visible{outline:3px solid #a74626;outline-offset:3px}
-.consultant-launcher:disabled{opacity:.65;cursor:default}
-html:has(.mobile-menu[open]) .consultant-launcher{visibility:hidden;pointer-events:none}
-.engagement-evidence__grid .engagement-evidence__photo{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;margin-bottom:8px}
-.engagement-evidence__grid>a{min-width:0}
-.services-work-photo{margin:0 0 30px}
-.services-work-photo img{display:block;width:100%;height:auto;max-height:360px;aspect-ratio:4/3;object-fit:cover}
-.services-work-photo figcaption{margin-top:10px;color:#405664;font-size:.85rem;line-height:1.5}
-.services-work-photo a{text-underline-offset:4px}
-.engagement--project .engagement-hero__media figcaption{background:#e9eef1;color:#203a49;padding:12px 16px;line-height:1.45;text-shadow:none}
-.engagement--project .engagement-hero__media figcaption a{color:inherit}
-.site-footer .brand-mark-locked--footer{filter:none}
-.site-footer .footer-bottom{margin-top:30px;padding-block:16px 0}
-/* The existing viewer controls retain their targets and neutral surface. */
-.case-photo-dialog{background:#edf2f3;color:#203c4d}
+main .owner-case__photos img{image-rendering:auto}
+/* Calm lightbox surfaces and readable controls. */
+.case-photo-dialog{background:#edf2f3!important;color:#203c4d!important}
 .case-photo-dialog::backdrop{background:rgba(17,34,46,.82)}
-.case-photo-dialog__top{background:linear-gradient(#edf2f3 20%,#edf2f300)}
-.case-photo-dialog__top>span{color:#214257;text-shadow:none}
-.case-photo-dialog__close,.case-photo-dialog__nav button{background:#dbe5e9;color:#173a4c}
-.case-photo-dialog__figure figcaption{color:#405664}
-:is(.case-photo-dialog,.portfolio-archive-viewer,#owner-case-viewer) [aria-busy=true]{opacity:.78;transition:opacity .12s linear}
-.case-photo-dialog button:focus-visible{outline-color:#216a8c}
-.portfolio-archive-viewer.is-neva button:focus-visible{outline-color:#216a8c}
-.case-photo-dialog__nav{z-index:7;inset-inline:0}
+.case-photo-dialog__top{background:linear-gradient(#edf2f3 20%,#edf2f300)!important}
+.case-photo-dialog__top>span{color:#214257!important;text-shadow:none!important}
+.case-photo-dialog__close,.case-photo-dialog__nav button{background:#dbe5e9!important;color:#173a4c!important}
+.case-photo-dialog__figure figcaption{color:#486271!important}
+:is(.case-photo-dialog,.portfolio-archive-viewer,#owner-case-viewer) [aria-busy=true]{
+ opacity:.78;transition:opacity .12s linear;
+}
+:is(.case-photo-dialog,.portfolio-archive-viewer,#owner-case-viewer) img:not([aria-busy]){opacity:1}
+.gallery-load-error{
+ position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+ width:min(28rem,calc(100% - 112px));margin:0;padding:20px;
+ background:#edf2f3;color:#203a49;font-size:.95rem;line-height:1.55;
+ text-align:center;pointer-events:none;
+}
+.is-photo-zoomed :is(.case-photo-dialog__figure,.owner-case__viewer-stage,.object-photo-dialog__stage){
+ display:flex;align-items:flex-start;justify-content:flex-start;overflow:auto;
+ overscroll-behavior:contain;touch-action:pan-x pan-y;
+}
+.is-photo-zoomed :is(.case-photo-dialog__figure,.owner-case__viewer-stage,.object-photo-dialog__stage) img{
+ max-width:none;max-height:none;height:auto;flex:none;margin:0;
+}
+.case-photo-dialog__nav{z-index:7;inset-inline:0!important}
 .case-photo-dialog__nav button{min-width:48px;min-height:48px}
-.portfolio-archive-viewer__nav button,.owner-case__viewer-nav button{z-index:7;min-width:48px;min-height:56px}
-.portfolio-archive-viewer__nav span,.owner-case__viewer-nav span{z-index:8;bottom:calc(18px + env(safe-area-inset-bottom));max-width:calc(100vw - 135px);white-space:normal;text-align:center}
+.portfolio-archive-viewer__nav button,.owner-case__viewer-nav button{
+ z-index:7;min-width:48px;min-height:56px;
+}
+.portfolio-archive-viewer__nav span,.owner-case__viewer-nav span{
+ z-index:8;bottom:calc(18px + env(safe-area-inset-bottom))!important;
+ max-width:calc(100vw - 135px);white-space:normal;text-align:center;
+}
 html:has(dialog[open]){overflow:hidden}
-main .portfolio-list__extra{margin-top:clamp(22px,3vw,44px);padding:16px 0;display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;border-block:1px solid var(--av-rule);text-decoration:none;color:#244253;font-size:clamp(.85rem,1vw,1rem)}
-main .portfolio-list__extra b{font-weight:620;color:#915034}
-main .portfolio-list__extra:focus-visible{outline:3px solid #a75c37;outline-offset:3px}
-@media(max-width:600px){
- .consultant-launcher__wide{display:none}
- .consultant-launcher__short{display:inline}
-}
-@media(max-width:359px){
- .consultant-launcher{padding:8px;width:44px}
- .consultant-launcher__label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-}
 @media(min-width:850px) and (max-height:760px){
- main :is(.object-detail__hero,.case-detail-hero,.contact-hero,.service-premium__hero){padding-block:clamp(18px,3vh,32px)}
- main :is(.object-detail__hero,.case-detail-hero,.contact-hero) h1{font-size:clamp(2.15rem,3.65vw,3.45rem);line-height:1.09;max-width:24ch}
- main .service-premium__hero h1{font-size:clamp(2rem,3vw,3.2rem);max-width:29ch}
+ main :is(.object-detail__hero,.case-detail-hero,.contact-hero,.service-premium__hero){
+  padding-block:clamp(18px,3vh,32px);
+ }
+ main :is(.object-detail__hero,.case-detail-hero,.contact-hero,.service-premium__hero) h1{
+  font-size:clamp(2.15rem,3.65vw,3.45rem);
+  line-height:1.09;
+  max-width:24ch;
+ }
  main .service-premium__hero-grid{gap:clamp(20px,3vw,45px)}
  main .object-detail__hero-media img{max-height:48vh;object-fit:contain}
 }
 @media(max-width:850px){
+ main .object-detail .object-detail__hero-grid{display:flex;flex-direction:column;align-items:stretch;gap:22px}
+ main .object-detail .object-detail__hero-grid>*{order:0;min-width:0;grid-column:auto;grid-row:auto}
+ main .object-detail .object-detail__hero-media img{height:auto;aspect-ratio:auto;object-fit:contain;max-height:none}
+ main .object-detail .object-detail__hero-media{margin:0}
  main :is(.object-detail__hero-grid,.case-detail-hero__grid,.contact-hero__grid){gap:20px}
- main :is(.object-detail__hero,.case-detail-hero,.contact-hero) h1{font-size:clamp(2rem,8vw,3.45rem);line-height:1.11}
- main :is(.case-detail-related__grid,.object-evidence__grid):has(>a:nth-child(2):last-child){grid-template-columns:1fr}
- .home-solution .solution-grid{grid-template-columns:1fr;gap:22px}
- .home-solution .section-copy{max-width:65ch}
+ main :is(.object-detail__hero,.case-detail-hero,.contact-hero) h1{
+  font-size:clamp(2rem,8vw,3.45rem);line-height:1.11;
+ }
+ main .object-evidence__grid:has(>a:nth-child(2):last-child),
+ main .case-detail-related__grid:has(>a:nth-child(2):last-child){grid-template-columns:1fr}
 }
 @media(max-width:760px){
- .site-header .brand{margin-right:auto}
- main .service-premium__hero h1{font-size:clamp(2rem,7.4vw,2.75rem);max-width:21ch}
- main .object-detail__hero h1{overflow-wrap:break-word;max-width:100%}
- main .engagement--discovery .engagement-hero__copy h1{font-size:clamp(1.95rem,7vw,2.8rem);max-width:19ch}
- .home-solution .section-copy h2{max-width:20ch}
- .home-solution .solution-diagram{display:none}
- .solution-mobile-pair{display:grid;grid-template-columns:1fr;gap:18px;width:100%}
- .solution-mobile-pair__panel{margin:0;min-width:0;overflow:hidden;background:#f8fafb}
- .solution-mobile-pair__crop{width:100%;aspect-ratio:518/338;overflow:hidden}
- .solution-mobile-pair__crop img{display:block;width:200%;height:auto;max-width:none;filter:none}
- .solution-mobile-pair__panel--exhaust .solution-mobile-pair__crop img{transform:translateX(-50%)}
- .solution-mobile-pair__panel figcaption{padding:10px 0;color:#405664;font-size:.9rem;line-height:1.45;border-top:2px solid #a74626}
- .solution-mobile-pair__panel--exhaust figcaption{border-top-color:#216a8c}
- .engagement-evidence__grid .engagement-evidence__photo{aspect-ratio:1.6}
- .site-footer .footer-bottom{gap:12px}
+ .object-drivers__grid,.object-questions__grid{gap:28px}
+ /* At text zoom, a word can exceed the entire phone width. Keep the text
+    available without reducing its size or inserting discretionary hyphens. */
+ .home-hero--owner-airflow #home-title{overflow-wrap:break-word;hyphens:none}
 }
 @media(max-width:520px){
  .case-photo-dialog__figure{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
@@ -164,10 +146,101 @@ main .portfolio-list__extra:focus-visible{outline:3px solid #a75c37;outline-offs
  :is(.case-photo-dialog,.portfolio-archive-viewer,#owner-case-viewer) [aria-busy]{transition:none}
 }
 
-/* Reflow follows intrinsic text size as well as viewport breakpoints. */
-main :is(.contact-hero__grid,.service-conflict__grid,.service-limits__grid,.engagement-index,.portfolio-sport__inner,.service-scope__grid,.service-cases__grid,.service-premium__hero-proof)>*{min-width:0}
-main :is(.service-premium__hero,.engagement-hero,.object-detail__hero) h1{overflow-wrap:anywhere}
-.services-hero__routes>.services-hero__routes-inner{grid-template-columns:repeat(auto-fit,minmax(min(100%,6.2rem),1fr))}
-.site-footer :is(a,p){overflow-wrap:anywhere}
+/* Unified restrained numeric typography: preserve semantic hierarchy without
+   competing billboard-sized numerals, including short viewport layouts. */
+main :is(.process-strip b,.object-ribbon__number,.object-context-card__number,
+         .service-conflict__steps span,.object-method__steps span,
+         .engagement-steps>li>span){
+ font-size:clamp(.8rem,.95vw,1rem);
+ line-height:1.35;
+ font-weight:650;
+ letter-spacing:0;
+ font-variant-numeric:tabular-nums;
+}
+@media(max-width:760px){
+ main :is(.process-strip b,.object-ribbon__number,.object-context-card__number,
+          .service-conflict__steps span,.object-method__steps span,
+          .engagement-steps>li>span){font-size:.84rem}
+}
 
-@media(min-width:761px){.home-hero--owner-airflow .home-hero__copy{--av-focus:#efbd9e}}
+/* Jury 2026-10-22: page-specific optical typography, not a global H1 reset.
+   Avoid algorithmic mid-word breaks and restore room for actual primary actions. */
+main .object-detail__hero h1{hyphens:none;overflow-wrap:normal;word-break:normal;max-width:24ch}
+main .service-premium__hero h1{
+ font-size:clamp(2.15rem,3.55vw,3.65rem);
+ line-height:1.12;letter-spacing:-.04em;max-width:25ch;hyphens:none;word-break:normal;
+}
+main .engagement--discovery .engagement-hero__copy h1{
+ font-size:clamp(2.2rem,3.6vw,3.85rem);line-height:1.12;max-width:19ch;
+}
+main .section-index:not(.section-index--orange){color:#a74626}
+@media(min-width:850px) and (max-height:760px){
+ main .service-premium__hero h1{font-size:clamp(2rem,3vw,3.2rem);max-width:29ch}
+ main .service-premium__hero{padding-block:clamp(18px,2.9vh,31px)}
+}
+@media(max-width:760px){
+ main .service-premium__hero h1{font-size:clamp(2rem,7.4vw,2.75rem);max-width:21ch}
+ main .object-detail__hero h1{hyphens:none;overflow-wrap:break-word;max-width:100%}
+ main .engagement--discovery .engagement-hero__copy h1{font-size:clamp(1.95rem,7vw,2.8rem);max-width:19ch}
+}
+
+
+/* Related authentic project remains discoverable without silently changing
+   the Owner-approved twelve-card portfolio roster. */
+main .portfolio-list__extra{
+ margin-top:clamp(22px,3vw,44px);padding:16px 0;
+ display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;
+ border-top:1px solid var(--av-rule);border-bottom:1px solid var(--av-rule);
+ text-decoration:none;color:#244253;font-size:clamp(.85rem,1vw,1rem);
+}
+main .portfolio-list__extra b{font-weight:620;color:#915034}
+main .portfolio-list__extra:focus-visible{outline:3px solid #a75c37;outline-offset:3px}
+
+/* Documentary photos stay within their source resolution and natural ratio. */
+.engagement--project .engagement-hero__media{min-height:0;align-self:center;background:#edf1f2}
+.engagement--project .engagement-hero__media img{position:static;inset:auto;width:100%;height:auto;min-height:0;aspect-ratio:734/413;object-fit:contain}
+.engagement--discovery .engagement-hero__media--documentary img{width:100%;height:auto;object-fit:contain;aspect-ratio:3/2}
+.engagement-hero__media--documentary figcaption{position:static;background:transparent;color:#405c6b;padding:12px 0;font-size:.82rem;line-height:1.5}
+.engagement-close--light .section-index{color:var(--av-accent-text)}
+.engagement-close--light .button--primary{background:#183c51;color:#fff;border-color:#183c51}
+.evidence-case--industrial .case-story__grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.evidence-case--industrial .case-story__grid>div:last-child{grid-column:1/-1;max-width:80ch;border-top:1px solid #c7d5db;padding-top:24px}
+.evidence-case--interior .case-story{background:#f4f6f4}
+.case-story__facts{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 28px;
+ margin:28px 0 0;padding-top:22px;border-top:1px solid var(--av-rule);
+}
+.case-story__facts>div{min-width:0;display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:baseline}
+.case-story__facts dt{font-size:.7rem;color:var(--av-meta);line-height:1.5}
+.case-story__facts dd{margin:0;font-size:.83rem;line-height:1.55;color:var(--av-typography)}
+@media(max-width:1050px){.case-story__facts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.case-story__facts{grid-template-columns:1fr;gap:12px}.case-story__facts>div{grid-template-columns:78px 1fr}}
+.case-gallery__chapter h4{margin:26px 0 12px;font-size:1.12rem;font-weight:580;line-height:1.4}
+@media(min-width:850px) and (max-height:760px){
+ main .service-premium__hero-grid{align-items:center}
+ main .service-premium__hero{padding-top:20px;padding-bottom:24px}
+ main .service-premium__hero h1{font-size:clamp(2rem,3.1vw,2.85rem);line-height:1.12;max-width:27ch}
+ main .service-premium__lede{margin-block:14px;font-size:1rem;line-height:1.5}
+ main .service-premium__hero .home-geo{margin-block:12px}
+ main .service-premium__hero .home-actions{gap:12px;margin-top:18px}
+}
+@media(max-width:760px){
+ .home-hero--owner-airflow{--av-accent-text:#9d4329;--av-meta:#496271}
+ .evidence-case--industrial .case-story__grid{grid-template-columns:1fr}
+ .evidence-case--industrial .case-story__grid>div:last-child{grid-column:auto}
+}
+@media(max-width:600px){
+ .process-strip{grid-template-columns:minmax(0,1fr)}
+ .process-strip>div{min-width:0;justify-content:flex-start;gap:20px}
+ .process-strip span{flex:1;min-width:0;overflow-wrap:break-word}
+}
+
+/* Project paths show attributable photographs instead of anonymous text boxes. */
+.engagement-evidence__grid>a{display:flex;flex-direction:column;align-items:flex-start;min-width:0}
+.engagement-evidence__grid>a>img{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;margin:0 0 20px}
+.engagement-evidence__grid>a>b{margin-top:auto;padding-top:18px}
+/* H1 variants remain optical; legacy low-height !important must not lock the
+   service heading to a larger size than the action area can accommodate. */
+
+:where(a,button,summary):focus-visible{outline:3px solid var(--av-focus,#9d4329);outline-offset:4px}
+.home-hero--owner-airflow .home-hero__copy{--av-focus:#efbd9e}

@@ -10,20 +10,26 @@ import type { ContentRecord } from '@/lib/types';
 import globalCssUrl from '@/styles/global.css?url';
 import experienceCssUrl from '@/styles/experience.css?url';
 import artCssUrl from '@/styles/sitewide-art-direction.css?url';
+import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+import sharp from 'sharp';
 
 interface Props { content: ContentRecord; }
 const { content } = Astro.props;
 const preview = import.meta.env.AEROVENTA_RELEASE_MODE === 'preview';
 const canonical = canonicalUrl(content.path, content.canonical_override);
-// Staging sharing must point at staging assets, while the migration canonical
-// remains the approved production URL. No arbitrary hosts or credentials.
-const socialOrigin = (import.meta.env.PUBLIC_SOCIAL_ORIGIN || 'https://aeroventa.ru').trim();
-if (!['https://aeroventa.ru', 'https://staging.aeroventa.ru'].includes(socialOrigin)) {
-  throw new Error('PUBLIC_SOCIAL_ORIGIN must be an approved AEROVENTA HTTPS origin');
+const releaseMode = import.meta.env.AEROVENTA_RELEASE_MODE || 'fixture';
+const shareOrigin = new URL(import.meta.env.PUBLIC_SITE_ORIGIN || import.meta.env.PUBLIC_SOCIAL_ORIGIN ||
+  (releaseMode === 'production' ? 'https://aeroventa.ru' : 'https://staging.aeroventa.ru'));
+if (shareOrigin.protocol !== 'https:' || !['aeroventa.ru','staging.aeroventa.ru'].includes(shareOrigin.hostname)
+    || shareOrigin.username || shareOrigin.password || shareOrigin.port
+    || shareOrigin.pathname !== '/' || shareOrigin.search || shareOrigin.hash) {
+  throw new Error('Unsupported public sharing origin');
 }
-const socialUrl = new URL(new URL(canonical).pathname, socialOrigin).toString();
-const sourceSha = import.meta.env.AEROVENTA_SOURCE_SHA?.trim();
-if (sourceSha && !/^[0-9a-f]{40}$/.test(sourceSha)) throw new Error('Invalid AEROVENTA_SOURCE_SHA');
+const canonicalPath = new URL(canonical).pathname;
+const shareUrl = new URL(canonicalPath, shareOrigin).toString();
+const sourceSha = (import.meta.env.AEROVENTA_SOURCE_SHA || '').trim();
+if (sourceSha && !/^[0-9a-f]{40}$/.test(sourceSha)) throw new Error('Invalid source SHA');
 const robots = preview ? 'noindex,nofollow,noarchive,nosnippet' : robotsValue(content);
 const schema = preview ? null : jsonLd(content);
 // Controlled fallbacks for five historical HTML-200 routes. Approved Directus copy wins.
@@ -41,9 +47,8 @@ const retainedDescriptionFallback: Record<string, string> = {
 };
 const cleanPublicSummary = (text: string) => text.replace(/Исторический источник/gi,'Материал').replace(/Архивная публикация/gi,'Статья').replace(/Тихий архив/gi,'История компании').trim();
 const seoDescription = cleanPublicSummary(content.seo_description?.trim() || retainedDescriptionFallback[content.path] || '');
-const approvedSocial = content.status === 'published' && Boolean(content.owner_approved_at);
-const ogTitle = (approvedSocial && content.og_title) || content.seo_title || content.title;
-const ogDescription = cleanPublicSummary((approvedSocial && content.og_description?.trim()) || seoDescription);
+const ogTitle = content.og_title || content.seo_title || content.title;
+const ogDescription = cleanPublicSummary(content.og_description?.trim() || seoDescription);
 const editorialOgFallback: Record<string, string> = {
   '/': '/evidence/hero/owner-luxury-airflow-20261010.png',
   '/services/': '/evidence/hero/services-owner-editorial-1774.webp',
@@ -72,7 +77,7 @@ const editorialOgFallback: Record<string, string> = {
   '/news/istoriya-kompanii/': '/evidence/team/owner-team-group-20261015.webp',
   '/news/korporativnaya-zhizn/': '/evidence/team/owner-team-group-20261015.webp',
   '/news/znachimye-sobytiya/': '/evidence/polisan/archive/20180601-133711.webp',
-  '/obekt-bez-gotovogo-proekta/': '/evidence/hero/project-not-ready-owner-concept-1672.webp',
+  '/obekt-bez-gotovogo-proekta/': '/evidence/owner-portfolio/apart-hotel/cover.webp',
   '/obekty/': '/evidence/leont/owner-cover-v43.webp',
   '/obekty/novostroyki/': '/evidence/owner-portfolio/akvilon-yanino/cover.webp',
   '/obekty/ofisy-i-kommerciya/': '/evidence/owner-portfolio/apart-hotel/cover.webp',
@@ -93,7 +98,7 @@ const editorialOgFallback: Record<string, string> = {
 const brandedShareCards: Record<string, string> = {
   '/':'home','/services/':'services','/montazh-ventiliacii/':'ventilation',
   '/portfolio/':'portfolio','/about/':'about','/contact/':'about',
-  '/montazh-po-proektu/':'project','/blog/':'ventilation',
+  '/montazh-po-proektu/':'project','/blog/':'articles',
   '/blog/istorii-proektov/':'portfolio','/blog/detail/ntff-polisan/':'polisan',
   '/blog/detail/kak-my-sdali-7-domov/':'sevenpark',
   '/blog/detail/restoran-v-zhk-leontevskiy-mys/':'leont',
@@ -104,28 +109,21 @@ const brandedShareCards: Record<string, string> = {
   '/obekty/novostroyki/':'akvilon','/obekty/novostroyki-i-zhilye-kompleksy/':'akvilon','/obekty/restorany-i-kafe/':'leont',
   '/obekty/':'portfolio',
   '/obekt-bez-gotovogo-proekta/':'discovery',
-  '/portfolio/obekt/apart-hotel/':'apart-hotel',
-  '/portfolio/obekt/eurospar-vo/':'eurospar-vo',
-  '/portfolio/obekt/eurospar-sestroretsk/':'eurospar-sestroretsk',
-  '/portfolio/obekt/college-obvodny/':'college',
-  '/portfolio/obekt/novatech/':'novatech',
-  '/portfolio/obekt/akvilon-yanino/':'akvilon',
-  '/portfolio/obekt/himprom/':'himprom',
-  '/portfolio/obekt/na-izluchine-nevy/':'neva',
-  '/almaznoe-burenie/':'drill-horizontal',
-  '/blog/poleznye-stati/':'articles','/blog/obzory-i-intervyu/':'project',
-  '/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/':'drill-crown',
+  '/obekty/sklady/':'warehouses','/obekty/magaziny-i-sklady/':'warehouses',
+  '/obekty/ofisy-i-kommerciya/':'apart','/obekty/ofisy-i-kommercheskie-pomeshcheniya/':'apart',
+  '/portfolio/obekt/na-izluchine-nevy/':'neva','/portfolio/obekt/apart-hotel/':'apart',
+  '/portfolio/obekt/eurospar-vo/':'eurospar-vo','/portfolio/obekt/eurospar-sestroretsk/':'eurospar-sestroretsk',
+  '/portfolio/obekt/college-obvodny/':'college','/portfolio/obekt/novatech/':'novatech',
+  '/portfolio/obekt/himprom/':'himprom','/portfolio/obekt/akvilon-yanino/':'akvilon',
+  '/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/':'drill-core',
   '/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/':'drill-screed',
   '/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/':'drill-cost',
-  '/blog/detail/gorizontalnoe-almaznoe-burenie/':'drill-horizontal',
-  '/blog/detail/novoe-almaznoe-burenie/':'drill-screed',
-  '/obekty/ofisy-i-kommerciya/':'apart-hotel',
-  '/obekty/ofisy-i-kommercheskie-pomeshcheniya/':'apart-hotel',
-  '/obekty/sklady/':'services','/obekty/magaziny-i-sklady/':'services',
+  '/blog/detail/gorizontalnoe-almaznoe-burenie/':'drill-wall',
+  '/almaznoe-burenie/':'drill-wall','/blog/poleznye-stati/':'articles',
+  '/blog/obzory-i-intervyu/':'project','/blog/detail/novoe-almaznoe-burenie/':'drill-screed',
   '/faq/':'services','/covid-pritochnaya-ventilacia/':'services',
-  '/news/':'about','/news/istoriya-kompanii/':'about',
-  '/news/korporativnaya-zhizn/':'about','/news/znachimye-sobytiya/':'project',
-  '/vakansii/':'about','/privacy/':'home',
+  '/news/':'about','/news/istoriya-kompanii/':'about','/news/korporativnaya-zhizn/':'about',
+  '/news/znachimye-sobytiya/':'project','/vakansii/':'about','/privacy/':'home'
 };
 const brandedShareImage = brandedShareCards[content.path] ? '/share/' + brandedShareCards[content.path] + '.jpg' : null;
 const rejectedServicesImage = content.path === '/services/' &&
@@ -133,15 +131,27 @@ const rejectedServicesImage = content.path === '/services/' &&
    'https://aeroventa.ru/evidence/cafe/owner-cover-v43.webp'].includes(content.og_image || '');
 // Publicly approved Directus imagery wins unless it is the explicitly rejected services cover.
 // Static fallback cards are deterministic 1200×630 images generated only from repository media.
+const approvedSocial = releaseMode === 'production' && content.status === 'published' && Boolean(content.owner_approved_at);
 const ogImageSource = rejectedServicesImage
   ? (brandedShareImage || editorialOgFallback['/services/'])
   : ((approvedSocial && content.og_image) || brandedShareImage || editorialOgFallback[content.path] || '/evidence/hero/services-owner-editorial-1774.webp');
-const ogImageUrl = ogImageSource ? new URL(ogImageSource, 'https://aeroventa.ru') : null;
-if (ogImageUrl && ['https://aeroventa.ru', 'https://staging.aeroventa.ru'].includes(ogImageUrl.origin)) {
-  ogImageUrl.protocol = new URL(socialOrigin).protocol;
-  ogImageUrl.host = new URL(socialOrigin).host;
+const socialImageUrl = ogImageSource ? new URL(ogImageSource, shareOrigin) : null;
+// Repository-relative approved assets follow the deployment origin. External
+// approved CMS imagery remains an explicit external asset, never a guessed path.
+if (socialImageUrl?.origin === 'https://aeroventa.ru' && shareOrigin.hostname === 'staging.aeroventa.ru') {
+  socialImageUrl.hostname = shareOrigin.hostname;
 }
-const ogImage = ogImageUrl?.toString() || null;
+const ogImage = socialImageUrl?.toString() || null;
+let ogWidth: number | undefined;
+let ogHeight: number | undefined;
+if (socialImageUrl && ['aeroventa.ru','staging.aeroventa.ru'].includes(socialImageUrl.hostname)) {
+  const localPath = socialImageUrl.pathname.replace(/^\//, '');
+  const source = [resolve('public',localPath),resolve('apps/web/public',localPath)].find(existsSync);
+  if (!source) throw new Error('Social image missing from build: ' + localPath);
+  const dimensions = await sharp(source).metadata();
+  ogWidth = dimensions.width;
+  ogHeight = dimensions.height;
+}
 const ogImageType = ogImage ? (/\.png(?:$|\?)/i.test(ogImage) ? 'image/png' : /\.jpe?g(?:$|\?)/i.test(ogImage) ? 'image/jpeg' : /\.webp(?:$|\?)/i.test(ogImage) ? 'image/webp' : null) : null;
 const ogImageAlt = `AEROVENTA — ${content.h1 || content.title}`;
 const yandexVerification = (import.meta.env.PUBLIC_YANDEX_WEBMASTER_VERIFICATION || '').trim();
@@ -153,7 +163,6 @@ const googleVerification = (import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION || '
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="theme-color" content="#ffffff" />
-    {sourceSha && <meta name="aeroventa-source-sha" content={sourceSha} />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preload" href="/fonts/onest-variable.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href={globalCssUrl} />
@@ -162,12 +171,13 @@ const googleVerification = (import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION || '
     <title>{content.seo_title || content.title}</title>
     {seoDescription && <meta name="description" content={seoDescription} />}
     <meta name="robots" content={robots} />
+    {sourceSha && <meta name="aeroventa:source" content={sourceSha} />}
     <link rel="canonical" href={canonical} />
     {yandexVerification && <meta name="yandex-verification" content={yandexVerification} />}
     {googleVerification && <meta name="google-site-verification" content={googleVerification} />}
     <meta property="og:title" content={ogTitle} />
     {ogDescription && <meta property="og:description" content={ogDescription} />}
-    <meta property="og:url" content={socialUrl} />
+    <meta property="og:url" content={shareUrl} />
     <meta property="og:type" content={['article', 'news'].includes(content.content_type) ? 'article' : 'website'} />
     <meta property="og:site_name" content="AEROVENTA" />
     <meta property="og:locale" content="ru_RU" />
@@ -175,8 +185,8 @@ const googleVerification = (import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION || '
     {ogImage && <meta property="og:image:secure_url" content={ogImage} />}
     {ogImage && <meta property="og:image:alt" content={ogImageAlt} />}
     {ogImageType && <meta property="og:image:type" content={ogImageType} />}
-    {brandedShareImage && ogImageSource === brandedShareImage && <meta property="og:image:width" content="1200" />}
-    {brandedShareImage && ogImageSource === brandedShareImage && <meta property="og:image:height" content="630" />}
+    {ogWidth && <meta property="og:image:width" content={String(ogWidth)} />}
+    {ogHeight && <meta property="og:image:height" content={String(ogHeight)} />}
     <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
     <meta name="twitter:title" content={ogTitle} />
     {ogDescription && <meta name="twitter:description" content={ogDescription} />}
@@ -201,23 +211,28 @@ const googleVerification = (import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION || '
     <Footer />
     <PremiumExperience pagePath={content.path} />
     <PonsseDocumentExperience />
-<script>
-  // Native modality makes the page inert; wrap both Tab directions inside the
-  // visible controls as well, including after dynamic consultant responses.
-  document.querySelectorAll<HTMLDialogElement>('dialog').forEach(dialog => {
-    dialog.addEventListener('keydown', event => {
-      if (event.key !== 'Tab' || event.defaultPrevented || !dialog.open) return;
-      const controls = Array.from(dialog.querySelectorAll<HTMLElement>(
-        'a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),summary,[tabindex]:not([tabindex="-1"])'
-      )).filter(el => el.tabIndex >= 0 && el.getClientRects().length > 0 && getComputedStyle(el).visibility !== 'hidden');
-      const first = controls[0], last = controls.at(-1);
-      if (!first || !last) { event.preventDefault(); return; }
-      if (!dialog.contains(document.activeElement) || (event.shiftKey ? document.activeElement === first : document.activeElement === last)) {
-        event.preventDefault();
-        (event.shiftKey ? last : first).focus();
-      }
-    });
-  });
-</script>
+    <script>
+      // Keep the keyboard cycle inside the active modal, including Chromium's
+      // browser-chrome boundary after its last native tabbable control.
+      document.addEventListener('keydown', (event) => {
+        if (event.key !== 'Tab') return;
+        const active = document.activeElement;
+        const dialog = active?.closest<HTMLDialogElement>('dialog[open]')
+          || [...document.querySelectorAll<HTMLDialogElement>('dialog[open]')].at(-1);
+        if (!dialog) return;
+        const controls = [...dialog.querySelectorAll<HTMLElement>(
+          'a[href],button,input,select,textarea,summary,[tabindex]'
+        )].filter(element => element.tabIndex >= 0
+          && !element.matches(':disabled,[type="hidden"]')
+          && element.getClientRects().length > 0
+          && getComputedStyle(element).visibility !== 'hidden');
+        const first = controls[0], last = controls.at(-1);
+        if (!first || !last) return;
+        if (!dialog.contains(active) || (event.shiftKey ? active === first : active === last)) {
+          event.preventDefault();
+          (event.shiftKey ? last : first).focus({preventScroll:true});
+        }
+      });
+    </script>
   </body>
 </html>

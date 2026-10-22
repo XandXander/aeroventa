@@ -18,7 +18,7 @@ if($origin===''&&$referer==='')respond(403,'origin_required');
 foreach([$origin,$referer] as $url){
   if($url==='')continue;
   $parsed=parse_url($url);
-  if($parsed===false||!in_array(strtolower((string)($parsed['host']??'')),['aeroventa.ru','www.aeroventa.ru'],true)
+  if($parsed===false||!in_array(strtolower((string)($parsed['host']??'')),['aeroventa.ru','www.aeroventa.ru','staging.aeroventa.ru'],true)
     ||strtolower((string)($parsed['scheme']??''))!=='https'||(isset($parsed['port'])&&(int)$parsed['port']!==443))respond(403,'origin_rejected');
 }
 if(isset($_SERVER['HTTP_SEC_FETCH_SITE'])&&!in_array($_SERVER['HTTP_SEC_FETCH_SITE'],['same-origin','none'],true))respond(403,'cross_site_rejected');
@@ -38,7 +38,7 @@ $trap=field('website',100);
 if($trap!=='')respond(422,'invalid_submission');
 if(($_POST['consent']??'')!=='on')respond(422,'consent_required');
 $started=field('started_at',20,true);
-if(!ctype_digit($started))respond(422,'invalid_start');
+if(preg_match('/^[0-9]+$/D',$started)!==1)respond(422,'invalid_start');
 $elapsed=(int)floor(microtime(true)*1000)-(int)$started;
 if($elapsed<900||$elapsed>86400000)respond(422,'invalid_start');
 $email=filter_var($contact,FILTER_VALIDATE_EMAIL);
@@ -56,6 +56,7 @@ $count=count($files['name']);
 if($count<1||$count>3)respond(422,'file_count_invalid');
 $allowed=['pdf','dwg','dxf','zip','jpg','jpeg','png'];
 $parts=[];$names=[];$total=0;
+if(!class_exists(finfo::class))respond(503,'file_validation_unavailable');
 $mime=new finfo(FILEINFO_MIME_TYPE);
 for($i=0;$i<$count;$i++){
   $error=$files['error'][$i]??UPLOAD_ERR_NO_FILE;

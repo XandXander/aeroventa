@@ -21,7 +21,7 @@ if ($origin === '' && $referer === '') answer(403, 'origin_required');
 foreach ([$origin, $referer] as $url) {
     if ($url === '') continue;
     $parsed = parse_url($url);
-    if ($parsed === false || !in_array(strtolower((string)($parsed['host'] ?? '')), ['aeroventa.ru', 'www.aeroventa.ru'], true)
+    if ($parsed === false || !in_array(strtolower((string)($parsed['host'] ?? '')), ['aeroventa.ru', 'www.aeroventa.ru', 'staging.aeroventa.ru'], true)
         || strtolower((string)($parsed['scheme'] ?? '')) !== 'https'
         || (isset($parsed['port']) && $parsed['port'] !== 443)) answer(403, 'origin_rejected');
 }

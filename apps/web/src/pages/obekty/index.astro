@@ -25,7 +25,7 @@ const content: ContentRecord = {
 const objects = [
   {
     id:'production', index:'01', title:'Производство',
-    text:'Монтаж по проекту с учётом режима работы площадки и доступа к оборудованию.',
+    text:'Режим предприятия, проект, оборудование и доступ к монтажным зонам.',
     proof:'НТФФ «Полисан» — фармацевтическое предприятие.',
     image:'/evidence/polisan/archive/20180601-133720.webp',
     imageAlt:'Реальный производственный объект НТФФ Полисан', href:'/obekty/proizvodstvo/'
@@ -54,17 +54,17 @@ const objects = [
   {
     id:'warehouses', index:'05', title:'Склады и базы',
     text:'Высота помещений, условия доступа и график работ.',
-    proof:'Новатех · пример промышленного монтажа. Складскую задачу оцениваем по проекту.',
-    image:'/evidence/owner-portfolio/novatech/02.webp',
-    imageAlt:'Вентиляционное оборудование на промышленной площадке «Новатех»',
+    proof:'Складской объект в Разбегаево: монтажные фотографии и вид здания.',
+    image:'/evidence/warehouses/avers-razbegaevo/01.webp',
+    imageAlt:'Складской объект в Разбегаево',
     href:'/obekty/sklady/'
   },
   {
     id:'commercial', index:'06', title:'Офисы и коммерческие помещения',
     text:'Планировка, доступ к монтажным зонам, график работ и проектная документация.',
-    proof:'Апарт-отель и коворкинг на Бумажном · Санкт-Петербург.',
+    proof:'Пример коммерческого объекта — апарт-отель на Бумажной, 32.',
     image:'/evidence/owner-portfolio/apart-hotel/cover.webp',
-    imageAlt:'Интерьер апарт-отеля и коворкинга на Бумажном проезде',
+    imageAlt:'Коммерческое пространство апарт-отеля на Бумажной, 32',
     href:'/obekty/ofisy-i-kommerciya/'
   },
 ];
@@ -103,12 +103,12 @@ const objects = [
                 <p>{item.text}</p>
                 <small>{item.proof}</small>
               </div>
-              {item.image ? <img src={item.image} alt={item.imageAlt} width="600" height="375" loading="lazy" decoding="async" /> : <span class="object-context-card__no-photo">Инженерный монтаж</span>}
+              <img src={item.image} alt={item.imageAlt} width="600" height="375" loading="lazy" decoding="async" />
               <b aria-hidden="true">↗</b>
             </a>
           ))}
         </div>
-        <p class="objects-editorial-index__footer">Фотографии, состав и сроки монтажа — в <a href="/portfolio/">«Наших работах»</a>.</p>
+        <p class="objects-editorial-index__footer">Фотографии объектов и описание выполненных работ — в <a href="/portfolio/">«Наших работах»</a>.</p>
       </div>
     </section>
 

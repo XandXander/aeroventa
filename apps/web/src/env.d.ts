@@ -11,6 +11,6 @@ interface ImportMeta {
 }
 
 interface Window {
-  aeroventaTrack: (name: string, payload?: Record<string, unknown>) => void;
-  ym?: ((...args: unknown[]) => void) & { a?: unknown[][]; l?: number };
+  aeroventaTrack?: (name:string,input?:Record<string,unknown>)=>void;
+  ym?: ((...args:unknown[])=>void) & {a?:unknown[][];l?:number};
 }

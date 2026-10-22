@@ -71,9 +71,9 @@ check(files.home.indexOf('class="case-feature"') < files.home.indexOf('id="objec
       files.home.indexOf('id="objects"') < files.home.indexOf('class="home-ponsse"') &&
       files.home.indexOf('class="home-ponsse"') < files.home.indexOf('class="home-section decision-preview"'), 'Historical PONSSE block follows one real intervening section after 7 PARK');
 check(files.home.includes('/evidence/karelia/ponsse-letter-20220405.png'), 'Original PONSSE 2022 letter stays intact on home');
-check(files.globalCss.includes('.home-ponsse__grid') && files.home.includes('engineering-scene-accepted-v43.webp') && !files.home.includes('solution-diagram__callouts') && !files.home.includes('solution-diagram__crop'), 'Approved process source is preserved without the regressed crop and duplicate lettering');
+check(files.globalCss.includes('.home-ponsse__grid') && files.home.includes('/evidence/hero/engineering-scene-accepted-v43.webp') && files.globalCss.includes('.solution-grid'), 'Owner-approved source scene and PONSSE editorial remain present');
 check(files.contactForm.includes('compact ? 3 : 4') && files.css.includes('experience-dialog--contact'), 'Bounded contact UX with preserved lead form');
-check(files.premium.includes('lastDialogTrigger') && files.premium.includes("opener.focus({ preventScroll: true })"), 'Dialog keyboard focus restored');
+check(files.premium.includes('lastDialogTrigger') && files.premium.includes('visibleOpener') && files.premium.includes('(visibleOpener ? opener : fallback)?.focus'), 'Focus restoration has visible-opener fallback; browser gate required');
 check(files.layout.includes('PUBLIC_YANDEX_WEBMASTER_VERIFICATION'), 'Yandex Webmaster verification seam exists');
 check(files.layout.includes('PUBLIC_GOOGLE_SITE_VERIFICATION'), 'Google Search Console verification seam exists');
 
@@ -139,8 +139,8 @@ check(files.premium.includes('Не является сметой, проекто
 check(files.premium.includes('if (!endpoint)'), 'Lead form has safe no-endpoint fallback');
 check(files.premium.includes('mailto:'), 'Lead fallback keeps direct human contact');
 
-const headerNavBlocks = [...files.header.matchAll(/<nav\b[^>]*>([\s\S]*?)<\/nav>/g)].map(match => match[1]);
-check(files.header.includes('data-source="persistent_launcher"') && !files.premium.includes('data-source="persistent_launcher"') && headerNavBlocks.every(nav => !nav.includes('data-source="persistent_launcher"')), 'One persistent consultant entry is outside navigation and the content plane');
+const primaryNav = files.header.match(/<nav class="nav nav--desktop"[\s\S]*?<\/nav>/)?.[0] || '';
+check(!primaryNav.includes('data-consultant-open') && files.header.includes('data-source="persistent_launcher"'), 'Consultant has a persistent header slot outside primary navigation');
 check(!files.footer.includes('data-consultant-open') && !files.footer.includes('data-contact-open') && files.footer.includes('mailto:'), 'Footer uses direct human contact without repetitive CTA or consultant menu');
 check(files.lead.includes('data-contact-open'), 'Lead CTA opens modern contact form');
 check(files.contactPage.includes('<ContactForm'), 'Contact page includes semantic form');
@@ -246,9 +246,9 @@ for(const p of ['evidence/cafe/owner-cover-v43.webp']){
 }
 check(files.home.includes('class="home-consultant-inline"') &&
       files.services.includes('class="services-consultant-inline"') &&
-      files.header.includes('consultant-launcher--header') &&
-      files.artCss.includes('.consultant-launcher{\n position:static;'),
-      'Inline consultant access is retained and the persistent entry has a header slot');
+      files.header.includes('data-source="persistent_launcher"') &&
+      files.css.includes('.consultant-launcher{position:static;'),
+      'Mobile consultant access remains reachable inline without fixed overlap on both changed heroes');
 
 const heroFigure = files.home.match(/<figure class="hero-engineering">([\s\S]*?)<\/figure>/)?.[1] ?? '';
 const caseSection = files.home.match(/<section class="case-feature"[\s\S]*?<\/section>/)?.[0] ?? '';

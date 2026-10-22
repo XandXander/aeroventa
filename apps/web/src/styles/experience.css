@@ -100,7 +100,7 @@
   font-weight:800;
 }
 .field label span {
-  color:#536976;
+  color:var(--av-meta);
   font-weight:600;
 }
 .field input,
@@ -125,7 +125,7 @@
   box-shadow:0 0 0 3px rgba(20,140,255,.16);
 }
 .field__hint {
-  color:#536976;
+  color:var(--av-meta);
   font-size:.8rem;
   line-height:1.4;
 }
@@ -494,7 +494,7 @@
 .consultant-conversation__input:focus-within {outline:2px solid #3585b1;outline-offset:1px;}
 .consultant-conversation__input textarea {display:block;resize:vertical;flex:1;min-width:0;max-height:130px;min-height:43px;line-height:1.45;padding:9px 7px;font:inherit;font-size:.89rem;border:0;outline:none;background:transparent;color:#173146;}
 .consultant-conversation__input button {border:0;flex:0 0 44px;width:44px;height:44px;border-radius:11px;color:#fff;background:#0c3855;font-weight:800;font-size:1.5rem;cursor:pointer;}
-.consultant-conversation__input button:focus-visible,.consultant-conversation__foot button:focus-visible,.consultant-structured summary:focus-visible {outline:2px solid var(--av-focus,#9f4224);outline-offset:2px;}
+.consultant-conversation__input button:focus-visible,.consultant-conversation__foot button:focus-visible,.consultant-structured summary:focus-visible {outline:2px solid #eb8246;outline-offset:2px;}
 .consultant-conversation__foot {display:flex;justify-content:flex-end;gap:12px;align-items:center;padding:9px 15px 16px;}
 .consultant-conversation__foot button {border:0;background:none;color:#063953;font-size:.78rem;font-weight:800;text-align:right;white-space:nowrap;cursor:pointer;}
 .consultant-structured {margin-top:16px;border:1px solid #d5e2eb;border-radius:15px;background:#fff;overflow:hidden;}
@@ -609,7 +609,7 @@
 
 /* Owner-acceptance rules integrated with unchanged cascade order. */
 /* 2026-10-20 Owner acceptance — integrated correction; preserve original media and SEO routes. */
-:root{--av-fold-header:56px;--av-fold-ribbon:58px}
+:root{--av-fold-header:64px;--av-fold-ribbon:68px}
 @media(min-width:761px){
  .home-hero--owner-airflow{min-height:0;padding:0}
  .home-hero--owner-airflow .home-hero__grid{min-height:calc(100svh - var(--av-fold-header) - var(--av-fold-ribbon))!important;height:auto;max-height:none}
@@ -668,7 +668,7 @@ img[src="/evidence/7park/object-exterior-day.jpg"]{
 .evidence-case .case-detail-facts h2{grid-column:1;font-size:clamp(1.7rem,2.65vw,3rem);line-height:1.12;max-width:19ch;letter-spacing:-.035em;font-weight:540;margin:16px 0 0;text-wrap:balance}
 .evidence-case .case-detail-facts__grid{grid-column:2;grid-row:1 / span 2;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 clamp(25px,3vw,49px);margin:0;border:0;background:transparent}
 .evidence-case .case-detail-facts__grid>div{min-width:0!important;max-width:none!important;width:100%!important;padding:19px 0 23px!important;border:0!important;border-top:1px solid #ccd7dc!important;background:transparent!important}
-.evidence-case .case-detail-facts dt{font-weight:540;font-size:.72rem;letter-spacing:.065em;text-transform:uppercase;color:#536976;margin:0 0 8px}
+.evidence-case .case-detail-facts dt{font-weight:540;font-size:.72rem;letter-spacing:.065em;text-transform:uppercase;color:var(--av-meta);margin:0 0 8px}
 .evidence-case .case-detail-facts dd{font-size:clamp(1rem,1.24vw,1.2rem);font-weight:550;line-height:1.38;color:#163246;overflow-wrap:anywhere}
 /* Related projects — quiet editorial index, not another text card wall. */
 .evidence-case .case-detail-related{background:#fff;padding-block:clamp(41px,5vw,78px)}
@@ -831,4 +831,29 @@ body{background:#fff}
  .practice-hub--articles .practice-featured{padding-top:22px!important}
  .practice-hub--articles .practice-featured__heading{margin-bottom:12px!important}
  .practice-hub--articles .practice-featured__heading h2{font-size:clamp(1.6rem,2.45vw,2.35rem)}
+}
+
+/* Persistent help has its own place in the sticky header, outside navigation.
+   It cannot cover a form, photograph, gallery control or mobile keyboard. */
+.consultant-launcher{position:static;display:inline-flex;align-items:center;justify-content:center;gap:8px;flex:none;min-height:44px;max-width:none;padding:5px 12px 5px 6px;border:1px solid #bed0d9;border-radius:999px;background:#fff;color:#183c51;font:550 .76rem/1.2 Onest,system-ui,sans-serif;cursor:pointer;appearance:none}
+.consultant-launcher__symbol{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#1b6084;color:#fff;flex:none}
+.consultant-launcher__symbol svg{width:19px;height:19px}
+.consultant-launcher:hover{background:#edf4f6;border-color:#628da3}
+.consultant-launcher:focus-visible{outline:3px solid #9d4329;outline-offset:3px}
+.site-header__inner{gap:clamp(12px,1.4vw,25px)}
+@media(max-width:1180px){
+ .consultant-launcher{width:44px;padding:5px}
+ .consultant-launcher__label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+}
+@media(max-width:1050px){
+ .site-header__inner{display:flex;gap:12px}
+ .site-header__inner .brand{margin-right:auto;flex:none}
+ .site-header__inner .header-project{display:none}
+ .site-header__inner .mobile-menu{margin:0}
+}
+@media(min-width:761px) and (max-height:760px){
+ /* A short desktop shows the whole approved scene against an intentional
+    engineering-ink field, rather than cutting the room out of the source. */
+ .home-hero--owner-airflow .hero-engineering{background:#142b3a}
+ .home-hero--owner-airflow .hero-engineering__photo{object-fit:contain;object-position:right center}
 }

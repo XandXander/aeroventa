@@ -60,7 +60,7 @@ const traceEndpoint = (import.meta.env.PUBLIC_TRACE_ENDPOINT || '').trim();
     'intent',
   ]);
 
-  const safePayload = (input = {}) => Object.fromEntries(
+  const safePayload = (input:Record<string,unknown> = {}) => Object.fromEntries(
     Object.entries(input).filter(([key, value]) =>
       safeKeys.has(key) && ['string', 'number', 'boolean'].includes(typeof value)
     )
@@ -79,7 +79,7 @@ const traceEndpoint = (import.meta.env.PUBLIC_TRACE_ENDPOINT || '').trim();
     }
   };
 
-  const emitTrace = (name: string, payload: Record<string, unknown>) => {
+  const emitTrace = (name:string, payload:Record<string,unknown>) => {
     if (!traceEndpoint) return;
     const body = JSON.stringify({
       event: name,
@@ -103,8 +103,9 @@ const traceEndpoint = (import.meta.env.PUBLIC_TRACE_ENDPOINT || '').trim();
     const id = Number(metricaId);
     if (!Number.isFinite(id)) return;
 
-    window.ym = window.ym || function(...args: unknown[]) {
-      (window.ym!.a = window.ym!.a || []).push(args);
+    window.ym = window.ym || function(...args:unknown[]) {
+      const queue=window.ym;
+      if (queue) (queue.a ||= []).push(args);
     };
     window.ym.l = Date.now();
 
@@ -142,7 +143,7 @@ const traceEndpoint = (import.meta.env.PUBLIC_TRACE_ENDPOINT || '').trim();
     panel.hidden = true;
   });
 
-  window.aeroventaTrack = (name, input = {}) => {
+  window.aeroventaTrack = (name:string, input:Record<string,unknown> = {}) => {
     if (!safeEvents.has(name)) return;
     const payload = safePayload({
       page: location.pathname,
@@ -169,18 +170,18 @@ const traceEndpoint = (import.meta.env.PUBLIC_TRACE_ENDPOINT || '').trim();
     const href = link.getAttribute('href') || '';
     const target = href.startsWith('http') ? href : href.split('?')[0];
 
-    if (href.startsWith('tel:')) window.aeroventaTrack('phone_click', { target: 'phone' });
-    else if (href.startsWith('mailto:')) window.aeroventaTrack('email_click', { target: 'email' });
-    else if (target.startsWith('/blog/detail/')) window.aeroventaTrack('case_view', { target });
+    if (href.startsWith('tel:')) window.aeroventaTrack?.('phone_click', { target: 'phone' });
+    else if (href.startsWith('mailto:')) window.aeroventaTrack?.('email_click', { target: 'email' });
+    else if (target.startsWith('/blog/detail/')) window.aeroventaTrack?.('case_view', { target });
     else if (['/montazh-po-proektu/', '/obekt-bez-gotovogo-proekta/'].includes(target)) {
-      window.aeroventaTrack('project_route', {
+      window.aeroventaTrack?.('project_route', {
         target,
         project_status: target.includes('montazh-po-proektu') ? 'ready' : 'not_ready',
       });
     }
 
     const explicit = link.dataset.aeroventaEvent;
-    if (explicit) window.aeroventaTrack(explicit, { target });
+    if (explicit) window.aeroventaTrack?.(explicit, { target });
   });
 })();
 </script>

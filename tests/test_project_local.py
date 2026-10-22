@@ -7,6 +7,7 @@ import time
 import urllib.error
 import urllib.request
 from pathlib import Path
+import tempfile
 
 root=Path(__file__).resolve().parents[1]
 webroot=root/'apps/web/public'
@@ -17,7 +18,8 @@ with socket.socket() as sock:
     sock.bind(('127.0.0.1',0))
     port=sock.getsockname()[1]
 env={**os.environ,'AEROVENTA_LEAD_TO':'office@aeroventa.ru','AEROVENTA_LEAD_FROM':'office@aeroventa.ru'}
-server=subprocess.Popen(['php','-d',f'sendmail_path={stub}','-S',f'127.0.0.1:{port}','-t',str(webroot)],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+test_state=tempfile.TemporaryDirectory(prefix='aeroventa-project-test-')
+server=subprocess.Popen(['php','-d',f'sys_temp_dir={test_state.name}','-d',f'sendmail_path={stub}','-S',f'127.0.0.1:{port}','-t',str(webroot)],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
 try:
     url=f'http://127.0.0.1:{port}/api/project.php'
     for _ in range(60):
@@ -56,6 +58,7 @@ try:
         ('method',request(method='GET'),405),
         ('origin',request(origin='https://evil.example'),403),
         ('consent',request(fields={**fields,'consent':''}),422),
+        ('staging-consent',request(origin='https://staging.aeroventa.ru',fields={**fields,'consent':''}),422),
         ('missing-files',request(filename=None),422),
         ('bad-file-signature',request(filedata=b'not a valid PDF'),415),
         ('valid',request(),200),
@@ -68,10 +71,11 @@ try:
     output=capture.read_text(errors='replace')
     assert output.count('---END MOCK EMAIL---')==1
     assert 'multipart/mixed' in output and 'project-01.pdf' in output
-    print('PASS: project upload 7/7, captured one private mock message, external mails 0')
+    print('PASS: project upload 8/8, captured one private mock message, external mails 0')
 finally:
     server.terminate()
     try:server.wait(timeout=3)
     except subprocess.TimeoutExpired:
         server.kill()
         server.wait()
+    test_state.cleanup()

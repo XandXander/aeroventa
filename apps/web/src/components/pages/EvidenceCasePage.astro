@@ -490,7 +490,7 @@ if(isLeont && (leontContext.length !== 2 || leontSelected.length !== 12 ||
 }
 ---
 
-<article class:list={['evidence-case',isLeont && 'evidence-case--leont']}>
+<article class:list={['evidence-case',isLeont && 'evidence-case--leont',(isPolisan || isPonsse) && 'evidence-case--industrial',!isPolisan && !isPonsse && !isLeont && 'evidence-case--interior']}>
   <header class="case-detail-hero">
     <div class="home-shell case-detail-hero__grid">
       <div class="case-detail-hero__copy">
@@ -518,13 +518,16 @@ if(isLeont && (leontContext.length !== 2 || leontSelected.length !== 12 ||
     <div class="home-shell">
       <header class="case-story__intro">
         <p class="section-index">Задача и монтаж</p>
-        <h2 id="case-story-title">Работа на объекте</h2>
+        <h2 id="case-story-title">{isPolisan ? 'Вентиляция фармацевтического объекта' : isPonsse ? 'Монтаж в сервисном центре PONSSE' : isLeont ? 'Вентиляция ресторана' : 'Задача и выполненная работа'}</h2>
       </header>
       <div class="case-story__grid">
-        <div><span>Задача</span><h3>Что требовалось</h3><p>{spec.task}</p></div>
-        <div><span>Монтаж</span><h3>Что смонтировано</h3><p>{spec.works}</p></div>
-        <div><span>Результат</span><h3>Выполненные работы и сроки</h3><p>{spec.result}</p></div>
+        <div><h3>Задача</h3><p>{spec.task}</p></div>
+        <div><h3>Монтаж</h3><p>{spec.works}</p></div>
+        <div><h3>Результат</h3><p>{spec.result}</p></div>
       </div>
+      <dl class="case-story__facts" aria-label={documentary.facts}>
+        {spec.facts.map(([label,value]) => <div><dt>{label}</dt><dd>{value}</dd></div>)}
+      </dl>
     </div>
   </section>
   <section class="home-section case-gallery case-gallery--lead" aria-labelledby="case-gallery-title">
@@ -594,8 +597,8 @@ if(isLeont && (leontContext.length !== 2 || leontSelected.length !== 12 ||
                 ))}
               </div>
             </div>
-            <details class="case-gallery__more--leont">
-              <summary>Посмотреть ещё 14 оригинальных фотографий</summary>
+            <section class="case-gallery__chapter case-gallery__more--leont" aria-label="Дополнительные ракурсы объекта">
+              <h4>Другие ракурсы и здание</h4>
               <p>Дополнительные ракурсы монтажа и два кадра здания из документального архива.</p>
               <div class="case-gallery__thumbs">
                 {[...leontRemaining,...leontContext].map(([src])=>(
@@ -607,7 +610,7 @@ if(isLeont && (leontContext.length !== 2 || leontSelected.length !== 12 ||
                   </figure>
                 ))}
               </div>
-            </details>
+            </section>
           </>) : (
             <div class="case-gallery__thumbs" aria-label="Фотографии объекта">
               {(spec.archiveMedia || []).map(([src,alt,caption])=>(
@@ -656,16 +659,6 @@ if(isLeont && (leontContext.length !== 2 || leontSelected.length !== 12 ||
       </nav>
     </div>
   </dialog>
-
-  <section class="case-detail-facts case-detail-facts--editorial" aria-labelledby="case-facts-title">
-    <div class="home-shell">
-      <p class="section-index">Объект и работы</p>
-      <h2 id="case-facts-title">{documentary.facts}</h2>
-      <dl class="case-detail-facts__grid">
-        {spec.facts.map(([label,value]) => <div><dt>{label}</dt><dd>{value}</dd></div>)}
-      </dl>
-    </div>
-  </section>
 
   {content.path === '/blog/detail/montazh-ventilyatsii-v-karelii/' && (
     <section class="ponsse-recognition" aria-labelledby="ponsse-recognition-title">
@@ -744,7 +737,7 @@ if(isLeont && (leontContext.length !== 2 || leontSelected.length !== 12 ||
 </article>
 
 <script>
-  import {createPhotoPreloader,setViewerPhoto} from "@/lib/gallery-runtime";
+  import {createPhotoPreloader,setViewerPhoto,bindPhotoZoom} from "@/lib/gallery-runtime";
   const cache=createPhotoPreloader(10);
   const photos = [...document.querySelectorAll<HTMLButtonElement>('[data-case-photo]')];
   const viewer = document.getElementById('case-photo-viewer');
@@ -764,23 +757,8 @@ if(isLeont && (leontContext.length !== 2 || leontSelected.length !== 12 ||
     const description = viewer.querySelector<HTMLElement>('[data-photo-description]');
     const counter = viewer.querySelector<HTMLElement>('[data-photo-count]');
     const frame = viewer.querySelector<HTMLElement>('.case-photo-dialog__figure');
-    let zoom = 1;
-    const fit = () => {
-      zoom = 1;
-      viewer.style.setProperty('--photo-zoom', '1');
-      viewer.classList.remove('is-photo-zoomed');
-      viewer.querySelector<HTMLButtonElement>('[data-photo-fit]')?.setAttribute('aria-pressed','true');
-      frame?.scrollTo({left:0,top:0});
-    };
-    const changeZoom = (step: number) => {
-      zoom = Math.min(3, Math.max(1, Math.round((zoom + step) * 10) / 10));
-      viewer.style.setProperty('--photo-zoom', String(zoom));
-      viewer.classList.toggle('is-photo-zoomed',zoom>1);
-      viewer.querySelector<HTMLButtonElement>('[data-photo-fit]')?.setAttribute('aria-pressed',zoom===1?'true':'false');
-    };
-    viewer.querySelector('[data-photo-fit]')?.addEventListener('click',fit);
-    viewer.querySelector('[data-photo-zoom-in]')?.addEventListener('click',()=>changeZoom(.5));
-    viewer.querySelector('[data-photo-zoom-out]')?.addEventListener('click',()=>changeZoom(-.5));
+    const photoZoom=bindPhotoZoom(viewer,frame,large,step=>show(activeIndex+step));
+    const fit=()=>photoZoom.reset();
     const show = (index: number) => {
       fit();
       activeIndex = (index + photos.length) % photos.length;
@@ -810,13 +788,6 @@ if(isLeont && (leontContext.length !== 2 || leontSelected.length !== 12 ||
       if (event.key === 'ArrowRight') { event.preventDefault(); show(activeIndex + 1); }
     });
     viewer.addEventListener('click', event => { if (event.target === viewer) closeViewer(); });
-    let startX: number | null = null;
-    viewer.addEventListener('touchstart', event => { startX = event.changedTouches[0]?.clientX ?? null; }, { passive: true });
-    viewer.addEventListener('touchend', event => {
-      const endX = event.changedTouches[0]?.clientX;
-      if (startX !== null && endX !== undefined && Math.abs(endX - startX) > 55) show(activeIndex + (endX < startX ? 1 : -1));
-      startX = null;
-    }, { passive: true });
     viewer.addEventListener('close', () => {
       fit();
       if (large) large.removeAttribute('src');

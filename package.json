@@ -9,7 +9,7 @@
     "apps/*"
   ],
   "scripts": {
-    "validate": "node scripts/validate-implementation.mjs && node scripts/generate-directus-import-plan.mjs && node scripts/validate-directus-readiness.mjs && node scripts/generate-directus-native-target-v11.mjs && node scripts/validate-directus-native-target-v11.mjs && node scripts/validate-directus-v12-static.mjs && node scripts/validate-directus-v13-static.mjs && node scripts/validate-product-experience.mjs",
+    "validate": "node scripts/validate-implementation.mjs && node scripts/generate-directus-import-plan.mjs && node scripts/validate-directus-readiness.mjs && node scripts/generate-directus-native-target-v11.mjs && node scripts/validate-directus-native-target-v11.mjs && node scripts/validate-directus-v12-static.mjs && node scripts/validate-directus-v13-static.mjs && node scripts/validate-product-experience.mjs && npm run check:web",
     "generate:hosting-rules": "node scripts/generate-hosting-rules.mjs",
     "build:web": "npm --workspace @aeroventa/web run build",
     "dev:web": "npm --workspace @aeroventa/web run dev",
@@ -34,11 +34,14 @@
     "directus:vnext:inspect": "node scripts/directus-vnext-inspect-readonly.mjs",
     "directus:vnext:native:build": "node scripts/build-directus-vnext-native-target.mjs",
     "directus:vnext:native:validate": "node scripts/validate-directus-vnext-native-target.mjs",
-    "check:web": "npm --workspace @aeroventa/web run check"
+    "check:web": "npm --workspace @aeroventa/web run check",
+    "qa:recovery": "node scripts/pr12-recovery-browser-qa.mjs"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.12",
     "@types/node": "24.19.2",
-    "typescript": "6.0.3"
+    "typescript": "6.0.3",
+    "playwright": "1.56.1",
+    "axe-core": "4.14.0"
   }
 }

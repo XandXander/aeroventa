@@ -8,6 +8,7 @@ interface Props {
 const { pagePath = '' } = Astro.props;
 ---
 
+
 <dialog id="aeroventa-consultant-dialog" class="experience-dialog experience-dialog--consultant" data-consultant-dialog aria-labelledby="consultant-title">
   <div class="experience-dialog__shell">
     <div class="experience-dialog__head">
@@ -166,19 +167,23 @@ const { pagePath = '' } = Astro.props;
   const consultantResult = document.querySelector<HTMLElement>('[data-consultant-result]');
   let consultantSummary = '';
   const lastDialogTrigger = new WeakMap<HTMLDialogElement, HTMLElement>();
+  const fieldValue = (form:HTMLFormElement,name:string) => {
+    const field=form.elements.namedItem(name);
+    return field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement || field instanceof HTMLSelectElement ? field : null;
+  };
 
-  const track = (name: string, payload: Record<string, unknown> = {}) => window.aeroventaTrack?.(name, payload);
+  const track = (name:string, payload:Record<string,unknown> = {}) => window.aeroventaTrack?.(name, payload);
 
   // Stateful sheet opening/closing, respecting reduced motion and native focus.
   const sheetTimers = new WeakMap<HTMLDialogElement, number>();
   const activeRequests = new WeakMap<HTMLFormElement, AbortController>();
   const motionDisabled = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const clearSheetTimer = (dialog: HTMLDialogElement) => {
+  const clearSheetTimer = (dialog:HTMLDialogElement) => {
     const timer = sheetTimers.get(dialog);
     if (timer) window.clearTimeout(timer);
     sheetTimers.delete(dialog);
   };
-  const openDialog = (dialog: HTMLDialogElement | null) => {
+  const openDialog = (dialog:HTMLDialogElement|null) => {
     if (!dialog) return;
     clearSheetTimer(dialog);
     // Put the initial visual state in place before showModal paints the dialog.
@@ -193,7 +198,7 @@ const { pagePath = '' } = Astro.props;
     }
   };
 
-  const closeDialog = (dialog: HTMLDialogElement | null) => {
+  const closeDialog = (dialog:HTMLDialogElement|null) => {
     if (!dialog || !dialog.open || dialog.dataset.state === 'closing') return;
     clearSheetTimer(dialog);
     const finish = () => {
@@ -251,6 +256,7 @@ const { pagePath = '' } = Astro.props;
   });
 
   for (const dialog of [consultantDialog, contactDialog, projectDialog]) {
+    if (!dialog) continue;
     dialog?.addEventListener('cancel', (event) => {
       if (!motionDisabled()) {
         event.preventDefault();
@@ -263,8 +269,15 @@ const { pagePath = '' } = Astro.props;
     dialog?.addEventListener('close', () => {
       const sendingForm = dialog.querySelector<HTMLFormElement>('form[data-contact-form],form[data-project-form]');
       if (sendingForm) activeRequests.get(sendingForm)?.abort();
+      // A handoff can open another native dialog before this sheet finishes
+      // closing. Never return focus behind the new modal.
+      if (document.querySelector('dialog[open]')) return;
       const opener = lastDialogTrigger.get(dialog);
-      if (opener?.isConnected) opener.focus({ preventScroll: true });
+      const visibleOpener = opener?.isConnected && opener.getClientRects().length > 0;
+      const fallback = opener?.closest('[data-mobile-menu]')
+        ? document.querySelector<HTMLElement>('[data-mobile-menu] summary')
+        : document.querySelector<HTMLElement>('.consultant-launcher');
+      (visibleOpener ? opener : fallback)?.focus({ preventScroll: true });
     });
   }
 
@@ -300,7 +313,7 @@ const { pagePath = '' } = Astro.props;
         if(stamp)stamp.value=String(Date.now());
         track('project_upload_accepted',{source:location.pathname});
       }catch{
-        status.textContent='Документы не были приняты сервером. Проверьте объём файлов или согласуйте прямую отправку по email.';
+        status.textContent='Не удалось подтвердить передачу документов. Сохраните файлы и согласуйте отправку по email.';
         track('project_upload_error',{source:location.pathname});
       }finally{
         clearTimeout(timeout);
@@ -312,7 +325,7 @@ const { pagePath = '' } = Astro.props;
     });
   }
 
-  const routeMap: Record<string, {href:string;title:string;copy:string}> = {
+  const routeMap:Record<string,{href:string;title:string;copy:string}> = {
     ready: {
       href: '/montazh-po-proektu/',
       title: 'Передать рабочий комплект и перейти к разбору монтажного объёма.',
@@ -330,7 +343,7 @@ const { pagePath = '' } = Astro.props;
     },
   };
 
-  const caseMap: Record<string, [string,string]> = {
+  const caseMap:Record<string,[string,string]> = {
     private: ['/blog/detail/kvartira-na-zhukova/', 'Квартира на Маршала Жукова'],
     restaurant: ['/blog/detail/restoran-v-zhk-leontevskiy-mys/', 'Ресторан в ЖК «Леонтьевский Мыс»'],
     commercial: ['/portfolio/', 'Реальные объекты AEROVENTA'],
@@ -340,8 +353,8 @@ const { pagePath = '' } = Astro.props;
     other: ['/portfolio/', 'Реальные объекты AEROVENTA'],
   };
 
-  const labels = (form: HTMLFormElement) => {
-    const valueLabel = (name: string) => {
+  const labels = (form:HTMLFormElement) => {
+    const valueLabel = (name:string) => {
       const field = form.elements.namedItem(name);
       if (!field) return '';
       if (field instanceof RadioNodeList) {
@@ -385,28 +398,28 @@ const { pagePath = '' } = Astro.props;
     if (region === 'other') missing.push('Точный адрес/регион — сначала подтвердим возможность выезда и логистику.');
     if (stage === 'unknown') missing.push('Текущая стадия объекта — она влияет на доступ и последовательность монтажа.');
 
-    const resultTitle=consultantResult.querySelector<HTMLElement>('[data-consultant-next]');
-    const explanation=consultantResult.querySelector<HTMLElement>('[data-consultant-explanation]');
-    const missingList=consultantResult.querySelector<HTMLElement>('[data-consultant-missing]');
-    const caseLink=consultantResult.querySelector<HTMLAnchorElement>('[data-consultant-link]');
-    const routeLink=consultantResult.querySelector<HTMLAnchorElement>('[data-consultant-route]');
-    if(!resultTitle||!explanation||!missingList||!caseLink||!routeLink)return;
-    resultTitle.textContent = route.title;
+    const next=consultantResult.querySelector('[data-consultant-next]');
+    const explanation=consultantResult.querySelector('[data-consultant-explanation]');
+    if (!next || !explanation) return;
+    next.textContent = route.title;
     explanation.textContent =
       region === 'other'
         ? `${route.copy} Географию за пределами текущих регионов AEROVENTA нужно подтвердить отдельно.`
         : route.copy;
 
-    missingList.replaceChildren(...missing.map((item) => {
+    const missingList = consultantResult.querySelector('[data-consultant-missing]');
+    missingList?.replaceChildren(...missing.map((item) => {
       const li = document.createElement('li');
       li.textContent = item;
       return li;
     }));
 
-    caseLink.href = caseItem[0];
-    caseLink.textContent = `${caseItem[1]} →`;
+    const caseLink = consultantResult.querySelector<HTMLAnchorElement>('[data-consultant-link]');
+    if (caseLink) { caseLink.href = caseItem[0];
+    caseLink.textContent = `${caseItem[1]} →`; }
 
-    routeLink.href = route.href;
+    const routeLink = consultantResult.querySelector<HTMLAnchorElement>('[data-consultant-route]');
+    if (routeLink) routeLink.href = route.href;
 
     consultantSummary = [
       `Тип объекта: ${pretty.object || 'не указан'}`,
@@ -438,7 +451,7 @@ const { pagePath = '' } = Astro.props;
   });
 
   consultantResult?.querySelector('[data-consultant-handoff]')?.addEventListener('click', () => {
-    if (!consultantForm) return;
+    if (!consultantForm || !consultantDialog || !contactDialog) return;
     const data = new FormData(consultantForm);
     const projectStatus = String(data.get('project_status') || '');
     const task = String(data.get('task') || '').trim();
@@ -449,13 +462,15 @@ const { pagePath = '' } = Astro.props;
       task,
     });
 
+    const opener=lastDialogTrigger.get(consultantDialog);
+    if (opener) lastDialogTrigger.set(contactDialog,opener);
     closeDialog(consultantDialog);
     openDialog(contactDialog);
     track('consultant_handoff', { project_status: projectStatus });
     track('contact_form_open', { source: 'consultant', project_status: projectStatus });
   });
 
-  function inferContext(pathname: string) {
+  function inferContext(pathname:string) {
     if (pathname.includes('/obekty/restorany-i-kafe/')) return 'restaurants';
     if (pathname.includes('/obekty/novostroyki-i-zhilye-kompleksy/')) return 'newbuild';
     if (pathname.includes('/montazh-ventiliacii/')) return 'ventilation';
@@ -480,11 +495,11 @@ const { pagePath = '' } = Astro.props;
     try { return sessionStorage.getItem('aeroventa-campaign-context') || ''; } catch { return ''; }
   }
 
-  function hydrateContactContext(root: ParentNode | null, overrides: {projectStatus?:string;consultantSummary?:string;intent?:string;task?:string} = {}) {
+  function hydrateContactContext(root:ParentNode|null, overrides:{intent?:string;projectStatus?:string;consultantSummary?:string;task?:string} = {}) {
     if (!root) return;
     for (const form of root.querySelectorAll<HTMLFormElement>('[data-contact-form]')) {
-      const set = (name: string, value: string) => {
-        const field = form.querySelector<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(`[name="${name}"]`);
+      const set = (name:string, value:string) => {
+        const field = fieldValue(form,name);
         if (field && value !== undefined && value !== null && value !== '') field.value = value;
       };
 
@@ -500,7 +515,7 @@ const { pagePath = '' } = Astro.props;
       set('lead_intent', overrides.intent || form.dataset.contactIntent || 'VENTILATION_PROJECT');
 
       if (overrides.task) {
-        const taskField = form.querySelector<HTMLTextAreaElement>('[name=task]');
+        const taskField = fieldValue(form,'task');
         if (taskField && !taskField.value.trim()) taskField.value = overrides.task;
       }
     }
@@ -509,9 +524,9 @@ const { pagePath = '' } = Astro.props;
   // Dialogue-first public-content routing. No external inference or simulated model wait state.
   const chatForm = consultantDialog?.querySelector<HTMLFormElement>('[data-consultant-chat-form]');
   const chatHistory = consultantDialog?.querySelector('[data-consultant-chat-messages]');
-  const chatInput = chatForm?.querySelector<HTMLTextAreaElement>('[name=question]');
+  const chatInput = chatForm ? fieldValue(chatForm,'question') : null;
   let lastChatQuestion = '';
-  const safeChatRoute = (input: string) => {
+  const safeChatRoute = (input:string) => {
     if (/нет проекта|без проекта|проект(а)? нет|не готов(ый|а)|нет чертеж/i.test(input)) {
       return ['/obekt-bez-gotovogo-proekta/', 'Какие исходные данные нужны до оценки монтажа',
         'Начните с имеющихся планов, фото и описания объекта.'];
@@ -535,7 +550,7 @@ const { pagePath = '' } = Astro.props;
     return ['/montazh-ventiliacii/', 'Монтаж вентиляции — состав работ и примеры',
       'Если вопрос требует инженерного решения, передайте описание напрямую специалисту.'];
   };
-  const addChatMessage = (role: string, title: string, body: string, route?: string) => {
+  const addChatMessage = (role:string, title:string, body:string, route?:string) => {
     if (!chatHistory) return;
     const item = document.createElement('li');
     item.className = 'consultant-message consultant-message--' + role;
@@ -558,7 +573,7 @@ const { pagePath = '' } = Astro.props;
   };
   chatForm?.addEventListener('submit', (event) => {
     event.preventDefault();
-    if (!chatForm || !chatInput || !chatForm.reportValidity()) return;
+    if (!chatForm || !chatForm.reportValidity()) return;
     const question = String(chatInput?.value || '').trim().slice(0, 800);
     if (!question) return;
     lastChatQuestion = question;
@@ -568,21 +583,25 @@ const { pagePath = '' } = Astro.props;
     const [route, title, explanation] = safeChatRoute(question);
     addChatMessage('guide', 'Материалы AEROVENTA', title + '. ' + explanation, route);
     consultantSummary = 'Вопрос посетителя: ' + question + '\nРекомендованный раздел: ' + route;
-    chatInput.value = '';
-    chatInput.focus();
+    if (chatInput) chatInput.value = '';
+    chatInput?.focus();
     track('consultant_relevant_link', { target: route, source: 'public_content_guide' });
   });
   chatInput?.addEventListener('keydown', (event) => {
+    if (!(event instanceof KeyboardEvent)) return;
     if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) {
       event.preventDefault();
       chatForm?.requestSubmit();
     }
   });
   consultantDialog?.querySelector('[data-consultant-chat-handoff]')?.addEventListener('click', () => {
+    if (!consultantDialog || !contactDialog) return;
     hydrateContactContext(contactDialog, {
       consultantSummary: consultantSummary || 'Переход из публичного навигатора AEROVENTA',
       task: lastChatQuestion,
     });
+    const opener=lastDialogTrigger.get(consultantDialog);
+    if (opener) lastDialogTrigger.set(contactDialog,opener);
     closeDialog(consultantDialog);
     openDialog(contactDialog);
     track('consultant_handoff', { source: 'public_content_guide' });
@@ -592,7 +611,7 @@ const { pagePath = '' } = Astro.props;
   document.querySelectorAll<HTMLFormElement>('[data-contact-form]').forEach((form) => {
     hydrateContactContext(form.closest('dialog') || document);
     form.addEventListener('focusin', () => {
-      const started = form.querySelector<HTMLInputElement>('[name=started_at]');
+      const started = fieldValue(form,'started_at');
       if (started && !started.value) started.value = String(Date.now());
     }, { once: true });
 
@@ -600,7 +619,7 @@ const { pagePath = '' } = Astro.props;
       event.preventDefault();
       if (form.dataset.submitting === 'true') return;
 
-      const contact = form.querySelector<HTMLInputElement>('[name=contact]');
+      const contact = fieldValue(form,'contact');
       const contactValue = String(contact?.value || '').trim();
       const digits = contactValue.replace(/\D/g, '');
       const emailLike = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactValue);
@@ -612,7 +631,7 @@ const { pagePath = '' } = Astro.props;
       hydrateContactContext(form.closest('dialog') || document);
 
       const formData = new FormData(form);
-      const payload: Record<string, FormDataEntryValue | boolean | number> = {
+      const payload:Record<string,FormDataEntryValue|boolean|number> = {
         ...Object.fromEntries(formData.entries()),
         consent: formData.has('consent'),
         started_at: Number(formData.get('started_at') || 0),
@@ -676,15 +695,15 @@ const { pagePath = '' } = Astro.props;
 
         status.textContent = 'Запрос принят к отправке. Доставка письма ещё не подтверждена.';
         form.reset();
-        const started=form.querySelector<HTMLInputElement>('[name=started_at]');
-        if (started) started.value = String(Date.now());
+        const stamp=fieldValue(form,'started_at');
+        if (stamp) stamp.value = String(Date.now());
         hydrateContactContext(form.closest('dialog') || document);
         track('contact_form_success', { source: location.pathname });
         track('lead_success', { source: location.pathname });
       } catch {
         status.replaceChildren();
         const message = document.createElement('span');
-        message.textContent = 'Не удалось передать запрос через форму. Можно написать напрямую: ';
+        message.textContent = 'Не удалось подтвердить передачу запроса. Можно написать напрямую: ';
         const fallback = form.querySelector('.premium-contact-form__direct')?.cloneNode(true);
         if (fallback) status.append(message, fallback);
         else status.append(message);
