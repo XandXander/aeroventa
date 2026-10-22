@@ -17,13 +17,14 @@ async function walk(dir){
 const names=await walk(root);
 const originals=names.filter(file=>/\.(?:png|jpe?g|webp|avif)$/i.test(file) && !file.includes('/media/responsive/'));
 await fs.mkdir(target,{recursive:true});
-const variants=new Map(), audit=[];
+const variants=new Map(), audit=[], sourceInfo=new Map(),pageRows=[];
 const tasks=[...originals];
 async function worker(){
  while(tasks.length){
   const abs=tasks.shift(), rel=path.relative(root,abs).split(path.sep).join('/'), url='/'+rel;
   const buffer=await fs.readFile(abs), m=await sharp(buffer,{failOn:'error',limitInputPixels:100_000_000}).metadata();
   if(!m.width||!m.height){audit.push({asset:url,result:'UNSUPPORTED_DIMENSIONS'});continue;}
+  sourceInfo.set(url,{width:m.width,height:m.height,bytes:buffer.length});
   const outputs=[];
   for(const w of WIDTHS.filter(v=>v<m.width)){
    const suffix=crypto.createHash('sha256').update(rel).digest('hex').slice(0,16)+'-'+w+'.webp';
@@ -44,9 +45,12 @@ for(const file of names.filter(x=>x.endsWith('.html'))){
   if(/\bsrcset=/.test(tag))return tag;
   const match=tag.match(/\bsrc=(["'])(\/[^"']+)\1/i);
   if(!match)return tag;
-  const src=match[2].split('?')[0],choices=variants.get(src);
+  const src=match[2].split('?')[0],choices=variants.get(src),m=sourceInfo.get(src);
+  if(!m)return tag;
+  const loading=tag.match(/\bloading=["']([^"']+)["']/i)?.[1]||'auto';
+  pageRows.push({page:'/'+path.relative(root,file).replaceAll(path.sep,'/'),asset:src,source_width:m.width,source_height:m.height,source_bytes:m.bytes,delivered_variants:choices||[],loading,result:choices?.length?'RESPONSIVE':'SOURCE_ONLY'});
   if(!choices?.length)return tag;
-  const sets=[...choices.map(v=>v.url+' '+v.width+'w')].join(', ');
+  const sets=[...choices.map(v=>v.url+' '+v.width+'w'),src+' '+m.width+'w'].join(', ');
   const hero=/\b(?:fetchpriority=["']high["']|class=["'][^"']*(?:hero|cover)[^"']*["'])/i.test(tag);
   const sizes=hero?'100vw':'(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 40vw';
   updated++;
@@ -55,6 +59,8 @@ for(const file of names.filter(x=>x.endsWith('.html'))){
  await fs.writeFile(file,html);
 }
 audit.sort((a,b)=>a.asset.localeCompare(b.asset));
-const report={source_count:originals.length,html_images:images,images_with_new_srcset:updated,optimized_source_count:variants.size,source_total_bytes:audit.reduce((n,v)=>n+(v.source_bytes||0),0),variants_total_bytes:audit.reduce((n,v)=>n+(v.variants||[]).reduce((s,x)=>s+x.bytes,0),0),items:audit};
-await fs.writeFile(path.join(root,'WEB_IMAGE_DELIVERY_AUDIT.json'),JSON.stringify(report,null,2));
+const report={source_count:originals.length,html_images:images,images_with_new_srcset:updated,optimized_source_count:variants.size,source_total_bytes:audit.reduce((n,v)=>n+(v.source_bytes||0),0),variants_total_bytes:audit.reduce((n,v)=>n+(v.variants||[]).reduce((s,x)=>s+x.bytes,0),items:audit,page_assets:pageRows};
+const reportPath=path.resolve(root,'../../../reports/WEB_IMAGE_DELIVERY_AUDIT.json');
+await fs.mkdir(path.dirname(reportPath),{recursive:true});
+await fs.writeFile(reportPath,JSON.stringify(report,null,2));
 console.log('WEB_IMAGE_DELIVERY',JSON.stringify({...report,items:undefined}));
