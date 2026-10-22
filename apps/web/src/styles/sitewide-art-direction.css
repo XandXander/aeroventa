@@ -143,3 +143,47 @@ main :is(.process-strip b,.object-ribbon__number,.object-context-card__number,
           .service-conflict__steps span,.object-method__steps span,
           .engagement-steps>li>span){font-size:.84rem}
 }
+
+/* Jury 2026-10-22: page-specific optical typography, not a global H1 reset.
+   Avoid algorithmic mid-word breaks and restore room for actual primary actions. */
+main .object-detail__hero h1{hyphens:none;overflow-wrap:normal;word-break:normal;max-width:24ch}
+main .service-premium__hero h1{
+ font-size:clamp(2.15rem,3.55vw,3.65rem);
+ line-height:1.12;letter-spacing:-.04em;max-width:25ch;hyphens:none;word-break:normal;
+}
+main .engagement--discovery .engagement-hero__copy h1{
+ font-size:clamp(2.2rem,3.6vw,3.85rem);line-height:1.12;max-width:19ch;
+}
+main .section-index:not(.section-index--orange){color:#a74626}
+@media(min-width:850px) and (max-height:760px){
+ main .service-premium__hero h1{font-size:clamp(2rem,3vw,3.2rem);max-width:29ch}
+ main .service-premium__hero{padding-block:clamp(18px,2.9vh,31px)}
+}
+@media(max-width:760px){
+ main .service-premium__hero h1{font-size:clamp(2rem,7.4vw,2.75rem);max-width:21ch}
+ main .object-detail__hero h1{hyphens:none;overflow-wrap:break-word;max-width:100%}
+ main .engagement--discovery .engagement-hero__copy h1{font-size:clamp(1.95rem,7vw,2.8rem);max-width:19ch}
+}
+/* Engineering illustration contains legacy low-resolution baked-in lettering.
+   Crop only that upper lettering area, retaining the approved duct/airflow scene.
+   Accessible, sharp HTML headings replace raster typography on desktop. */
+@media(min-width:761px){
+ main .home-solution .solution-diagram{display:grid;grid-template-rows:auto auto;align-content:center;background:#f8fafb;overflow:hidden}
+ main .home-solution .solution-diagram::before,
+ main .home-solution .solution-diagram::after{content:none!important;display:none!important}
+ main .home-solution .solution-diagram__callouts{
+  display:grid;grid-template-columns:1fr 1fr;gap:clamp(18px,4vw,70px);
+  align-items:start;padding:14px clamp(20px,6%,72px) 5px;position:relative;z-index:4;
+  background:#f8fafb;
+ }
+ main .home-solution .solution-diagram__callout{display:grid;gap:4px;line-height:1.38}
+ main .home-solution .solution-diagram__callout strong{font-size:clamp(.94rem,1.12vw,1.13rem);font-weight:700;color:#a74724}
+ main .home-solution .solution-diagram__callout--exhaust strong{color:#19658f}
+ main .home-solution .solution-diagram__callout span{font-size:clamp(.76rem,.85vw,.94rem);color:#38505d}
+ main .home-solution .solution-diagram__crop{position:relative;display:block;overflow:hidden;width:100%;aspect-ratio:1036/228;min-height:0}
+ main .home-solution .solution-diagram__crop img{
+  position:absolute!important;top:-44%!important;left:0!important;right:auto!important;
+  display:block;width:100%!important;height:auto!important;max-width:none;
+  object-fit:fill!important;filter:none!important;transform:none!important;
+ }
+}
