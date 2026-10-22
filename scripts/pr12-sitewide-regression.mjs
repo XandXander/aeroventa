@@ -17,6 +17,16 @@ async function collect(dir){
 }
 const fileList=await collect(root), routes=fileList.map(x=>'/'+path.relative(root,path.dirname(x)).replaceAll(path.sep,'/')+'/').map(s=>s.replace(/^\/\//,'/')).sort();
 if(routes.length!==50)throw Error('Expected 50 functional routes plus 404 HTML, got '+routes.length);
+// This historical URL is a legitimate instant meta-refresh alias in static previews.
+// Evaluate its actual SEO/redirect contract once; never race page.evaluate()
+// against the browser navigation it intentionally triggers.
+const legacyAlias='/obekty/novostroyki-i-zhilye-kompleksy/';
+const aliasMarkup=await fs.readFile(path.join(root,legacyAlias.slice(1),'index.html'),'utf8');
+if(!/http-equiv="refresh"\s+content="0;url=\/obekty\/novostroyki\/"/i.test(aliasMarkup)
+ ||!/name="robots"\s+content="noindex,follow"/i.test(aliasMarkup)
+ ||!/rel="canonical"\s+href="https:\/\/aeroventa\.ru\/obekty\/novostroyki\/"/i.test(aliasMarkup))
+ throw Error('Legacy novostroyki alias redirect/noindex/canonical mismatch');
+const inspectRoutes=routes.filter(route=>route!==legacyAlias);
 const browser=await chromium.launch({headless:true,args:['--disable-dev-shm-usage','--no-sandbox']});
 const issues=[],captures=[],interactions=[],stats=[];
 const output=path.resolve('PR12_SYSTEMIC_QA');
@@ -26,7 +36,7 @@ const page=await context.newPage();
 page.on('pageerror',err=>issues.push({route:page.url(),type:'JS_ERROR',detail:err.message.slice(0,240)}));
 for(const [width,height] of vp){
  await page.setViewportSize({width,height});
- for(const route of routes){
+ for(const route of inspectRoutes){
   const url=origin+route;
   try{
    const response=await page.goto(url,{waitUntil:'domcontentloaded',timeout:10000});
@@ -47,7 +57,7 @@ for(const [width,height] of vp){
     };
    });
    stats.push({route,width,height,...state});
-   if(!state.h1 && route!=='/obekty/novostroyki-i-zhilye-kompleksy/')issues.push({route,width,height,type:'NO_H1'});
+   if(!state.h1)issues.push({route,width,height,type:'NO_H1'});
    if(state.pageWidth>width+4)issues.push({route,width,height,type:'HORIZONTAL_OVERFLOW',delta:state.pageWidth-width});
    if(state.top< -6||state.bottom>height+12)issues.push({route,width,height,type:'H1_OUTSIDE_FIRST_FOLD',top:state.top,bottom:state.bottom});
    if(state.clippedAction)issues.push({route,width,height,type:'ACTION_GEOMETRY_TOO_SMALL'});
@@ -128,7 +138,7 @@ await scenario('DIRECT_CATEGORY_NAVIGATION','/',async()=>{
  }return {routes:labels.length};
 });
 await browser.close();
-const result={head:process.env.GITHUB_SHA||'LOCAL_EXACT_WORKFLOW_SHA',generated_at:new Date().toISOString(),routes:routes.length,viewports:vp.length,route_viewport_samples:stats.length,captures,interactions,issues,verdict:issues.length?'FAIL':'PASS_GEOMETRY_AND_INTERACTION_ONLY',artistic_acceptance:'NOT_PROVEN'};
+const result={head:process.env.GITHUB_SHA||'LOCAL_EXACT_WORKFLOW_SHA',generated_at:new Date().toISOString(),routes:routes.length,legacy_alias_verified:legacyAlias,inspected_routes:inspectRoutes.length,viewports:vp.length,route_viewport_samples:stats.length,captures,interactions,issues,verdict:issues.length?'FAIL':'PASS_GEOMETRY_AND_INTERACTION_ONLY',artistic_acceptance:'NOT_PROVEN'};
 await fs.writeFile(path.join(output,'sitewide.json'),JSON.stringify(result,null,2));
 console.log('PR12_SITEWIDE_REGRESSION',JSON.stringify({...result,captures:captures.length,issues:issues.slice(0,35)},null,2).slice(0,9000));
 if(issues.length)process.exitCode=1;
