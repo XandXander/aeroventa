@@ -171,6 +171,22 @@ if(await exists(nevaFile)){
   }
 }
 
+// Final focused Owner J-07/J-08/J-09 + O22-09 customer routing checks.
+for(const [route,needle] of [
+  ['/blog/detail/ntff-polisan/','НТФФ «Полисан»'],
+  ['/obekty/ofisy-i-kommerciya/','/portfolio/obekt/apart-hotel/'],
+]){
+  const html=await fs.readFile(htmlFileFor(route),'utf8').catch(()=>null);
+  check(html?.includes(needle), 'Owner editorial/direct-route check failed: '+route);
+}
+const officeHtml=await fs.readFile(htmlFileFor('/obekty/ofisy-i-kommerciya/'),'utf8').catch(()=>null);
+check(Boolean(officeHtml && !officeHtml.includes('/portfolio/#owner-') &&
+  officeHtml.includes('/evidence/owner-portfolio/apart-hotel/gallery-01.webp')),
+  'O22-09 / J-08: direct case links and nonduplicated commercial lead photography');
+const contactHtml=await fs.readFile(htmlFileFor('/contact/'),'utf8').catch(()=>null);
+check(Boolean(contactHtml && !contactHtml.includes('Без технического «идеального брифа»')),
+  'J-09: rejected public lead-form wording remains');
+
 const token = process.env.DIRECTUS_STATIC_TOKEN || '';
 if (token && await exists(dist)) {
   async function walk(dir) {

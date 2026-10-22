@@ -197,6 +197,13 @@ const pageContent: ContentRecord = {
   ...content,
   ...(overrides[content.path] ?? {}),
   ...(legacyArticle ? { h1: legacyArticle.h1, seo_title: legacyArticle.title } : {}),
+  // Owner J-07 authorises this public editorial correction; preserve legacy source bytes and URL.
+  ...(content.path === '/blog/detail/ntff-polisan/' ? {
+    h1: 'НТФФ «Полисан»',
+    title: 'НТФФ «Полисан» — монтаж вентиляции | AEROVENTA',
+    seo_title: 'НТФФ «Полисан» — монтаж вентиляции | AEROVENTA',
+    og_title: 'НТФФ «Полисан» — монтаж вентиляции | AEROVENTA',
+  } : {}),
 };
 ---
 <BaseLayout content={pageContent}>
