@@ -4167,9 +4167,11 @@ header.services-hero--owner-editorial>figure.services-hero__backdrop--single fig
  * a final row containing one or two source photos without empty cells. */
 .evidence-case .case-gallery__thumbs{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr));gap:clamp(9px,1vw,16px)!important}
 .evidence-case .case-gallery__thumbs>.case-gallery__item{grid-column:span 2;min-width:0;width:auto;background:transparent}
+@media(min-width:761px){
 .evidence-case .case-gallery__thumbs>.case-gallery__item:last-child:nth-child(3n+1){grid-column:1/-1}
 .evidence-case .case-gallery__thumbs>.case-gallery__item:nth-last-child(2):nth-child(3n+1),
 .evidence-case .case-gallery__thumbs>.case-gallery__item:last-child:nth-child(3n+2){grid-column:span 3}
+}
 .evidence-case .case-gallery__thumbs img{aspect-ratio:4/3;object-fit:cover;width:100%;height:auto}
 .evidence-case .case-gallery__archive--leont .case-gallery__thumbs--context{grid-template-columns:repeat(2,minmax(0,1fr))}
 .evidence-case .case-gallery__archive--leont .case-gallery__thumbs--context>.case-gallery__item:nth-child(n){grid-column:auto}

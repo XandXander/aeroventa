@@ -41,6 +41,7 @@ async function walk(dir){let files=[];for(const entry of await fs.readdir(dir,{w
 let routes=(await walk(root)).map(f=>'/'+path.relative(root,path.dirname(f)).split(path.sep).join('/')+'/').map(s=>s.replace(/^\/\//,'/')).sort();
 routes=routes.filter(r=>r!=='/obekty/novostroyki-i-zhilye-kompleksy/');
 if(quick)routes=['/','/services/','/montazh-ventiliacii/','/montazh-po-proektu/','/obekt-bez-gotovogo-proekta/','/portfolio/','/about/','/contact/','/blog/','/blog/detail/ntff-polisan/','/blog/detail/restoran-v-zhk-leontevskiy-mys/','/obekty/proizvodstvo/','/obekty/sklady/'];
+if(process.env.RECOVERY_QA_ROUTE)routes=routes.filter(route=>route===process.env.RECOVERY_QA_ROUTE);
 const slug = route=>route==='/'?'home':route.replace(/^\/|\/$/g,'').replaceAll('/','__');
 async function settle(){
   await page.evaluate(async()=>{
@@ -143,6 +144,9 @@ try {
      smallOrClippedActions:[...document.querySelectorAll('main .button,header button,header summary')].filter(e=>{
       const b=e.getBoundingClientRect();return b.width>0&&b.height>0&&(b.width<24||b.height<24||e.scrollWidth>e.clientWidth+2);
      }).map(e=>({text:e.textContent.trim(),width:e.getBoundingClientRect().width,height:e.getBoundingClientRect().height})),
+     invalidGalleryFrames:[...document.querySelectorAll('main [data-case-photo],main [data-case-frame]')].filter(e=>{
+      if(e.closest('details:not([open])'))return false;const b=e.getBoundingClientRect();return e.getClientRects().length>0&&(b.width<24||b.height<24);
+     }).map(e=>({label:e.getAttribute('aria-label'),width:e.getBoundingClientRect().width,height:e.getBoundingClientRect().height})),
      heading:[...document.querySelectorAll('main h1')].map(e=>({text:e.textContent.trim(),font:getComputedStyle(e).fontSize,hyphens:getComputedStyle(e).hyphens,rect:e.getBoundingClientRect().toJSON()})),
      homeFold:document.querySelector('.object-ribbon')?.getBoundingClientRect().bottom
      ,narrowMobileHeroes:innerWidth<=850?[...document.querySelectorAll('.object-detail__hero-grid>div:first-child')].filter(e=>e.getBoundingClientRect().width<innerWidth*.75).length:0
@@ -150,6 +154,7 @@ try {
     }));
     report.geometry.push({route,width,height,...facts});
     if(facts.scrollWidth>width+1)report.issues.push({type:'OVERFLOW',route,width,height,scrollWidth:facts.scrollWidth});
+    if(facts.invalidGalleryFrames.length)report.issues.push({type:'GALLERY_FRAME_GEOMETRY',route,width,height,frames:facts.invalidGalleryFrames});
     if(facts.h1Count!==1)report.issues.push({type:'H1_COUNT',route,width,count:facts.h1Count});
     if(facts.narrowMobileHeroes||facts.emptyMobileCardTails)report.issues.push({type:'MOBILE_COMPOSITION_REGRESSION',route,width,...facts});
     if(facts.smallOrClippedActions.length)report.issues.push({type:'ACTION_GEOMETRY',route,width,actions:facts.smallOrClippedActions});

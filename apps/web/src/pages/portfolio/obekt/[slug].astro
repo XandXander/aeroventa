@@ -36,10 +36,10 @@ const {project,photos}=Astro.props;
 const galleryPhotos=project.slug==='na-izluchine-nevy'?photos.filter(src=>src!==project.cover):photos;
 if(project.slug==='na-izluchine-nevy'&&galleryPhotos.length!==6)throw Error('Neva requires six verified installation photos');
 const projectIntroductions:Record<string,string>={
- 'apart-hotel':'Коммерческие помещения на Бумажной: инженерные трассы и интерьеры объекта.',
+ 'apart-hotel':'Апарт-отель и коворкинг на Бумажном: инженерные трассы и интерьеры объекта.',
  'eurospar-vo':'Торговый объект на Васильевском острове. Фотографии магазина и монтажных работ.',
  'eurospar-sestroretsk':'Магазин EUROSPAR в Сестрорецке. Фотографии объекта и инженерных коммуникаций.',
- 'college-obvodny':'Образовательный объект на набережной Обводного канала. Фотографии площадки и инженерных систем.',
+ 'college-obvodny':'Колледж туризма и гостиничного сервиса в Санкт-Петербурге. Фотографии площадки и инженерных систем.',
  'novatech':'Производственная площадка в Московской области. Оборудование и монтажные узлы — в фотогалерее.',
  'akvilon-yanino':'Жилой комплекс в Янино. Виды здания и монтаж вентиляционных трасс.',
  'himprom':'Промышленный объект в Санкт-Петербурге. Фотографии площадки и инженерных коммуникаций.',
