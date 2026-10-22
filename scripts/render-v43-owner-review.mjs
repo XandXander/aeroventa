@@ -386,7 +386,11 @@ try {
           }
           // Even after suppressing the colliding initial launcher, the
           // consultant must remain reachable on scroll by keyboard and pointer.
-          await page.locator('.services-competence').scrollIntoViewIfNeeded();
+          await page.evaluate(()=>{
+            const strip=document.querySelector('.services-hero__routes');
+            if(!strip)throw new Error('Missing Services category strip');
+            window.scrollTo({top:window.scrollY+strip.getBoundingClientRect().bottom+40,behavior:'instant'});
+          });
           await page.waitForFunction(()=>document.documentElement.classList.contains('is-past-first-fold'),null,{timeout:4500});
           const postFoldLauncher=await page.locator('.consultant-launcher').evaluate(el=>{
             const s=getComputedStyle(el),r=el.getBoundingClientRect();
@@ -714,13 +718,21 @@ try {
           overflow:document.documentElement.scrollWidth-innerWidth};
       });
       const desktop=width>=761;
-      const valid=!!m.hero&&!!m.photo&&!!m.copy&&m.routes.length===3&&m.overflow<=1&&
-       (desktop
-        ?m.photo.w>width*.3&&m.photo.h>350&&m.photo.x>m.copy.x+m.copy.w*.7&&
-         m.routes.every((r,i)=>r.w>width*.19&&r.h>=72&&(i===0||r.x>m.routes[i-1].x+60))&&!m.inline
-        :m.photo.w>=width-2&&m.photo.y>=m.copy.bottom-1&&m.photo.h>140&&
-         m.routes.every((r,i)=>r.w>width*.76&&r.h>=50&&(i===0||r.y>m.routes[i-1].y+32)));
-      if(!valid)report.fail.push({reason:'Services actual optical grid and legible three routes',width,height,m});
+      // The owner-approved concept must be shown whole. Mobile intentionally leads with
+      // the full image, followed by buyer copy and three horizontal routes.
+      const baseValid=!!m.hero&&!!m.photo&&!!m.copy&&m.routes.length===3&&m.overflow<=1;
+      const desktopValid=desktop&&m.photo.w>width*.3&&m.photo.h>220&&
+        m.photo.x>m.copy.x+m.copy.w*.7&&
+        m.routes.every((r,i)=>r.w>width*.19&&r.h>=70&&(i===0||r.x>m.routes[i-1].x+60))&&!m.inline;
+      const mobileValid=!desktop&&m.photo.w>=width-2&&m.photo.h>width*.50&&
+        m.photo.y<m.copy.y&&m.photo.y+m.photo.h<=m.copy.y+25&&
+        m.routes.every((r,i)=>r.w>=width*.28&&r.h>=70&&(i===0||r.x>m.routes[i-1].x+25))&&
+        m.routes[0].y>=m.copy.bottom-3&&!m.inline;
+      // At 390px, the complete three-route register must fit in a normal 844px fold.
+      // At 320px/640px natural scrolling is preferable to hiding/clipping buyer copy.
+      const foldValid=desktop||width!==390||m.routes.at(-1).y+m.routes.at(-1).h<=height+3;
+      if(!(baseValid&&(desktop?desktopValid:mobileValid)&&foldValid))
+        report.fail.push({reason:'Services original concept, uncropped image and complete three-link register',width,height,m});
     }catch(e){report.fail.push({reason:'Services editorial geometry exception',width,height,error:String(e)})}
     finally{await context.close()}
   }
@@ -907,10 +919,10 @@ try {
         const placement=await page.evaluate(()=>{
           const a=document.querySelector('.services-hero__intro')?.getBoundingClientRect();
           const b=document.querySelector('.services-hero__backdrop--single')?.getBoundingClientRect();
-          return {introBottom:a?.bottom,photoTop:b?.top};
+          return {introTop:a?.top,photoBottom:b?.bottom};
         });
-        if(!placement.introBottom||!placement.photoTop||placement.photoTop<placement.introBottom-2){
-          report.fail.push({reason:'Services mobile reading order',placement});
+        if(!placement.introTop||!placement.photoBottom||placement.photoBottom>placement.introTop+2){
+          report.fail.push({reason:'Services original artwork must precede copy on mobile without overlap',placement});
         }
       }
       if(route==='/portfolio/'&&width===1440){

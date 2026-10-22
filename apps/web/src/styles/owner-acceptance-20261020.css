@@ -134,9 +134,13 @@ body .consultant-launcher{appearance:none;font-family:inherit;cursor:pointer}
 /* Owner 2026-10-20 supersedes the historical "hidden until scroll" policy.
    Explicitly override legacy visibility/pointer blocking for all first-fold layouts. */
 html:not(.is-past-first-fold) body:has(.home-hero--owner-airflow) .consultant-launcher,
-html:not(.is-past-first-fold) body:has(.services-hero--owner-editorial) .consultant-launcher,
 html:not(.is-past-first-fold) body:has(.about-hero) .consultant-launcher{
   visibility:visible!important;opacity:1!important;pointer-events:auto!important;
+}
+/* Services: keep the 3 in-fold category links unblocked; actual contact CTA stays visible.
+   Restore consultant after scrolling below the first-fold route register. */
+html:not(.is-past-first-fold) body:has(.services-hero--owner-editorial) .consultant-launcher{
+  visibility:hidden!important;opacity:0!important;pointer-events:none!important;
 }
 
 /* Private project submission — short form with exact file constraints. */
