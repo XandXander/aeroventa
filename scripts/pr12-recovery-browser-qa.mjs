@@ -97,12 +97,14 @@ try {
         h1:[...document.querySelectorAll('main h1')].map(x=>x.textContent.trim()),
         font:getComputedStyle(document.body).fontFamily,
         brokenImages:[...document.images].filter(x=>x.checkVisibility({visibilityProperty:true})&&(!x.complete||x.naturalWidth===0)).map(x=>x.getAttribute('src')),
+        stretchedImages:[...document.images].filter(img=>img.checkVisibility({visibilityProperty:true})&&img.naturalWidth>1&&getComputedStyle(img).objectFit==='fill').filter(img=>{const b=img.getBoundingClientRect();return b.width>0&&b.height>0&&Math.abs(Math.log((b.width/b.height)/(img.naturalWidth/img.naturalHeight)))>.04;}).map(img=>({src:img.getAttribute('src'),natural:[img.naturalWidth,img.naturalHeight],rendered:[img.getBoundingClientRect().width,img.getBoundingClientRect().height]})),
         // Real computed pairs retained for review, including neutral and dark sections.
         surfaces:[...document.querySelectorAll('main section,main header')].map(e=>({selector:e.className,color:getComputedStyle(e).color,background:getComputedStyle(e).backgroundColor})),
         copy:document.querySelector('main')?.innerText,
         metadata:[...document.querySelectorAll('head meta[property^="og:"],head meta[name^="twitter:"],head meta[name="description"]')].map(x=>({name:x.getAttribute('property')||x.getAttribute('name'),content:x.content}))
       }));
       if(facts.scrollWidth>width+1)report.issues.push({type:'OVERFLOW',route,width,scrollWidth:facts.scrollWidth});
+      if(facts.stretchedImages.length)report.issues.push({type:'STRETCHED_IMAGE',route,width,images:facts.stretchedImages});
       if(facts.brokenImages.length)report.issues.push({type:'BROKEN_IMAGE',route,width,images:facts.brokenImages});
       await page.addScriptTag({content:axeSource});
       const axe = await page.evaluate(async()=>await window.axe.run(document,{runOnly:{type:'rule',values:['color-contrast','button-name','link-name','label','aria-valid-attr-value']}}));
@@ -184,6 +186,11 @@ try {
   expect(!result.violations.length,'Dialog accessibility: '+JSON.stringify(result.violations.map(v=>({rule:v.id,targets:v.nodes.map(n=>n.target)}))));
   for(let i=0;i<16;i++){await page.keyboard.press('Tab');expect(await dialog.evaluate(d=>d.contains(document.activeElement)),'Tab escaped dialog');}
   expect(await dialog.evaluate(d=>d.scrollWidth<=d.clientWidth+1),'Horizontal dialog overflow');
+  if(await dialog.locator('.owner-case__viewer-title strong').count()){
+   const collision=await dialog.evaluate(d=>{const range=document.createRange();range.selectNodeContents(d.querySelector('.owner-case__viewer-title strong'));const buttons=[...d.querySelectorAll('.owner-case__viewer-title button')].map(b=>b.getBoundingClientRect());return [...range.getClientRects()].some(a=>buttons.some(b=>Math.min(a.right,b.right)-Math.max(a.left,b.left)>1&&Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top)>1));});
+   expect(!collision,'Viewer title overlaps its controls');
+  }
+
   await page.screenshot({path:path.join(output,label+'.jpg'),type:'jpeg',quality:85});
  }
  async function decodedImage(selector) {
@@ -260,7 +267,7 @@ try {
    });
    for(const name of ['apart-hotel','eurospar-vo','eurospar-sestroretsk','college-obvodny','novatech','akvilon-yanino','himprom'])await scenario('OWNER_OBJECT_GALLERY','/portfolio/obekt/'+name+'/',width,width>1000?650:844,async()=>{
     const opener=page.locator('[data-case-frame]').first();const total=await page.locator('[data-case-frame]').count();expect(total>1,'Object album incomplete');
-    await opener.click();await decodedImage('[data-case-large]');const before=await page.locator('[data-case-large]').getAttribute('src');
+    await opener.click();await checkDialog('#owner-case-viewer','owner-'+name+'-'+width);await decodedImage('[data-case-large]');const before=await page.locator('[data-case-large]').getAttribute('src');
     await page.locator('[data-case-next]').click();await decodedImage('[data-case-large]');expect(before!==await page.locator('[data-case-large]').getAttribute('src'),'Object album first click failed');
     const fit=await page.locator('[data-case-large]').boundingBox();await page.locator('[data-case-zoom]').click();const enlarged=await page.locator('[data-case-large]').boundingBox();expect(enlarged.width>fit.width*1.1,'Object zoom button failed');
     await page.locator('[data-case-zoom]').click();await page.keyboard.press('Escape');expect(await opener.evaluate(e=>e===document.activeElement),'Object album focus restoration failed');
