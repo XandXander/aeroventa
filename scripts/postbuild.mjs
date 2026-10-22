@@ -13,7 +13,7 @@ const releaseMode = process.env.AEROVENTA_RELEASE_MODE || 'fixture';
 await fs.copyFile(source, target);
 console.log(`Copied hosting rules to ${target}`);
 
-if (releaseMode !== 'production') {
+if (releaseMode === 'preview' || releaseMode === 'fixture') {
   const robots = 'User-agent: *\nDisallow: /\n';
   await fs.writeFile(path.join(dist, 'robots.txt'), robots);
   console.log('Applied non-production robots.txt: Disallow: /');
