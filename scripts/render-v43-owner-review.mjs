@@ -832,7 +832,7 @@ try {
       await neva.click();
       await page.waitForURL('**/portfolio/obekt/na-izluchine-nevy/');
       const nevaFirst=page.locator('.owner-case__photos button').first();
-      const four=(await page.locator('.owner-case__photos img').count())===4;
+      const seven=(await page.locator('.owner-case__photos img').count())===7;
       await nevaFirst.click();
       const lightbox=page.locator('#owner-case-viewer');
       await lightbox.waitFor({state:'visible'});
@@ -845,9 +845,9 @@ try {
       await lightbox.waitFor({state:'hidden'});
       const nevaRestored=await nevaFirst.evaluate(el=>el===document.activeElement);
       if(!authentic||!before||!after||before===after||secondCount!=='2 из 13'||!decode||!restored||
-         !four||nevaBefore!=='/evidence/residential/owner-neva-facade-20261016.jpg'||
-         nevaAfter!=='/evidence/residential/neva/curated-01.webp'||nevaCounter!=='2 из 4'||!nevaRestored){
-        report.fail.push({reason:'Named-object real photo viewer / first click / keyboard / focus',authentic,before,after,secondCount,decode,restored,four,nevaBefore,nevaAfter,nevaCounter,nevaRestored});
+         !seven||nevaBefore!=='/evidence/residential/owner-neva-facade-20261016.jpg'||
+         nevaAfter!=='/evidence/residential/neva/curated-01.webp'||nevaCounter!=='2 из 7'||!nevaRestored){
+        report.fail.push({reason:'Named-object real photo viewer / first click / keyboard / focus',authentic,before,after,secondCount,decode,restored,seven,nevaBefore,nevaAfter,nevaCounter,nevaRestored});
       }
     }catch(error){report.fail.push({reason:'Named-case real viewer interaction exception',error:String(error)})}
     finally{await context.close()}
