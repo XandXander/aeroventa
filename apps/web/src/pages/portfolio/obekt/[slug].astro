@@ -70,7 +70,7 @@ const content:ContentRecord={
 <section class="owner-case__next home-shell"><h2>Ваш объект</h2><p>Пришлите проект или описание задачи. Уточним состав монтажа и необходимые исходные данные.</p><a href="/contact/" class="button button--primary" data-contact-open data-source="owner_case" aria-haspopup="dialog">Обсудить объект →</a></section>
 </article>
 <dialog id="owner-case-viewer" data-cover={project.cover} aria-label={'Просмотр фотографий '+project.title}>
-<div class="owner-case__viewer-title"><strong>{project.title}</strong><button type="button" data-case-zoom aria-label="Увеличить фотографию" aria-pressed="false">＋</button><button type="button" data-case-close aria-label="Закрыть галерею">×</button></div>
+<div class="owner-case__viewer-title"><strong>{project.title}</strong><button type="button" data-case-zoom aria-label="Увеличить фотографию" aria-pressed="false">+</button><button type="button" data-case-close aria-label="Закрыть галерею">×</button></div>
 <div class="owner-case__viewer-stage"><img src={project.cover} data-case-large alt={project.title} width="1200" height="800"/></div>
 <nav class="owner-case__viewer-nav" aria-label="Перелистывание фотографий"><button type="button" data-case-prev aria-label="Предыдущая фотография">‹</button><span data-case-count>1 из {galleryPhotos.length}</span><button type="button" data-case-next aria-label="Следующая фотография">›</button></nav>
 </dialog>
