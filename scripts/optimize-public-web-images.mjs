@@ -59,7 +59,7 @@ for(const file of names.filter(x=>x.endsWith('.html'))){
  await fs.writeFile(file,html);
 }
 audit.sort((a,b)=>a.asset.localeCompare(b.asset));
-const report={source_count:originals.length,html_images:images,images_with_new_srcset:updated,optimized_source_count:variants.size,source_total_bytes:audit.reduce((n,v)=>n+(v.source_bytes||0),0),variants_total_bytes:audit.reduce((n,v)=>n+(v.variants||[]).reduce((s,x)=>s+x.bytes,0),items:audit,page_assets:pageRows};
+const report={source_count:originals.length,html_images:images,images_with_new_srcset:updated,optimized_source_count:variants.size,source_total_bytes:audit.reduce((n,v)=>n+(v.source_bytes||0),0),variants_total_bytes:audit.reduce((n,v)=>n+(v.variants||[]).reduce((s,x)=>s+x.bytes,0),0),items:audit,page_assets:pageRows};
 const reportPath=path.resolve(root,'../../../reports/WEB_IMAGE_DELIVERY_AUDIT.json');
 await fs.mkdir(path.dirname(reportPath),{recursive:true});
 await fs.writeFile(reportPath,JSON.stringify(report,null,2));
