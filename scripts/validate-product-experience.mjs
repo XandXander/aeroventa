@@ -199,8 +199,8 @@ if (process.env.AEROVENTA_REQUIRE_OWNER_TEAM_MEDIA === 'true') {
       'Release requires exact Owner-provided media SHA256: ' + name);
   }
 }
-check(files.restaurants.includes("heroMedia={{ src:'/evidence/leont/owner-cover-v43.webp'") &&
-      !files.restaurants.includes("heroMedia={{ src:'/evidence/leont/duct-installation-02.jpg'"), 'Restaurant direction uses authentic architectural context, retains montage only as case evidence');
+check(files.restaurants.includes("heroMedia={{ src:'/evidence/cafe/owner-interior-v43.webp'") &&
+      files.restaurants.includes("image:'/evidence/leont/archive/img-5008.webp'"), 'Restaurant landing leads with real hospitality interior and real installation photograph');
 const acceptedScene = await fs.stat(path.join(root, 'apps/web/public/evidence/hero/engineering-scene-accepted-v43.webp')).catch(() => null);
 check(Boolean(acceptedScene?.isFile() && acceptedScene.size > 20000), 'Original accepted engineering-scene visual exists physically in build sources');
 
