@@ -50,20 +50,20 @@ const content:ContentRecord={
  <a class="owner-case__back" href="/portfolio/">← Все объекты</a>
  {project.slug==='eurospar-vo' && <a class="owner-case__back" href="/portfolio/obekt/eurospar-sestroretsk/">Другой объект EUROSPAR · Сестрорецк →</a>}
  {project.slug==='eurospar-sestroretsk' && <a class="owner-case__back" href="/portfolio/obekt/eurospar-vo/">Другой объект EUROSPAR · Васильевский остров →</a>}</div>
- <figure><button type="button" data-case-frame="0" aria-label="Открыть фотографию объекта"><img src={project.cover} alt={'Объект '+project.title} width="1200" height="800" loading="eager" decoding="async"/></button><figcaption>{project.title} · {project.place}</figcaption></figure>
+ <figure><img src={project.cover} alt={'Объект '+project.title} width="1200" height="800" loading="eager" decoding="async"/><figcaption>{project.title} · {project.place}</figcaption></figure>
 </div></header>
 <section class="owner-case__gallery home-shell" aria-label={'Галерея '+project.title}>
  <div class="owner-case__heading"><h2>Фотографии объекта</h2><span>{galleryPhotos.length} кадров</span></div>
- <div class="owner-case__photos">{galleryPhotos.map((url,i)=><button type="button" data-case-frame={project.slug==='na-izluchine-nevy'?i+1:i} aria-label={'Открыть кадр '+(i+1)+' из '+galleryPhotos.length}><img src={url} width="900" height="700" alt={project.title+' · фотография '+(i+1)} loading="lazy" decoding="async"/></button>)}</div>
+ <div class="owner-case__photos">{galleryPhotos.map((url,i)=><button type="button" data-case-frame={i} aria-label={'Открыть кадр '+(i+1)+' из '+galleryPhotos.length}><img src={url} width="900" height="700" alt={project.title+' · фотография '+(i+1)} loading="lazy" decoding="async"/></button>)}</div>
 </section>
 <section class="owner-case__next home-shell"><h2>Ваш объект</h2><p>Пришлите проект или описание задачи. Уточним состав монтажа и необходимые исходные данные.</p><a href="/contact/" class="button button--primary">Связаться с AEROVENTA →</a></section>
 </article>
 <dialog id="owner-case-viewer" aria-label={'Просмотр фотографий '+project.title}>
 <div class="owner-case__viewer-title"><strong>{project.title}</strong><button type="button" data-case-close aria-label="Закрыть галерею">×</button></div>
 <div class="owner-case__viewer-stage"><img src={project.cover} data-case-large alt={project.title} width="1200" height="800"/></div>
-<nav class="owner-case__viewer-nav" aria-label="Перелистывание фотографий"><button type="button" data-case-prev aria-label="Предыдущая фотография">‹</button><span data-case-count>1 из {photos.length}</span><button type="button" data-case-next aria-label="Следующая фотография">›</button></nav>
+<nav class="owner-case__viewer-nav" aria-label="Перелистывание фотографий"><button type="button" data-case-prev aria-label="Предыдущая фотография">‹</button><span data-case-count>1 из {galleryPhotos.length}</span><button type="button" data-case-next aria-label="Следующая фотография">›</button></nav>
 </dialog>
-<script id="owner-case-image-data" type="application/json" set:html={JSON.stringify(photos)} />
+<script id="owner-case-image-data" type="application/json" set:html={JSON.stringify(galleryPhotos)} />
 </BaseLayout>
 <script>
 import {createPhotoPreloader,setViewerPhoto} from '@/lib/gallery-runtime';
