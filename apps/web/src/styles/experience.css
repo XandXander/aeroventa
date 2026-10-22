@@ -763,6 +763,7 @@ img[src="/evidence/7park/object-exterior-day.jpg"]{
  html:has(.mobile-menu[open]){overflow:hidden}
  html.av-mobile-menu-open{overflow:hidden}
  .site-header:has(.mobile-menu[open]){z-index:80;background:#fff}
+ .site-header:has(.mobile-menu[open]) .consultant-launcher--header{visibility:hidden;pointer-events:none}
  .site-header .mobile-menu[open] nav{position:fixed;left:0;right:0;top:56px;max-height:calc(100dvh - 56px);overflow-y:auto;overscroll-behavior:contain;padding:clamp(18px,4vw,32px) 20px max(24px,env(safe-area-inset-bottom,24px));background:#fff;border-bottom:1px solid #cad6dd;box-shadow:0 24px 36px #091f3133;display:grid;gap:4px}
  .site-header .mobile-menu[open] nav a{padding:11px 4px;min-height:44px}
  .site-header .mobile-menu[open] nav .button{justify-content:center;margin-top:9px}

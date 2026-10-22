@@ -300,7 +300,9 @@ try {
   await scenario('MOBILE_MENU_CONTACT_FOCUS','/',390,780,async()=>{
    const toggle=page.locator('[data-mobile-menu] summary');await toggle.click();
    expect(await page.locator('[data-mobile-menu]').evaluate(e=>e.open),'Menu closed');
+   expect(await page.locator('.consultant-launcher').evaluate(e=>getComputedStyle(e).visibility==='hidden'),'Consultant launcher remains active under open menu');
    await page.keyboard.press('Escape');expect(await toggle.evaluate(e=>e===document.activeElement),'Menu Escape focus');
+   expect(await page.locator('.consultant-launcher').evaluate(e=>getComputedStyle(e).visibility==='visible'),'Consultant launcher did not return after menu close');
    await toggle.click();await page.locator('[data-mobile-menu] [data-contact-open]').click();
    expect(await page.locator('[data-contact-dialog]').evaluate(e=>e.open),'Menu CTA failed');
    await page.keyboard.press('Escape');expect(await toggle.evaluate(e=>e===document.activeElement),'Focus restored into hidden menu');

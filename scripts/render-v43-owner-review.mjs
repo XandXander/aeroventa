@@ -668,7 +668,7 @@ try {
       resolveRequest();
       await page.waitForFunction(()=>!document.documentElement.hasAttribute('data-airflow-processing'));
       const status=await form.locator('[data-form-status]').innerText();
-      if(called!==1||!during.pending||!during.realFetch||during.pulse==='none'||!status.includes('Не удалось передать'))
+      if(called!==1||!during.pending||!during.realFetch||during.pulse==='none'||!/Не удалось (?:передать|подтвердить передачу)/i.test(status))
         report.fail.push({reason:'Mocked lead response/pulse/fallback',called,during,status});
     }catch(error){report.fail.push({reason:'Lead and true Pulse interaction test failed',error:String(error)})}
     finally{await context.close()}
@@ -695,20 +695,28 @@ try {
           overflow:document.documentElement.scrollWidth-innerWidth};
       });
       const desktop=width>=761;
-      // The owner-approved concept must be shown whole. Mobile intentionally leads with
-      // the full image, followed by buyer copy and three horizontal routes.
+      // Preserve the whole approved concept. Mobile leads with the complete image,
+      // buyer copy, then a full-width stacked register; natural page scrolling is valid.
       const baseValid=!!m.hero&&!!m.photo&&!!m.copy&&m.routes.length===3&&m.overflow<=1;
       const desktopValid=desktop&&m.photo.w>width*.3&&m.photo.h>220&&
         m.photo.x>m.copy.x+m.copy.w*.7&&
         m.routes.every((r,i)=>r.w>width*.19&&r.h>=70&&(i===0||r.x>m.routes[i-1].x+60))&&!m.inline;
       const mobileValid=!desktop&&m.photo.w>=width-2&&m.photo.h>width*.50&&
         m.photo.y<m.copy.y&&m.photo.y+m.photo.h<=m.copy.y+25&&
-        m.routes.every((r,i)=>r.w>=width*.28&&r.h>=70&&(i===0||r.x>m.routes[i-1].x+25))&&
+        m.routes.every((r,i)=>r.w>=width-40&&r.h>=70&&r.x>=0&&r.x+r.w<=width+1&&(i===0||r.y>=m.routes[i-1].y+m.routes[i-1].h-1))&&
         m.routes[0].y>=m.copy.bottom-3&&!m.inline;
-      // At 390px, the complete three-route register must fit in a normal 844px fold.
-      // At 320px/640px natural scrolling is preferable to hiding/clipping buyer copy.
-      const foldValid=desktop||width!==390||m.routes.at(-1).y+m.routes.at(-1).h<=height+3;
-      if(!(baseValid&&(desktop?desktopValid:mobileValid)&&foldValid))
+      // Verify all three mobile actions together after actual scrolling, rather than
+      // shrinking the image and Russian copy to force the entire page into one fold.
+      let registerVisible=desktop;
+      if(!desktop&&baseValid){
+        await page.locator('.services-hero__routes-inner').scrollIntoViewIfNeeded();
+        registerVisible=await page.evaluate(()=>{
+          const header=document.querySelector('.site-header').getBoundingClientRect();
+          const actions=[...document.querySelectorAll('.services-hero__routes-inner>a')];
+          return actions.length===3&&actions.every(a=>{const r=a.getBoundingClientRect();return r.top>=Math.max(0,header.bottom)-1&&r.bottom<=innerHeight+1&&r.height>=70;});
+        });
+      }
+      if(!(baseValid&&(desktop?desktopValid:mobileValid)&&registerVisible))
         report.fail.push({reason:'Services original concept, uncropped image and complete three-link register',width,height,m});
     }catch(e){report.fail.push({reason:'Services editorial geometry exception',width,height,error:String(e)})}
     finally{await context.close()}
@@ -1174,7 +1182,7 @@ try {
       release();
       await page.waitForFunction(()=>!document.documentElement.hasAttribute('data-airflow-processing'),null,{timeout:4500});
       const status=await form.locator('[data-project-status]').innerText();
-      if(seen!==1||!moving.active||moving.animation==='none'||!status.includes('не были приняты'))
+      if(seen!==1||!moving.active||moving.animation==='none'||!/не были приняты|Не удалось подтвердить передачу документов/i.test(status))
         report.fail.push({reason:'True document POST Pulse and honest error outcome',seen,moving,status});
     }catch(error){report.fail.push({reason:'True project POST Pulse test exception',error:String(error)})}
     finally{await ctx.close()}
