@@ -65,10 +65,19 @@ main :is(.object-detail__hero-grid,.case-detail-hero__grid,.contact-hero__grid){
 main .object-evidence__grid a{box-shadow:none;border:1px solid #dee7e9}
 main .object-evidence__grid a:hover{background:#f5f8f8}
 main .owner-case__photos img{image-rendering:auto}
+/* Contact needs a persistent but compact assistant entry; never bury the trigger
+   at the foot of a long form, and never allow the full-width pill to mask inputs. */
 body:has(.contact-premium) .consultant-launcher{
- position:static!important;inset:auto!important;transform:none!important;
- margin:28px auto!important;max-width:max-content!important;
+ position:fixed!important;top:auto!important;left:auto!important;
+ right:max(12px,env(safe-area-inset-right,12px))!important;
+ bottom:max(12px,env(safe-area-inset-bottom,12px))!important;
+ width:52px!important;min-width:52px;max-width:52px!important;
+ height:52px;justify-content:center;padding:6px;
+ transform:none!important;margin:0!important;
  visibility:visible!important;opacity:1!important;pointer-events:auto!important;
+}
+body:has(.contact-premium) .consultant-launcher__label{
+ position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;
 }
 .case-photo-dialog{background:#edf2f3!important;color:#203c4d!important}
 .case-photo-dialog::backdrop{background:rgba(17,34,46,.82)}
@@ -116,4 +125,21 @@ html:has(dialog[open]){overflow:hidden}
 }
 @media(prefers-reduced-motion:reduce){
  :is(.case-photo-dialog,.portfolio-archive-viewer,#owner-case-viewer) [aria-busy]{transition:none}
+}
+
+/* Unified restrained numeric typography: preserve semantic hierarchy without
+   competing billboard-sized numerals, including short viewport layouts. */
+main :is(.process-strip b,.object-ribbon__number,.object-context-card__number,
+         .service-conflict__steps span,.object-method__steps span,
+         .engagement-steps>li>span){
+ font-size:clamp(.8rem,.95vw,1rem);
+ line-height:1.35;
+ font-weight:650;
+ letter-spacing:0;
+ font-variant-numeric:tabular-nums;
+}
+@media(max-width:760px){
+ main :is(.process-strip b,.object-ribbon__number,.object-context-card__number,
+          .service-conflict__steps span,.object-method__steps span,
+          .engagement-steps>li>span){font-size:.84rem}
 }
