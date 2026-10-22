@@ -624,3 +624,257 @@ html:not(.is-past-first-fold):has(.services-hero--owner-editorial) .consultant-l
 .experience-dialog--consultant .consultant-conversation__history:empty{display:none}
 .experience-dialog--consultant .consultant-structured{margin-top:4px;border-top:1px solid #dce6ec}
 @media(max-width:760px){.experience-dialog--consultant .experience-dialog__shell{padding:18px 16px max(20px,env(safe-area-inset-bottom))}}
+
+/* Owner-acceptance rules integrated with unchanged cascade order. */
+/* 2026-10-20 Owner acceptance — integrated correction; preserve original media and SEO routes. */
+:root{--av-fold-header:56px;--av-fold-ribbon:58px}
+@media(min-width:761px){
+ .home-hero--owner-airflow{min-height:0;padding:0}
+ .home-hero--owner-airflow .home-hero__grid{min-height:calc(100svh - var(--av-fold-header) - var(--av-fold-ribbon))!important;height:auto;max-height:none}
+ .home-hero--owner-airflow .hero-engineering{min-height:0;height:100%;align-self:stretch}
+ .home-hero--owner-airflow .home-hero__copy{min-height:0;padding-block:clamp(20px,3svh,38px)!important;max-width:min(840px,72vw)}
+ .home-hero--owner-airflow h1{font-size:clamp(2.3rem,min(3.7vw,6.7svh),3.9rem);line-height:1.1;max-width:19ch;text-wrap:balance}
+ .home-hero--owner-airflow .home-lede{font-size:clamp(.94rem,1.1vw,1.1rem);line-height:1.45;max-width:47ch}
+ .home-hero--owner-airflow .home-actions{gap:10px;margin-top:clamp(12px,1.7svh,20px)}
+ .home-hero--owner-airflow .object-ribbon{min-height:var(--av-fold-ribbon);align-items:center}
+ :is(.about-premium .about-hero,.services-hero,.portfolio-hero,.objects-hero,.object-detail__hero,.engagement-hero,.evidence-case .case-detail-hero){min-height:0;height:auto;box-sizing:border-box}
+ .practice-hub--articles .practice-index-intro{min-height:0;display:block}
+ .practice-hub--articles .practice-index-intro>.home-shell{padding-block:clamp(24px,3.3vw,48px) clamp(17px,2.2vw,29px)}
+ .practice-hub--articles .practice-index-intro h1{font-size:clamp(2.8rem,5.2vw,5.6rem);font-weight:550;line-height:1.04;letter-spacing:-.044em;margin:10px 0 15px}
+ .practice-hub--articles .practice-index-intro p:not(.home-kicker){font-size:clamp(.98rem,1.2vw,1.18rem);line-height:1.55;max-width:63ch}
+}
+@media(min-width:761px) and (max-height:760px){
+ .home-hero--owner-airflow h1{font-size:clamp(2.15rem,6.8svh,3.5rem);line-height:1.04}
+ .home-hero--owner-airflow .home-lede{font-size:.92rem;line-height:1.36}
+ .home-hero--owner-airflow .home-kicker{margin-bottom:12px}
+ .home-hero--owner-airflow .home-geo{margin-block:10px}
+ .home-hero--owner-airflow .home-actions .button{min-height:40px;padding-block:9px}
+}
+@media(max-width:760px){
+ .home-hero--owner-airflow .home-hero__grid{min-height:calc(100svh - 60px);height:auto;box-sizing:border-box}
+ .home-hero--owner-airflow .home-hero__copy{padding-block:clamp(16px,3svh,25px) 17px}
+ .home-hero--owner-airflow h1{font-size:clamp(2rem,8vw,3.3rem);line-height:1.08}
+ .home-hero--owner-airflow .home-lede{line-height:1.43}
+ .home-hero--owner-airflow .home-actions{margin-top:13px}
+ .practice-hub--articles .practice-index-intro{min-height:0;display:block}
+ .practice-hub--articles .practice-index-intro>.home-shell{padding-block:clamp(18px,4svh,30px) 14px}
+ .practice-hub--articles .practice-index-intro h1{font-size:clamp(2.55rem,10vw,4rem)}
+ .practice-article-index__item{overflow:visible}
+}
+/* Reframe the approved source-derived 7 PARK rendering to omit its sky-corner mark
+   in browser views; do not alter the source photographic/architectural file. */
+img[src="/evidence/7park/object-exterior-day.jpg"]{
+  width:100%;height:auto;aspect-ratio:2 / 1!important;
+  object-fit:cover!important;object-position:center bottom!important;
+}
+.case-photo-dialog img[data-photo-large][src="/evidence/7park/object-exterior-day.jpg"]{
+  aspect-ratio:2 / 1!important;object-fit:cover!important;object-position:center bottom!important;
+}
+/* Gallery and document windows get the same quiet opening discipline as contact sheets. */
+:where(dialog.case-photo-dialog,dialog.ponsse-letter-dialog,dialog.portfolio-archive-viewer)[open]{
+  animation:av-owner-sheet-open .32s cubic-bezier(.22,.78,.22,1) both;
+}
+@media(prefers-reduced-motion:reduce){
+ :where(dialog.case-photo-dialog,dialog.ponsse-letter-dialog,dialog.portfolio-archive-viewer)[open]{animation:none}
+}
+/* Consistent, restrained Onest case actions — keep local contact behavior. */
+.evidence-case .case-detail-hero .home-actions .button{font-family:Onest,system-ui,sans-serif;font-size:clamp(.89rem,1.05vw,1rem);font-weight:610;line-height:1.3;letter-spacing:-.008em;min-height:48px;padding:12px clamp(16px,1.45vw,24px);text-align:center}
+/* Case metadata — clear two-column dossier, not unordered fragments. */
+.evidence-case .case-detail-facts{background:#f6f8f8;padding-block:clamp(35px,4.7vw,65px)}
+.evidence-case .case-detail-facts .home-shell{display:grid;grid-template-columns:minmax(200px,.46fr) minmax(0,1fr);gap:14px clamp(36px,5vw,86px);align-items:start}
+.evidence-case .case-detail-facts .section-index{grid-column:1;margin:0}
+.evidence-case .case-detail-facts h2{grid-column:1;font-size:clamp(1.7rem,2.65vw,3rem);line-height:1.12;max-width:19ch;letter-spacing:-.035em;font-weight:540;margin:16px 0 0;text-wrap:balance}
+.evidence-case .case-detail-facts__grid{grid-column:2;grid-row:1 / span 2;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 clamp(25px,3vw,49px);margin:0;border:0;background:transparent}
+.evidence-case .case-detail-facts__grid>div{min-width:0!important;max-width:none!important;width:100%!important;padding:19px 0 23px!important;border:0!important;border-top:1px solid #ccd7dc!important;background:transparent!important}
+.evidence-case .case-detail-facts dt{font-weight:540;font-size:.72rem;letter-spacing:.065em;text-transform:uppercase;color:#667e89;margin:0 0 8px}
+.evidence-case .case-detail-facts dd{font-size:clamp(1rem,1.24vw,1.2rem);font-weight:550;line-height:1.38;color:#163246;overflow-wrap:anywhere}
+/* Related projects — quiet editorial index, not another text card wall. */
+.evidence-case .case-detail-related{background:#fff;padding-block:clamp(41px,5vw,78px)}
+.evidence-case .case-detail-related__grid{margin-top:clamp(24px,3vw,41px);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(20px,3vw,53px)}
+.evidence-case .case-detail-related__grid>a{min-width:0;min-height:0;padding:17px 0 15px;background:transparent!important;border:0!important;border-top:1px solid #b9ccd5!important;box-shadow:none!important;display:flex;flex-direction:column;gap:13px}
+.evidence-case .case-detail-related__grid>a h3{font-size:clamp(1.22rem,1.75vw,1.85rem);font-weight:570;line-height:1.17;margin:0}
+.evidence-case .case-detail-related__grid>a p{font-size:.94rem;line-height:1.52;max-width:43ch;margin:0;color:#4f6775;flex:1}
+.evidence-case .case-detail-related__grid>a b{font-size:.81rem;letter-spacing:.02em;font-weight:650}
+@media(max-width:960px){
+ .evidence-case .case-detail-facts .home-shell{grid-template-columns:1fr}
+ .evidence-case .case-detail-facts .section-index,.evidence-case .case-detail-facts h2,.evidence-case .case-detail-facts__grid{grid-column:1;grid-row:auto}
+ .evidence-case .case-detail-facts h2{max-width:30ch;margin:0 0 12px}
+ .evidence-case .case-detail-related__grid{grid-template-columns:1fr;gap:13px}
+ .evidence-case .case-detail-related__grid>a{gap:9px}
+}
+@media(max-width:530px){
+ .evidence-case .case-detail-facts__grid{grid-template-columns:1fr}
+ .evidence-case .case-detail-facts__grid>div{min-width:0;max-width:none;flex:none;padding:13px 0 17px!important}
+}
+/* Always-visible consultant: desktop and mobile use the same real button. */
+body .consultant-launcher{position:fixed;display:inline-flex;z-index:49;right:max(16px,env(safe-area-inset-right,16px));bottom:max(17px,env(safe-area-inset-bottom,17px));margin:0;width:auto;max-width:calc(100vw - 32px);transform:none}
+body .consultant-launcher:focus-visible{outline:3px solid #ba774e;outline-offset:4px}
+@media(max-width:760px){
+ body:has(.home-hero--owner-airflow) .consultant-launcher,body:has(.services-hero--owner-editorial) .consultant-launcher,body:has(.about-premium) .consultant-launcher,body:has(.home-consultant-inline) .consultant-launcher,body:has(.services-consultant-inline) .consultant-launcher{display:inline-flex;position:fixed;z-index:49;right:max(12px,env(safe-area-inset-right,12px));bottom:max(15px,env(safe-area-inset-bottom,15px));margin:0}
+ body .consultant-launcher{min-width:52px;min-height:52px;width:52px;max-width:52px;justify-content:center;padding:6px;box-shadow:0 5px 18px rgba(18,41,54,.14)}
+ body .consultant-launcher__label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+ .home-consultant-inline,.services-consultant-inline{display:none!important}
+}
+@media(max-width:360px){
+ body .consultant-launcher{width:52px;max-width:52px;justify-content:center;padding:6px}
+ body .consultant-launcher__label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+}
+/* Controlled sheet states derived from AUNELA; native dialog semantics retained. */
+.experience-dialog[data-state="opening"]{animation:av-owner-sheet-open .38s cubic-bezier(.22,.78,.22,1) both;transform-origin:90% 88%}
+.experience-dialog[data-state="open"]{opacity:1;transform:none;clip-path:inset(0)}
+.experience-dialog[data-state="closing"]{animation:av-owner-sheet-close .22s ease-in both;pointer-events:none;transform-origin:90% 88%}
+@keyframes av-owner-sheet-open{0%{opacity:.18;transform:translateY(12px) scale(.982);clip-path:inset(36% 3% 28% 3% round 12px)}58%{opacity:.84;transform:translateY(4px) scale(.994);clip-path:inset(10% 1% 8% 1% round 12px)}100%{opacity:1;transform:none;clip-path:inset(0)}}
+@keyframes av-owner-sheet-close{from{opacity:1;transform:none;clip-path:inset(0)}to{opacity:0;transform:translateY(8px) scale(.982);clip-path:inset(15% 2% 13% 2%)}}
+.experience-dialog[data-state="opening"]::backdrop{animation:av-owner-backdrop-in .38s ease both}
+.experience-dialog[data-state="closing"]::backdrop{animation:av-owner-backdrop-out .22s ease both}
+@keyframes av-owner-backdrop-in{from{opacity:0}to{opacity:1}}
+@keyframes av-owner-backdrop-out{from{opacity:1}to{opacity:0}}
+@media(prefers-reduced-motion:reduce){
+ .experience-dialog[data-state="opening"],.experience-dialog[data-state="closing"],.experience-dialog[data-state="opening"]::backdrop,.experience-dialog[data-state="closing"]::backdrop{animation:none!important;clip-path:none!important;transform:none!important}
+}
+
+/* Keep the visible launcher clear of HOME object categories on first entry. */
+@media(min-width:761px){
+ html:not(.is-past-first-fold) body:has(.home-hero--owner-airflow) .consultant-launcher{
+  bottom:calc(var(--av-fold-ribbon) + max(16px,env(safe-area-inset-bottom,16px)));
+ }
+}
+@media(max-width:760px){
+ html:not(.is-past-first-fold) body:has(.home-hero--owner-airflow) .consultant-launcher{
+  bottom:max(15px,env(safe-area-inset-bottom,15px));
+ }
+}
+body .consultant-launcher{appearance:none;font-family:inherit;cursor:pointer}
+
+/* Case HERO uses its full first-screen field instead of leaving unused blank space below a top-aligned photograph. */
+@media(min-width:961px){
+ .evidence-case .case-detail-hero{display:flex;align-items:center}
+ .evidence-case .case-detail-hero>.home-shell{flex:0 0 auto}
+}
+/* Neutralise inherited gray card-table surface behind the related editorial navigation. */
+.evidence-case .case-detail-related__grid{
+ background:transparent!important;border:0!important;box-shadow:none!important;
+}
+.evidence-case .case-detail-related__grid>a{
+ background:transparent!important;border-left:0!important;border-right:0!important;border-bottom:0!important;
+}
+
+/* Owner 2026-10-20 supersedes the historical "hidden until scroll" policy.
+   Explicitly override legacy visibility/pointer blocking for all first-fold layouts. */
+html:not(.is-past-first-fold) body:has(.home-hero--owner-airflow) .consultant-launcher,
+html:not(.is-past-first-fold) body:has(.about-hero) .consultant-launcher{
+  visibility:visible!important;opacity:1!important;pointer-events:auto!important;
+}
+/* Services: keep the 3 in-fold category links unblocked; actual contact CTA stays visible.
+   Restore consultant after scrolling below the first-fold route register. */
+html:not(.is-past-first-fold) body:has(.services-hero--owner-editorial) .consultant-launcher{
+  visibility:hidden!important;opacity:0!important;pointer-events:none!important;
+}
+
+/* Private project submission — short form with exact file constraints. */
+.experience-dialog--project .project-upload-intro{color:#4b6472;font-size:.93rem;line-height:1.5;margin:5px 0 18px}
+.experience-dialog--project .project-upload-form{display:grid;gap:12px}
+.experience-dialog--project .project-upload-form .field{display:grid;gap:6px;font-size:.87rem}
+.experience-dialog--project .project-upload-form :is(input[type=text],textarea,input[type=file]){display:block;width:100%;min-width:0;box-sizing:border-box;font:inherit;border:1px solid #c9d8df;border-radius:9px;background:#fff;color:#183548;padding:10px}
+.experience-dialog--project .project-upload-form input[type=file]{font-size:.79rem}
+.experience-dialog--project .project-upload-help{margin:0;color:#5f7480;font-size:.76rem;line-height:1.48}
+.experience-dialog--project .project-upload-honeypot{position:absolute;width:1px;height:1px;clip-path:inset(50%);overflow:hidden}
+.experience-dialog--project [data-project-status]{font-size:.84rem;line-height:1.45;min-height:1.2em;margin:0}
+.experience-dialog--project .premium-contact-form__actions{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.experience-dialog--project .premium-contact-form__actions>a{font-size:.82rem;text-underline-offset:3px}
+.experience-dialog--project .consent-check{display:flex;align-items:flex-start;gap:10px;font-size:.78rem;line-height:1.4}
+.experience-dialog--project .consent-check input{flex:0 0 auto;margin-top:3px}
+.experience-dialog--project .dialog-close{flex:0 0 auto}
+@media(max-width:760px){.experience-dialog--project{max-height:96dvh;overflow-y:auto}.experience-dialog--project .experience-dialog__shell{padding:20px 16px max(22px,env(safe-area-inset-bottom))}}
+
+/* Owner-first fold: an objects landing page must not reveal a clipped next section. */
+@media(min-width:761px){
+ .objects-hero{min-height:calc(100svh - var(--av-fold-header))!important}
+}
+
+@media(max-width:760px){
+ .home-hero--owner-airflow .home-hero__grid{min-height:0;height:auto}
+ .home-hero--owner-airflow .home-hero__copy{padding-block:22px 24px}
+ .home-hero--owner-airflow .home-geo{font-size:.8rem;line-height:1.4}
+ .home-hero--owner-airflow .home-actions .button{width:100%;min-height:46px}
+ .object-detail__hero,.engagement-hero,.case-detail-hero{min-height:0}
+ .object-detail__hero-grid,.engagement-hero__grid{align-items:start;gap:20px}
+ .object-detail__hero h1,.engagement-hero h1{font-size:clamp(2.15rem,8.8vw,3.1rem);line-height:1.07}
+ .object-detail__hero-media{margin-top:12px}
+}
+@media(max-width:1050px){
+ /* Native details[open] is immediate; its JS toggle event may be deferred. */
+ html:has(.mobile-menu[open]){overflow:hidden}
+ html:has(.mobile-menu[open]) .consultant-launcher{visibility:hidden!important;pointer-events:none!important}
+ html.av-mobile-menu-open{overflow:hidden}
+ html.av-mobile-menu-open .consultant-launcher{visibility:hidden!important;pointer-events:none!important}
+ .site-header:has(.mobile-menu[open]){z-index:80;background:#fff}
+ .site-header .mobile-menu[open] nav{position:fixed;left:0;right:0;top:56px;max-height:calc(100dvh - 56px);overflow-y:auto;overscroll-behavior:contain;padding:clamp(18px,4vw,32px) 20px max(24px,env(safe-area-inset-bottom,24px));background:#fff;border-bottom:1px solid #cad6dd;box-shadow:0 24px 36px #091f3133;display:grid;gap:4px}
+ .site-header .mobile-menu[open] nav a{padding:11px 4px;min-height:44px}
+ .site-header .mobile-menu[open] nav .button{justify-content:center;margin-top:9px}
+}
+
+/* Editorial rules integrated with unchanged cascade order. */
+/* 21 October 2026: coherent editorial layer; preserve accepted media and runtime. */
+:root{--av-editorial-ink:#132b3e;--av-editorial-secondary:#405664;--av-editorial-soft:#f6f8f8;--av-editorial-wash:#eaf0f1;--av-editorial-orange-text:#b94720;--av-editorial-blue-text:#216a8c}
+body{background:#fff}
+:where(.home-kicker,.section-index,.section-index--orange){color:var(--av-editorial-orange-text)}
+:where(.practice-article-index__tag,.portfolio-card__top b,.object-evidence__grid a>span){color:var(--av-editorial-secondary)}
+:where(.object-detail,.evidence-case,.portfolio-hub,.practice-hub,.about-premium,.engagement,.hub-page) .conversion-close{
+ background:var(--av-editorial-soft);color:var(--av-editorial-ink);
+ padding-block:clamp(38px,5vw,74px);border-block:1px solid #d7dfe4}
+:where(.object-detail,.evidence-case,.portfolio-hub,.practice-hub,.about-premium,.engagement,.hub-page) .conversion-close :where(.section-index,.section-index--orange){color:var(--av-editorial-orange-text)}
+:where(.object-detail,.evidence-case,.portfolio-hub,.practice-hub,.about-premium,.engagement,.hub-page) .conversion-close .button--light{background:#071c2b;color:#fff;border-color:#071c2b;box-shadow:none}
+:where(.object-detail,.evidence-case,.portfolio-hub,.practice-hub,.about-premium,.engagement,.hub-page) .conversion-close .home-actions>.button:not(:first-child){background:transparent;color:var(--av-editorial-ink);border:1px solid #84949d;box-shadow:none}
+.portfolio-hub .conversion-close .portfolio-close-copy{color:var(--av-editorial-secondary);max-width:64ch;line-height:1.65}
+:where(.evidence-case,.portfolio-hub,.practice-hub,.object-detail) .home-section{padding-block:clamp(44px,6vw,88px)}
+:where(.portfolio-hub,.evidence-case,.practice-hub) h2{letter-spacing:-.035em;text-wrap:balance}
+.consultant-conversation__intro{color:var(--av-editorial-secondary);font-size:.92rem;line-height:1.5;margin:4px 0 16px}
+.portfolio-hero__neva-open{display:block;width:100%;padding:0;background:transparent;border:0;cursor:zoom-in;text-align:inherit}
+.portfolio-hero__neva-open img{display:block;width:100%;height:auto;aspect-ratio:531/376;object-fit:contain}
+.portfolio-hero__neva-open:focus-visible{outline:3px solid var(--av-editorial-blue-text);outline-offset:4px}
+.portfolio-sport__photography{display:grid!important;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr)!important;gap:clamp(12px,2vw,24px)!important;align-content:start}
+.portfolio-sport__photography>.portfolio-sport__photo{display:block;position:relative;margin:0;min-width:0;overflow:hidden;aspect-ratio:1.45;min-height:0;max-height:none}
+.portfolio-sport__photography>.portfolio-sport__photo--large{aspect-ratio:1.4}
+.portfolio-sport__photography>.portfolio-sport__photo img{width:100%;height:100%;object-fit:cover}
+.practice-featured{background:#fff;border-top:1px solid #d7dfe4}
+.practice-featured__heading{display:flex;align-items:end;justify-content:space-between;gap:22px;margin-bottom:clamp(22px,3vw,38px)}
+.practice-featured__heading h2{margin:.2em 0;font-size:clamp(1.75rem,3.5vw,3rem);line-height:1.12}
+.practice-featured__heading p:not(.section-index){max-width:66ch;margin:10px 0 0;color:var(--av-editorial-secondary);line-height:1.5}
+.practice-featured__heading>a{flex-shrink:0;text-underline-offset:5px;font-weight:650}
+.practice-featured__heading--archive{padding-top:clamp(36px,4vw,66px);padding-bottom:12px;margin-bottom:0}
+.practice-featured__grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(14px,2vw,24px)}
+.practice-featured__card{display:flex;flex-direction:column;gap:9px;color:var(--av-editorial-ink);text-decoration:none;min-width:0}
+.practice-featured__card img{display:block;width:100%;aspect-ratio:1.3;object-fit:cover}
+.practice-featured__card span{font-size:.85rem;color:var(--av-editorial-orange-text)}
+.practice-featured__card h3{font-size:clamp(1.1rem,1.6vw,1.48rem);line-height:1.2;margin:0}
+.practice-featured__card p{margin:0;color:var(--av-editorial-secondary);font-size:.91rem;line-height:1.45}
+.practice-featured__card b{margin-top:auto;padding-top:6px;font-size:.9rem}
+.practice-article-index{background:var(--av-editorial-soft)}
+.object-detail--editorial-media .object-detail__hero-media{box-sizing:border-box}
+@media(max-width:980px){
+ .practice-featured__grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .practice-featured__heading{align-items:start;flex-direction:column}
+}
+@media(max-width:760px){
+ .practice-featured__grid{grid-template-columns:1fr}
+ .practice-featured__card{border-bottom:1px solid #d7dfe4;padding-bottom:22px}
+ .practice-featured__card img{aspect-ratio:1.58}
+ .portfolio-sport__photography{grid-template-columns:1fr!important}
+ .portfolio-sport__photography>.portfolio-sport__photo{aspect-ratio:1.45!important}
+ :where(.portfolio-grid,.object-evidence__grid,.story-index__grid,.practical-index__grid){grid-template-columns:1fr!important}
+ .object-detail--editorial-media .object-detail__hero-media{width:min(100%,531px);justify-self:center;margin-inline:auto}
+ :where(.object-detail,.evidence-case,.portfolio-hub,.practice-hub,.about-premium) .conversion-close .home-actions{flex-direction:column;align-items:stretch}
+ :where(.object-detail,.evidence-case,.portfolio-hub,.practice-hub,.about-premium) .conversion-close .home-actions>.button{width:100%;white-space:normal;min-height:48px}
+}
+@media(prefers-reduced-motion:reduce){
+ .practice-featured__card,.portfolio-sport__photo,.portfolio-hero__neva-open{transition:none!important}
+}
+/* Short desktop viewport: editorial summary and first buyer case remain visible
+   without hiding copy or weakening the real 1440×768 browser assertion. */
+@media (min-width:1024px) and (max-height:800px) {
+ .practice-hub--articles .practice-index-intro>.home-shell{padding-block:18px 12px!important}
+ .practice-hub--articles .practice-featured{padding-top:22px!important}
+ .practice-hub--articles .practice-featured__heading{margin-bottom:12px!important}
+ .practice-hub--articles .practice-featured__heading h2{font-size:clamp(1.6rem,2.45vw,2.35rem)}
+}

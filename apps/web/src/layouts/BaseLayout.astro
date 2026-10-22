@@ -9,8 +9,6 @@ import { canonicalUrl, jsonLd, robotsValue, serializeJsonLd } from '@/lib/seo';
 import type { ContentRecord } from '@/lib/types';
 import globalCssUrl from '@/styles/global.css?url';
 import experienceCssUrl from '@/styles/experience.css?url';
-import ownerAcceptanceCssUrl from '@/styles/owner-acceptance-20261020.css?url';
-import finalEditorialCssUrl from '@/styles/hiend-editorial-20261021.css?url';
 
 interface Props { content: ContentRecord; }
 const { content } = Astro.props;
@@ -120,8 +118,6 @@ const googleVerification = (import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION || '
     <link rel="preload" href="/fonts/onest-variable.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href={globalCssUrl} />
     <link rel="stylesheet" href={experienceCssUrl} />
-    <link rel="stylesheet" href={ownerAcceptanceCssUrl} />
-    <link rel="stylesheet" href={finalEditorialCssUrl} />
     <title>{content.seo_title || content.title}</title>
     {seoDescription && <meta name="description" content={seoDescription} />}
     <meta name="robots" content={robots} />
