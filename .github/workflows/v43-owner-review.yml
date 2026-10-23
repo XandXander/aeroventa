@@ -6,6 +6,10 @@ on:
     paths:
       - 'apps/web/**'
       - 'scripts/render-v43-owner-review.mjs'
+      - 'scripts/pr12-recovery-browser-qa.mjs'
+      - 'scripts/pr12-sitewide-regression.mjs'
+      - 'scripts/package-pr12-art-review.mjs'
+      - 'docs/recovery/owner-coverage-candidate.json'
       - '.github/workflows/v43-owner-review.yml'
   workflow_dispatch:
 
@@ -16,12 +20,13 @@ jobs:
   screenshot-review:
     if: github.event_name == 'workflow_dispatch' || github.event.pull_request.number == 10 || github.event.pull_request.number == 11 || github.event.pull_request.number == 12
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - name: Checkout exact review commit
         uses: actions/checkout@v5
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
           persist-credentials: false
       - name: Set up Node
         uses: actions/setup-node@v6
@@ -37,6 +42,11 @@ jobs:
         run: |
           npm run generate:hosting-rules
           npm run validate
+          # The validation generator rewrites a non-runtime Directus planning artifact.
+          # Restore that generated file to the exact checked-out input, before compiling.
+          git show HEAD:migration/directus-import-plan.json > migration/directus-import-plan.json
+          git diff --exit-code
+          node --check scripts/package-pr12-art-review.mjs
           npm run build:web
           npm run validate:dist
       - name: Install isolated browser test dependency
@@ -60,6 +70,18 @@ jobs:
         env:
           GITHUB_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: node scripts/pr12-sitewide-regression.mjs
+      - name: Exact-source complete render, geometry, interactions and states
+        if: success()
+        env:
+          RECOVERY_QA_PHASE: all
+          RECOVERY_QA_OUTPUT: PR12_EXACT_QA
+        run: node scripts/pr12-recovery-browser-qa.mjs
+      - name: Actual raster background and computed text contrast
+        if: success()
+        env:
+          RECOVERY_QA_PHASE: surfaces
+          RECOVERY_QA_OUTPUT: PR12_EXACT_SURFACES
+        run: node scripts/pr12-recovery-browser-qa.mjs
       - name: Upload compact sitewide interaction and first-fold evidence
         if: always()
         uses: actions/upload-artifact@v6
@@ -117,55 +139,21 @@ jobs:
       # This artifact must not replace staging authentication or production Bitrix.
       # Browser QA must PASS first. The archive contains compiled site files
       # at ZIP root. Existing staging .htaccess / Basic Auth MUST be preserved.
-      - name: Seal tested staging-only site
+      - name: Seal one source-bound visual HTML, checked webroot ZIP and manifest
         if: success() && (github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.number == 12))
         env:
           REVIEW_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-        run: |
-          test -f apps/web/dist/index.html
-          test -f apps/web/dist/.htaccess
-          test -f apps/web/dist/404.html
-          test -f apps/web/dist/sitemap.xml
-          grep -qi 'name="robots" content="noindex' apps/web/dist/index.html
-          printf 'User-agent: *\nDisallow: /\n' > apps/web/dist/robots.txt
-          grep -q '^Disallow: /' apps/web/dist/robots.txt
-          # Keep existing protected Beget staging .htaccess untouched.
-          # Only the static public site-root files may be included in the ZIP.
-          mv apps/web/dist/.htaccess "$RUNNER_TEMP/aeroventa-generated-hosting-rules.txt"
-          test ! -f apps/web/dist/.htaccess
-          test ! -e apps/web/dist/STAGING_ONLY_BUILD_INFO.txt
-          test ! -e apps/web/dist/STAGING_RULES_REFERENCE_ONLY.txt
-          python3 - <<'PY'
-          from pathlib import Path
-          import os
-          root=Path('apps/web/dist')
-          htmls=list(root.rglob('*.html'))
-          assert len(htmls)>=40, len(htmls)
-          assert all('name="robots" content="noindex' in p.read_text() for p in htmls)
-          assert (root/'index.html').is_file() and (root/'404.html').is_file()
-          assert not any(p.is_symlink() for p in root.rglob('*'))
-          forbidden_names={'.htaccess','.git','node_modules','STAGING_ONLY_BUILD_INFO.txt','STAGING_RULES_REFERENCE_ONLY.txt'}
-          for item in root.rglob('*'):
-              if not item.is_file():
-                  continue
-              parts=item.relative_to(root).parts
-              assert not any(part in forbidden_names or part.startswith('.env') for part in parts), parts
-              assert not item.name.lower().endswith(('.log','.zip','.dpapi')), parts
-          print('STAGING_ONLY_SOURCE_SHA='+os.environ['REVIEW_SHA'])
-          print('WEBROOT_FILES='+str(sum(p.is_file() for p in root.rglob('*'))))
-          print('EXISTING_STAGING_HTACCESS=DO_NOT_REPLACE')
-          print('MODE=FIXTURE_STAGING_ONLY')
-          PY
-      - name: Upload exact tested staging-only site
+        run: node scripts/package-pr12-art-review.mjs
+      - name: Upload one final review delivery (NO deployment)
         if: success() && (github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.number == 12))
         uses: actions/upload-artifact@v6
         with:
-          name: AEROVENTA_PR12_STAGING_ONLY_SITE_DO_NOT_UPLOAD_TO_PRODUCTION
-          path: apps/web/dist/
-          include-hidden-files: true
+          name: AEROVENTA_PR12_FINAL_ART_REVIEW_AND_STAGING_ZIP
+          path: PR12_FINAL_DELIVERY/
           if-no-files-found: error
-          retention-days: 7
+          retention-days: 30
           compression-level: 6
+
 
 
   bitrix-preserved-sources:

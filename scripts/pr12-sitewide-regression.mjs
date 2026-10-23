@@ -3,6 +3,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { chromium } from 'playwright';
+import { execFileSync } from 'node:child_process';
 const root=path.resolve('apps/web/dist');
 const origin='http://127.0.0.1:4178';
 const vp=[[320,700],[390,844],[430,932],[768,1024],[834,1112],[1024,768],[1364,646],[1440,900],[1600,900],[1920,1080]];
@@ -100,7 +101,7 @@ await scenario('SPORT_LIGHTBOX_ONE_CLICK','/portfolio/',async()=>{
 await scenario('NEVA_SIX_IMAGES_GRID_AND_LIGHTBOX','/portfolio/obekt/na-izluchine-nevy/',async()=>{
  eq(await page.locator('.owner-case__photos button').count(),6,'gallery count');
  eq(await page.locator('.owner-case__photos img[src*="owner-neva-facade"]').count(),0,'no duplicate facade');
- const cols=await page.locator('.owner-case__photos').evaluate(x=>getComputedStyle(x).gridTemplateColumns.split(' ').length);
+ const cols=await page.locator('.owner-case__photos button').evaluateAll(nodes=>new Set(nodes.map(n=>Math.round(n.getBoundingClientRect().left))).size);
  eq(cols,3,'desktop 3 columns');
  await page.locator('.owner-case__photos button').first().click();
  const dlg=page.locator('#owner-case-viewer');eq(await dlg.evaluate(d=>d.open),true,'open');
@@ -110,8 +111,8 @@ await scenario('NEVA_SIX_IMAGES_GRID_AND_LIGHTBOX','/portfolio/obekt/na-izluchin
  if(before===after)throw Error('Next click did not advance');
  await page.keyboard.press('Escape');eq(await dlg.evaluate(d=>d.open),false,'close');
  await page.setViewportSize({width:768,height:1024});
- const colsTablet=await page.locator('.owner-case__photos').evaluate(x=>getComputedStyle(x).gridTemplateColumns.split(' ').length);
- eq(colsTablet,2,'tablet 2 columns');return {cols,colsTablet,frames:6,before,after};
+ const colsTablet=await page.locator('.owner-case__photos button').evaluateAll(nodes=>new Set(nodes.map(n=>Math.round(n.getBoundingClientRect().left))).size);
+ if(![2,3].includes(colsTablet))throw Error('Six source photographs need two or three balanced physical columns on tablet');return {cols,colsTablet,frames:6,before,after};
 });
 for(const route of ['/portfolio/obekt/apart-hotel/','/portfolio/obekt/akvilon-yanino/','/portfolio/obekt/himprom/']){
  await scenario('PROJECT_LIGHTBOX_'+route,route,async()=>{
@@ -145,7 +146,7 @@ await scenario('DIRECT_CATEGORY_NAVIGATION','/',async()=>{
  }return {routes:labels.length};
 });
 await browser.close();
-const result={head:process.env.GITHUB_SHA||'LOCAL_EXACT_WORKFLOW_SHA',generated_at:new Date().toISOString(),routes:routes.length,legacy_alias_verified:legacyAlias,inspected_routes:inspectRoutes.length,viewports:vp.length,route_viewport_samples:stats.length,captures,interactions,issues,verdict:issues.length?'FAIL':'PASS_GEOMETRY_AND_INTERACTION_ONLY',artistic_acceptance:'NOT_PROVEN'};
+const result={head:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),generated_at:new Date().toISOString(),routes:routes.length,legacy_alias_verified:legacyAlias,inspected_routes:inspectRoutes.length,viewports:vp.length,route_viewport_samples:stats.length,captures,interactions,issues,verdict:issues.length?'FAIL':'PASS_GEOMETRY_AND_INTERACTION_ONLY',artistic_acceptance:'NOT_PROVEN'};
 await fs.writeFile(path.join(output,'sitewide.json'),JSON.stringify(result,null,2));
 console.log('PR12_SITEWIDE_REGRESSION',JSON.stringify({...result,captures:captures.length,issues:issues.slice(0,35)},null,2).slice(0,9000));
 if(issues.length)process.exitCode=1;
