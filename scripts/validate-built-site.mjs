@@ -170,7 +170,7 @@ if (await exists(path.join(dist, '.htaccess'))) {
 const portfolioFile=htmlFileFor('/portfolio/');
 if(await exists(portfolioFile)){
   const html=await fs.readFile(portfolioFile,'utf8');
-  check(/id="featured-case-title"[^>]*>7 PARK<\/h2>/.test(html),'Owner O22: 7 PARK must be section 01 lead');
+  check(/id="featured-case-title"[^>]*>На излучине Невы<\/h2>/.test(html),'Owner 2026-10-23: Neva must be the featured lead');
   const cards=[...html.matchAll(/<a\b[^>]*class="portfolio-card(?: [^"]*)?"[^>]*>/g)].map(m=>m[0]);
   check(cards.length===12,'Owner O22: exactly twelve independent named project cards required');
   const hrefs=cards.map(tag=>tag.match(/href="([^"]+)"/)?.[1]).filter(Boolean);

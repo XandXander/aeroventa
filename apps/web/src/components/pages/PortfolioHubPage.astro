@@ -7,7 +7,6 @@ interface Props { content: ContentRecord; fixture: boolean; }
 const { content } = Astro.props;
 
 const cases = [
-  { index:'01', title:'7 PARK', image:'/evidence/7park/object-exterior-day.jpg', location:'Павловск', scope:'Жилой квартал · приточно-вытяжная вентиляция', detail:'7 домов · 18.11.2020 — 10.12.2020', href:'/blog/detail/kak-my-sdali-7-domov/', kind:'Жилой квартал' },
   { index:'02', title:'Ресторан в ЖК «Леонтьевский Мыс»', image:'/evidence/leont/owner-cover-v43.webp', location:'Санкт-Петербург', scope:'Ресторан · приточно-вытяжная вентиляция + оборудование', detail:'Монтаж · 2 недели', href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/', kind:'Рестораны' },
   { index:'03', title:'НТФФ «Полисан»', image:'/evidence/polisan/archive/20180601-133711.webp', location:'Санкт-Петербург, ул. Салова, 72', scope:'Фармацевтический объект · вентиляция + оборудование', detail:'Монтаж · 06.2017 — 06.2018', href:'/blog/detail/ntff-polisan/', kind:'Производство' },
   { index:'04', title:'Квартира на Маршала Жукова', image:'/evidence/zhukov/owner-cover-v43.webp', location:'Санкт-Петербург', scope:'Квартира · приточно-вытяжная вентиляция', detail:'Объём / срок · ~100 м.п., 5 дней', href:'/blog/detail/kvartira-na-zhukova/', kind:'Квартиры' },
@@ -223,6 +222,7 @@ const sportPhotos = [
           </a>
         ))}
       </div>
+      <a class="portfolio-list__extra" href="/blog/detail/kak-my-sdali-7-domov/"><span>7 PARK · Павловск · семь домов · 18.11.2020 — 10.12.2020</span><b>Смотреть монтаж →</b></a>
       <a class="portfolio-list__extra" href="/portfolio/obekt/eurospar-sestroretsk/">
         <span>Дополнительный объект · EUROSPAR, Сестрорецк</span><b>Смотреть фотографии →</b>
       </a>
