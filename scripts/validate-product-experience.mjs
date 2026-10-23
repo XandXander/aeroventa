@@ -327,13 +327,13 @@ check(polisanMediaSection.includes('    media:[') &&
       polisanMediaSection.includes('20180601-133711.webp') &&
       polisanMediaSection.includes('20180601-133720.webp'),
       'Owner Polisan: chosen exterior case cover with authentic roof photos');
-check(portfolioSource.includes('id="featured-case-title">7 PARK') &&
+check(portfolioSource.includes('id="featured-case-title">На излучине Невы') &&
       portfolioSource.includes('{cases.map((item) => (') &&
       portfolioSource.includes("archiveCases.filter(item => item.index !== '09')") &&
       portfolioSource.includes('href="/blog/detail/kak-my-sdali-7-domov/"') &&
       portfolioSource.includes('class="portfolio-sport"') &&
       portfolioSource.includes("if(addedNevaPhotos.length!==6)"),
-      'Owner O22: 7 PARK featured, 12 distinct real cases, separate sports and 6 integrity-checked Neva originals');
+      'Owner 2026-10-23: Neva featured, 7 PARK retained, separate sports and 6 integrity-checked Neva originals');
 for(const name of ['cover','02','03','04']){
   const img=await fs.stat(path.join(root,'apps/web/public/evidence/owner-portfolio/sport-komendantskiy',name+'.webp')).catch(()=>null);
   check(Boolean(img?.isFile()&&img.size>15000), 'Sports object selected provenance media exists: '+name);
