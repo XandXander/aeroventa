@@ -45,7 +45,7 @@ async function capture(directory,version,routes,target){
     let f=path.join(directory,route.replace(/^\//,''));if(route.endsWith('/'))f=path.join(f,'index.html');
     if(!await fs.access(f).then(()=>true).catch(()=>false))continue;
     const res=await p.goto(origin+route,{waitUntil:'load',timeout:30000});if(res.status()!==200)continue;
-    if(route!=='/404.html'&&await p.locator('meta[name="aeroventa:source"]').getAttribute('content')!==version)throw Error('Capture SHA mismatch '+route);
+    if(route!=='/404.html'&&await p.locator('meta[name="aeroventa:source"],meta[name="aeroventa-source-sha"]').getAttribute('content')!==version)throw Error('Capture SHA mismatch '+route);
     await p.evaluate(async()=>{await document.fonts.ready;for(const i of document.images)i.loading='eager';await Promise.all([...document.images].filter(i=>i.getAttribute('src')).map(i=>i.decode().catch(()=>{})));await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));});
     const b=await p.screenshot({fullPage:true,type:'jpeg',quality:82,timeout:30000}),m=await sharp(b).metadata();
     target.push({route,width,viewportHeight:height,imageWidth:m.width,imageHeight:m.height,source_sha:version,title:await p.locator('main h1,h1').first().innerText(),image:'data:image/jpeg;base64,'+b.toString('base64'),sha256:digest(b)});
