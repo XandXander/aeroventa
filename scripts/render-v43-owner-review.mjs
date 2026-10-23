@@ -698,11 +698,11 @@ try {
       const baseValid=!!m.hero&&!!m.photo&&!!m.copy&&m.routes.length===3&&m.overflow<=1;
       const desktopValid=desktop&&m.photo.w>width*.3&&m.photo.h>220&&
         m.photo.x>m.copy.x+m.copy.w*.7&&
-        m.routes.every((r,i)=>r.w>width*.19&&r.h>=70&&(i===0||r.x>m.routes[i-1].x+60))&&!m.inline;
+        m.routes.every((r,i)=>r.w>width*.19&&r.h>=70&&(i===0||r.x>m.routes[i-1].x+60))&&m.inline;
       const mobileValid=!desktop&&m.photo.w>=width-48&&m.photo.h>width*.40&&
         m.photo.y<m.copy.y&&m.photo.y+m.photo.h<=m.copy.y+25&&
         m.routes.every((r,i)=>r.w>=width-40&&r.h>=70&&r.x>=0&&r.x+r.w<=width+1&&(i===0||r.y>=m.routes[i-1].y+m.routes[i-1].h-1))&&
-        m.routes[0].y>=m.copy.bottom-3&&!m.inline;
+        m.routes[0].y>=m.copy.bottom-3&&m.inline;
       // Verify all three mobile actions together after actual scrolling, rather than
       // shrinking the image and Russian copy to force the entire page into one fold.
       let registerVisible=desktop;
@@ -892,7 +892,7 @@ try {
         },zoom);
         if (result.horizontal>1 ||
             (width>=1024&&zoom===1&&route==='/'&&result.firstFoldBottom!==null&&result.firstFoldBottom<height-5) ||
-            (route==='/blog/'&&zoom===1&&(result.firstArticleTop===null||result.firstArticleTop>height-160)) ||
+            (route==='/blog/'&&zoom===1&&(result.firstArticleTop===null||result.firstArticleTop<height-5)) ||
             (zoom===1&&!result.traceVisible)) {
           if (result.horizontal>1) result.offenders=await page.evaluate(()=>[...document.querySelectorAll('body *')].map(el=>{const b=el.getBoundingClientRect();return{tag:el.tagName.toLowerCase(),cls:typeof el.className==='string'?el.className.slice(0,90):'',left:Math.round(b.left),right:Math.round(b.right),scroll:el.scrollWidth,client:el.clientWidth}}).filter(x=>x.right>innerWidth+1||x.left < -1).slice(0,15));
           report.fail.push({reason:'Owner height/zoom/real TRACE gate',route,width,height,zoom,result});
