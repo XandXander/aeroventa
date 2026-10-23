@@ -330,7 +330,7 @@ check(polisanMediaSection.includes('    media:[') &&
 check(portfolioSource.includes('id="featured-case-title">На излучине Невы') &&
       portfolioSource.includes('{cases.map((item) => (') &&
       portfolioSource.includes("archiveCases.filter(item => item.index !== '09')") &&
-      portfolioSource.includes('href="/blog/detail/kak-my-sdali-7-domov/"') &&
+      portfolioSource.includes("href:'/blog/detail/kak-my-sdali-7-domov/'") &&
       portfolioSource.includes('class="portfolio-sport"') &&
       portfolioSource.includes("if(addedNevaPhotos.length!==6)"),
       'Owner 2026-10-23: Neva featured, 7 PARK retained, separate sports and 6 integrity-checked Neva originals');
