@@ -2117,6 +2117,16 @@ main .section-heading > a {
   aspect-ratio: 1.9;
   object-fit: cover;
 }
+/* Owner Neva cover is 531px wide: present at native resolution, without upscaling. */
+.av-portfolio-feature__photos figure:first-child img {
+  width: min(100%, 531px);
+  aspect-ratio: auto;
+  object-fit: contain;
+}
+.av-portfolio-feature__photos figure:first-child a {
+  display: flex;
+  justify-content: center;
+}
 .av-portfolio-feature__photos figure + figure img {
   aspect-ratio: 1.357;
   object-position: center;
