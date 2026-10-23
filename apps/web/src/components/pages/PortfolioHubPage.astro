@@ -184,7 +184,33 @@ const sportPhotos = [
 
 <article class="portfolio-hub av-page av-portfolio">
   <header class="av-portfolio-intro av-shell"><div><p class="av-kicker">Выполненные объекты AEROVENTA</p><h1>Наши работы</h1></div><p class="av-lead">Жилые, коммерческие и производственные объекты. Задачи, состав монтажа и фотографии каждой площадки.</p></header>
-  <section class="av-portfolio-feature" aria-labelledby="featured-case-title"><div class="av-shell"><div class="av-portfolio-feature__heading"><div><p class="av-kicker">Жилой объект · Санкт-Петербург</p><h2 id="featured-case-title">На излучине Невы</h2></div><p>Реальный объект и подтверждённые фотографии монтажа вентиляции</p><a class="av-link" href="/portfolio/obekt/na-izluchine-nevy/">Смотреть объект →</a></div><div class="av-portfolio-feature__photos"><figure><a href="/portfolio/obekt/na-izluchine-nevy/"><img src="/evidence/residential/owner-neva-facade-20261016.jpg" width="531" height="379" loading="eager" decoding="async" alt="Архитектурный вид здания объекта «На излучине Невы»"/></a><figcaption>Архитектура объекта</figcaption></figure><figure><a href="/portfolio/obekt/na-izluchine-nevy/"><img src="/evidence/residential/neva/curated-01.webp" width="1500" height="1125" loading="eager" decoding="async" alt="Реальные смонтированные воздуховоды на объекте «На излучине Невы»"/></a><figcaption>Монтаж вентиляции</figcaption></figure></div><dl class="av-portfolio-feature__facts"><div><dt>Объект</dt><dd>Жилое помещение</dd></div><div><dt>Работы</dt><dd>Монтаж вентиляционных трасс</dd></div><div><dt>Доказательства</dt><dd>Фото объекта и монтажа</dd></div></dl></div></section>
+  <section class="av-portfolio-feature" aria-labelledby="featured-case-title">
+    <div class="av-shell av-portfolio-feature__dossier">
+      <header class="av-portfolio-feature__intro">
+        <p class="av-kicker">Жилой объект · Санкт-Петербург</p>
+        <h2 id="featured-case-title">На излучине Невы</h2>
+        <p>Реальный объект и подтверждённые фотографии монтажа вентиляции.</p>
+      </header>
+      <figure class="av-portfolio-feature__primary">
+        <a href="/portfolio/obekt/na-izluchine-nevy/" aria-label="Открыть кейс «На излучине Невы»">
+          <img src="/evidence/residential/owner-neva-facade-20261016.jpg" width="531" height="376" loading="eager" decoding="async" alt="Архитектурный вид объекта «На излучине Невы»" />
+        </a>
+        <figcaption>Архитектура объекта</figcaption>
+      </figure>
+      <figure class="av-portfolio-feature__secondary">
+        <a href="/portfolio/obekt/na-izluchine-nevy/" aria-label="Монтажные фотографии объекта «На излучине Невы»">
+          <img src="/evidence/residential/neva/curated-01.webp" width="1500" height="1125" loading="lazy" decoding="async" alt="Реальные смонтированные воздуховоды на объекте «На излучине Невы»" />
+        </a>
+        <figcaption>Монтаж вентиляции</figcaption>
+      </figure>
+      <dl class="av-portfolio-feature__facts">
+        <div><dt>Объект</dt><dd>Жилое помещение</dd></div>
+        <div><dt>Работы</dt><dd>Монтаж вентиляционных трасс</dd></div>
+        <div><dt>Подтверждение</dt><dd>Фотографии работ</dd></div>
+      </dl>
+      <a class="av-portfolio-feature__cta" href="/portfolio/obekt/na-izluchine-nevy/">Смотреть объект <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
 
   <section class="home-section portfolio-list" aria-labelledby="cases-title">
     <div class="home-shell">
@@ -211,7 +237,7 @@ const sportPhotos = [
             </div>
           </a>
         ))}
-        {archiveCases.filter(item => item.index !== '09').map(item => (
+        {archiveCases.filter(item => item.index !== '09' && item.index !== '14').map(item => (
           <a id={`owner-${item.index}`} class="portfolio-card portfolio-card--archive" href={item.index==='14'?'/portfolio/obekt/na-izluchine-nevy/':`/portfolio/obekt/${gallerySlugFor(item.cover)}/`} aria-label={`Открыть объект: ${item.title}`}>
             <div class="portfolio-card__media"><img src={item.cover} width="1200" height="800" loading="lazy" decoding="async" alt={`Фотография объекта: ${item.title}`}/></div>
             <div class="portfolio-card__body">

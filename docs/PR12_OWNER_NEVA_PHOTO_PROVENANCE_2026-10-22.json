@@ -38,8 +38,19 @@
     }
   ],
   "processing": "Pillow LANCZOS fit within 1000x800, RGB, WebP quality 75 method 6; no invented compositing",
-  "excluded": [
-    "IMG_7571.JPG — alternative facade in the source folder; not used because the existing Owner-approved Neva facade must remain unmodified"
-  ],
-  "release": "staging source only; no production changes"
+  "excluded": [],
+  "release": "staging source only; no production changes",
+  "owner_selected_facade": {
+    "source_archive": "Новая папка (2).zip",
+    "source_member": "КВАРТИРА На излучине Невы СПб/IMG_7571.JPG",
+    "sha256": "f83228bf67af248c14a5170d442ec7fff290297d6c16b2c1860e8d0c1469779e",
+    "pixels": [
+      3264,
+      2448
+    ],
+    "bytes": 2338495,
+    "transfer_status": "REQUIRED_NOT_YET_COMMITTED",
+    "source_identity": "OWNER_SELECTED_ORIGINAL"
+  },
+  "current_facade_asset_status": "REJECTED_SUPERSEDED_IDENTITY; requires byte-exact IMG_7571 replacement before acceptance"
 }
