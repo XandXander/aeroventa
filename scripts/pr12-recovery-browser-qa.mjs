@@ -220,7 +220,7 @@ try {
  }
  if(['all','interactions'].includes(phase)) {
   for(const width of [320,390,768,1440])for(const [trigger,selector,label] of [
-   ['.consultant-launcher','#aeroventa-consultant-dialog','consultant'],
+   ['.conversion-close [data-consultant-open]','#aeroventa-consultant-dialog','consultant'],
    ['[data-project-open]','#aeroventa-project-dialog','project'],
    ['.home-actions [data-contact-open]','[data-contact-dialog]','contact']
   ])await scenario('DIALOG_'+label,label==='project'?'/montazh-po-proektu/':'/',width,width>1000?650:780,async()=>{
@@ -303,16 +303,16 @@ try {
   await scenario('MOBILE_MENU_CONTACT_FOCUS','/',390,780,async()=>{
    const toggle=page.locator('[data-mobile-menu] summary');await toggle.click();
    expect(await page.locator('[data-mobile-menu]').evaluate(e=>e.open),'Menu closed');
-   expect(await page.locator('.consultant-launcher').evaluate(e=>getComputedStyle(e).visibility==='hidden'),'Consultant launcher remains active under open menu');
+   expect(await page.locator('.consultant-launcher').count()===0,'Owner rejected header consultant pill still exists');
    await page.keyboard.press('Escape');expect(await toggle.evaluate(e=>e===document.activeElement),'Menu Escape focus');
-   expect(await page.locator('.consultant-launcher').evaluate(e=>getComputedStyle(e).visibility==='visible'),'Consultant launcher did not return after menu close');
+   expect(await page.locator('.home-consultant-inline').count()===1,'Home contextual consultant not available after menu close');
    await toggle.click();await page.locator('[data-mobile-menu] [data-contact-open]').click();
    expect(await page.locator('[data-contact-dialog]').evaluate(e=>e.open),'Menu CTA failed');
    await page.keyboard.press('Escape');expect(await toggle.evaluate(e=>e===document.activeElement),'Focus restored into hidden menu');
    return {};
   });
-  await scenario('CONSULTANT_QUESTION_AND_CONTEXT','/montazh-po-proektu/',390,844,async()=>{
-   await page.locator('.consultant-launcher').click();await page.locator('#consultant-chat-question').fill('Есть проект вентиляции ресторана, нужен монтаж');
+  await scenario('CONSULTANT_QUESTION_AND_CONTEXT','/',390,844,async()=>{
+   await page.locator('.home-consultant-inline').click();await page.locator('#consultant-chat-question').fill('Есть проект вентиляции ресторана, нужен монтаж');
    await page.locator('#consultant-chat-question').press('Enter');
    expect(await page.locator('[data-consultant-chat-messages] a[href="/montazh-po-proektu/"]').count()===1,'Relevant route not returned');
    expect(!(await page.locator('html').evaluate(e=>e.hasAttribute('data-airflow-processing'))),'Synchronous guide must not simulate request pulse');
@@ -407,7 +407,7 @@ try {
   for(const width of [390,1440])for(const route of ['/','/montazh-po-proektu/','/portfolio/','/obekty/sklady/']){
    await page.setViewportSize({width,height:900});await page.goto(origin+route,{waitUntil:'networkidle'});await settle();await page.addScriptTag({content:axeSource});
    const {root:dom}=await cdp.send('DOM.getDocument');
-   for(const selector of ['.consultant-launcher','.header-project','main .button--primary','main .button--ghost','main .button--light','main .engagement-index a']){
+   for(const selector of ['[data-consultant-open]','.header-project','main .button--primary','main .button--ghost','main .button--light','main .engagement-index a']){
     const el=page.locator(selector).first();if(!await el.count()||!await el.isVisible())continue;
     const {nodeId}=await cdp.send('DOM.querySelector',{nodeId:dom.nodeId,selector});if(!nodeId)continue;
     for(const [state,pseudos] of [['hover',['hover']],['focus',['focus','focus-visible']],['active',['hover','active']]]){

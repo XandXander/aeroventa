@@ -172,9 +172,9 @@ if(await exists(portfolioFile)){
   const html=await fs.readFile(portfolioFile,'utf8');
   check(/id="featured-case-title"[^>]*>На излучине Невы<\/h2>/.test(html),'Owner 2026-10-23: Neva must be the featured lead');
   const cards=[...html.matchAll(/<a\b[^>]*class="portfolio-card(?: [^"]*)?"[^>]*>/g)].map(m=>m[0]);
-  check(cards.length===12,'Owner O22: exactly twelve independent named project cards required');
+  check(cards.length===11,'Current Owner: exactly eleven independent cards plus the single Neva leading dossier');
   const hrefs=cards.map(tag=>tag.match(/href="([^"]+)"/)?.[1]).filter(Boolean);
-  check(hrefs.length===12 && new Set(hrefs).size===12,'Owner O22: all 12 portfolio cards need distinct direct destinations');
+  check(hrefs.length===11 && new Set(hrefs).size===11 && !hrefs.includes('/portfolio/obekt/na-izluchine-nevy/') && html.includes('class="av-portfolio-feature__primary"'), 'Current Owner: all eleven grid cards have unique direct routes; Neva exists only in its main dossier');
   for(const href of hrefs)check(await exists(htmlFileFor(href)), 'Owner O22: card direct route missing '+href);
   check(html.includes('id="portfolio-sport-title"') && html.includes('Центр адаптивного спорта'),'Owner O22: independent sport section required');
 }

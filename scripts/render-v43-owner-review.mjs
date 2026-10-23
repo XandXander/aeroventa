@@ -160,7 +160,7 @@ try {
             (isMobile ? (!optical.desktop_diagram_visible && optical.mobile_pair_visible) :
                         (optical.desktop_diagram_visible && !optical.mobile_pair_visible)) &&
             (isMobile ? mobileReadingOrder : desktopBleed) &&
-            (!isMobile || (!optical.inline_visible && optical.floating_visible));
+            (!isMobile || (optical.inline_visible && !optical.floating_visible));
           if (!ownerScenePass) report.fail.push({route,view,reason:'Approved Owner airflow HERO scene/adaptation contract',optical});
           const recognition = page.locator('.home-ponsse');
           const orderCorrect = await page.evaluate(() => {
@@ -266,7 +266,7 @@ try {
             return {headingTop:h?.top,photoTop:p?.top,photoWidth:i?.naturalWidth,photoHeight:p?.height,photoBottom:p?.bottom,launcherOverlap:overlaps,launcherVisible:!!l && getComputedStyle(document.querySelector('.consultant-launcher')).display!=='none' && getComputedStyle(document.querySelector('.consultant-launcher')).visibility!=='hidden' && parseFloat(getComputedStyle(document.querySelector('.consultant-launcher')).opacity)>.01,inlineConsultant:!!document.querySelector('.av-about a[data-consultant-open]')};
           });
           if (!optical.photoWidth || optical.headingTop == null || optical.headingTop >= height*.55 ||
-              (width<=760 && (optical.photoHeight < 160 || optical.photoHeight > height*.85 || optical.photoTop >= height*.7 || !optical.launcherVisible))) {
+              (width<=760 && (optical.photoHeight < 160 || optical.photoHeight > height*.85 || optical.photoTop >= height*.7 || optical.launcherVisible))) {
             report.fail.push({route,view,reason:'About first-fold heading and documentary team photo must be visible without consultant obscuring the image',optical});
           }
         }
@@ -291,24 +291,23 @@ try {
           const historical=page.locator('a.portfolio-card[href^="/blog/detail/"]');
           const archives=page.locator('a.portfolio-card--archive[href^="/portfolio/obekt/"]');
           const sourceValid=await archives.evaluateAll(nodes=>{
-            const expected=new Set(['apart-hotel','eurospar-vo','college-obvodny','novatech','akvilon-yanino','himprom','na-izluchine-nevy']);
-            return nodes.length===7&&nodes.every(n=>{
+            const expected=new Set(['apart-hotel','eurospar-vo','college-obvodny','novatech','akvilon-yanino','himprom']);
+            return nodes.length===6&&nodes.every(n=>{
               const href=n.getAttribute('href')||'';
               const slug=href.match(/^\/portfolio\/obekt\/([a-z0-9-]+)\/$/)?.[1];
               const image=n.querySelector('img')?.getAttribute('src')||'';
               if(!slug||!expected.delete(slug))return false;
-              return slug==='na-izluchine-nevy'
-                ? image==='/evidence/residential/owner-neva-facade-20261016.jpg'
-                : image.startsWith('/evidence/owner-portfolio/'+slug+'/');
+              return image.startsWith('/evidence/owner-portfolio/'+slug+'/');
             })&&expected.size===0;
           });
           const historicUrls=await historical.evaluateAll(nodes=>nodes.map(n=>n.getAttribute('href')));
-          if(count!==12||photos!==12||ponsse!==1||nevaLead<1||sevenParkRetained!==1||
-             await historical.count()!==5||await archives.count()!==7||!sourceValid||
+          if(count!==11||photos!==11||ponsse!==1||nevaLead<1||sevenParkRetained!==1||
+             await historical.count()!==5||await archives.count()!==6||!sourceValid||
+             await page.locator('a.portfolio-card[href="/portfolio/obekt/na-izluchine-nevy/"]').count()!==0||
              !historicUrls.every(h=>h?.startsWith('/blog/detail/'))||
              await page.locator('.portfolio-card[href="/blog/detail/ntff-polisan/"]').count()!==1||
              await page.locator('a.portfolio-list__extra[href="/portfolio/obekt/eurospar-sestroretsk/"]').count()!==1){
-            report.fail.push({route,view,reason:'Current Owner Neva leading feature, 7 PARK retained and twelve distinct direct case destinations',count,photos,ponsse,nevaLead,sevenParkRetained,historic:historicUrls,archiveCount:await archives.count(),sourceValid});
+            report.fail.push({route,view,reason:'Current Owner eleven unique grid cases plus single dominant Neva feature, 7 PARK retained',count,photos,ponsse,nevaLead,sevenParkRetained,historic:historicUrls,archiveCount:await archives.count(),sourceValid});
           }
         }
         if (['drill_crown', 'drill_screed', 'drill_cost', 'drill_horizontal'].includes(id)) {
@@ -359,7 +358,7 @@ try {
               servicesOptical.natural_widths.some(n=>n<width*0.70) ||
 
               (mobile && (servicesOptical.photo_bottom>servicesOptical.intro_top+3 ||
-                  servicesOptical.inline_visible)) ||
+                  !servicesOptical.inline_visible)) ||
               servicesOptical.launcher_overlaps_intro) {
             report.fail.push({route,view,reason:'Owner Services single authentic image, no obstructive launcher in first fold',wrong,actual,servicesOptical});
           }
@@ -371,11 +370,12 @@ try {
             window.scrollTo({top:window.scrollY+strip.getBoundingClientRect().bottom+40,behavior:'instant'});
           });
           await page.waitForFunction(()=>document.documentElement.classList.contains('is-past-first-fold'),null,{timeout:4500});
-          const postFoldLauncher=await page.locator('.consultant-launcher').evaluate(el=>{
+          const contextualConsultant=page.locator('.services-consultant-inline');
+          const postFoldLauncher=await contextualConsultant.evaluate(el=>{
             const s=getComputedStyle(el),r=el.getBoundingClientRect();
             return s.visibility!=='hidden'&&s.display!=='none'&&s.pointerEvents!=='none'&&r.width>0&&r.height>0;
           });
-          if(!postFoldLauncher)report.fail.push({route,view,reason:'Services consultant must reappear after first fold'});
+          if(!postFoldLauncher)report.fail.push({route,view,reason:'Services contextual consultant must remain reachable after the category register'});
           await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
           await page.waitForFunction(()=>!document.documentElement.classList.contains('is-past-first-fold'),null,{timeout:4500});
         }
@@ -537,13 +537,9 @@ try {
           await page.locator('.mobile-menu summary').click();
         }
         if (id === 'home' && (view === 'desktop_1440' || view === 'mobile_390')) {
-          // On desktop the persistent launcher is intentionally hidden
-          // until the full category ribbon has left the first fold.
-          if(view === 'desktop_1440') {
-            await page.locator('.decision-preview').scrollIntoViewIfNeeded();
-            await page.waitForFunction(()=>document.documentElement.classList.contains('is-past-first-fold'),null,{timeout:4000});
-          }
-          await page.locator('.consultant-launcher').click();
+          // Open the retained contextual assistant, without reintroducing the rejected header pill.
+          const contextual=view === 'mobile_390' ? '.home-consultant-inline' : '.conversion-close [data-consultant-open]';
+          await page.locator(contextual).first().click();
           await page.locator('[data-consultant-dialog]').waitFor({ state: 'visible' });
           await page.screenshot({ path: path.join(root, 'consultant_open__' + view + '.png'), animations: 'disabled' });
           await page.locator('[data-consultant-dialog] [data-dialog-close]').click();
@@ -735,15 +731,16 @@ try {
         const ribbon=document.querySelector('.home-hero--owner-airflow .object-ribbon');
         const primary=document.querySelector('.home-hero--owner-airflow .home-actions .button--primary');
         const show=button&&getComputedStyle(button).display!=='none'&&getComputedStyle(button).visibility!=='hidden';
+        const contextual=document.querySelector('.conversion-close [data-consultant-open]');
         const collide=(a,b)=>{
-          if(!a||!b)return true;
+          if(!a||!b)return false;
           const x=a.getBoundingClientRect(),y=b.getBoundingClientRect();
           return x.left<y.right&&x.right>y.left&&x.top<y.bottom&&x.bottom>y.top;
         };
-        return {show,overlapsCategories:collide(button,ribbon),overlapsMainCTA:collide(button,primary)};
+        return {show,contextual:!!contextual,overlapsCategories:collide(button,ribbon),overlapsMainCTA:collide(button,primary)};
       });
-      if(!measured.show||measured.overlapsCategories||measured.overlapsMainCTA)
-        report.fail.push({reason:'Visible consultant must not obstruct first-fold controls',measured});
+      if(measured.show||!measured.contextual||measured.overlapsCategories||measured.overlapsMainCTA)
+        report.fail.push({reason:'Owner: no permanent consultant pill; contextual assistant retained without first-fold obstruction',measured});
     }catch(e){report.fail.push({reason:'Consultant first-fold geometry QA failed',error:String(e)})}
     finally{await context.close()}
   }
@@ -837,7 +834,7 @@ try {
       await viewer.waitFor({state:'hidden'});
       const restored=await first.evaluate(el=>el===document.activeElement);
       await page.goto(baseUrl+'/portfolio/',{waitUntil:'load'});
-      const neva=page.locator('a.portfolio-card--archive[href="/portfolio/obekt/na-izluchine-nevy/"]');
+      const neva=page.locator('.av-portfolio-feature__primary a[href="/portfolio/obekt/na-izluchine-nevy/"]');
       await neva.click();
       await page.waitForURL('**/portfolio/obekt/na-izluchine-nevy/');
       const nevaFirst=page.locator('.owner-case__photos button').first();
@@ -913,8 +910,8 @@ try {
       }
       if(route==='/portfolio/'&&width===1440){
         const grid=await page.locator('.portfolio-grid>.portfolio-card').evaluateAll(nodes=>nodes.map(n=>{const b=n.getBoundingClientRect();return {top:b.top,width:b.width,height:b.height};}));
-        if(grid.length!==12||grid.some(b=>b.width<220||b.height<150))
-          report.fail.push({reason:'Portfolio twelve readable photographic cards',grid});
+        if(grid.length!==11||grid.some(b=>b.width<220||b.height<150))
+          report.fail.push({reason:'Portfolio eleven readable cards; twelfth object is sole Neva dossier',grid});
       }
     } catch(e){report.fail.push({reason:'Owner additional QA exception',route,width,height,error:String(e)})}
     finally{await context.close()}
@@ -940,11 +937,11 @@ try {
         natural:n.complete&&n.naturalWidth>0,
         src:n.getAttribute('src')
       })));
-      if(sportCount!==1||gridCount!==12||media.length!==2||media.some(x=>!x.natural) ||
+      if(sportCount!==1||gridCount!==11||media.length!==2||media.some(x=>!x.natural) ||
          !media.some(x=>x.src?.endsWith('/sport-komendantskiy/owner-selected-aerial.webp')) ||
          !media.some(x=>x.src?.endsWith('/sport-komendantskiy/gallery-01.webp')) ||
         await page.getByRole('heading',{name:'Центр адаптивного спорта'}).count()!==1) {
-        report.fail.push({reason:'Separate owner sports feature: 12+1 and source identity gate',width,sportCount,gridCount,media});
+        report.fail.push({reason:'Separate owner sports feature: eleven grid cards plus Neva dossier plus sports study',width,sportCount,gridCount,media});
       }
       const open=sport.locator('.portfolio-sport__photo--large button[data-archive-open]');
       const diffuserOpen=sport.locator('.portfolio-sport__photo--detail button[data-archive-open]');
@@ -988,8 +985,8 @@ try {
         };
         return {visible:!!button&&getComputedStyle(button).visibility!=='hidden'&&getComputedStyle(button).display!=='none',titleOverlap:overlap(button,title),ctaOverlap:overlap(button,primary)};
       });
-      if(!state.visible||state.titleOverlap||state.ctaOverlap)
-        report.fail.push({reason:'About first-fold assistant/title collision',state});
+      if(state.visible||state.titleOverlap||state.ctaOverlap)
+        report.fail.push({reason:'Owner: no rejected consultant header pill or overlap on About',state});
     }catch(e){report.fail.push({reason:'About assistant visibility QA failed',error:String(e)})}
     finally{await ctx.close()}
   }
@@ -1121,7 +1118,7 @@ try {
       const menu=page.locator('.mobile-menu');
       await menu.locator('summary').click();
       const expanded=await menu.evaluate(el=>el.open);
-      const hiddenLauncher=await page.locator('.consultant-launcher').evaluate(el=>getComputedStyle(el).visibility==='hidden');
+      const hiddenLauncher=await page.locator('.consultant-launcher').count()===0;
       await page.keyboard.press('Escape');
       const closed=!(await menu.evaluate(el=>el.open));
       if(!expanded||!hiddenLauncher||!closed)report.fail.push({reason:'Mobile navigation state/focus lifecycle',width,expanded,hiddenLauncher,closed});
