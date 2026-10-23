@@ -687,10 +687,8 @@ img[src="/evidence/7park/object-exterior-day.jpg"]{
  .evidence-case .case-detail-facts__grid{grid-template-columns:1fr}
  .evidence-case .case-detail-facts__grid>div{min-width:0;max-width:none;flex:none;padding:13px 0 17px!important}
 }
-/* Always-visible consultant: desktop and mobile use the same real button. */
-@media(max-width:760px){
- .home-consultant-inline,.services-consultant-inline{display:none!important}
-}
+/* Owner: preserve existing inline consultant access on HOME and services;
+   no persistent header pill or duplicated footer control. */
 /* Controlled sheet states derived from AUNELA; native dialog semantics retained. */
 .experience-dialog[data-state="opening"]{animation:av-owner-sheet-open .38s cubic-bezier(.22,.78,.22,1) both;transform-origin:90% 88%}
 .experience-dialog[data-state="open"]{opacity:1;transform:none;clip-path:inset(0)}

@@ -140,7 +140,7 @@ check(files.premium.includes('if (!endpoint)'), 'Lead form has safe no-endpoint 
 check(files.premium.includes('mailto:'), 'Lead fallback keeps direct human contact');
 
 const primaryNav = files.header.match(/<nav class="nav nav--desktop"[\s\S]*?<\/nav>/)?.[0] || '';
-check(!primaryNav.includes('data-consultant-open') && files.header.includes('data-source="persistent_launcher"'), 'Consultant has a persistent header slot outside primary navigation');
+check(!primaryNav.includes('data-consultant-open') && !files.header.includes('data-source="persistent_launcher"') && !files.header.includes('consultant-launcher--header') && files.home.includes('data-consultant-open') && files.services.includes('data-consultant-open'), 'Owner: no header consultant pill; contextual HOME/services launchers retained');
 check(!files.footer.includes('data-consultant-open') && !files.footer.includes('data-contact-open') && files.footer.includes('mailto:'), 'Footer uses direct human contact without repetitive CTA or consultant menu');
 check(files.lead.includes('data-contact-open'), 'Lead CTA opens modern contact form');
 check(files.contactPage.includes('<ContactForm'), 'Contact page includes semantic form');
@@ -202,7 +202,7 @@ if (process.env.AEROVENTA_REQUIRE_OWNER_TEAM_MEDIA === 'true') {
   }
 }
 check(files.restaurants.includes("heroMedia={{ src:'/evidence/cafe/owner-interior-v43.webp'") &&
-      files.restaurants.includes("image:'/evidence/leont/archive/img-5008.webp'"), 'Restaurant landing leads with real hospitality interior and real installation photograph');
+      files.restaurants.includes("image:'/evidence/leont/owner-cover-v43.webp'"), 'Restaurant category retains its interior hero and features authentic Leontievsky Mys building cover');
 const acceptedScene = await fs.stat(path.join(root, 'apps/web/public/evidence/hero/engineering-scene-accepted-v43.webp')).catch(() => null);
 check(Boolean(acceptedScene?.isFile() && acceptedScene.size > 20000), 'Original accepted engineering-scene visual exists physically in build sources');
 
@@ -245,9 +245,9 @@ for(const p of ['evidence/cafe/owner-cover-v43.webp']){
 }
 check(files.home.includes('class="home-consultant-inline"') &&
       files.services.includes('class="services-consultant-inline"') &&
-      files.header.includes('data-source="persistent_launcher"') &&
-      files.css.includes('.consultant-launcher{position:static;'),
-      'Mobile consultant access remains reachable inline without fixed overlap on both changed heroes');
+      !files.css.includes('.home-consultant-inline,.services-consultant-inline{display:none!important}') &&
+      !files.header.includes('data-source="persistent_launcher"'),
+      'Mobile consultant access stays in both contextual HOME/services links without a persistent header button');
 
 const heroFigure = files.home.match(/<figure class="hero-engineering">([\s\S]*?)<\/figure>/)?.[1] ?? '';
 const caseSection = files.home.match(/<section class="case-feature"[\s\S]*?<\/section>/)?.[0] ?? '';
@@ -329,11 +329,11 @@ check(polisanMediaSection.includes('    media:[') &&
       'Owner Polisan: chosen exterior case cover with authentic roof photos');
 check(portfolioSource.includes('id="featured-case-title">На излучине Невы') &&
       portfolioSource.includes('{cases.map((item) => (') &&
-      portfolioSource.includes("archiveCases.filter(item => item.index !== '09')") &&
+      portfolioSource.includes("archiveCases.filter(item => item.index !== '09' && item.index !== '14')") &&
       portfolioSource.includes('href="/blog/detail/kak-my-sdali-7-domov/"') &&
       portfolioSource.includes('class="portfolio-sport"') &&
       portfolioSource.includes("if(addedNevaPhotos.length!==6)"),
-      'Owner 2026-10-23: Neva featured, 7 PARK retained, separate sports and 6 integrity-checked Neva originals');
+      'Owner 2026-10-23: Neva uniquely featured, 7 PARK preserved, separate sports and six verified Neva installation photos');
 for(const name of ['cover','02','03','04']){
   const img=await fs.stat(path.join(root,'apps/web/public/evidence/owner-portfolio/sport-komendantskiy',name+'.webp')).catch(()=>null);
   check(Boolean(img?.isFile()&&img.size>15000), 'Sports object selected provenance media exists: '+name);

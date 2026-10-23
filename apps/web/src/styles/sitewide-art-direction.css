@@ -5084,9 +5084,6 @@ main :is(.av-hero__grid,.object-detail__hero-grid,.engagement-hero__grid,.case-d
 .site-footer .footer-contact{display:flex;flex-direction:column;align-items:start;gap:13px;min-width:0}
 .site-footer .footer-phone{font-size:clamp(1.35rem,2.5vw,2.3rem)!important;line-height:1.2!important;font-weight:630!important;letter-spacing:-.048em!important;margin:0!important;white-space:normal}
 .site-footer .footer-email{font-size:.95rem!important;overflow-wrap:anywhere}
-.site-footer .footer-consultant-link{margin-top:20px;background:none;border:0;border-top:1px solid #bfcdd3;padding:15px 0 0;color:#2a5268;text-align:left;font:560 .89rem/1.5 Onest,system-ui,sans-serif;cursor:pointer;text-decoration:none}
-.site-footer .footer-consultant-link:hover{text-decoration:underline;text-underline-offset:4px}
-.site-footer .footer-consultant-link:focus-visible{outline:2px solid #955136;outline-offset:4px}
 .site-footer .footer-nav{display:flex;flex-direction:column;align-items:start;gap:14px}
 .site-footer .footer-nav a{display:block;font-size:.93rem;line-height:1.45}
 .site-footer .footer-bottom{margin-top:clamp(42px,6vw,76px);padding-top:22px;border-top:1px solid #c3d0d6}
