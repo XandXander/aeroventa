@@ -277,6 +277,7 @@ try {
           const ponsse=await page.locator('.portfolio-card:has-text("PONSSE")').count();
           const requiredCovers={
             'Ресторан в ЖК':'/evidence/leont/owner-cover-v43.webp',
+            'Полисан':'/evidence/polisan/owner-cover-v43.webp',
             'Маршала Жукова':'/evidence/zhukov/owner-cover-v43.webp',
             'PONSSE':'/evidence/karelia/owner-cover-v43.webp',
             'Римского-Корсакова':'/evidence/cafe/owner-cover-v43.webp'
@@ -285,7 +286,8 @@ try {
             const matches=await page.locator(`.portfolio-card:has-text("${name}") img[src="${src}"]`).count();
             if(matches!==1)report.fail.push({route,view,reason:'Authentic object photo incorrect',name,src,matches});
           }
-          const sevenParkLead=await page.locator('.av-portfolio-feature a[href="/blog/detail/kak-my-sdali-7-domov/"]').count();
+          const nevaLead=await page.locator('.av-portfolio-feature a[href="/portfolio/obekt/na-izluchine-nevy/"]').count();
+           const sevenParkRetained=await page.locator('a.portfolio-list__extra[href="/blog/detail/kak-my-sdali-7-domov/"]').count();
           const historical=page.locator('a.portfolio-card[href^="/blog/detail/"]');
           const archives=page.locator('a.portfolio-card--archive[href^="/portfolio/obekt/"]');
           const sourceValid=await archives.evaluateAll(nodes=>{
@@ -301,12 +303,12 @@ try {
             })&&expected.size===0;
           });
           const historicUrls=await historical.evaluateAll(nodes=>nodes.map(n=>n.getAttribute('href')));
-          if(count!==12||photos!==12||ponsse!==1||sevenParkLead<1||
+          if(count!==12||photos!==12||ponsse!==1||nevaLead<1||sevenParkRetained!==1||
              await historical.count()!==5||await archives.count()!==7||!sourceValid||
              !historicUrls.every(h=>h?.startsWith('/blog/detail/'))||
              await page.locator('.portfolio-card[href="/blog/detail/ntff-polisan/"]').count()!==1||
              await page.locator('a.portfolio-list__extra[href="/portfolio/obekt/eurospar-sestroretsk/"]').count()!==1){
-            report.fail.push({route,view,reason:'Current Owner 7 PARK leading feature and twelve distinct direct case destinations',count,photos,ponsse,sevenParkLead,historic:historicUrls,archiveCount:await archives.count(),sourceValid});
+            report.fail.push({route,view,reason:'Current Owner Neva leading feature, 7 PARK retained and twelve distinct direct case destinations',count,photos,ponsse,nevaLead,sevenParkRetained,historic:historicUrls,archiveCount:await archives.count(),sourceValid});
           }
         }
         if (['drill_crown', 'drill_screed', 'drill_cost', 'drill_horizontal'].includes(id)) {
