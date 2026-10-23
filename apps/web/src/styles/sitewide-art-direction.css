@@ -2704,14 +2704,18 @@ main .av-portfolio .portfolio-sport__gallery-link {
 }
 .av-journal-secondary .practical-next__grid {
   gap: 32px;
+  background: transparent;
+  border: 0;
 }
 .av-journal-secondary .practical-next__grid a {
+  min-height: 0;
   background: transparent;
   border: 0;
   border-top: 1px solid #c4ced0;
   padding: 24px 0;
 }
 .av-journal-secondary .practical-next__grid h3 {
+  margin: 12px 0 0;
   font-size: 1.45rem;
   font-weight: 500;
   line-height: 1.25;
@@ -4441,6 +4445,12 @@ main
   > button:nth-last-child(-n + 4) {
   grid-column: span 6;
 }
+.av-owner-case__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  margin-top: 20px;
+}
 .av-owner-case__more {
   margin-top: 28px;
   border-top: 1px solid #b8cbd0;
@@ -4699,5 +4709,276 @@ main .av-support .conversion-close p:not(.section-index) {
   }
   main .av-support .conversion-close h2 {
     font-size: 1.8rem;
+  }
+}
+
+/* The retained ventilation article is a scientific reader, not a sales slab. */
+.av-covid {
+  background: #f8f9f6;
+}
+.av-covid .home-shell {
+  max-width: 1120px;
+}
+.av-covid .covid-current__hero {
+  padding: 60px 0 42px;
+  background: #eeeee8;
+}
+.av-covid .covid-current__hero-grid {
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 48px;
+  align-items: start;
+}
+.av-covid .covid-current__hero h1 {
+  font-size: clamp(2.2rem, 3.6vw, 3.8rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+.av-covid .covid-current__lede {
+  font-size: 1rem;
+  line-height: 1.75;
+}
+.av-covid .covid-current__note {
+  font-weight: 500;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+.av-covid
+  :is(
+    .covid-current__now,
+    .covid-current__archive,
+    .covid-current__engineering,
+    .covid-current__sources
+  ) {
+  padding-block: 56px;
+  background: #f8f9f6;
+  color: #193641;
+  border: 0;
+}
+.av-covid .covid-current__now {
+  background: #e8eff0;
+}
+.av-covid
+  :is(
+    .covid-current__now-grid,
+    .covid-current__archive-grid,
+    .covid-current__engineering-grid
+  ) {
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 56px;
+  align-items: start;
+}
+.av-covid
+  :is(
+    .covid-current__now,
+    .covid-current__archive,
+    .covid-current__engineering,
+    .covid-current__sources
+  )
+  h2 {
+  font-size: clamp(1.7rem, 2.5vw, 2.4rem);
+  line-height: 1.18;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+.av-covid .covid-current__now .av-lead {
+  margin-top: 24px;
+  font-size: 1.1rem;
+  line-height: 1.65;
+}
+.av-covid .covid-current__facts {
+  gap: 0;
+  border: 0;
+  background: transparent;
+}
+.av-covid .covid-current__facts article {
+  min-height: 0;
+  padding: 24px 0;
+  background: transparent;
+  border-top: 1px solid #bfccce;
+}
+.av-covid .covid-current__facts article:first-child {
+  padding-top: 0;
+  border: 0;
+}
+.av-covid .covid-current__facts h3 {
+  margin: 10px 0;
+  font-size: 1.2rem;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+}
+.av-covid .covid-current__facts p {
+  color: #39515e;
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+.av-covid .covid-current__facts a {
+  color: #254c5e;
+  font-weight: 500;
+  font-size: 0.85rem;
+  padding-top: 14px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.av-covid :is(.covid-current__facts, .covid-current__source-grid) span {
+  color: #805339;
+  font-weight: 500;
+}
+.av-covid .covid-current__figure {
+  padding: 0;
+  background: transparent;
+  border: 0;
+}
+.av-covid .covid-current__archive-copy > p:not(.section-index) {
+  font-size: 0.95rem;
+  line-height: 1.75;
+}
+.av-covid .covid-current__archive-actions span {
+  color: #496572;
+}
+.av-covid .covid-current__engineering {
+  background: #eeeee8;
+}
+.av-covid .covid-current__checklist div {
+  min-height: 0;
+  padding-block: 22px;
+  grid-template-columns: 24px 1fr;
+  gap: 18px;
+}
+.av-covid .covid-current__checklist p {
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+.av-covid .covid-current__source-grid {
+  background: transparent;
+  border: 0;
+  gap: 24px;
+  margin-top: 28px;
+}
+.av-covid .covid-current__source-grid a {
+  min-height: 0;
+  padding: 20px 0;
+  background: transparent;
+  border-top: 1px solid #bfccce;
+}
+.av-covid .covid-current__source-grid strong {
+  margin: 20px 0 10px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+.av-covid .covid-current__source-grid small {
+  font-size: 0.85rem;
+  line-height: 1.65;
+}
+@media (max-width: 760px) {
+  .av-covid .covid-current__hero {
+    padding-block: 30px;
+  }
+  .av-covid
+    :is(
+      .covid-current__hero-grid,
+      .covid-current__now-grid,
+      .covid-current__archive-grid,
+      .covid-current__engineering-grid
+    ) {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .av-covid
+    :is(
+      .covid-current__now,
+      .covid-current__archive,
+      .covid-current__engineering,
+      .covid-current__sources
+    ) {
+    padding-block: 40px;
+  }
+  .av-covid .covid-current__hero h1 {
+    font-size: 2.1rem;
+    line-height: 1.13;
+  }
+  .av-covid .covid-current__source-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
+
+.av-legacy-object .av-hero {
+  padding-bottom: 40px;
+  background: #edf1ed;
+}
+.av-legacy-object .av-hero__image figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 12px;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: #496572;
+}
+.av-legacy-object .av-hero__image a {
+  text-underline-offset: 4px;
+}
+.av-legacy-evidence {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px;
+}
+.av-legacy-evidence a {
+  min-width: 0;
+  text-decoration: none;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #c4ced0;
+}
+.av-legacy-evidence img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1.6;
+  object-fit: cover;
+  display: block;
+}
+.av-legacy-evidence span {
+  display: block;
+  margin-top: 16px;
+  color: #496572;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+.av-legacy-evidence h3 {
+  margin: 10px 0 20px;
+  font-weight: 500;
+  font-size: 1.6rem;
+  line-height: 1.25;
+}
+.av-legacy-evidence b {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+.av-legacy-brief {
+  background: #e8eff0;
+}
+.av-legacy-brief__grid {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: 64px;
+}
+.av-legacy-brief p {
+  line-height: 1.75;
+}
+.av-legacy-brief .av-link {
+  display: inline-block;
+  margin-top: 20px;
+}
+@media (max-width: 760px) {
+  .av-legacy-evidence,
+  .av-legacy-brief__grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .av-legacy-evidence h3 {
+    font-size: 1.4rem;
   }
 }

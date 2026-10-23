@@ -14,7 +14,7 @@ if (!originalCovidReading || !originalCovidHeadings.length) throw new Error('Ori
 
 ---
 
-<article class="covid-current">
+<article class="covid-current av-page av-covid">
   <header class="covid-current__hero">
     <div class="home-shell covid-current__hero-grid">
       <div>
@@ -37,7 +37,7 @@ if (!originalCovidReading || !originalCovidHeadings.length) throw new Error('Ori
     <div class="home-shell covid-current__now-grid">
       <div>
         <p class="section-index section-index--orange">01 / Что осталось актуальным</p>
-        <h2 id="covid-now-title">Вентиляция снижает концентрацию аэрозолей. Но не превращает помещение в «безопасное» сама по себе.</h2>
+        <h2 id="covid-now-title">Воздухообмен и качество воздуха</h2><p class="av-lead">Вентиляция снижает концентрацию аэрозолей. Но не превращает помещение в «безопасное» сама по себе.</p>
       </div>
       <div class="covid-current__facts">
         <article>
@@ -104,7 +104,7 @@ if (!originalCovidReading || !originalCovidHeadings.length) throw new Error('Ori
     <div class="home-shell covid-current__engineering-grid">
       <div>
         <p class="section-index section-index--orange">03 / Инженерный вывод</p>
-        <h2 id="covid-engineering-title">Начинать надо не со старой памятки, а с того, как реально работает система.</h2>
+        <h2 id="covid-engineering-title">Проверить работу системы</h2>
       </div>
       <div class="covid-current__checklist">
         <div><span>01</span><p><strong>Проверить фактическую работу вентиляции.</strong> Есть ли наружный воздух, какой режим системы, какие зоны она обслуживает.</p></div>
@@ -133,20 +133,7 @@ if (!originalCovidReading || !originalCovidHeadings.length) throw new Error('Ori
     </div>
   </section>
 
-  <section class="conversion-close" aria-labelledby="covid-close-title">
-    <div class="home-shell">
-      <p class="section-index section-index--orange">05 / Если вопрос уже про ваш объект</p>
-      <h2 id="covid-close-title">Не переносите режимы из статьи на систему вслепую.</h2>
-      <p class="covid-current__close-copy">
-        Если задача связана с существующей вентиляцией, покажите объект, проект или схему и сформулируйте, что именно требуется:
-        монтаж, изменение системы, оценка существующего решения или исходные данные для следующего инженерного шага.
-      </p>
-      <div class="home-actions">
-        <button type="button" class="button button--light" data-project-open data-source="covid_article">Передать проект →</button>
-        <a class="button button--light" href="/contact/?intent=budget">Описать объект →</a>
-      </div>
-    </div>
-  </section>
+  <section class="av-close" aria-labelledby="covid-close-title"><div class="home-shell av-close__grid"><div><p class="av-kicker">Ваша задача по вентиляции</p><h2 id="covid-close-title">Обсудим ваш объект</h2><p>Пришлите проект, схему или описание того, что требуется изменить.</p></div><a class="button button--primary" href="/contact/" data-contact-open data-source="covid_article">Описать задачу →</a></div></section>
 </article>
 
 

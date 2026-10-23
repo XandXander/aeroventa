@@ -366,6 +366,15 @@ try {
    await page.emulateMedia({reducedMotion:'reduce'});await page.reload({waitUntil:'domcontentloaded'});
    expect(await page.locator('[data-airflow-entry]').count()===0,'Reduced motion cue not suppressed');return {blocking_loader:false};
   });
+  for(const route of ['/services/','/about/'])await scenario('AUTHORED_FIRST_FOLD_BOUNDARY',route,390,844,async()=>{
+   const boundary=page.locator('[data-first-fold-boundary]');
+   expect(await boundary.count()===1,'Current opening needs one explicit scroll boundary');
+   await boundary.evaluate(e=>window.scrollTo({top:window.scrollY+e.getBoundingClientRect().bottom+40,behavior:'instant'}));
+   await page.waitForFunction(()=>document.documentElement.classList.contains('is-past-first-fold'));
+   await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
+   await page.waitForFunction(()=>!document.documentElement.classList.contains('is-past-first-fold'));
+   return {scroll_boundary:true};
+  });
   await scenario('FAQ_TOPIC_FOCUS_WITHOUT_HASH','/faq/',390,844,async()=>{
    await page.getByRole('navigation',{name:'Разделы вопросов'}).getByText('Приёмка',{exact:false}).click();
    const result=await page.evaluate(()=>{

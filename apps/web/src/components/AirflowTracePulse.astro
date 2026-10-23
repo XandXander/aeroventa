@@ -93,7 +93,7 @@
     sections.forEach(section=>observer.observe(section));
   };
   if (document.readyState==='loading') {
-    document.addEventListener('DOMContentLoaded',()=>{bindRequestPulse();bindSectionTrace();entryBoundary=document.querySelector('.home-hero--owner-airflow .object-ribbon, .services-hero__routes, .about-hero');updateScrollState();},{once:true});
+    document.addEventListener('DOMContentLoaded',()=>{bindRequestPulse();bindSectionTrace();entryBoundary=document.querySelector('.home-hero--owner-airflow .object-ribbon, [data-first-fold-boundary]');updateScrollState();},{once:true});
   } else {bindRequestPulse();bindSectionTrace();}
   let entryBoundary=null;
   let ticking=false;
@@ -106,7 +106,7 @@
     ticking=false;
   };
   window.addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(updateScrollState);}},{passive:true});
-  if(document.readyState!=='loading'){entryBoundary=document.querySelector('.home-hero--owner-airflow .object-ribbon, .services-hero__routes, .about-hero');}
+  if(document.readyState!=='loading'){entryBoundary=document.querySelector('.home-hero--owner-airflow .object-ribbon, [data-first-fold-boundary]');}
   updateScrollState();
 })();
 </script>

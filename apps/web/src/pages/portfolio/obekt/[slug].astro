@@ -76,9 +76,9 @@ const content:ContentRecord={
 <header class="owner-case__hero"><div class="av-shell owner-case__grid">
  <div class="av-owner-case__title"><p class="av-kicker">Наши работы / {project.kind}</p><h1>{project.title}</h1></div>
  <figure><button type="button" data-case-cover aria-label={'Открыть главное фото: '+project.title}><img src={project.cover} alt={'Объект '+project.title} width={heroWidth} height={heroHeight} fetchpriority="high" decoding="async"/></button><figcaption>{project.title} · {project.place}</figcaption></figure>
- <div class="av-owner-case__summary"><p class="owner-case__place">{project.place}</p><p>{introduction}</p><a class="av-link" href="/portfolio/">← Все объекты</a>
+ <div class="av-owner-case__summary"><p class="owner-case__place">{project.place}</p><p>{introduction}</p><div class="av-owner-case__links"><a class="av-link" href="/portfolio/">← Все объекты</a>
  {project.slug==='eurospar-vo'&&<a class="av-link" href="/portfolio/obekt/eurospar-sestroretsk/">Другой объект EUROSPAR · Сестрорецк →</a>}
- {project.slug==='eurospar-sestroretsk'&&<a class="av-link" href="/portfolio/obekt/eurospar-vo/">Другой объект EUROSPAR · Васильевский остров →</a>}</div>
+ {project.slug==='eurospar-sestroretsk'&&<a class="av-link" href="/portfolio/obekt/eurospar-vo/">Другой объект EUROSPAR · Васильевский остров →</a>}</div></div>
 </div></header>
 <section class="owner-case__gallery av-shell" aria-label={'Галерея '+project.title}>
  <div class="owner-case__heading"><h2>На объекте</h2><span>{galleryPhotos.length} фотографий</span></div>
@@ -152,8 +152,5 @@ dialog?.addEventListener('close',()=>{photoZoom.reset();cache.clear();source?.fo
 @media(max-width:470px){.owner-case__photos{grid-template-columns:1fr}.owner-case__viewer-stage{padding-inline:38px}}
 @media(prefers-reduced-motion:reduce){.owner-case *{scroll-behavior:auto}}
 /* Neva: facade only in hero, six construction photos in balanced rows. */
-.owner-case--neva .owner-case__photos{grid-template-columns:repeat(3,minmax(0,1fr))}
 .owner-case--neva .owner-case__viewer-stage{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
-@media(max-width:1000px){.owner-case--neva .owner-case__photos{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:480px){.owner-case--neva .owner-case__photos{grid-template-columns:1fr}}
 </style>

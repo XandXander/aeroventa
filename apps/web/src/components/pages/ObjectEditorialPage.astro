@@ -1,37 +1,22 @@
 ---
 import type { ContentRecord } from '@/lib/types';
-interface Props {
-  content: ContentRecord;
-  eyebrow: string; lead: string; proofTitle: string; proofText: string;
-  photo?: string; photoAlt?: string;
-  link: string; linkLabel: string; description: string;
-}
-const { content,eyebrow,lead,proofTitle,proofText,photo,photoAlt,link,linkLabel,description }=Astro.props;
+interface Props { content: ContentRecord; eyebrow:string; lead:string; proofTitle:string; proofText:string; photo:string; photoAlt?:string; link:string; linkLabel:string; description:string; }
+const {content,eyebrow,lead,proofTitle,photo,photoAlt,link,linkLabel,description}=Astro.props;
+const shops=content.path==='/obekty/magaziny-i-sklady/';
+const examples=shops ? [
+ ['Торговый объект · EUROSPAR','/evidence/owner-portfolio/eurospar-vo/cover.webp','/portfolio/obekt/eurospar-vo/','Санкт-Петербург · Васильевский остров'],
+ ['Складские объекты','/evidence/warehouses/avers-razbegaevo/01.webp','/obekty/sklady/','Разбегаево и Санкт-Петербург · фотографии и условия монтажа']
+] : [
+ ['Апарт-отель и коворкинг на Бумажном','/evidence/owner-portfolio/apart-hotel/02.webp','/portfolio/obekt/apart-hotel/','Санкт-Петербург · здание и инженерные трассы'],
+ ['Торговый объект · EUROSPAR','/evidence/owner-portfolio/eurospar-vo/cover.webp','/portfolio/obekt/eurospar-vo/','Санкт-Петербург · Васильевский остров']
+];
 ---
-<article class="object-editorial">
-  <header class="object-editorial__hero">
-    <div class="home-shell object-editorial__grid">
-      <div class="object-editorial__copy">
-        <p class="home-kicker">{eyebrow}</p>
-        <h1>{content.h1}</h1>
-        <p class="object-editorial__lead">{lead}</p>
-        <a class="button button--primary" href="/contact/" data-contact-open data-source="object_category" aria-haspopup="dialog">Обсудить объект <span aria-hidden="true">→</span></a>
-      </div>
-      <div class="object-editorial__evidence">
-        {photo && <figure><img src={photo} alt={photoAlt||proofTitle} width="1000" height="650" loading="eager" decoding="async"/><figcaption>{proofTitle}</figcaption></figure>}
-        <p class="section-index section-index--orange">По существу</p>
-        <h2>{proofTitle}</h2>
-        <p>{proofText}</p>
-        <a href={link}>{linkLabel} →</a>
-      </div>
-    </div>
-  </header>
-  <section class="object-editorial__info">
-    <div class="home-shell object-editorial__info-grid">
-      <div><p class="section-index">01 / Для оценки работ</p><h2>Какие данные нужны для монтажа</h2></div>
-      <div><p>{description}</p><p>Рабочие чертежи, спецификация, назначение помещений, адрес объекта и сведения об условиях работ позволяют подготовить предметное обсуждение объёма монтажа.</p>
-        <a href="/montazh-po-proektu/">Что прислать для расчёта <span aria-hidden="true">→</span></a>
-      </div>
-    </div>
-  </section>
+<article class="object-editorial av-page av-legacy-object">
+ <header class="av-hero"><div class="av-shell av-hero__grid">
+  <div class="av-hero__title"><p class="av-kicker">{eyebrow}</p><h1>{content.h1}</h1></div>
+  <figure class="av-hero__image"><img src={photo} alt={photoAlt||proofTitle} width={shops?1600:1200} height={shops?1067:800} loading="eager" fetchpriority="high" decoding="async"/><figcaption>{proofTitle} <a href={link}>{linkLabel} ↗</a></figcaption></figure>
+  <div class="av-hero__body"><p class="av-lead">{lead}</p><a class="button button--primary" href="/contact/" data-contact-open data-source="object_category" aria-haspopup="dialog">Обсудить объект →</a></div>
+ </div></header>
+ <section class="av-section"><div class="av-shell"><div class="av-heading"><div><p class="av-kicker">Объекты и фотографии</p><h2>{shops?'Торговые помещения и склады':'Коммерческие пространства'}</h2></div></div><div class="av-legacy-evidence">{examples.map(([title,image,href,caption])=><a href={href}><img src={image} alt={href==='/obekty/sklady/'?'Складской объект в Разбегаево':caption} width="800" height="600" loading="lazy" decoding="async"/><span>{caption}</span><h3>{title}</h3><b>Подробнее ↗</b></a>)}</div></div></section>
+ <section class="av-section av-legacy-brief"><div class="av-shell av-legacy-brief__grid"><div><p class="av-kicker">Для оценки монтажа</p><h2>Документация и условия площадки</h2></div><div><p>{description}</p><a class="av-link" href="/montazh-po-proektu/">Что прислать для расчёта →</a></div></div></section>
 </article>
