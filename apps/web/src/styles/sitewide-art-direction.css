@@ -2428,8 +2428,8 @@ main .av-portfolio .portfolio-sport__gallery-link {
   }
   .av-portfolio-feature__facts > div {
     display: grid;
-    grid-template-columns: 54px 1fr;
-    gap: 12px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
   }
   .av-portfolio-feature__facts dd {
     font-size: 0.82rem;
