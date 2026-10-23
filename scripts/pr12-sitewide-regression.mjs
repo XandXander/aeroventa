@@ -59,8 +59,10 @@ for(const [width,height] of vp){
    stats.push({route,width,height,...state});
    // A positioned photo must not create an invisible second track on mobile.
    if(width<=1050){
-    const layout=await page.locator('.object-detail__hero-grid').evaluateAll(nodes=>nodes.map(el=>({display:getComputedStyle(el).display,width:el.getBoundingClientRect().width,titleWidth:el.querySelector('h1')?.getBoundingClientRect().width||0})));
-    for(const grid of layout)if(grid.display!=='flex'||grid.titleWidth<grid.width*.8)issues.push({route,width,height,type:'OBJECT_HERO_IMPLICIT_TRACK',...grid});
+    // Heading max-width is an optical reading measure. The former implicit track
+    // constrained the text column, so measure that column independently of H1.
+    const layout=await page.locator('.object-detail__hero-grid').evaluateAll(nodes=>nodes.map(el=>({display:getComputedStyle(el).display,flow:getComputedStyle(el).flexDirection,containerWidth:el.getBoundingClientRect().width,copyWidth:el.firstElementChild?.getBoundingClientRect().width||0,titleWidth:el.querySelector('h1')?.getBoundingClientRect().width||0})));
+    for(const grid of layout)if(grid.display!=='flex'||grid.flow!=='column'||grid.copyWidth<grid.containerWidth*.95)issues.push({route,width,height,type:'OBJECT_HERO_IMPLICIT_TRACK',...grid});
    }
    if(!state.h1)issues.push({route,width,height,type:'NO_H1'});
    if(state.pageWidth>width+4)issues.push({route,width,height,type:'HORIZONTAL_OVERFLOW',delta:state.pageWidth-width});
