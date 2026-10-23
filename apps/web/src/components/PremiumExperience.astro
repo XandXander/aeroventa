@@ -143,8 +143,8 @@ const { pagePath = '' } = Astro.props;
       <label class="field">Ваше имя<input type="text" name="name" autocomplete="name" maxlength="80" required /></label>
       <label class="field">Телефон или email<input type="text" name="contact" maxlength="160" required /></label>
       <label class="field">Объект и задача<textarea name="task" rows="3" maxlength="3000" required placeholder="Тип объекта, город, что требуется смонтировать"></textarea></label>
-      <label class="field">Документация<input type="file" name="documents[]" multiple accept=".pdf,.dwg,.dxf,.zip,.jpg,.jpeg,.png" required data-project-files /></label>
-      <p class="project-upload-help">PDF, DWG, DXF, ZIP, JPG или PNG · до 3 файлов · каждый до 4 МБ · суммарно до 8 МБ. Крупные комплекты передавайте по согласованному защищённому каналу.</p>
+      <label class="field project-upload-field">Документация<input type="file" name="documents[]" multiple accept=".pdf,.dwg,.dxf,.zip,.jpg,.jpeg,.png" required data-project-files aria-describedby="project-upload-selection project-upload-limits" /><output class="project-upload-selection" id="project-upload-selection" data-project-file-summary aria-live="polite">Файлы не выбраны</output></label>
+      <p class="project-upload-help" id="project-upload-limits">PDF, DWG, DXF, ZIP, JPG или PNG · до 3 файлов · каждый до 4 МБ · суммарно до 8 МБ. Крупные комплекты передавайте по согласованному защищённому каналу.</p>
       <label class="consent-check"><input type="checkbox" name="consent" required /> Согласен на обработку персональных данных для ответа на запрос. <a href="/privacy/" target="_blank" rel="noopener">Условия</a></label>
       <input type="hidden" name="source_page" value={pagePath} />
       <input type="hidden" name="started_at" value="" />
@@ -286,6 +286,14 @@ const { pagePath = '' } = Astro.props;
   if (uploadForm) {
     const stamp=uploadForm.querySelector<HTMLInputElement>('[name="started_at"]');
     if(stamp) stamp.value=String(Date.now());
+    const fileInput=uploadForm.querySelector<HTMLInputElement>('[data-project-files]');
+    const fileSummary=uploadForm.querySelector<HTMLOutputElement>('[data-project-file-summary]');
+    const refreshFileSummary=()=>{
+      if(!fileSummary)return;
+      const selected=Array.from(fileInput?.files||[]);
+      fileSummary.textContent=selected.length?selected.map(file=>file.name).join(' · '):'Файлы не выбраны';
+    };
+    fileInput?.addEventListener('change',refreshFileSummary);
     uploadForm.addEventListener('submit',async(event)=>{
       event.preventDefault();
       if(uploadForm.dataset.submitting === 'true')return;
@@ -310,6 +318,7 @@ const { pagePath = '' } = Astro.props;
         if(!response.ok||result?.ok!==true)throw new Error(result?.error||'request_failed');
         status.textContent='Сервер принял документы для отправки. Доставку в почтовый ящик подтвердим отдельно.';
         uploadForm.reset();
+        refreshFileSummary();
         if(stamp)stamp.value=String(Date.now());
         track('project_upload_accepted',{source:location.pathname});
       }catch{

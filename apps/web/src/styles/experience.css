@@ -730,8 +730,12 @@ img[src="/evidence/7park/object-exterior-day.jpg"]{
 .experience-dialog--project .project-upload-intro{color:#4b6472;font-size:.93rem;line-height:1.5;margin:5px 0 18px}
 .experience-dialog--project .project-upload-form{display:grid;gap:12px}
 .experience-dialog--project .project-upload-form .field{display:grid;gap:6px;font-size:.87rem}
-.experience-dialog--project .project-upload-form :is(input[type=text],textarea,input[type=file]){display:block;width:100%;min-width:0;box-sizing:border-box;font:inherit;border:1px solid #c9d8df;border-radius:9px;background:#fff;color:#183548;padding:10px}
-.experience-dialog--project .project-upload-form input[type=file]{font-size:.79rem}
+.experience-dialog--project .project-upload-form :is(input[type=text],textarea){display:block;width:100%;min-width:0;box-sizing:border-box;font:inherit;border:1px solid #c9d8df;border-radius:9px;background:#fff;color:#183548;padding:10px}
+.experience-dialog--project .project-upload-form input[type=file]{display:block;width:100%;min-width:0;box-sizing:border-box;font:inherit;font-size:.87rem;line-height:1.5;color:#264457;background:#f7f9f9;border:1px solid #bdced6;border-radius:10px;padding:8px;cursor:pointer}
+.experience-dialog--project .project-upload-form input[type=file]::file-selector-button{font:inherit;font-weight:620;letter-spacing:.005em;color:#f6f9fa;background:#183b4c;border:1px solid #183b4c;border-radius:7px;padding:12px 17px;margin-right:15px;min-height:44px;cursor:pointer;transition:background .18s ease}
+.experience-dialog--project .project-upload-form input[type=file]::file-selector-button:hover{background:#2b5366}
+.experience-dialog--project .project-upload-form input[type=file]:focus-visible{outline:3px solid #b36c49;outline-offset:3px}
+.experience-dialog--project .project-upload-selection{display:block;max-width:100%;overflow-wrap:anywhere;color:#476172;font-size:.78rem;line-height:1.5}
 .experience-dialog--project .project-upload-help{margin:0;color:#5f7480;font-size:.76rem;line-height:1.48}
 .experience-dialog--project .project-upload-honeypot{position:absolute;width:1px;height:1px;clip-path:inset(50%);overflow:hidden}
 .experience-dialog--project [data-project-status]{font-size:.84rem;line-height:1.45;min-height:1.2em;margin:0}
