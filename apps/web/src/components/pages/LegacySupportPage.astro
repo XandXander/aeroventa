@@ -35,7 +35,7 @@ const caseCards: Card[] = [
   {tag:'2017–2018',title:'НТФФ «Полисан»',text:'Фармацевтический объект · вентиляция + оборудование.',href:'/blog/detail/ntff-polisan/'},
   {tag:'2019',title:'Квартира на Маршала Жукова',text:'Жилой объект · приточно-вытяжная вентиляция.',href:'/blog/detail/kvartira-na-zhukova/'},
   {tag:'2022',title:'Питкяранта / Карелия',text:'Сервисно-образовательный центр · вентиляция + оборудование.',href:'/blog/detail/montazh-ventilyatsii-v-karelii/'},
-];
+].sort((a,b)=>Number.parseInt(a.tag)-Number.parseInt(b.tag));
 
 const specs: Record<string, Spec> = {
   '/almaznoe-burenie/': {
@@ -170,7 +170,7 @@ const spec=specs[content.path];
 if(!spec) throw new Error('Support spec missing: '+content.path);
 ---
 
-<article class="support-page">
+<article class="support-page av-page av-support">
   <header class="support-hero">
     <div class="home-shell support-hero__grid">
       <div><p class="home-kicker">{spec.eyebrow}</p><h1>{content.h1}</h1></div>

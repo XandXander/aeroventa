@@ -29,7 +29,10 @@ const server = http.createServer(async(req,res)=>{
 });
 await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
 const origin = 'http://127.0.0.1:' + server.address().port;
-const browser = await chromium.launch({headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
+const browser = await chromium.launch({headless:true,
+ ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE ? {executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE} : {}),
+ args:process.env.RECOVERY_QA_BROWSER_ARGS ? JSON.parse(process.env.RECOVERY_QA_BROWSER_ARGS) : ['--no-sandbox','--disable-dev-shm-usage']
+});
 const context = await browser.newContext({reducedMotion:'reduce',serviceWorkers:'block'});
 await context.route('**/*', route=>new URL(route.request().url()).origin===origin ? route.continue() : route.abort());
 const page = await context.newPage();
@@ -362,6 +365,18 @@ try {
    await page.locator('[data-airflow-entry]').waitFor({state:'detached',timeout:5000});
    await page.emulateMedia({reducedMotion:'reduce'});await page.reload({waitUntil:'domcontentloaded'});
    expect(await page.locator('[data-airflow-entry]').count()===0,'Reduced motion cue not suppressed');return {blocking_loader:false};
+  });
+  await scenario('FAQ_TOPIC_FOCUS_WITHOUT_HASH','/faq/',390,844,async()=>{
+   await page.getByRole('navigation',{name:'Разделы вопросов'}).getByText('Приёмка',{exact:false}).click();
+   const result=await page.evaluate(()=>{
+    const heading=[...document.querySelectorAll('h2')].find(h=>h.textContent==='Приёмка');
+    return {hash:location.hash,focused:document.activeElement===heading,
+     top:heading.getBoundingClientRect().top,
+     header:document.querySelector('body>header')?.getBoundingClientRect().bottom||70};
+   });
+   expect(!result.hash&&result.focused&&result.top>=result.header&&result.top<500,
+    'Topic action must keep URL stable and focus the heading below the sticky header');
+   return result;
   });
   await scenario('GALLERY_NETWORK_FAILURE_NEXT_CLICK','/portfolio/',390,844,async()=>{
    let release;const wait=new Promise(resolve=>release=resolve);

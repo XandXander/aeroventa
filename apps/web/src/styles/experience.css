@@ -619,7 +619,6 @@
  .home-hero--owner-airflow .home-lede{font-size:clamp(.94rem,1.1vw,1.1rem);line-height:1.45;max-width:47ch}
  .home-hero--owner-airflow .home-actions{gap:10px;margin-top:clamp(12px,1.7svh,20px)}
  .home-hero--owner-airflow .object-ribbon{min-height:var(--av-fold-ribbon);align-items:center}
- :is(.about-premium .about-hero,.services-hero,.portfolio-hero,.objects-hero,.object-detail__hero,.engagement-hero,.evidence-case .case-detail-hero){min-height:0;height:auto;box-sizing:border-box}
  .practice-hub--articles .practice-index-intro{min-height:0;display:block}
  .practice-hub--articles .practice-index-intro>.home-shell{padding-block:clamp(24px,3.3vw,48px) clamp(17px,2.2vw,29px)}
  .practice-hub--articles .practice-index-intro h1{font-size:clamp(2.8rem,5.2vw,5.6rem);font-weight:550;line-height:1.04;letter-spacing:-.044em;margin:10px 0 15px}
@@ -774,7 +773,6 @@ img[src="/evidence/7park/object-exterior-day.jpg"]{
 :root{--av-editorial-ink:#132b3e;--av-editorial-secondary:#405664;--av-editorial-soft:#f6f8f8;--av-editorial-wash:#eaf0f1;--av-editorial-orange-text:#b94720;--av-editorial-blue-text:#216a8c}
 body{background:#fff}
 :where(.home-kicker,.section-index,.section-index--orange){color:var(--av-editorial-orange-text)}
-:where(.practice-article-index__tag,.portfolio-card__top b,.object-evidence__grid a>span){color:var(--av-editorial-secondary)}
 :where(.object-detail,.evidence-case,.portfolio-hub,.practice-hub,.about-premium,.engagement,.hub-page) .conversion-close{
  background:var(--av-editorial-soft);color:var(--av-editorial-ink);
  padding-block:clamp(38px,5vw,74px);border-block:1px solid #d7dfe4}
@@ -785,13 +783,6 @@ body{background:#fff}
 :where(.evidence-case,.portfolio-hub,.practice-hub,.object-detail) .home-section{padding-block:clamp(44px,6vw,88px)}
 :where(.portfolio-hub,.evidence-case,.practice-hub) h2{letter-spacing:-.035em;text-wrap:balance}
 .consultant-conversation__intro{color:var(--av-editorial-secondary);font-size:.92rem;line-height:1.5;margin:4px 0 16px}
-.portfolio-hero__neva-open{display:block;width:100%;padding:0;background:transparent;border:0;cursor:zoom-in;text-align:inherit}
-.portfolio-hero__neva-open img{display:block;width:100%;height:auto;aspect-ratio:531/376;object-fit:contain}
-.portfolio-hero__neva-open:focus-visible{outline:3px solid var(--av-editorial-blue-text);outline-offset:4px}
-.portfolio-sport__photography{display:grid!important;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr)!important;gap:clamp(12px,2vw,24px)!important;align-content:start}
-.portfolio-sport__photography>.portfolio-sport__photo{display:block;position:relative;margin:0;min-width:0;overflow:hidden;aspect-ratio:1.45;min-height:0;max-height:none}
-.portfolio-sport__photography>.portfolio-sport__photo--large{aspect-ratio:1.4}
-.portfolio-sport__photography>.portfolio-sport__photo img{width:100%;height:100%;object-fit:cover}
 .practice-featured{background:#fff;border-top:1px solid #d7dfe4}
 .practice-featured__heading{display:flex;align-items:end;justify-content:space-between;gap:22px;margin-bottom:clamp(22px,3vw,38px)}
 .practice-featured__heading h2{margin:.2em 0;font-size:clamp(1.75rem,3.5vw,3rem);line-height:1.12}
@@ -815,15 +806,12 @@ body{background:#fff}
  .practice-featured__grid{grid-template-columns:1fr}
  .practice-featured__card{border-bottom:1px solid #d7dfe4;padding-bottom:22px}
  .practice-featured__card img{aspect-ratio:1.58}
- .portfolio-sport__photography{grid-template-columns:1fr!important}
- .portfolio-sport__photography>.portfolio-sport__photo{aspect-ratio:1.45!important}
- :where(.portfolio-grid,.object-evidence__grid,.story-index__grid,.practical-index__grid){grid-template-columns:1fr!important}
  .object-detail--editorial-media .object-detail__hero-media{width:min(100%,531px);justify-self:center;margin-inline:auto}
  :where(.object-detail,.evidence-case,.portfolio-hub,.practice-hub,.about-premium) .conversion-close .home-actions{flex-direction:column;align-items:stretch}
  :where(.object-detail,.evidence-case,.portfolio-hub,.practice-hub,.about-premium) .conversion-close .home-actions>.button{width:100%;white-space:normal;min-height:48px}
 }
 @media(prefers-reduced-motion:reduce){
- .practice-featured__card,.portfolio-sport__photo,.portfolio-hero__neva-open{transition:none!important}
+ .practice-featured__card{transition:none!important}
 }
 /* Short desktop viewport: editorial summary and first buyer case remain visible
    without hiding copy or weakening the real 1440×768 browser assertion. */

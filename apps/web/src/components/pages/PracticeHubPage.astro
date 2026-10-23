@@ -13,7 +13,7 @@ const p0 = [
 const cases = [
   {tag:'Жилой комплекс',title:'ЖК «Аквилон» · Янино',meta:'Ленинградская область · монтаж вентиляции',image:'/evidence/owner-portfolio/akvilon-yanino/cover.webp',imageAlt:'Реальное строящееся здание ЖК «Аквилон» в Янино',href:'/portfolio/obekt/akvilon-yanino/'},
   {tag:'Ресторан',title:'ЖК «Леонтьевский Мыс»',image:'/evidence/leont/owner-cover-v43.webp',imageAlt:'Выполненный объект AEROVENTA — ресторан в ЖК Леонтьевский Мыс',meta:'Санкт-Петербург · приточно-вытяжная вентиляция + оборудование',href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/'},
-  {tag:'Производство',title:'НТФФ «Полисан»',meta:'Санкт-Петербург · монтаж на фармацевтическом объекте',image:'/evidence/polisan/archive/20180601-133711.webp',imageAlt:'Монтаж вентиляции на площадке НТФФ «Полисан»',href:'/blog/detail/ntff-polisan/'},
+  {tag:'Производство',title:'НТФФ «Полисан»',meta:'Санкт-Петербург · монтаж на фармацевтическом объекте',image:'/evidence/polisan/archive/20180601-133720.webp',imageAlt:'Монтаж вентиляции на площадке НТФФ «Полисан»',href:'/blog/detail/ntff-polisan/'},
   {tag:'Квартира',title:'Маршала Жукова',image:'/evidence/zhukov/duct-installation-01.jpg',imageAlt:'Монтаж вентиляции в квартире на Маршала Жукова',meta:'Санкт-Петербург · приточно-вытяжная вентиляция',href:'/blog/detail/kvartira-na-zhukova/'},
   {tag:'Карелия',title:'Питкяранта / PONSSE',meta:'Сервисно-образовательный центр · вентиляция + оборудование',image:'/evidence/karelia/owner-cover-v43.webp',imageAlt:'Фотография сервисного центра PONSSE в Питкяранте',href:'/blog/detail/montazh-ventilyatsii-v-karelii/'},
   {tag:'Кафе',title:'Римского-Корсакова, 3',image:'/evidence/cafe/owner-cover-v43.webp',imageAlt:'Выполненный объект AEROVENTA — кафе на Римского-Корсакова, 3',meta:'Санкт-Петербург · приточно-вытяжная вентиляция + оборудование',href:'/blog/detail/kafe-rimskogo-korsakova-3/'},
@@ -25,61 +25,14 @@ const isStories = content.path === '/blog/istorii-proektov/';
 ---
 
 {isRoot ? (
-  <article class="practice-hub practice-hub--articles">
-    <header class="practice-index-intro practice-index-intro--viewport">
-      <div class="home-shell">
-        <p class="home-kicker">Материалы AEROVENTA</p>
-        <h1>Статьи</h1>
-        <p>Практика монтажа и алмазного бурения: конкретные ситуации, исходные условия, технические решения.</p>
-      </div>
-    </header>
-    <section class="practice-article-index" id="articles-list" aria-label="Технические статьи">
-      <div class="home-shell practice-featured__heading practice-featured__heading--archive">
-        <div><p class="section-index">Технический опыт</p><h2>Алмазное бурение: статьи из практики</h2></div>
-      </div>
-      <div class="home-shell practice-article-index__list">
-        {p0.map((item,index) => (
-          <a class="practice-article-index__item" href={item.href}>
-            <span class="practice-article-index__number">{String(index+1).padStart(2,'0')}</span>
-            <figure class="practice-article-index__media"><img src={item.image} width="720" height="480" loading="lazy" decoding="async" alt={item.imageAlt}/></figure>
-            <div>
-              <span class="practice-article-index__tag">{item.tag}</span>
-              <h2>{item.title}</h2>
-              <p>{item.text}</p>
-            </div>
-            <span class="practice-article-index__action" aria-hidden="true">↗</span>
-          </a>
-        ))}
-      </div>
-    </section>
-    <section class="home-section practice-featured" id="ventilation-stories" aria-labelledby="practice-featured-title">
-      <div class="home-shell">
-        <header class="practice-featured__heading">
-          <div>
-            <p class="section-index">Монтаж вентиляции</p>
-            <h2 id="practice-featured-title">Истории реализованных объектов</h2>
-            <p>Жилые комплексы, производственные площадки, кафе и квартиры: состав работ и фотографии из наших проектов.</p>
-          </div>
-          <a href="/blog/istorii-proektov/">Все истории объектов →</a>
-        </header>
-        <div class="practice-featured__grid">
-          {cases.slice(0,4).map(item => (
-            <a class="practice-featured__card" href={item.href}>
-              <img src={item.image} alt={item.imageAlt} width="800" height="520" loading="lazy" decoding="async"/>
-              <span>{item.tag}</span><h3>{item.title}</h3><p>{item.meta}</p>
-              <b>Смотреть объект →</b>
-            </a>
-          ))}
-        </div>
-      </div>
-    </section>
-    <div class="home-shell practice-index-footer">
-      <p>Практические материалы о строительных задачах и выполненных инженерных работах.</p>
-      <a href="/portfolio/">Наши работы →</a>
-    </div>
+  <article class="practice-hub av-page av-journal">
+    <header class="av-journal-intro av-shell"><div><p class="av-kicker">Материалы AEROVENTA</p><h1>Статьи</h1></div><p class="av-lead">Практика монтажа и алмазного бурения. Конкретные ситуации, технические решения и работа на объектах.</p></header>
+    <section class="av-journal-lead" aria-label="Главный материал"><div class="av-shell"><a href={p0[0].href} class="av-journal-lead__link"><figure><img src={p0[0].image} alt={p0[0].imageAlt} width="800" height="600" loading="eager" decoding="async"/></figure><div><p class="av-kicker">Алмазное бурение · из практики</p><h2>{p0[0].title}</h2><p>{p0[0].text}</p><b>Читать статью ↗</b></div></a></div></section>
+    <section class="av-section av-journal-articles" aria-labelledby="article-index-title"><div class="av-shell"><div class="av-heading"><div><p class="av-kicker">Технические материалы</p><h2 id="article-index-title">Условия, решения, стоимость</h2></div><a class="av-link" href="/blog/poleznye-stati/">Все полезные материалы →</a></div><div class="av-article-grid">{p0.slice(1).map(item=><a href={item.href}><figure><img src={item.image} alt={item.imageAlt} width="720" height="480" loading="lazy" decoding="async"/></figure><span>{item.tag}</span><h3>{item.title}</h3><p>{item.text}</p><b>Читать статью ↗</b></a>)}</div><a class="av-journal-archive" href="/blog/detail/novoe-almaznoe-burenie/"><span>Из архива публикаций</span><strong>Новое алмазное бурение</strong><b aria-hidden="true">↗</b></a></div></section>
+    <section class="av-section av-journal-stories" aria-labelledby="practice-featured-title"><div class="av-shell"><div class="av-heading"><div><p class="av-kicker">Монтаж вентиляции</p><h2 id="practice-featured-title">Истории объектов</h2></div><a class="av-link" href="/blog/istorii-proektov/">Все истории →</a></div><div class="av-story-grid">{cases.slice(0,4).map(item=><a href={item.href}><img src={item.image} alt={item.imageAlt} width="800" height="520" loading="lazy" decoding="async"/><span>{item.tag}</span><h3>{item.title}</h3><p>{item.meta}</p><b>Смотреть объект ↗</b></a>)}</div></div></section>
   </article>
 ) : isPractical ? (
-  <article class="practice-hub">
+  <article class="practice-hub av-page av-journal-secondary">
     <header class="practice-hero">
       <div class="home-shell practice-hero__grid">
         <div><p class="home-kicker">Статьи / полезные материалы</p><h1>Практические материалы</h1></div>
@@ -88,7 +41,7 @@ const isStories = content.path === '/blog/istorii-proektov/';
     </header>
 
     <section class="home-section practical-index">
-      <div class="home-shell"><p class="section-index">01 / Практические статьи</p><h2>Четыре материала о реальных технических задачах.</h2>
+      <div class="home-shell"><p class="section-index">01 / Практические статьи</p><h2>Алмазное бурение: практика и стоимость</h2>
         <div class="practical-index__grid">
           {p0.map((item,index) => <a href={item.href}><img class="practical-index__photo" src={item.image} alt={item.imageAlt} width="720" height="480" loading="lazy" decoding="async"/><div class="practical-index__top"><span>{String(index+1).padStart(2,'0')}</span><b>{item.tag}</b></div><h3>{item.title}</h3><p>{item.text}</p><strong>Читать материал →</strong></a>)}
         </div>
@@ -109,13 +62,13 @@ const isStories = content.path === '/blog/istorii-proektov/';
 
     <section class="home-section practical-next">
       <div class="home-shell practical-next__grid">
-        <a href="/faq/"><span>До монтажа</span><h3>30 инженерных вопросов заказчика</h3><p>Короткий вывод → зависимость → исходные данные → следующий шаг.</p><b>Открыть FAQ →</b></a>
+        <a href="/faq/"><span>До монтажа</span><h3>Вопросы до начала монтажа</h3><p>Документы, состав работ, смета и приёмка — ответы на частые вопросы.</p><b>Открыть FAQ →</b></a>
         <a href="/blog/istorii-proektov/"><span>Объекты</span><h3>Истории реальных объектов</h3><p>Выполненные работы, инженерные задачи и фотографии объектов.</p><b>Смотреть объекты →</b></a>
       </div>
     </section>
   </article>
 ) : isStories ? (
-  <article class="practice-hub">
+  <article class="practice-hub av-page av-journal-secondary">
     <header class="practice-hero">
       <div class="home-shell practice-hero__grid">
         <div><p class="home-kicker">Статьи / истории объектов</p><h1>Истории объектов</h1></div>
@@ -131,16 +84,7 @@ const isStories = content.path === '/blog/istorii-proektov/';
       </div>
     </section>
 
-    <section class="story-rule">
-      <div class="home-shell story-rule__grid">
-        <div><p class="section-index section-index--orange">02 / Каждый объект</p><h2>Что можно узнать из истории работы.</h2></div>
-        <div><p>Открывайте конкретный объект, чтобы увидеть его назначение, состав выполненных работ, реальные фотографии и известные сроки.</p><p>Для похожей задачи мы учитываем исходные данные именно вашего объекта — даже если пример из портфолио близок по типу помещений.</p></div>
-      </div>
-    </section>
-
-    <section class="conversion-close">
-      <div class="home-shell"><p class="section-index section-index--orange">03 / Похожий объект</p><h2>Ищете опыт именно под свой тип объекта?</h2><div class="home-actions"><a class="button button--light" href="/obekty/">Выбрать тип объекта →</a><a class="button button--light" href="/contact/?intent=project">Показать свой проект</a></div></div>
-    </section>
+    <section class="av-close"><div class="av-shell av-close__grid"><div><p class="av-kicker">Похожая задача</p><h2>Обсудим монтаж на вашем объекте</h2></div><a class="button button--primary" href="/contact/" data-contact-open data-source="stories_final" aria-haspopup="dialog">Связаться с командой →</a></div></section>
   </article>
 ) : null}
 

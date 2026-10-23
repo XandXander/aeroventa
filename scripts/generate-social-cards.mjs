@@ -11,7 +11,7 @@ const cards = [
  ['home','evidence/hero/owner-luxury-airflow-20261010.png','Инженерный комфорт'],
  ['services','evidence/hero/project-not-ready-owner-concept-1672.webp','Монтаж вентиляции'],
  ['ventilation','evidence/hero/hiend-engineering-visual-owner-v43.webp','Монтаж вентиляции'],
- ['portfolio','evidence/leont/owner-cover-v43.webp','Реальные объекты'],
+ ['portfolio','evidence/7park/object-exterior-day.jpg','Реальные объекты'],
  ['about','evidence/team/owner-team-group-20261015.webp','Команда AEROVENTA'],
  ['project','evidence/polisan/archive/20180601-133720.webp','Работа по проекту'],
  ['polisan','evidence/polisan/owner-cover-v43.webp','НТФФ «Полисан»'],

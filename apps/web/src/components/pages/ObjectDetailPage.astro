@@ -30,7 +30,7 @@ const hasPhotoViewer=Boolean(heroMedia?.editorialSplit||evidence.some(item=>item
 const initialPhoto=heroMedia?.src||evidence.find(item=>item.gallery?.length)?.gallery?.[0]||'';
 ---
 
-<article class:list={['object-detail', visualVariant && `object-detail--${visualVariant}`, heroMedia?.editorialSplit && 'object-detail--editorial-media']}>
+<article class:list={['object-detail','av-page','av-type', visualVariant && `object-detail--${visualVariant}`, heroMedia?.editorialSplit && 'object-detail--editorial-media']}>
   <header class="object-detail__hero">
     <div class="home-shell object-detail__hero-grid">
       <div>
@@ -90,53 +90,10 @@ const initialPhoto=heroMedia?.src||evidence.find(item=>item.gallery?.length)?.ga
     </div>
   </section>
 
-  <section class="object-drivers" aria-labelledby="object-drivers-title">
-    <div class="home-shell object-drivers__grid">
-      <div>
-        <p class="section-index section-index--orange">03 / Стоимость и срок</p>
-        <h2 id="object-drivers-title">Объём и условия монтажа</h2>
-        <p>По чертежам и условиям площадки определяем перечень работ, оборудование и доступ к монтажным зонам. Эти данные нужны для расчёта.</p>
-      </div>
-      <div class="driver-list">
-        {drivers.map((item,index) => <div><span>{String(index+1).padStart(2,'0')}</span><strong>{item}</strong></div>)}
-      </div>
-    </div>
-  </section>
-
-  <section class="home-section object-questions" aria-labelledby="object-questions-title">
-    <div class="home-shell object-questions__grid">
-      <div>
-        <p class="section-index">04 / До монтажа</p>
-        <h2 id="object-questions-title">Вопросы перед началом работ</h2>
-        <a href="/faq/">Все инженерные вопросы →</a>
-      </div>
-      <div class="question-list">
-        {questions.map((question,index) => (
-          <a href="/faq/"><span>{String(index+1).padStart(2,'0')}</span>{question}<b aria-hidden="true">→</b></a>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="conversion-close" aria-labelledby="object-close-title">
-    <div class="home-shell">
-      <p class="section-index section-index--orange">05 / Следующий шаг</p>
-      <h2 id="object-close-title">Пришлите проект или исходные данные.</h2>
-      <div class="engagement-index engagement-index--close">
-        <a href="/montazh-po-proektu/">
-          <span>01</span>
-          <div><strong>Готовая проектная документация</strong><p>Перейти к монтажному объёму, вопросам исполнения и коммерческому предложению.</p></div>
-          <b aria-hidden="true">→</b>
-        </a>
-        <a href="/obekt-bez-gotovogo-proekta/">
-          <span>02</span>
-          <div><strong>Исходные данные ещё формируются</strong><p>Определить, что требуется до технически корректной оценки монтажа.</p></div>
-          <b aria-hidden="true">→</b>
-        </a>
-      </div>
-    </div>
-  </section>
+  <section class="av-section av-type-considerations" aria-labelledby="object-drivers-title"><div class="av-shell"><div class="av-heading"><div><p class="av-kicker">Объём и условия</p><h2 id="object-drivers-title">Для расчёта монтажа</h2></div><p>По чертежам и условиям площадки определяем перечень работ, оборудование и доступ к монтажным зонам.</p></div><div class="av-type-considerations__grid"><div><h3>Что влияет на состав работ</h3><ul class="av-type-drivers">{drivers.map(item=><li>{item}</li>)}</ul></div><div><h3>Что уточняем до начала</h3><ul class="av-type-questions">{questions.map(question=><li>{question}</li>)}</ul><a class="av-link" href="/faq/">Ответы на вопросы о монтаже →</a></div></div></div></section>
+  <nav class="av-type-stages" aria-label="Стадия вашего объекта"><div class="av-shell"><a href="/montazh-po-proektu/"><span>Документация готова</span><strong>Монтаж по проекту</strong><b aria-hidden="true">↗</b></a><a href="/obekt-bez-gotovogo-proekta/"><span>Пока есть задача</span><strong>Объект без проекта</strong><b aria-hidden="true">↗</b></a></div></nav>
 </article>
+
 {hasPhotoViewer && <dialog id="object-photo-dialog" class="object-photo-dialog" aria-labelledby="object-photo-title">
  <div class="object-photo-dialog__heading"><strong id="object-photo-title" data-object-photo-title>Фотография объекта</strong><button type="button" data-object-photo-close aria-label="Закрыть фотографию">×</button></div>
  <div class="object-photo-dialog__stage"><img src={initialPhoto} alt={heroMedia?.alt||'Фотография объекта'} width="1200" height="800"/></div>

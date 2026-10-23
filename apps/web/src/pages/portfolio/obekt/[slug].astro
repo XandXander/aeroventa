@@ -33,11 +33,29 @@ return projects.map(project=>({params:{slug:project.slug},props:{project,photos:
 }
 interface Props{project:{slug:string;title:string;kind:string;place:string;cover:string};photos:string[]}
 const {project,photos}=Astro.props;
-const galleryPhotos=project.slug==='na-izluchine-nevy'?photos.filter(src=>src!==project.cover):photos;
+// The supplied architectural reference stays in source; it is not used as
+// documentary proof while its exact object identity is unconfirmed.
+const contextualReferences=project.slug==='akvilon-yanino'?['gallery-12.webp']:[];
+const preferredFrames:Record<string,string[]>={
+ 'apart-hotel':['02.webp','03.webp','gallery-03.webp','gallery-04.webp','gallery-05.webp','gallery-06.webp','gallery-07.webp','gallery-10.webp','gallery-09.webp','gallery-08.webp','gallery-01.webp','gallery-02.webp'],
+ 'college-obvodny':['03.webp','02.webp','gallery-04.webp','gallery-05.webp','gallery-03.webp','gallery-02.webp','gallery-06.webp','gallery-08.webp','gallery-10.webp','gallery-11.webp','gallery-12.webp','gallery-09.webp'],
+ 'akvilon-yanino':['02.webp','03.webp','gallery-04.webp','gallery-05.webp','gallery-06.webp','gallery-07.webp','gallery-08.webp','gallery-10.webp','gallery-11.webp','gallery-13.webp','gallery-14.webp','gallery-16.webp'],
+ 'novatech':['gallery-04.webp','gallery-02.webp','02.webp','gallery-03.webp','gallery-06.webp','gallery-07.webp','gallery-01.webp','gallery-05.webp','cover.webp'],
+ 'eurospar-vo':['gallery-03.webp','02.webp','03.webp','gallery-05.webp','gallery-04.webp','gallery-06.webp','gallery-02.webp','gallery-01.webp'],
+ 'eurospar-sestroretsk':['02.webp','gallery-03.webp','gallery-06.webp','gallery-07.webp','gallery-08.webp','gallery-04.webp','gallery-01.webp','gallery-02.webp','cover.webp','gallery-05.webp'],
+ 'himprom':['cover.webp','gallery-06.webp','gallery-07.webp','02.webp','gallery-02.webp','gallery-08.webp','gallery-01.webp','gallery-03.webp','gallery-04.webp','gallery-05.webp']
+};
+const albumPhotos=photos.filter(src=>src!==project.cover&&!contextualReferences.includes(src.split('/').pop()||''));
+const preferred=(preferredFrames[project.slug]||[]).map(name=>albumPhotos.find(src=>src.endsWith('/'+name))).filter((src):src is string=>Boolean(src));
+const galleryPhotos=[...new Set([...preferred,...albumPhotos])];
+const visiblePhotos=galleryPhotos.slice(0,12);
+const additionalPhotos=galleryPhotos.slice(12);
+const heroWidth=project.slug==='na-izluchine-nevy'?531:1200;
+const heroHeight=project.slug==='na-izluchine-nevy'?376:['apart-hotel','eurospar-vo'].includes(project.slug)?800:900;
 if(project.slug==='na-izluchine-nevy'&&galleryPhotos.length!==6)throw Error('Neva requires six verified installation photos');
 const projectIntroductions:Record<string,string>={
  'apart-hotel':'Апарт-отель и коворкинг на Бумажном: инженерные трассы и интерьеры объекта.',
- 'eurospar-vo':'Торговый объект на Васильевском острове. Фотографии магазина и монтажных работ.',
+ 'eurospar-vo':'Интерьеры магазина и виды здания на Васильевском острове.',
  'eurospar-sestroretsk':'Магазин EUROSPAR в Сестрорецке. Фотографии объекта и инженерных коммуникаций.',
  'college-obvodny':'Колледж туризма и гостиничного сервиса в Санкт-Петербурге. Фотографии площадки и инженерных систем.',
  'novatech':'Производственная площадка в Московской области. Оборудование и монтажные узлы — в фотогалерее.',
@@ -54,20 +72,20 @@ const content:ContentRecord={
 };
 ---
 <BaseLayout content={content}>
-<article class:list={["owner-case",project.slug==="na-izluchine-nevy"&&"owner-case--neva"]}>
-<header class="owner-case__hero"><div class="home-shell owner-case__grid">
- <div><p class="home-kicker">Наши работы / {project.kind}</p><h1>{project.title}</h1><p class="owner-case__place">{project.place}</p>
- <p>{introduction}</p>
- <a class="owner-case__back" href="/portfolio/">← Все объекты</a>
- {project.slug==='eurospar-vo' && <a class="owner-case__back" href="/portfolio/obekt/eurospar-sestroretsk/">Другой объект EUROSPAR · Сестрорецк →</a>}
- {project.slug==='eurospar-sestroretsk' && <a class="owner-case__back" href="/portfolio/obekt/eurospar-vo/">Другой объект EUROSPAR · Васильевский остров →</a>}</div>
- <figure><button type="button" data-case-cover aria-label={'Открыть главное фото: '+project.title}><img src={project.cover} alt={'Объект '+project.title} width="1200" height="800" loading="eager" decoding="async"/></button><figcaption>{project.title} · {project.place}</figcaption></figure>
+<article class:list={["owner-case","av-page","av-owner-case",project.slug==="na-izluchine-nevy"&&"owner-case--neva"]}>
+<header class="owner-case__hero"><div class="av-shell owner-case__grid">
+ <div class="av-owner-case__title"><p class="av-kicker">Наши работы / {project.kind}</p><h1>{project.title}</h1></div>
+ <figure><button type="button" data-case-cover aria-label={'Открыть главное фото: '+project.title}><img src={project.cover} alt={'Объект '+project.title} width={heroWidth} height={heroHeight} fetchpriority="high" decoding="async"/></button><figcaption>{project.title} · {project.place}</figcaption></figure>
+ <div class="av-owner-case__summary"><p class="owner-case__place">{project.place}</p><p>{introduction}</p><a class="av-link" href="/portfolio/">← Все объекты</a>
+ {project.slug==='eurospar-vo'&&<a class="av-link" href="/portfolio/obekt/eurospar-sestroretsk/">Другой объект EUROSPAR · Сестрорецк →</a>}
+ {project.slug==='eurospar-sestroretsk'&&<a class="av-link" href="/portfolio/obekt/eurospar-vo/">Другой объект EUROSPAR · Васильевский остров →</a>}</div>
 </div></header>
-<section class="owner-case__gallery home-shell" aria-label={'Галерея '+project.title}>
- <div class="owner-case__heading"><h2>Фотографии объекта</h2><span>{galleryPhotos.length} кадров</span></div>
- <div class="owner-case__photos">{galleryPhotos.map((url,i)=><button type="button" data-case-frame={i} aria-label={'Открыть кадр '+(i+1)+' из '+galleryPhotos.length}><img src={url} width="900" height="700" alt={project.title+' · фотография '+(i+1)} loading="lazy" decoding="async"/></button>)}</div>
+<section class="owner-case__gallery av-shell" aria-label={'Галерея '+project.title}>
+ <div class="owner-case__heading"><h2>На объекте</h2><span>{galleryPhotos.length} фотографий</span></div>
+ <div class="owner-case__photos" data-grid-remainder={visiblePhotos.length%3}>{visiblePhotos.map((url,i)=><button type="button" data-case-frame={i} aria-label={'Открыть кадр '+(i+1)+' из '+galleryPhotos.length}><img src={url} width="900" height="700" alt={project.title+' · фотография '+(i+1)} loading="lazy" decoding="async"/></button>)}</div>
+ {additionalPhotos.length>0&&<details class="av-owner-case__more"><summary>Ещё {additionalPhotos.length} фотографий объекта</summary><div class="owner-case__photos" data-grid-remainder={additionalPhotos.length%3}>{additionalPhotos.map((url,i)=><button type="button" data-case-frame={i+visiblePhotos.length} aria-label={'Открыть дополнительный кадр '+(i+1)}><img src={url} width="900" height="700" alt={project.title+' · дополнительный ракурс '+(i+1)} loading="lazy" decoding="async"/></button>)}</div></details>}
 </section>
-<section class="owner-case__next home-shell"><h2>Ваш объект</h2><p>Пришлите проект или описание задачи. Уточним состав монтажа и необходимые исходные данные.</p><a href="/contact/" class="button button--primary" data-contact-open data-source="owner_case" aria-haspopup="dialog">Обсудить объект →</a></section>
+<section class="av-close"><div class="av-shell av-close__grid"><div><p class="av-kicker">Ваш объект</p><h2>Расскажите о вашей задаче</h2><p>Пришлите проект или описание объекта — уточним состав монтажа и необходимые данные.</p></div><a href="/contact/" class="button button--primary" data-contact-open data-source="owner_case" aria-haspopup="dialog">Обсудить объект →</a></div></section>
 </article>
 <dialog id="owner-case-viewer" data-cover={project.cover} aria-label={'Просмотр фотографий '+project.title}>
 <div class="owner-case__viewer-title"><strong>{project.title}</strong><button type="button" data-case-zoom aria-label="Увеличить фотографию" aria-pressed="false">+</button><button type="button" data-case-close aria-label="Закрыть галерею">×</button></div>

@@ -27,7 +27,7 @@ const objects = [
     id:'production', index:'01', title:'Производство',
     text:'Режим предприятия, проект, оборудование и доступ к монтажным зонам.',
     proof:'НТФФ «Полисан» — фармацевтическое предприятие.',
-    image:'/evidence/polisan/archive/20180601-133720.webp',
+    image:'/evidence/polisan/owner-cover-v43.webp',
     imageAlt:'Реальный производственный объект НТФФ Полисан', href:'/obekty/proizvodstvo/'
   },
   {
@@ -71,56 +71,9 @@ const objects = [
 ---
 
 <BaseLayout content={content}>
-  <article class="objects-hub">
-    <header class="objects-hero">
-      <div class="home-shell objects-hero__grid">
-        <div class="objects-hero__copy">
-          <p class="home-kicker">По типу объекта</p>
-          <h1>Вентиляция под конкретный объект</h1>
-          <p class="objects-hero__lede">Для жилых, коммерческих и производственных помещений — разный объём и условия монтажа. Выберите категорию, чтобы перейти непосредственно к её содержанию.</p>
-          <p class="home-geo">Санкт-Петербург · Ленинградская область · Москва · Карелия</p>
-        </div>
-        <figure class="objects-hero__photo">
-          <img src="/evidence/polisan/owner-cover-v43.webp" width="1600" height="903" alt="Фармацевтический комплекс НТФФ «Полисан» — выполненный объект AEROVENTA" loading="eager" decoding="async"/>
-          <figcaption>НТФФ «Полисан» · реальный объект</figcaption>
-        </figure>
-      </div>
-    </header>
-
-    <section class="objects-editorial-index" aria-labelledby="objects-index-title">
-      <div class="home-shell">
-        <div class="objects-editorial-index__head">
-          <p class="section-index">Направления</p>
-          <h2 id="objects-index-title">По типу объекта</h2>
-          <p>Монтаж начинается с проекта или исходных данных, а его состав зависит от назначения помещений, трасс, оборудования и условий доступа.</p>
-        </div>
-        <div class="objects-index__grid">
-          {objects.map(item => (
-            <a class="object-context-card object-context-card--editorial" href={item.href}>
-              <span class="object-context-card__number">{item.index}</span>
-              <div class="object-context-card__description">
-                <h3>{item.title}</h3>
-                <p>{item.text}</p>
-                <small>{item.proof}</small>
-              </div>
-              <img src={item.image} alt={item.imageAlt} width="600" height="375" loading="lazy" decoding="async" />
-              <b aria-hidden="true">↗</b>
-            </a>
-          ))}
-        </div>
-        <p class="objects-editorial-index__footer">Фотографии объектов и описание выполненных работ — в <a href="/portfolio/">«Наших работах»</a>.</p>
-      </div>
-    </section>
-
-    <section class="conversion-close" aria-labelledby="objects-close-title">
-      <div class="home-shell">
-        <p class="section-index section-index--orange">04 / Ваш объект</p>
-        <h2 id="objects-close-title">Обсудим исходные данные</h2>
-        <div class="home-actions">
-          <a class="button button--light" href="/montazh-po-proektu/">Монтаж по готовому проекту →</a>
-          <a class="button button--light" href="/obekt-bez-gotovogo-proekta/">Подготовка исходных данных</a>
-        </div>
-      </div>
-    </section>
+  <article class="objects-hub av-page av-object-index">
+    <header class="av-shell av-object-index__intro"><div><p class="av-kicker">Монтаж по типу объекта</p><h1>Вентиляция под конкретный объект</h1></div><div><p class="av-lead">У квартиры, ресторана и производства — разные условия монтажа.</p><p>Выберите свой тип объекта: покажем выполненные работы и данные, которые нужны для обсуждения задачи.</p><p class="av-geo">Санкт-Петербург и Ленинградская область · Москва · Карелия</p></div></header>
+    <section class="av-shell av-object-index__grid" aria-label="Типы объектов">{objects.map(item=><a href={item.href} class="av-object-index__item"><figure><img src={item.image} alt={item.imageAlt} width="800" height="500" loading="lazy" decoding="async"/></figure><div><span>{item.index}</span><h2>{item.title}</h2><p>{item.text}</p><b>Условия и выполненные работы ↗</b></div></a>)}</section>
+    <section class="av-close"><div class="av-shell av-close__grid"><div><p class="av-kicker">Ваш объект</p><h2>Есть задача по вентиляции?</h2></div><a href="/contact/" class="button button--primary" data-contact-open data-source="objects_hub">Обсудить объект →</a></div></section>
   </article>
 </BaseLayout>
