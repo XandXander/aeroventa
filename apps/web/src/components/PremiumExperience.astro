@@ -705,6 +705,7 @@ const { pagePath = '' } = Astro.props;
         const message = document.createElement('span');
         message.textContent = 'Не удалось подтвердить передачу запроса. Можно написать напрямую: ';
         const fallback = form.querySelector('.premium-contact-form__direct')?.cloneNode(true);
+        if (fallback instanceof HTMLAnchorElement) fallback.textContent = fallback.getAttribute('href')?.replace(/^mailto:/, '').split('?')[0] || 'Написать по email';
         if (fallback) status.append(message, fallback);
         else status.append(message);
         track('contact_form_error', { source: location.pathname, outcome: 'network_or_server' });
