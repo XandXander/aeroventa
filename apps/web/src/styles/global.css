@@ -3985,7 +3985,7 @@ dialog.ponsse-letter-dialog.is-document-zoomed .ponsse-letter-dialog__sheet img{
 .solution-grid .section-index{color:var(--av-accent-text)}
 .solution-grid .solution-cta{margin-top:18px}
 .solution-diagram{position:relative;inset:auto;width:100%;height:auto;min-width:0;margin:0;background:transparent}
-.solution-diagram img{display:block;width:100%;height:auto;max-width:1036px;object-fit:contain;mask-image:radial-gradient(ellipse 84% 88% at center,#000 76%,transparent 100%);-webkit-mask-image:radial-gradient(ellipse 84% 88% at center,#000 76%,transparent 100%)
+.solution-diagram img{display:block;width:100%;height:auto;max-width:1036px;object-fit:contain;mask-image:radial-gradient(ellipse 84% 88% at center,#000 76%,transparent 100%);-webkit-mask-image:radial-gradient(ellipse 84% 88% at center,#000 76%,transparent 100%)}
 .solution-mobile-pair{display:none}
 @media(max-width:760px){
  .solution-grid{grid-template-columns:minmax(0,1fr);gap:28px}
