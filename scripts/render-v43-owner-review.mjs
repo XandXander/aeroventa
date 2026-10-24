@@ -349,7 +349,7 @@ try {
               intro_bottom:text?.bottom??0,
               inline_visible:inline?getComputedStyle(inline).display!=='none':false,
               floating_visible:floating?getComputedStyle(floating).display!=='none' && getComputedStyle(floating).visibility!=='hidden' && parseFloat(getComputedStyle(floating).opacity)>.01:false,
-               launcher_overlaps_intro:(()=>{if(!floating||!intro)return false;const a=floating.getBoundingClientRect(),b=intro.getBoundingClientRect();return a.width>0&&a.height>0&&Math.min(a.right,b.right)-Math.max(a.left,b.left)>3&&Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top)>3})()
+               launcher_overlaps_intro:(()=>{if(!floating||!intro)return false;const a=floating.getBoundingClientRect();const rects=[...intro.querySelectorAll('p')].flatMap(el=>{const r=document.createRange();r.selectNodeContents(el);return [...r.getClientRects()]});rects.push(...[...intro.querySelectorAll('a,button')].map(el=>el.getBoundingClientRect()));return rects.some(b=>Math.min(a.right,b.right)-Math.max(a.left,b.left)>2&&Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top)>2)})()
             };
           });
           const mobile=width<=760;
@@ -985,8 +985,8 @@ try {
         };
         return {visible:!!button&&getComputedStyle(button).visibility!=='hidden'&&getComputedStyle(button).display!=='none',titleOverlap:overlap(button,title),ctaOverlap:overlap(button,primary)};
       });
-      if(state.visible||state.titleOverlap||state.ctaOverlap)
-        report.fail.push({reason:'Owner: no rejected consultant header pill or overlap on About',state});
+      if(!state.visible||state.titleOverlap||state.ctaOverlap)
+        report.fail.push({reason:'Owner: compact lower assistant remains available without covering About title or CTA',state});
     }catch(e){report.fail.push({reason:'About assistant visibility QA failed',error:String(e)})}
     finally{await ctx.close()}
   }

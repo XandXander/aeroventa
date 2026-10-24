@@ -3054,5 +3054,6 @@
   ],
   "current_base": "6c1c564743030c14f98500be9ed2ee008da93f9b",
   "preferred_work_reference": "6afdba86fcafde9dab94e4e069be987196b2bcf9",
-  "artistic_status": "OWNER ACCEPTANCE PENDING"
+  "artistic_status": "OWNER ACCEPTANCE PENDING",
+  "current_owner_canonical_sha": "7b81b78a491000d65ed3c59a7b62fc3f2a1291a7"
 }

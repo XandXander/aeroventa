@@ -178,10 +178,20 @@ const { pagePath = '' } = Astro.props;
       if (active === launcher) return;
       launcher.style.setProperty('--help-rise', '0px');
       const base = launcher.getBoundingClientRect();
-      const obstacles = [...document.querySelectorAll<HTMLElement>('main a,main button,main p,main h1,main h2,main h3,main label,main input,main textarea,main select,.site-footer a')]
+      const bottomRegion = Math.max(60, innerHeight * .48);
+      const crossesRail = (b:DOMRect) => b.width > 0 && b.height > 0 &&
+        b.right > base.left - 2 && b.left < base.right + 2 &&
+        b.bottom > bottomRegion && b.top < base.bottom + 2;
+      const controls = [...document.querySelectorAll<HTMLElement>('main a,main button,main input,main textarea,main select,.site-footer a')]
         .filter(el => getComputedStyle(el).visibility !== 'hidden')
-        .map(el => el.getBoundingClientRect()).filter(b => b.width > 0 && b.height > 0);
-      const rise = [0,56,112,168].find(offset => !obstacles.some(b =>
+        .map(el => el.getBoundingClientRect()).filter(crossesRail);
+      // Text blocks include empty space: protect actual line rectangles instead.
+      const text = [...document.querySelectorAll<HTMLElement>('main p,main h1,main h2,main h3,main label')]
+        .filter(el => getComputedStyle(el).visibility !== 'hidden' && crossesRail(el.getBoundingClientRect()))
+        .flatMap(el => { const range = document.createRange(); range.selectNodeContents(el); return [...range.getClientRects()]; });
+      const obstacles = [...controls,...text];
+      const slots = Array.from({length:Math.floor(Math.min(280,innerHeight*.44)/8)+1},(_,i)=>i*8);
+      const rise = slots.find(offset => !obstacles.some(b =>
         b.left < base.right + 2 && b.right > base.left - 2 && b.top < base.bottom - offset + 2 && b.bottom > base.top - offset - 2));
       launcher.style.setProperty('--help-rise', (rise || 0) + 'px');
       launcher.classList.toggle('is-obstructed', typing || rise === undefined);

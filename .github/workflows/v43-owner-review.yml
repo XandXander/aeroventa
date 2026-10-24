@@ -35,6 +35,7 @@ jobs:
       - name: Install project dependencies
         run: npm install --no-audit --no-fund
       - name: Validate and compile fixture site
+        id: fixture-build
         env:
           AEROVENTA_RELEASE_MODE: fixture
           AEROVENTA_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -66,24 +67,24 @@ jobs:
       - name: Render real compiled HTML at four viewports
         run: node scripts/render-v43-owner-review.mjs
       - name: Sitewide 51-HTML route / 10-viewport geometry and real-click gallery regression
-        if: success()
+        if: ${{ !cancelled() && steps.fixture-build.outcome == 'success' }}
         env:
           GITHUB_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: node scripts/pr12-sitewide-regression.mjs
       - name: Latest Owner first-view, authentic Neva, twelve-object and compact-assistant contract
-        if: success()
+        if: ${{ !cancelled() && steps.fixture-build.outcome == 'success' }}
         env:
           RECOVERY_QA_PHASE: owner
           RECOVERY_QA_OUTPUT: PR12_OWNER_CONTRACT
         run: node scripts/pr12-recovery-browser-qa.mjs
       - name: Exact-source complete render, geometry, interactions and states
-        if: success()
+        if: ${{ !cancelled() && steps.fixture-build.outcome == 'success' }}
         env:
           RECOVERY_QA_PHASE: all
           RECOVERY_QA_OUTPUT: PR12_EXACT_QA
         run: node scripts/pr12-recovery-browser-qa.mjs
       - name: Actual raster background and computed text contrast
-        if: success()
+        if: ${{ !cancelled() && steps.fixture-build.outcome == 'success' }}
         env:
           RECOVERY_QA_PHASE: surfaces
           RECOVERY_QA_OUTPUT: PR12_EXACT_SURFACES
@@ -108,7 +109,7 @@ jobs:
           const root='V43_OWNER_BROWSER_REVIEW/selected_preview';
           if (!fs.existsSync(root)) throw new Error('Selected screenshots missing');
           const files=fs.readdirSync(root).filter(f=>f.endsWith('.jpg')).sort();
-          if(files.length!==25) throw new Error('Expected 25 Owner previews (14 base + 11 motion/interactions), got '+files.length);
+
           for(const file of files){
             const b64=fs.readFileSync(path.join(root,file)).toString('base64');
             const size=12000,total=Math.ceil(b64.length/size);
@@ -117,6 +118,7 @@ jobs:
             console.log('AV_RENDER_END '+file);
           }
           console.log('AV_OWNER_SELECT_PREVIEWS '+files.length+' EXACT_SHA_RENDER');
+          if(files.length!==25) throw new Error('Expected 25 Owner previews (14 base + 11 motion/interactions), got '+files.length);
           JS
       - name: Emit real Owner first-view frames for executor visual inspection
         if: always()
@@ -132,6 +134,24 @@ jobs:
             console.log('AV_OWNER_FIRST_END '+file);
           }
           if(fs.existsSync(root+'/report.json'))console.log('AV_OWNER_CONTRACT_REPORT '+fs.readFileSync(root+'/report.json','utf8'));
+          JS
+      - name: Emit complete changed page families for executor visual inspection
+        if: always()
+        shell: bash
+        run: |
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          import sharp from 'sharp';
+          const root='PR12_EXACT_QA';
+          const routes=['services','montazh-ventiliacii','montazh-po-proektu','obekt-bez-gotovogo-proekta','blog','contact','obekty','obekty__kvartiry-i-doma','obekty__proizvodstvo','obekty__sklady','obekty__restorany-i-kafe','portfolio__obekt__na-izluchine-nevy'];
+          for(const route of routes)for(const width of[1440,390]){
+            const name=route+'__'+width+'.jpg',file=root+'/'+name;
+            if(!fs.existsSync(file))continue;
+            const b64=(await sharp(fs.readFileSync(file)).resize({width:width===390?390:850,withoutEnlargement:true}).jpeg({quality:76}).toBuffer()).toString('base64'),n=Math.ceil(b64.length/12000);
+            console.log('AV_CURRENT_FULL_START '+name+' '+n);
+            for(let i=0;i<n;i++)console.log('AV_CURRENT_FULL_PART '+name+' '+i+' '+b64.slice(i*12000,(i+1)*12000));
+            console.log('AV_CURRENT_FULL_END '+name);
+          }
           JS
       - name: Upload browser screenshots and machine report
         if: always()
