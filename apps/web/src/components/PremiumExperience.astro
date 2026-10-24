@@ -184,7 +184,7 @@ const { pagePath = '' } = Astro.props;
         b.bottom > bottomRegion && b.top < base.bottom + 2;
       // Reserve actual text and action targets; a linked photograph's large
       // empty frame is not a text/action rectangle.
-      const actionable = [...document.querySelectorAll<HTMLElement>('main button,main input,main textarea,main select,main .button,main [data-contact-open],main [data-project-open]')]
+      const actionable = [...document.querySelectorAll<HTMLElement>('main a,main button,main input,main textarea,main select,main .button,main [data-contact-open],main [data-project-open]')]
         .filter(el => !el.querySelector('img') && getComputedStyle(el).visibility !== 'hidden')
         .map(el => el.getBoundingClientRect()).filter(crossesRail);
       const text = [...document.querySelectorAll<HTMLElement>('main a,main p,main h1,main h2,main h3,main label,main figcaption,main dt,main dd,.site-footer a')]
