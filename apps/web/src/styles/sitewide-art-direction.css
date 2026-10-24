@@ -5109,7 +5109,10 @@ main :is(.av-hero__grid,.object-detail__hero-grid,.engagement-hero__grid,.case-d
    photos, first-fold ordering and approved imagery are preserved. */
 @media (min-width:761px){
  main .home-hero--owner-airflow .home-hero__copy{
-   background:rgba(7,24,38,.98)!important;
+   background:transparent!important;
+ }
+ main .home-hero--owner-airflow .home-hero__copy::before{
+   background:linear-gradient(90deg,rgba(7,23,35,.985) 0%,rgba(7,23,35,.98) 78%,rgba(7,23,35,.94) 89%,transparent 100%);
  }
 }
 main .case-feature :is(.case-dossier__primary,.case-dossier__secondary) figcaption :is(span,strong){
