@@ -434,5 +434,6 @@ try {
   report.checks.push({name:'diagram_intrinsic_layout',pass:diagramPosition!=='absolute' && diagram.width>400});
   await fs.writeFile(path.join(output,'report.json'),JSON.stringify(report,null,2));
   console.log('REPORT',output,'pages',report.pages.length,'issues',report.issues.length,'checks',report.checks);
+  if(phase==='surfaces' && report.issues.length)console.error('RASTER_CONTRAST_DETAIL',JSON.stringify(report.issues,null,2));
   if(report.issues.length || report.checks.some(c=>!c.pass))process.exitCode=1;
 } finally {await browser.close();await new Promise(resolve=>server.close(resolve));}

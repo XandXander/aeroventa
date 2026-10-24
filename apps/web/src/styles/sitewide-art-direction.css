@@ -5103,3 +5103,27 @@ main :is(.av-hero__grid,.object-detail__hero-grid,.engagement-hero__grid,.case-d
    without stretching/raster invention. */
 .solution-diagram{background:transparent}
 .solution-diagram img{mask-image:linear-gradient(90deg,transparent 0%,#000 6%,#000 94%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 6%,#000 94%,transparent 100%)}
+
+/* PR12 documented raster-contrast remediation (2026-10-24).
+   Opaque ink only immediately beneath real white overlay labels: the source
+   photos, first-fold ordering and approved imagery are preserved. */
+@media (min-width:761px){
+ main .home-hero--owner-airflow .home-hero__copy{
+   background:rgba(7,24,38,.98)!important;
+ }
+}
+main .case-feature :is(.case-dossier__primary,.case-dossier__secondary) figcaption :is(span,strong){
+ background:#132d3b;
+}
+main .av-portfolio-feature :is(.av-portfolio-feature__primary,.av-portfolio-feature__secondary) figcaption{
+ background:rgba(9,29,43,.98);
+ color:#fff;
+ padding:13px 18px 14px;
+}
+/* On narrow screens HOME copy is an independent paper surface, not a
+   dark photograph overlay. Match actual screen background and text. */
+@media(max-width:760px){
+ main .home-hero--owner-airflow .home-hero__copy{
+  background:#f5f7f7!important;
+ }
+}
