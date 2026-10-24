@@ -501,6 +501,7 @@ try {
           await page.locator('[data-ponsse-open]').click();
           const letterModal = page.locator('#ponsse-letter-dialog');
           await letterModal.waitFor({state:'visible'});
+          await letterModal.locator('.ponsse-letter-dialog__sheet img').evaluate(async img=>{await img.decode();if(!img.naturalWidth||!img.naturalHeight)throw Error('PONSSE original did not decode');await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));});
           if ((await letterModal.locator('img').getAttribute('src')) !== '/evidence/karelia/ponsse-letter-20220405.png') {
             report.fail.push({route,view,reason:'Wrong PONSSE fullsize original'});
           }
@@ -521,6 +522,7 @@ try {
           await page.locator('[data-home-ponsse-open]').first().click();
           const letter = page.locator('#home-ponsse-letter-dialog');
           await letter.waitFor({state:'visible'});
+          await letter.locator('.ponsse-letter-dialog__sheet img').evaluate(async img=>{await img.decode();if(!img.naturalWidth||!img.naturalHeight)throw Error('HOME PONSSE original did not decode');await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));});
           const fit = await letter.evaluate(node => {
             const img = node.querySelector('.ponsse-letter-dialog__sheet img');
             const box = node.querySelector('.ponsse-letter-dialog__sheet');
