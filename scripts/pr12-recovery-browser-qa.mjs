@@ -383,9 +383,18 @@ try {
   });
   await scenario('TEXT_ZOOM_200_PERCENT','/',390,844,async()=>{
    await page.addStyleTag({content:'html{font-size:200%}'});await settle();
-   const zoom=await page.evaluate(()=>({width:document.documentElement.scrollWidth,overflow:[...document.querySelectorAll('main *,footer *')].map(e=>({selector:e.tagName.toLowerCase()+'.'+e.className,box:e.getBoundingClientRect()})).filter(x=>x.box.width>0&&(x.box.right>innerWidth+1||x.box.left< -1)).slice(0,20).map(x=>({selector:x.selector,left:x.box.left,right:x.box.right,width:x.box.width}))}));
+   const zoom=await page.evaluate(()=>{
+    const boxes=[...document.querySelectorAll('body *')].map(e=>({e,selector:e.tagName.toLowerCase()+'.'+e.className,box:e.getBoundingClientRect()}));
+    const overflow=boxes.filter(x=>x.box.width>0&&(x.box.right>innerWidth+1||x.box.left< -1)).slice(0,30).map(x=>({selector:x.selector,left:x.box.left,right:x.box.right,width:x.box.width,source:x.e.getAttribute('src')}));
+    const text=[];const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+    for(let node=walker.nextNode();node;node=walker.nextNode()){if(!node.textContent.trim())continue;const r=document.createRange();r.selectNodeContents(node);for(const rect of r.getClientRects())if(rect.width>0&&(rect.right>innerWidth+1||rect.left< -1))text.push({text:node.textContent.trim().slice(0,70),parent:node.parentElement?.className,left:rect.left,right:rect.right});}
+    return {width:document.documentElement.scrollWidth,overflow,text:text.slice(0,35)};
+   });
+   await page.screenshot({path:path.join(output,'home-text-zoom-200-first.jpg'),type:'jpeg',quality:82});
+   await page.screenshot({path:path.join(output,'home-text-zoom-200.jpg'),type:'jpeg',quality:85,fullPage:true});
+   if(process.env.RECOVERY_QA_SCENARIO==='TEXT_ZOOM_200_PERCENT'){const b64=(await fs.readFile(path.join(output,'home-text-zoom-200-first.jpg'))).toString('base64');console.log('AV_ZOOM_FIRST '+b64);}
    const width=zoom.width;if(width>391)console.log('TEXT_ZOOM_OVERFLOW_DETAIL',JSON.stringify(zoom));expect(width<=391,'Text zoom causes horizontal overflow: '+width);
-   await page.screenshot({path:path.join(output,'home-text-zoom-200.jpg'),type:'jpeg',quality:85,fullPage:true});return {scrollWidth:width};
+   return {scrollWidth:width};
   });
   await scenario('ENTRY_FIRST_REPEAT_REDUCED','/',1440,900,async()=>{
    await page.emulateMedia({reducedMotion:'no-preference'});

@@ -47,7 +47,7 @@ const initialPhoto=heroMedia?.src||evidence.find(item=>item.gallery?.length)?.ga
       </div>
       {heroMedia && (
         <figure class="object-detail__hero-media">
-          {heroMedia.editorialSplit ? <button type="button" class="object-detail__photo-button" data-object-photo-open aria-haspopup="dialog" aria-controls="object-photo-dialog"><img src={heroMedia.src} alt={heroMedia.alt} width={heroMedia.nativeWidth || 800} height={heroMedia.nativeHeight || 450} fetchpriority="high" decoding="async" /></button> : <img src={heroMedia.src} alt={heroMedia.alt} width={heroMedia.nativeWidth || 800} height={heroMedia.nativeHeight || 450} fetchpriority="high" decoding="async" />}
+          {heroMedia.editorialSplit ? <button type="button" class="object-detail__photo-button" data-object-photo-open aria-haspopup="dialog" aria-controls="object-photo-dialog"><img src={heroMedia.src} alt={heroMedia.alt} width={heroMedia.nativeWidth || 800} height={heroMedia.nativeHeight || 450} style={heroMedia.nativeWidth ? `max-width:${heroMedia.nativeWidth}px` : undefined} fetchpriority="high" decoding="async" /></button> : <img src={heroMedia.src} alt={heroMedia.alt} width={heroMedia.nativeWidth || 800} height={heroMedia.nativeHeight || 450} style={heroMedia.nativeWidth ? `max-width:${heroMedia.nativeWidth}px` : undefined} fetchpriority="high" decoding="async" />}
           {heroMedia.caption && <figcaption>{heroMedia.caption}</figcaption>}
         </figure>
       )}

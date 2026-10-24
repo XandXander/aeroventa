@@ -64,27 +64,34 @@ jobs:
           done
           cat /tmp/v43-render-http.log
           exit 1
+      - name: Focused current HOME text enlargement regression
+        id: focused-reflow
+        env:
+          RECOVERY_QA_PHASE: interactions
+          RECOVERY_QA_SCENARIO: TEXT_ZOOM_200_PERCENT
+          RECOVERY_QA_OUTPUT: PR12_REFLOW_QA
+        run: node scripts/pr12-recovery-browser-qa.mjs
       - name: Render real compiled HTML at four viewports
         run: node scripts/render-v43-owner-review.mjs
       - name: Sitewide 51-HTML route / 10-viewport geometry and real-click gallery regression
-        if: ${{ !cancelled() && steps.fixture-build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.fixture-build.outcome == 'success' && steps.focused-reflow.outcome == 'success' }}
         env:
           GITHUB_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: node scripts/pr12-sitewide-regression.mjs
       - name: Latest Owner first-view, authentic Neva, twelve-object and compact-assistant contract
-        if: ${{ !cancelled() && steps.fixture-build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.fixture-build.outcome == 'success' && steps.focused-reflow.outcome == 'success' }}
         env:
           RECOVERY_QA_PHASE: owner
           RECOVERY_QA_OUTPUT: PR12_OWNER_CONTRACT
         run: node scripts/pr12-recovery-browser-qa.mjs
       - name: Exact-source complete render, geometry, interactions and states
-        if: ${{ !cancelled() && steps.fixture-build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.fixture-build.outcome == 'success' && steps.focused-reflow.outcome == 'success' }}
         env:
           RECOVERY_QA_PHASE: all
           RECOVERY_QA_OUTPUT: PR12_EXACT_QA
         run: node scripts/pr12-recovery-browser-qa.mjs
       - name: Actual raster background and computed text contrast
-        if: ${{ !cancelled() && steps.fixture-build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.fixture-build.outcome == 'success' && steps.focused-reflow.outcome == 'success' }}
         env:
           RECOVERY_QA_PHASE: surfaces
           RECOVERY_QA_OUTPUT: PR12_EXACT_SURFACES
@@ -96,11 +103,12 @@ jobs:
           name: PR12-SITEWIDE-10-VIEWPORT-AND-REAL-CLICKS
           path: |
             PR12_SYSTEMIC_QA/
+            PR12_REFLOW_QA/
             PR12_OWNER_CONTRACT/
           if-no-files-found: warn
           retention-days: 7
       - name: Emit compact selected real-render previews into CI evidence log
-        if: always()
+        if: ${{ !cancelled() && steps.focused-reflow.outcome == 'success' }}
         shell: bash
         run: |
           node --input-type=module <<'JS'
@@ -121,7 +129,7 @@ jobs:
           if(files.length!==25) throw new Error('Expected 25 Owner previews (14 base + 11 motion/interactions), got '+files.length);
           JS
       - name: Emit real Owner first-view frames for executor visual inspection
-        if: always()
+        if: ${{ !cancelled() && steps.focused-reflow.outcome == 'success' }}
         shell: bash
         run: |
           node --input-type=module <<'JS'
@@ -137,7 +145,7 @@ jobs:
           for(const f of['PR12_EXACT_QA/report.json','PR12_EXACT_SURFACES/report.json'])if(fs.existsSync(f)){const r=JSON.parse(fs.readFileSync(f,'utf8'));console.log('AV_EXACT_DIAGNOSTICS '+JSON.stringify({phase:r.phase,source_sha:r.source_sha,source_dirty:r.source_dirty,issues:r.issues,failed_checks:r.checks.filter(c=>!c.pass)}));}
           JS
       - name: Emit complete changed page families for executor visual inspection
-        if: always()
+        if: ${{ !cancelled() && steps.focused-reflow.outcome == 'success' }}
         shell: bash
         run: |
           node --input-type=module <<'JS'

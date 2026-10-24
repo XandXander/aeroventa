@@ -1,6 +1,6 @@
 # Owner continuation — artistic acceptance pending
 
-Continues existing PR12 from exact6c1c564743030c14f98500be9ed2ee008da93f9b. Preferred artistic reference6afdba86 is preserved as a comparison, not restored as an old tree. All accepted later media/upload/article fixes remain. No new branch, deployment, merge or infrastructure change.
+Continues existing PR12 from exact6c1c564743030c14f98500be9ed2ee008da93f9b. Preferred artistic reference6afdba86 is preserved as a comparison, not restored as an old tree. All accepted later media/upload/article fixes remain. Portrait category openings now retain the whole photograph within a deliberate viewport-relative height; the production opening leads with its genuine Polisan roof montage instead of repeating the same facade twice. BLOG preloads its actual original lead photograph. No new branch, deployment, merge or infrastructure change.
 
 The integrated change binds the byte-exact3264×2448 IMG_7571.JPG (SHA256 f83228bf67af248c14a5170d442ec7fff290297d6c16b2c1860e8d0c1469779e) to every Neva front cover/social source, restores12distinct other portfolio objects including EUROSPAR Sestroretsk, keeps the approved Leont cover, removes header/inline consultant duplicates and restores the historical small floating entry point to the existing dialog. The footer has one coherent contact/navigation hierarchy.
 
