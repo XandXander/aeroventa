@@ -1,0 +1,25 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ObjectEditorialPage from '@/components/pages/ObjectEditorialPage.astro';
+import type { ContentRecord } from '@/lib/types';
+const content: ContentRecord = {
+  path: "/obekty/ofisy-i-kommercheskie-pomeshcheniya/",title: "Монтаж вентиляции офисов и коммерческих помещений — AEROVENTA",h1:"Монтаж вентиляции офисов и коммерческих помещений",
+  content_type:'landing',business_role:'CORE_SERVICE_HUB',status:'fixture_stub',
+  robots_index:false,robots_follow:true,sitemap_include:false,knowledge_allowed:true,ai_origin:false,
+  seo_title:"Монтаж вентиляции офисов и коммерческих помещений в СПб и Ленобласти — AEROVENTA",
+  seo_description:"Для рабочего офиса, магазина и других коммерческих пространств уточняем проект, доступ к монтажным зонам и время выполнения работ. Состав системы определяется документацией.",
+  excerpt:'',body_html:'',body_html_safety_status:'not_applicable',owner_approved_at:null
+};
+const detail={
+  "eyebrow": "Коммерческие помещения",
+  "lead": "Для рабочего офиса, магазина и других коммерческих пространств уточняем проект, доступ к монтажным зонам и время выполнения работ. Состав системы определяется документацией.",
+  "proofTitle": "Апарт-отель и коворкинг на Бумажном",
+  "proofText": "Один из коммерческих объектов в Санкт-Петербурге. Посмотрите фотографии пространства и монтажных работ.",
+  "photo": "/evidence/owner-portfolio/apart-hotel/cover.webp",
+  "photoAlt": "Интерьер апарт-отеля и коворкинга на Бумажном проезде",
+  "link": "/portfolio/obekt/apart-hotel/",
+  "linkLabel": "Смотреть объект",
+  "description": "Пришлите проект, спецификацию и планы помещений. Уточним, можно ли вести работы в действующем помещении и какие ограничения необходимо учитывать."
+};
+---
+<BaseLayout content={content}><ObjectEditorialPage content={content} {...detail}/></BaseLayout>

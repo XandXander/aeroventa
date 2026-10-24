@@ -8,42 +8,36 @@ interface Props {
 const { pagePath = '' } = Astro.props;
 ---
 
-<a class="consultant-launcher" href="/contact/" data-consultant-open data-source="persistent_launcher" aria-haspopup="dialog" aria-controls="aeroventa-consultant-dialog" aria-label="Открыть инженерного консультанта">
+
+<button class="consultant-launcher" type="button" data-consultant-open data-source="persistent_launcher" aria-haspopup="dialog" aria-controls="aeroventa-consultant-dialog" aria-label="Открыть консультанта AEROVENTA">
   <span class="consultant-launcher__symbol" aria-hidden="true">↗</span>
-  <span class="consultant-launcher__label">Инженерный консультант</span>
-</a>
+</button>
 <dialog id="aeroventa-consultant-dialog" class="experience-dialog experience-dialog--consultant" data-consultant-dialog aria-labelledby="consultant-title">
   <div class="experience-dialog__shell">
     <div class="experience-dialog__head">
       <div>
-        <p class="section-index">Инженерный консультант</p>
-        <h2 id="consultant-title">Расскажите о вашем объекте.</h2>
+        <h2 id="consultant-title">Консультант AEROVENTA</h2>
       </div>
       <button type="button" class="dialog-close" data-dialog-close aria-label="Закрыть консультанта">×</button>
     </div>
 
-    <section class="consultant-conversation" aria-label="Диалог с навигатором AEROVENTA">
-      <ol class="consultant-conversation__history" data-consultant-chat-messages aria-live="polite" aria-relevant="additions">
-        <li class="consultant-message consultant-message--guide">
-          <span class="consultant-message__author">AEROVENTA / Навигатор</span>
-          <p>Опишите объект и вопрос. Подскажу подходящую страницу и какие исходные данные нужны. Без выдуманной сметы и инженерных обещаний.</p>
-        </li>
-      </ol>
+    <section class="consultant-conversation" aria-label="Консультация по монтажу вентиляции">
+      <p class="consultant-conversation__intro">Опишите объект или задайте вопрос о монтаже.</p>
+      <ol class="consultant-conversation__history" data-consultant-chat-messages aria-live="polite" aria-relevant="additions"></ol>
       <form class="consultant-conversation__composer" data-consultant-chat-form>
-        <label for="consultant-chat-question">Ваш вопрос</label>
+        <label class="consultant-conversation__accessible-label" for="consultant-chat-question">Вопрос о вентиляции</label>
         <div class="consultant-conversation__input">
-          <textarea id="consultant-chat-question" name="question" maxlength="800" rows="2" placeholder="Например: есть проект вентиляции ресторана, нужен монтаж" required></textarea>
+          <textarea id="consultant-chat-question" name="question" maxlength="800" rows="2" placeholder="Опишите задачу или задайте вопрос" required></textarea>
           <button type="submit" aria-label="Отправить вопрос">→</button>
         </div>
       </form>
       <div class="consultant-conversation__foot">
-        <span>Подберём подходящий материал или передадим вопрос специалисту.</span>
-        <button type="button" data-consultant-chat-handoff>Передать вопрос специалисту →</button>
+        <button type="button" data-consultant-chat-handoff>Передать специалисту →</button>
       </div>
     </section>
 
-    <details class="consultant-structured">
-      <summary>Уточнить параметры объекта <span>необязательно</span></summary>
+    <details class="consultant-structured" data-consultant-structured hidden>
+      <summary>Параметры объекта <span>по желанию</span></summary>
     <form class="consultant-form" data-consultant-form>
       <div class="consultant-form__grid">
         <div class="field">
@@ -98,7 +92,7 @@ const { pagePath = '' } = Astro.props;
 
       <div class="consultant-form__actions">
         <button class="button button--primary" type="submit">Показать следующий шаг →</button>
-        <span>Не является сметой, проектом или гарантией соответствия нормам.</span>
+        <small class="consultant-boundary">Не является сметой, проектом или гарантией соответствия нормам.</small>
       </div>
     </form>
 
@@ -132,7 +126,7 @@ const { pagePath = '' } = Astro.props;
     <div class="experience-dialog__head">
       <div>
         <p class="section-index">Связаться по объекту</p>
-        <h2 id="contact-dialog-title">Передайте минимум — остальное уточним.</h2>
+        <h2 id="contact-dialog-title">Обсудить монтаж вентиляции</h2>
       </div>
       <button type="button" class="dialog-close" data-dialog-close aria-label="Закрыть форму">×</button>
     </div>
@@ -140,41 +134,151 @@ const { pagePath = '' } = Astro.props;
   </div>
 </dialog>
 
+
+<dialog id="aeroventa-project-dialog" class="experience-dialog experience-dialog--contact experience-dialog--project" data-project-dialog aria-labelledby="project-dialog-title">
+  <div class="experience-dialog__shell">
+    <div class="experience-dialog__head">
+      <h2 id="project-dialog-title">Передать проект вентиляции</h2>
+      <button type="button" class="dialog-close" data-dialog-close aria-label="Закрыть форму передачи проекта">×</button>
+    </div>
+    <p class="project-upload-intro">Приложите чертежи и кратко опишите задачу. Документы передаются непосредственно на корпоративную почту AEROVENTA.</p>
+    <form class="premium-contact-form project-upload-form" data-project-form method="post" action="/api/project.php" enctype="multipart/form-data">
+      <label class="field">Ваше имя<input type="text" name="name" autocomplete="name" maxlength="80" required /></label>
+      <label class="field">Телефон или email<input type="text" name="contact" maxlength="160" required /></label>
+      <label class="field">Объект и задача<textarea name="task" rows="3" maxlength="3000" required placeholder="Тип объекта, город, что требуется смонтировать"></textarea></label>
+      <label class="field project-upload-field">Документация<input type="file" name="documents[]" multiple accept=".pdf,.dwg,.dxf,.zip,.jpg,.jpeg,.png" required data-project-files aria-describedby="project-upload-selection project-upload-limits" /><output class="project-upload-selection" id="project-upload-selection" data-project-file-summary aria-live="polite">Файлы не выбраны</output></label>
+      <p class="project-upload-help" id="project-upload-limits">PDF, DWG, DXF, ZIP, JPG или PNG · до 3 файлов · каждый до 4 МБ · суммарно до 8 МБ. Крупные комплекты передавайте по согласованному защищённому каналу.</p>
+      <label class="consent-check"><input type="checkbox" name="consent" required /> Согласен на обработку персональных данных для ответа на запрос. <a href="/privacy/" target="_blank" rel="noopener">Условия</a></label>
+      <input type="hidden" name="source_page" value={pagePath} />
+      <input type="hidden" name="started_at" value="" />
+      <div class="project-upload-honeypot" aria-hidden="true"><label>Website<input type="text" name="website" autocomplete="off" tabindex="-1" /></label></div>
+      <div class="premium-contact-form__actions">
+        <button type="submit" class="button button--primary" data-project-submit>Отправить проект →</button>
+        <a href="mailto:office@aeroventa.ru?subject=%D0%9F%D1%80%D0%BE%D0%B5%D0%BA%D1%82%20%D0%B2%D0%B5%D0%BD%D1%82%D0%B8%D0%BB%D1%8F%D1%86%D0%B8%D0%B8">Написать по email</a>
+      </div>
+      <p role="status" aria-live="polite" data-project-status></p>
+    </form>
+  </div>
+</dialog>
+
 <script>
 (() => {
-  const consultantDialog = document.querySelector('[data-consultant-dialog]');
-  const contactDialog = document.querySelector('[data-contact-dialog]');
-  const consultantForm = document.querySelector('[data-consultant-form]');
-  const consultantResult = document.querySelector('[data-consultant-result]');
+  const consultantDialog = document.querySelector<HTMLDialogElement>('[data-consultant-dialog]');
+  const launcher = document.querySelector<HTMLButtonElement>('.consultant-launcher');
+  if (launcher) {
+    let launcherFrame = 0;
+    const clearLauncher = () => {
+      launcherFrame = 0;
+      if (document.querySelector('dialog[open], .mobile-menu[open]')) {
+        launcher.classList.remove('is-obstructed');
+        return;
+      }
+      const active = document.activeElement;
+      const typing = active instanceof Element && active.matches('input,textarea,select,[contenteditable="true"]');
+      if (active === launcher) return;
+      launcher.style.setProperty('--help-rise', '0px');
+      const base = launcher.getBoundingClientRect();
+      const bottomRegion = Math.max(60, innerHeight * .48);
+      const crossesRail = (b:DOMRect) => b.width > 0 && b.height > 0 &&
+        b.right > base.left - 2 && b.left < base.right + 2 &&
+        b.bottom > bottomRegion && b.top < base.bottom + 2;
+      const controls = [...document.querySelectorAll<HTMLElement>('main a,main button,main input,main textarea,main select,.site-footer a')]
+        .filter(el => getComputedStyle(el).visibility !== 'hidden')
+        .map(el => el.getBoundingClientRect()).filter(crossesRail);
+      // Text blocks include empty space: protect actual line rectangles instead.
+      const text = [...document.querySelectorAll<HTMLElement>('main p,main h1,main h2,main h3,main label')]
+        .filter(el => getComputedStyle(el).visibility !== 'hidden' && crossesRail(el.getBoundingClientRect()))
+        .flatMap(el => { const range = document.createRange(); range.selectNodeContents(el); return [...range.getClientRects()]; });
+      const obstacles = [...controls,...text];
+      const slots = Array.from({length:Math.floor(Math.min(280,innerHeight*.44)/8)+1},(_,i)=>i*8);
+      const rise = slots.find(offset => !obstacles.some(b =>
+        b.left < base.right + 2 && b.right > base.left - 2 && b.top < base.bottom - offset + 2 && b.bottom > base.top - offset - 2));
+      launcher.style.setProperty('--help-rise', (rise || 0) + 'px');
+      launcher.classList.toggle('is-obstructed', typing || rise === undefined);
+    };
+    const scheduleLauncher = () => { if (!launcherFrame) launcherFrame = requestAnimationFrame(clearLauncher); };
+    window.addEventListener('scroll', scheduleLauncher, {passive:true});
+    window.addEventListener('resize', scheduleLauncher);
+    window.addEventListener('load', scheduleLauncher, {once:true});
+    void document.fonts.ready.then(scheduleLauncher);
+    window.visualViewport?.addEventListener('resize', scheduleLauncher);
+    document.addEventListener('focusin', scheduleLauncher);
+    document.addEventListener('focusout', scheduleLauncher);
+    new MutationObserver(scheduleLauncher).observe(document.body, {subtree:true,attributes:true,attributeFilter:['open']});
+    scheduleLauncher();
+  }
+
+  const contactDialog = document.querySelector<HTMLDialogElement>('[data-contact-dialog]');
+  const projectDialog = document.querySelector<HTMLDialogElement>('[data-project-dialog]');
+  const consultantForm = document.querySelector<HTMLFormElement>('[data-consultant-form]');
+  const consultantResult = document.querySelector<HTMLElement>('[data-consultant-result]');
   let consultantSummary = '';
-  const lastDialogTrigger = new WeakMap();
+  const lastDialogTrigger = new WeakMap<HTMLDialogElement, HTMLElement>();
+  const fieldValue = (form:HTMLFormElement,name:string) => {
+    const field=form.elements.namedItem(name);
+    return field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement || field instanceof HTMLSelectElement ? field : null;
+  };
 
-  const track = (name, payload = {}) => window.aeroventaTrack?.(name, payload);
+  const track = (name:string, payload:Record<string,unknown> = {}) => window.aeroventaTrack?.(name, payload);
 
-  const openDialog = (dialog) => {
+  // Stateful sheet opening/closing, respecting reduced motion and native focus.
+  const sheetTimers = new WeakMap<HTMLDialogElement, number>();
+  const activeRequests = new WeakMap<HTMLFormElement, AbortController>();
+  const motionDisabled = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const clearSheetTimer = (dialog:HTMLDialogElement) => {
+    const timer = sheetTimers.get(dialog);
+    if (timer) window.clearTimeout(timer);
+    sheetTimers.delete(dialog);
+  };
+  const openDialog = (dialog:HTMLDialogElement|null) => {
     if (!dialog) return;
+    clearSheetTimer(dialog);
+    // Put the initial visual state in place before showModal paints the dialog.
+    dialog.dataset.state = motionDisabled() ? 'open' : 'opening';
     if (typeof dialog.showModal === 'function') {
       if (!dialog.open) dialog.showModal();
-    } else {
-      dialog.setAttribute('open', '');
+    } else dialog.setAttribute('open', '');
+    if (!motionDisabled()) {
+      sheetTimers.set(dialog, window.setTimeout(() => {
+        if (dialog.open && dialog.dataset.state === 'opening') dialog.dataset.state = 'open';
+      }, 380));
     }
   };
 
-  const closeDialog = (dialog) => {
-    if (!dialog) return;
-    if (typeof dialog.close === 'function') dialog.close();
-    else dialog.removeAttribute('open');
+  const closeDialog = (dialog:HTMLDialogElement|null) => {
+    if (!dialog || !dialog.open || dialog.dataset.state === 'closing') return;
+    clearSheetTimer(dialog);
+    const finish = () => {
+      if (typeof dialog.close === 'function') dialog.close();
+      else dialog.removeAttribute('open');
+      dialog.dataset.state = 'closed';
+      sheetTimers.delete(dialog);
+    };
+    if (motionDisabled()) finish();
+    else {
+      dialog.dataset.state = 'closing';
+      sheetTimers.set(dialog, window.setTimeout(finish, 220));
+    }
   };
 
   document.addEventListener('click', (event) => {
-    const close = event.target.closest('[data-dialog-close]');
+    if (!(event.target instanceof Element)) return;
+    const close = event.target.closest<HTMLElement>('[data-dialog-close]');
     if (close) {
-      closeDialog(close.closest('dialog'));
+      closeDialog(close.closest<HTMLDialogElement>('dialog'));
       return;
     }
 
-    const consultantOpen = event.target.closest('[data-consultant-open]');
-    if (consultantOpen) {
+    const projectOpen = (event.target as Element).closest<HTMLElement>('[data-project-open]');
+    if (projectOpen && projectDialog) {
+      event.preventDefault();
+      lastDialogTrigger.set(projectDialog,projectOpen);
+      openDialog(projectDialog);
+      track('project_upload_open',{source:projectOpen.dataset.source || 'site'});
+      return;
+    }
+    const consultantOpen = event.target.closest<HTMLElement>('[data-consultant-open]');
+    if (consultantOpen && consultantDialog) {
       event.preventDefault();
       lastDialogTrigger.set(consultantDialog, consultantOpen);
       openDialog(consultantDialog);
@@ -182,8 +286,8 @@ const { pagePath = '' } = Astro.props;
       return;
     }
 
-    const contactOpen = event.target.closest('[data-contact-open]');
-    if (contactOpen) {
+    const contactOpen = event.target.closest<HTMLElement>('[data-contact-open]');
+    if (contactOpen && contactDialog) {
       event.preventDefault();
       hydrateContactContext(contactDialog, {
         intent: contactOpen.dataset.contactIntent || '',
@@ -198,17 +302,86 @@ const { pagePath = '' } = Astro.props;
     }
   });
 
-  for (const dialog of [consultantDialog, contactDialog]) {
+  for (const dialog of [consultantDialog, contactDialog, projectDialog]) {
+    if (!dialog) continue;
+    dialog?.addEventListener('cancel', (event) => {
+      if (!motionDisabled()) {
+        event.preventDefault();
+        closeDialog(dialog);
+      }
+    });
     dialog?.addEventListener('click', (event) => {
       if (event.target === dialog) closeDialog(dialog);
     });
     dialog?.addEventListener('close', () => {
+      const sendingForm = dialog.querySelector<HTMLFormElement>('form[data-contact-form],form[data-project-form]');
+      if (sendingForm) activeRequests.get(sendingForm)?.abort();
+      // A handoff can open another native dialog before this sheet finishes
+      // closing. Never return focus behind the new modal.
+      if (document.querySelector('dialog[open]')) return;
       const opener = lastDialogTrigger.get(dialog);
-      if (opener?.isConnected) opener.focus({ preventScroll: true });
+      const visibleOpener = opener?.isConnected && opener.getClientRects().length > 0;
+      const fallback = opener?.closest('[data-mobile-menu]')
+        ? document.querySelector<HTMLElement>('[data-mobile-menu] summary')
+        : document.querySelector<HTMLElement>('.consultant-launcher');
+      (visibleOpener ? opener : fallback)?.focus({ preventScroll: true });
     });
   }
 
-  const routeMap = {
+
+  const uploadForm = document.querySelector<HTMLFormElement>('[data-project-form]');
+  if (uploadForm) {
+    const stamp=uploadForm.querySelector<HTMLInputElement>('[name="started_at"]');
+    if(stamp) stamp.value=String(Date.now());
+    const fileInput=uploadForm.querySelector<HTMLInputElement>('[data-project-files]');
+    const fileSummary=uploadForm.querySelector<HTMLOutputElement>('[data-project-file-summary]');
+    const refreshFileSummary=()=>{
+      if(!fileSummary)return;
+      const selected=Array.from(fileInput?.files||[]);
+      fileSummary.textContent=selected.length?selected.map(file=>file.name).join(' · '):'Файлы не выбраны';
+    };
+    fileInput?.addEventListener('change',refreshFileSummary);
+    uploadForm.addEventListener('submit',async(event)=>{
+      event.preventDefault();
+      if(uploadForm.dataset.submitting === 'true')return;
+      const status=uploadForm.querySelector<HTMLElement>('[data-project-status]');
+      const submit=uploadForm.querySelector<HTMLButtonElement>('[data-project-submit]');
+      const files=Array.from(uploadForm.querySelector<HTMLInputElement>('[data-project-files]')?.files||[]);
+      if(!status||!submit)return;
+      if(files.length===0||files.length>3||files.some(f=>f.size===0||f.size>4*1024*1024)||files.reduce((size,f)=>size+f.size,0)>8*1024*1024){
+        status.textContent='Проверьте файлы: максимум три, каждый до 4 МБ, суммарно до 8 МБ.';
+        return;
+      }
+      if(!uploadForm.reportValidity())return;
+      uploadForm.dataset.submitting='true';
+      submit.disabled=true;submit.setAttribute('aria-busy','true');
+      status.textContent='Передаём проект…';
+      const controller=new AbortController();
+      activeRequests.set(uploadForm,controller);
+      const timeout=setTimeout(()=>controller.abort(),20000);
+      try {
+        const response=await fetch('/api/project.php',{method:'POST',body:new FormData(uploadForm),credentials:'same-origin',cache:'no-store',signal:controller.signal,headers:{accept:'application/json'}});
+        const result=await response.json().catch(()=>null);
+        if(!response.ok||result?.ok!==true)throw new Error(result?.error||'request_failed');
+        status.textContent='Сервер принял документы для отправки. Доставку в почтовый ящик подтвердим отдельно.';
+        uploadForm.reset();
+        refreshFileSummary();
+        if(stamp)stamp.value=String(Date.now());
+        track('project_upload_accepted',{source:location.pathname});
+      }catch{
+        status.textContent='Не удалось подтвердить передачу документов. Сохраните файлы и согласуйте отправку по email.';
+        track('project_upload_error',{source:location.pathname});
+      }finally{
+        clearTimeout(timeout);
+        activeRequests.delete(uploadForm);
+        uploadForm.dataset.submitting='false';
+        submit.disabled=false;
+        submit.removeAttribute('aria-busy');
+      }
+    });
+  }
+
+  const routeMap:Record<string,{href:string;title:string;copy:string}> = {
     ready: {
       href: '/montazh-po-proektu/',
       title: 'Передать рабочий комплект и перейти к разбору монтажного объёма.',
@@ -226,7 +399,7 @@ const { pagePath = '' } = Astro.props;
     },
   };
 
-  const caseMap = {
+  const caseMap:Record<string,[string,string]> = {
     private: ['/blog/detail/kvartira-na-zhukova/', 'Квартира на Маршала Жукова'],
     restaurant: ['/blog/detail/restoran-v-zhk-leontevskiy-mys/', 'Ресторан в ЖК «Леонтьевский Мыс»'],
     commercial: ['/portfolio/', 'Реальные объекты AEROVENTA'],
@@ -236,16 +409,16 @@ const { pagePath = '' } = Astro.props;
     other: ['/portfolio/', 'Реальные объекты AEROVENTA'],
   };
 
-  const labels = (form) => {
-    const valueLabel = (name) => {
-      const field = form.elements[name];
+  const labels = (form:HTMLFormElement) => {
+    const valueLabel = (name:string) => {
+      const field = form.elements.namedItem(name);
       if (!field) return '';
       if (field instanceof RadioNodeList) {
         const selected = form.querySelector(`input[name="${name}"]:checked`);
         return selected?.closest('label')?.textContent?.trim() || '';
       }
       if (field instanceof HTMLSelectElement) return field.selectedOptions[0]?.textContent?.trim() || '';
-      return field.value || '';
+      return field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement ? field.value : '';
     };
     return {
       object: valueLabel('object_type'),
@@ -257,7 +430,7 @@ const { pagePath = '' } = Astro.props;
 
   consultantForm?.addEventListener('submit', (event) => {
     event.preventDefault();
-    if (!consultantForm.reportValidity()) return;
+    if (!consultantForm || !consultantResult || !consultantForm.reportValidity()) return;
 
     const data = new FormData(consultantForm);
     const objectType = String(data.get('object_type') || '');
@@ -281,25 +454,28 @@ const { pagePath = '' } = Astro.props;
     if (region === 'other') missing.push('Точный адрес/регион — сначала подтвердим возможность выезда и логистику.');
     if (stage === 'unknown') missing.push('Текущая стадия объекта — она влияет на доступ и последовательность монтажа.');
 
-    consultantResult.querySelector('[data-consultant-next]').textContent = route.title;
-    consultantResult.querySelector('[data-consultant-explanation]').textContent =
+    const next=consultantResult.querySelector('[data-consultant-next]');
+    const explanation=consultantResult.querySelector('[data-consultant-explanation]');
+    if (!next || !explanation) return;
+    next.textContent = route.title;
+    explanation.textContent =
       region === 'other'
         ? `${route.copy} Географию за пределами текущих регионов AEROVENTA нужно подтвердить отдельно.`
         : route.copy;
 
     const missingList = consultantResult.querySelector('[data-consultant-missing]');
-    missingList.replaceChildren(...missing.map((item) => {
+    missingList?.replaceChildren(...missing.map((item) => {
       const li = document.createElement('li');
       li.textContent = item;
       return li;
     }));
 
-    const caseLink = consultantResult.querySelector('[data-consultant-link]');
-    caseLink.href = caseItem[0];
-    caseLink.textContent = `${caseItem[1]} →`;
+    const caseLink = consultantResult.querySelector<HTMLAnchorElement>('[data-consultant-link]');
+    if (caseLink) { caseLink.href = caseItem[0];
+    caseLink.textContent = `${caseItem[1]} →`; }
 
-    const routeLink = consultantResult.querySelector('[data-consultant-route]');
-    routeLink.href = route.href;
+    const routeLink = consultantResult.querySelector<HTMLAnchorElement>('[data-consultant-route]');
+    if (routeLink) routeLink.href = route.href;
 
     consultantSummary = [
       `Тип объекта: ${pretty.object || 'не указан'}`,
@@ -327,10 +503,11 @@ const { pagePath = '' } = Astro.props;
   });
 
   consultantResult?.querySelector('[data-consultant-link]')?.addEventListener('click', () => {
-    track('consultant_relevant_link', { target: consultantResult.querySelector('[data-consultant-link]').getAttribute('href') || '' });
+    track('consultant_relevant_link', { target: consultantResult?.querySelector('[data-consultant-link]')?.getAttribute('href') || '' });
   });
 
   consultantResult?.querySelector('[data-consultant-handoff]')?.addEventListener('click', () => {
+    if (!consultantForm || !consultantDialog || !contactDialog) return;
     const data = new FormData(consultantForm);
     const projectStatus = String(data.get('project_status') || '');
     const task = String(data.get('task') || '').trim();
@@ -341,13 +518,15 @@ const { pagePath = '' } = Astro.props;
       task,
     });
 
+    const opener=lastDialogTrigger.get(consultantDialog);
+    if (opener) lastDialogTrigger.set(contactDialog,opener);
     closeDialog(consultantDialog);
     openDialog(contactDialog);
     track('consultant_handoff', { project_status: projectStatus });
     track('contact_form_open', { source: 'consultant', project_status: projectStatus });
   });
 
-  function inferContext(pathname) {
+  function inferContext(pathname:string) {
     if (pathname.includes('/obekty/restorany-i-kafe/')) return 'restaurants';
     if (pathname.includes('/obekty/novostroyki-i-zhilye-kompleksy/')) return 'newbuild';
     if (pathname.includes('/montazh-ventiliacii/')) return 'ventilation';
@@ -372,11 +551,11 @@ const { pagePath = '' } = Astro.props;
     try { return sessionStorage.getItem('aeroventa-campaign-context') || ''; } catch { return ''; }
   }
 
-  function hydrateContactContext(root, overrides = {}) {
+  function hydrateContactContext(root:ParentNode|null, overrides:{intent?:string;projectStatus?:string;consultantSummary?:string;task?:string} = {}) {
     if (!root) return;
-    for (const form of root.querySelectorAll('[data-contact-form]')) {
-      const set = (name, value) => {
-        const field = form.elements[name];
+    for (const form of root.querySelectorAll<HTMLFormElement>('[data-contact-form]')) {
+      const set = (name:string, value:string) => {
+        const field = fieldValue(form,name);
         if (field && value !== undefined && value !== null && value !== '') field.value = value;
       };
 
@@ -392,18 +571,18 @@ const { pagePath = '' } = Astro.props;
       set('lead_intent', overrides.intent || form.dataset.contactIntent || 'VENTILATION_PROJECT');
 
       if (overrides.task) {
-        const taskField = form.elements.task;
+        const taskField = fieldValue(form,'task');
         if (taskField && !taskField.value.trim()) taskField.value = overrides.task;
       }
     }
   }
 
   // Dialogue-first public-content routing. No external inference or simulated model wait state.
-  const chatForm = consultantDialog?.querySelector('[data-consultant-chat-form]');
+  const chatForm = consultantDialog?.querySelector<HTMLFormElement>('[data-consultant-chat-form]');
   const chatHistory = consultantDialog?.querySelector('[data-consultant-chat-messages]');
-  const chatInput = chatForm?.elements?.question;
+  const chatInput = chatForm ? fieldValue(chatForm,'question') : null;
   let lastChatQuestion = '';
-  const safeChatRoute = (input) => {
+  const safeChatRoute = (input:string) => {
     if (/нет проекта|без проекта|проект(а)? нет|не готов(ый|а)|нет чертеж/i.test(input)) {
       return ['/obekt-bez-gotovogo-proekta/', 'Какие исходные данные нужны до оценки монтажа',
         'Начните с имеющихся планов, фото и описания объекта.'];
@@ -418,7 +597,7 @@ const { pagePath = '' } = Astro.props;
     }
     if (/новострой|жил(ой|ого) комплекс|многоквартир|7 park|7 парк/i.test(input)) {
       return ['/obekty/novostroyki-i-zhilye-kompleksy/', 'Монтаж в новостройках и жилых комплексах',
-        'Посмотрите подтверждённый кейс 7 PARK и особенности повторяемых объёмов.'];
+        'Посмотрите кейс 7 PARK и особенности повторяемых объёмов.'];
     }
     if (/стоимост|сколько стоит|смет|цен|расцен/i.test(input)) {
       return ['/faq/', 'Что влияет на расчёт стоимости',
@@ -427,7 +606,7 @@ const { pagePath = '' } = Astro.props;
     return ['/montazh-ventiliacii/', 'Монтаж вентиляции — состав работ и примеры',
       'Если вопрос требует инженерного решения, передайте описание напрямую специалисту.'];
   };
-  const addChatMessage = (role, title, body, route) => {
+  const addChatMessage = (role:string, title:string, body:string, route?:string) => {
     if (!chatHistory) return;
     const item = document.createElement('li');
     item.className = 'consultant-message consultant-message--' + role;
@@ -450,39 +629,45 @@ const { pagePath = '' } = Astro.props;
   };
   chatForm?.addEventListener('submit', (event) => {
     event.preventDefault();
-    if (!chatForm.reportValidity()) return;
+    if (!chatForm || !chatForm.reportValidity()) return;
     const question = String(chatInput?.value || '').trim().slice(0, 800);
     if (!question) return;
     lastChatQuestion = question;
+    const advanced = consultantDialog?.querySelector<HTMLElement>('[data-consultant-structured]');
+    if (advanced && /параметр|анкета|уточн.*объект|заполн.*данн/i.test(question)) advanced.hidden = false;
     addChatMessage('visitor', 'Ваш вопрос', question);
     const [route, title, explanation] = safeChatRoute(question);
-    addChatMessage('guide', 'AEROVENTA / Навигатор', title + '. ' + explanation, route);
+    addChatMessage('guide', 'Материалы AEROVENTA', title + '. ' + explanation, route);
     consultantSummary = 'Вопрос посетителя: ' + question + '\nРекомендованный раздел: ' + route;
-    chatInput.value = '';
-    chatInput.focus();
+    if (chatInput) chatInput.value = '';
+    chatInput?.focus();
     track('consultant_relevant_link', { target: route, source: 'public_content_guide' });
   });
   chatInput?.addEventListener('keydown', (event) => {
+    if (!(event instanceof KeyboardEvent)) return;
     if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) {
       event.preventDefault();
       chatForm?.requestSubmit();
     }
   });
   consultantDialog?.querySelector('[data-consultant-chat-handoff]')?.addEventListener('click', () => {
+    if (!consultantDialog || !contactDialog) return;
     hydrateContactContext(contactDialog, {
       consultantSummary: consultantSummary || 'Переход из публичного навигатора AEROVENTA',
       task: lastChatQuestion,
     });
+    const opener=lastDialogTrigger.get(consultantDialog);
+    if (opener) lastDialogTrigger.set(contactDialog,opener);
     closeDialog(consultantDialog);
     openDialog(contactDialog);
     track('consultant_handoff', { source: 'public_content_guide' });
     track('contact_form_open', { source: 'consultant' });
   });
 
-  document.querySelectorAll('[data-contact-form]').forEach((form) => {
+  document.querySelectorAll<HTMLFormElement>('[data-contact-form]').forEach((form) => {
     hydrateContactContext(form.closest('dialog') || document);
     form.addEventListener('focusin', () => {
-      const started = form.elements.started_at;
+      const started = fieldValue(form,'started_at');
       if (started && !started.value) started.value = String(Date.now());
     }, { once: true });
 
@@ -490,7 +675,7 @@ const { pagePath = '' } = Astro.props;
       event.preventDefault();
       if (form.dataset.submitting === 'true') return;
 
-      const contact = form.elements.contact;
+      const contact = fieldValue(form,'contact');
       const contactValue = String(contact?.value || '').trim();
       const digits = contactValue.replace(/\D/g, '');
       const emailLike = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactValue);
@@ -502,13 +687,14 @@ const { pagePath = '' } = Astro.props;
       hydrateContactContext(form.closest('dialog') || document);
 
       const formData = new FormData(form);
-      const payload = {
+      const payload:Record<string,FormDataEntryValue|boolean|number> = {
         ...Object.fromEntries(formData.entries()),
         consent: formData.has('consent'),
         started_at: Number(formData.get('started_at') || 0),
       };
-      const status = form.querySelector('[data-form-status]');
-      const submit = form.querySelector('button[type="submit"]');
+      const status = form.querySelector<HTMLElement>('[data-form-status]');
+      const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+      if (!status || !submit) return;
       const endpoint = form.dataset.leadEndpoint || '/api/lead.php';
 
       track('contact_form_submit', {
@@ -518,7 +704,7 @@ const { pagePath = '' } = Astro.props;
       });
 
       if (!endpoint) {
-        const direct = form.querySelector('.premium-contact-form__direct')?.getAttribute('href') || 'mailto:aeroventaspb@yandex.ru';
+        const direct = form.querySelector('.premium-contact-form__direct')?.getAttribute('href') || 'mailto:office@aeroventa.ru';
         const email = direct.replace(/^mailto:/, '').split('?')[0];
         const subject = encodeURIComponent('Запрос с сайта AEROVENTA');
         const body = encodeURIComponent([
@@ -548,8 +734,12 @@ const { pagePath = '' } = Astro.props;
       submit.setAttribute('aria-busy', 'true');
       status.textContent = 'Передаём запрос…';
 
+      const controller = new AbortController();
+      activeRequests.set(form,controller);
+      const timeout = setTimeout(() => controller.abort(),20000);
       try {
         const response = await fetch(endpoint, {
+          signal:controller.signal,
           method: 'POST',
           headers: { 'content-type': 'application/json', 'accept': 'application/json' },
           credentials: 'same-origin',
@@ -561,19 +751,23 @@ const { pagePath = '' } = Astro.props;
 
         status.textContent = 'Запрос принят к отправке. Доставка письма ещё не подтверждена.';
         form.reset();
-        if (form.elements.started_at) form.elements.started_at.value = String(Date.now());
+        const stamp=fieldValue(form,'started_at');
+        if (stamp) stamp.value = String(Date.now());
         hydrateContactContext(form.closest('dialog') || document);
         track('contact_form_success', { source: location.pathname });
         track('lead_success', { source: location.pathname });
       } catch {
         status.replaceChildren();
         const message = document.createElement('span');
-        message.textContent = 'Не удалось передать запрос через форму. Можно написать напрямую: ';
+        message.textContent = 'Не удалось подтвердить передачу запроса. Можно написать напрямую: ';
         const fallback = form.querySelector('.premium-contact-form__direct')?.cloneNode(true);
+        if (fallback instanceof HTMLAnchorElement) fallback.textContent = fallback.getAttribute('href')?.replace(/^mailto:/, '').split('?')[0] || 'Написать по email';
         if (fallback) status.append(message, fallback);
         else status.append(message);
         track('contact_form_error', { source: location.pathname, outcome: 'network_or_server' });
       } finally {
+        clearTimeout(timeout);
+        activeRequests.delete(form);
         form.dataset.submitting = 'false';
         submit.disabled = false;
         submit.removeAttribute('aria-busy');

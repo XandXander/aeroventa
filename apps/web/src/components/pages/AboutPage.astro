@@ -3,171 +3,34 @@ import type { ContentRecord } from '@/lib/types';
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 interface Props { content: ContentRecord; fixture: boolean; }
-const { content } = Astro.props;
 
-// Owner-authored installation images; never emit absent asset URLs in the published HTML.
-const teamPhotoChoices = [
-  { src:'/evidence/team/img_4170.webp', alt:'Специалист в каске на инженерном объекте AEROVENTA', caption:'Команда AEROVENTA · кадр 1 из 4' },
-  { src:'/evidence/team/img_4166.webp', alt:'Специалист в каске на объекте с вентиляционными коммуникациями', caption:'Команда AEROVENTA · кадр 2 из 4' },
-  { src:'/evidence/team/img_4168.webp', alt:'Специалист в каске рядом со смонтированными воздуховодами', caption:'Команда AEROVENTA · кадр 3 из 4' },
-  { src:'/evidence/team/img_4169.webp', alt:'Специалист в рабочей одежде и каске на объекте', caption:'Команда AEROVENTA · кадр 4 из 4' },
+// Owner-confirmed team photography. Older technical shots are kept as historical assets,
+// but are never silently substituted into the public team HERO.
+const assetExists = (src: string) => ['apps/web/public' + src, 'public' + src].some(p => existsSync(resolve(p)));
+// Exact Owner-mapped individual portraits. Show no guessed name/face association if the
+// source asset has not yet been committed. No remote URL or invented substitute is used.
+const ownerTeam = [
+  { name:'Евгений Панов', role:'Технический директор', src:'/evidence/team/owner-evgeniy-panov-20261015.webp' },
+  { name:'Александр Тарасов', role:'Операционный директор', src:'/evidence/team/owner-aleksandr-tarasov-20261013.webp' },
+  { name:'Денис Иванов', role:'Руководитель проектов', src:'/evidence/team/owner-denis-ivanov-20261013.webp' },
+  { name:'Александр Шаламов', role:'Инженер-проектировщик', src:'/evidence/team/owner-aleksandr-shalamov-20261013.webp' },
 ];
-const teamPhotos = teamPhotoChoices.filter(({src}) =>
-  ['apps/web/public' + src, 'public' + src].some(p => existsSync(resolve(p)))
-);
+const teamGroupSrc = '/evidence/team/owner-team-group-20261015.webp';
+const hasOwnerGroup = assetExists(teamGroupSrc);
+const hasAllOwnerPortraits = ownerTeam.every(({src}) => assetExists(src));
+// Fail closed: the site must not fall back to old installation photos or mismatched portraits.
+if (!hasOwnerGroup || !hasAllOwnerPortraits) {
+  throw new Error('Owner team photography incomplete — approved group and all four exact portraits required');
+}
 
-const timeline = [
-  { year:'2017–2018', title:'НТФФ «Полисан»', text:'Монтаж приточно-вытяжной вентиляции и оборудования на фармацевтическом объекте.', href:'/blog/detail/ntff-polisan/' },
-  { year:'2019', title:'Квартира на Маршала Жукова', text:'Приточно-вытяжная вентиляция в жилом объекте — доказательство, что работа не ограничивается крупным B2B.', href:'/blog/detail/kvartira-na-zhukova/' },
-  { year:'2020', title:'7 PARK', text:'Семь домов в Павловске. Подтверждённый исторический период интенсивных работ: 18.11.2020–10.12.2020.', href:'/blog/detail/kak-my-sdali-7-domov/' },
-  { year:'2021', title:'ЖК «Леонтьевский Мыс»', text:'Ресторан: монтаж приточно-вытяжной вентиляции и оборудования.', href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/' },
-  { year:'2022', title:'Питкяранта / Карелия', text:'Сервисно-образовательный центр: монтаж вентиляции и оборудования.', href:'/blog/detail/montazh-ventilyatsii-v-karelii/' },
-];
 ---
-
-<article class="about-premium">
-  <header class="about-hero">
-    <div class="home-shell about-hero__grid">
-      <div>
-        <p class="home-kicker">О AEROVENTA</p>
-        <h1>AEROVENTA — команда по монтажу вентиляции</h1>
-      </div>
-      <div>
-        {teamPhotos.length > 0 && <figure class="about-hero__team"><img src={teamPhotos[0].src} alt={teamPhotos[0].alt} width="600" height="800" loading="eager" decoding="async" /><figcaption>{teamPhotos[0].caption}</figcaption></figure>}
-        <p class="about-hero__lede">
-          Постоянное ядро команды держит технический и организационный контроль объекта.
-          Когда объём или график требуют усиления, подключаем проверенных профильных специалистов.
-        </p>
-        <p class="home-geo">Работаем в Санкт-Петербурге и Ленинградской области. Берём объекты в Москве и Карелии.</p>
-        <div class="home-actions">
-          <a class="button button--primary" href="/portfolio/">Посмотреть реальные объекты →</a>
-          <a class="button button--ghost" href="/contact/" data-consultant-open data-source="about_inline" aria-haspopup="dialog" aria-controls="aeroventa-consultant-dialog">Инженерный консультант</a>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <section class="about-proof home-section" aria-labelledby="about-proof-title">
-    <div class="home-shell">
-      <div class="section-heading">
-        <div>
-          <p class="section-index section-index--orange">Фактическая работа</p>
-          <h2 id="about-proof-title">Вентиляция, которую можно увидеть на объектах.</h2>
-        </div>
-        <a href="/portfolio/">Все шесть объектов →</a>
-      </div>
-      <div class="about-proof__grid">
-        <a href="/blog/detail/kak-my-sdali-7-domov/">
-          <img src="/evidence/7park/duct-route.jpg" alt="Воздуховоды, смонтированные на объекте 7 PARK в Павловске" width="800" height="600" loading="lazy" decoding="async"/>
-          <span><small>Павловск · семь домов</small><strong>7 PARK</strong><em>Монтаж и история работ ↗</em></span>
-        </a>
-        <a href="/blog/detail/ntff-polisan/">
-          <img src="/evidence/polisan/owner-cover-v43.webp" alt="Монтаж вентиляции на фармацевтическом объекте НТФФ «Полисан»" width="800" height="520" loading="lazy" decoding="async"/>
-          <span><small>Производственный объект</small><strong>НТФФ «Полисан»</strong><em>Фотографии и факты ↗</em></span>
-        </a>
-        <a href="/blog/detail/montazh-ventilyatsii-v-karelii/">
-          <img src="/evidence/karelia/owner-cover-v43.webp" alt="Монтажная фотодокументация объекта PONSSE в Питкяранте" width="800" height="520" loading="lazy" decoding="async"/>
-          <span><small>Питкяранта · Карелия</small><strong>PONSSE</strong><em>Работы и оригинал письма ↗</em></span>
-        </a>
-      </div>
-    </div>
-  </section>
-  <section class="about-principle" aria-labelledby="about-principle-title">
-    <div class="home-shell about-principle__grid">
-      <div>
-        <p class="section-index section-index--orange">01 / Как работаем</p>
-        <h2 id="about-principle-title">Без лишнего — это не про “дешевле любой ценой”.</h2>
-      </div>
-      <div class="about-principle__body">
-        <p>Сначала понимаем, что действительно требуется объекту и что входит в нашу работу.</p>
-        <p>Не добавляем сложность только потому, что её можно продать. Существенный элемент системы должен иметь понятную функцию.</p>
-        <p>Если проект конфликтует с реальным объектом, не превращаем это в незаметное изменение “по месту”: проблему нужно зафиксировать и согласовать.</p>
-        <p>Состав сметы и исключения должны быть понятны до начала работ, а не появляться постфактум.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="home-section about-team" aria-labelledby="about-team-title">
-    <div class="home-shell">
-      <div class="about-team__intro">
-        <div>
-          <p class="section-index section-index--orange">02 / Люди и работа</p>
-          <h2 id="about-team-title">Работаем на объекте сами. За результат отвечаем лично.</h2>
-        </div>
-        <div class="about-team__statement">
-          <p>Постоянное ядро команды ведёт монтаж и техническую координацию. При большом объёме усиливаем состав проверенными монтажниками, не передавая управление работами случайной бригаде.</p>
-          <p>Реальные фотографии специалистов и монтажных работ — из архива AEROVENTA.</p>
-        </div>
-      </div>
-      {teamPhotos.length > 0 && (
-        <div class="about-team__photos">
-          {teamPhotos.slice(1).map((photo) => (
-            <figure class="about-team__photo">
-              <img src={photo.src} alt={photo.alt} width="600" height="800" loading="lazy" decoding="async" />
-              <figcaption>{photo.caption}</figcaption>
-            </figure>
-          ))}
-        </div>
-      )}
-    </div>
-  </section>
-
-  <section class="about-history" aria-labelledby="about-history-title">
-    <div class="home-shell">
-      <div class="section-heading">
-        <div>
-          <p class="section-index section-index--orange">03 / Опыт через объекты</p>
-          <h2 id="about-history-title">Наш опыт — в реализованных объектах.</h2>
-        </div>
-        <a href="/portfolio/">Все объекты →</a>
-      </div>
-      <div class="about-timeline">
-        {timeline.map((item) => (
-          <a href={item.href}>
-            <span>{item.year}</span>
-            <h3>{item.title}</h3>
-            <p>{item.text}</p>
-            <b>Открыть кейс →</b>
-          </a>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="conversion-close" aria-labelledby="about-close-title">
-    <div class="home-shell">
-      <p class="section-index section-index--orange">04 / Обсудить объект</p>
-      <h2 id="about-close-title">Монтаж вентиляции начинается с вашей задачи.</h2>
-      <div class="home-actions">
-        <a class="button button--light" href="/montazh-po-proektu/">Передать проект →</a>
-        <a class="button button--light" href="/obekt-bez-gotovogo-proekta/">Обсудить задачу</a>
-      </div>
-    </div>
-  </section>
+<article class="about-premium av-page av-about">
+  <header class="av-hero av-hero--about" data-first-fold-boundary><div class="av-shell av-hero__grid">
+    <div class="av-hero__title"><p class="av-kicker">Люди AEROVENTA</p><h1>Команда, которая ведёт ваш объект</h1></div>
+    <figure class="av-hero__image"><img src={teamGroupSrc} alt="Четыре участника команды AEROVENTA на фоне вентиляционного оборудования" width="1024" height="768" loading="eager" decoding="async" fetchpriority="high"/><figcaption>Команда AEROVENTA · монтаж вентиляции</figcaption></figure>
+    <div class="av-hero__body"><p class="av-lead">Технические решения и организация работ — с участием постоянного ядра команды.</p><p>Ведём монтаж и координацию на площадке. Если объём или график требуют усиления, подключаем проверенных профильных специалистов.</p><p class="av-geo">Санкт-Петербург и Ленинградская область · Москва · Карелия</p><a class="av-link" href="/portfolio/">Посмотреть выполненные работы →</a></div>
+  </div></header>
+  <section class="av-section av-people" aria-labelledby="about-team-title"><div class="av-shell"><div class="av-heading"><div><p class="av-kicker">Личная ответственность</p><h2 id="about-team-title">Кто работает с вашей задачей</h2></div><p>У технических и организационных вопросов есть ответственные специалисты.</p></div><div class="av-portraits">{ownerTeam.map(person=><figure><img src={person.src} alt={`${person.name} — ${person.role}`} width="720" height="960" loading="lazy" decoding="async"/><figcaption><strong>{person.name}</strong><span>{person.role}</span></figcaption></figure>)}</div></div></section>
+  <section class="av-section av-about-method" aria-labelledby="about-method-title"><div class="av-shell av-about-method__grid"><div><p class="av-kicker">Как устроена работа</p><h2 id="about-method-title">Сначала разобраться.<br/>Затем смонтировать.</h2><dl class="av-register"><div><dt>Понять задачу</dt><dd>Назначение системы, документация и фактические условия площадки.</dd></div><div><dt>Согласовать объём</dt><dd>Состав сметы, последовательность работ и взаимодействие со смежными подрядчиками.</dd></div><div><dt>Работать по согласованному решению</dt><dd>Уточнять изменения до монтажа, сохраняя техническую координацию объекта.</dd></div></dl></div><figure><a href="/blog/detail/montazh-ventilyatsii-v-karelii/"><img src="/evidence/karelia/archive/img-8193.webp" width="1280" height="960" loading="lazy" decoding="async" alt="Вентиляционные трассы под перекрытием сервисного центра PONSSE"/></a><figcaption>PONSSE · потолочные трассы <a href="/blog/detail/montazh-ventilyatsii-v-karelii/">Работы на объекте ↗</a></figcaption></figure></div></section>
+  <section class="av-close"><div class="av-shell av-close__grid"><div><p class="av-kicker">Начнём с разговора</p><h2>Расскажите о вашем объекте</h2></div><a class="button button--primary" href="/contact/" data-contact-open data-source="about_close" aria-haspopup="dialog">Связаться с командой →</a></div></section>
 </article>
-
-<style>
-.about-proof__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,2vw,24px)}
-.about-proof__grid a{background:#193144;display:flex;flex-direction:column;color:#fff;text-decoration:none;min-width:0}
-.about-proof__grid img{display:block;width:100%;height:auto;aspect-ratio:1.42;object-fit:cover}
-.about-proof__grid span{display:flex;flex-direction:column;align-items:start;gap:9px;padding:clamp(16px,2vw,27px)}
-.about-proof__grid small{font-size:.75rem;letter-spacing:.06em;color:#b5cbd7}
-.about-proof__grid strong{font-size:clamp(1.25rem,2vw,1.9rem)}
-.about-proof__grid em{font-style:normal;color:#f2a477;font-size:.85rem}
-.about-proof__grid a:focus-visible{outline:3px solid #e98c43;outline-offset:3px}
-@media(max-width:760px){.about-proof__grid{grid-template-columns:1fr}.about-proof__grid img{aspect-ratio:1.65}}
-
-.about-team{background:#eaf0f3;border-top:1px solid #dae4e9;}
-.about-team__intro{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.72fr);gap:clamp(24px,6vw,90px);align-items:end;margin-bottom:clamp(26px,4.3vw,62px);}
-.about-team__intro h2{font-size:clamp(2.05rem,4vw,4.6rem);letter-spacing:-.047em;line-height:1.075;max-width:18ch;text-wrap:balance;}
-.about-team__statement{max-width:54ch;font-size:clamp(1rem,1.3vw,1.15rem);line-height:1.7;color:#314a5a;}
-.about-team__statement p+p{margin-top:17px;}
-.about-team__photos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(10px,1.45vw,22px);}
-.about-team__photo{margin:0;background:#fff;min-width:0;}
-.about-team__photo img{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:contain;object-position:center;}
-.about-team__photo--lead img{aspect-ratio:3/4;}
-.about-team__photo figcaption{padding:13px 16px;font-size:.82rem;line-height:1.45;color:#435a69;}
-@media(max-width:960px){.about-team__intro{grid-template-columns:1fr;}.about-team__photos{grid-template-columns:repeat(2,minmax(0,1fr));}.about-team__photo:last-child{grid-column:1/-1;justify-self:center;width:min(100%,420px);}}
-@media(max-width:760px){.about-team__photos{grid-template-columns:1fr;}.about-team__photo:last-child{grid-column:auto;width:100%;}.about-team__photo img{aspect-ratio:3/4;}.about-team__intro h2{font-size:clamp(1.9rem,9vw,3.2rem);}}
-
-</style>

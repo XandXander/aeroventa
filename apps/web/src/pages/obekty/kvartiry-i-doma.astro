@@ -1,0 +1,25 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ObjectDetailPage from '@/components/pages/ObjectDetailPage.astro';
+import type { ContentRecord } from '@/lib/types';
+const content: ContentRecord = {
+ path:'/obekty/kvartiry-i-doma/',title:'Монтаж вентиляции квартир и домов — AEROVENTA',h1:'Монтаж вентиляции квартир и домов',
+ content_type:'landing',business_role:'CORE_SERVICE_HUB',status:'fixture_stub',
+ robots_index:false,robots_follow:true,sitemap_include:false,knowledge_allowed:true,ai_origin:false,
+ seo_title:'Монтаж вентиляции квартир и домов — AEROVENTA',seo_description:'Монтаж вентиляции в жилых помещениях с учётом архитектуры, шума, потолков и эксплуатации.',
+ excerpt:'',body_html:'',body_html_safety_status:'not_applicable',owner_approved_at:null
+};
+const constraints:[string,string,string][] = [["01","Планировка","Трассы и узлы согласуются с интерьером."],["02","Акустика","Требования к шуму закладываются в проект."],["03","Отделка","Последовательность монтажа согласовывают заранее."],["04","Сервис","Доступ к оборудованию предусматривают до закрытия потолков."]];
+const evidence = [
+  {title:'На излучине Невы',meta:'Санкт-Петербург · квартира',detail:'Вентиляционные трассы и монтажные узлы в помещениях жилого объекта.',href:'/portfolio/obekt/na-izluchine-nevy/',image:'/evidence/residential/neva/curated-01.webp',imageAlt:'Инженерные трассы в помещениях объекта «На излучине Невы»'},
+  {title:'Квартира на Маршала Жукова',meta:'Санкт-Петербург',detail:'Приточно-вытяжная вентиляция. Фотографии выполненных работ.',href:'/blog/detail/kvartira-na-zhukova/',image:'/evidence/zhukov/duct-installation-01.jpg',imageAlt:'Монтаж вентиляции в квартире на Маршала Жукова'}
+];
+const drivers = ['Рабочая проектная документация и спецификация','Монтажные зоны и условия доступа','Стадия объекта и смежные инженерные системы','Оборудование, трассы и рабочие сроки'];
+const questions = ['Какие документы передать для расчёта монтажа?','Что согласовать до начала работ?','Какие ограничения объекта влияют на организацию монтажа?'];
+---
+<BaseLayout content={content}>
+ <ObjectDetailPage content={content} eyebrow="Квартиры и дома"
+  lede="В жилых помещениях особенно важны размещение трасс, интеграция в интерьер и доступ к обслуживанию. Показываем примеры жилых объектов и учитываем архитектурные ограничения каждого помещения." constraints={constraints} drivers={drivers} evidence={evidence} questions={questions}
+  proofTitle="Жилые объекты"
+  heroMedia={{src:'/evidence/residential/neva/IMG_7571.JPG',alt:'Фасад здания «На излучине Невы» в Санкт-Петербурге',caption:'На излучине Невы · Санкт-Петербург',nativeWidth:3264,nativeHeight:2448,editorialSplit:true}}/>
+</BaseLayout>

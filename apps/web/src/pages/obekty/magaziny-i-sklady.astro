@@ -1,0 +1,25 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ObjectEditorialPage from '@/components/pages/ObjectEditorialPage.astro';
+import type { ContentRecord } from '@/lib/types';
+const content: ContentRecord = {
+  path: "/obekty/magaziny-i-sklady/",title: "Монтаж вентиляции магазинов и складов — AEROVENTA",h1:"Монтаж вентиляции магазинов и складов",
+  content_type:'landing',business_role:'CORE_SERVICE_HUB',status:'fixture_stub',
+  robots_index:false,robots_follow:true,sitemap_include:false,knowledge_allowed:true,ai_origin:false,
+  seo_title:"Монтаж вентиляции магазинов и складов в СПб и Ленобласти — AEROVENTA",
+  seo_description:"При оценке монтажа на торговых и складских объектах важны высота помещений, условия доступа, график работы площадки и проектные решения.",
+  excerpt:'',body_html:'',body_html_safety_status:'not_applicable',owner_approved_at:null
+};
+const detail={
+  "eyebrow": "Торговые и складские объекты",
+  "lead": "При оценке монтажа на торговых и складских объектах важны высота помещений, условия доступа, график работы площадки и проектные решения.",
+  "proofTitle": "Фармацевтический склад · Санкт-Петербург",
+  "photo": "/evidence/warehouses/farm-spb/01.webp",
+  "photoAlt": "Фармацевтический склад в Санкт-Петербурге — внешний вид здания",
+  "proofText": "Порядок монтажа зависит от проекта, режима работы склада или магазина и возможности доставки оборудования. ",
+  "link": "/obekty/sklady/",
+  "linkLabel": "Склады: условия и фотографии",
+  "description": "Для предметной оценки нужны планы, спецификация, монтажные зоны, доступ, особенности хранения или торговой работы во время монтажа."
+};
+---
+<BaseLayout content={content}><ObjectEditorialPage content={content} {...detail}/></BaseLayout>

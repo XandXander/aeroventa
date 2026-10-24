@@ -13,11 +13,14 @@ const releaseMode = process.env.AEROVENTA_RELEASE_MODE || 'fixture';
 await fs.copyFile(source, target);
 console.log(`Copied hosting rules to ${target}`);
 
-if (releaseMode === 'preview') {
+if (releaseMode === 'preview' || releaseMode === 'fixture') {
   const robots = 'User-agent: *\nDisallow: /\n';
   await fs.writeFile(path.join(dist, 'robots.txt'), robots);
-  console.log('Applied V13 preview robots.txt: Disallow: /');
+  console.log('Applied non-production robots.txt: Disallow: /');
 }
+
+// Deliver responsive, traceable copies before validating the generated HTML.
+await import('./optimize-public-web-images.mjs');
 
 await new Promise((resolve, reject) => {
   const child = spawn(process.execPath, [path.join(root, 'scripts/validate-built-site.mjs')], {

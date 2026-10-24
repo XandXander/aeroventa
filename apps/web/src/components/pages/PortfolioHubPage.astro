@@ -1,52 +1,202 @@
 ---
 import type { ContentRecord } from '@/lib/types';
+import { readdirSync, readFileSync, existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { createHash } from 'node:crypto';
 interface Props { content: ContentRecord; fixture: boolean; }
 const { content } = Astro.props;
 
 const cases = [
-  { index:'01', title:'7 PARK', image:'/evidence/7park/object-exterior-day.jpg', location:'Павловск, Санкт-Петербург', scope:'7 домов · монтаж приточно-вытяжной вентиляции', detail:'18.11.2020 — 10.12.2020', href:'/blog/detail/kak-my-sdali-7-domov/', kind:'Новостройки' },
-  { index:'02', title:'Ресторан в ЖК «Леонтьевский Мыс»', image:'/evidence/leont/owner-cover-v43.webp', location:'Санкт-Петербург', scope:'Ресторан · приточно-вытяжная вентиляция + оборудование', detail:'Исторический срок: 2 недели', href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/', kind:'Рестораны' },
-  { index:'03', title:'НТФФ «Полисан»', image:'/evidence/polisan/owner-cover-v43.webp', location:'Санкт-Петербург, ул. Салова, 72', scope:'Фармацевтический объект · вентиляция + оборудование', detail:'Исторический период: 06.2017 — 06.2018', href:'/blog/detail/ntff-polisan/', kind:'Производство' },
-  { index:'04', title:'Квартира на Маршала Жукова', image:'/evidence/zhukov/owner-cover-v43.webp', location:'Санкт-Петербург', scope:'Квартира · приточно-вытяжная вентиляция', detail:'Исторический источник: ~100 м.п., 5 дней', href:'/blog/detail/kvartira-na-zhukova/', kind:'Квартиры' },
-  { index:'05', title:'PONSSE — Питкяранта', image:'/evidence/karelia/owner-cover-v43.webp', location:'Республика Карелия', scope:'Сервисно-образовательный центр · вентиляция + оборудование', detail:'Исторический срок: 2 недели', href:'/blog/detail/montazh-ventilyatsii-v-karelii/', kind:'География' },
-  { index:'06', title:'Кафе на Римского-Корсакова, 3', image:'/evidence/cafe/owner-cover-v43.webp', location:'Санкт-Петербург', scope:'Кафе · приточно-вытяжная вентиляция + оборудование', detail:'Исторический источник: 200 м², 5 дней', href:'/blog/detail/kafe-rimskogo-korsakova-3/', kind:'Рестораны' }
+  { index:'02', title:'Ресторан в ЖК «Леонтьевский Мыс»', image:'/evidence/leont/owner-cover-v43.webp', location:'Санкт-Петербург', scope:'Ресторан · приточно-вытяжная вентиляция + оборудование', detail:'Монтаж · 2 недели', href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/', kind:'Рестораны' },
+  { index:'03', title:'НТФФ «Полисан»', image:'/evidence/polisan/owner-cover-v43.webp', location:'Санкт-Петербург, ул. Салова, 72', scope:'Фармацевтический объект · вентиляция + оборудование', detail:'Монтаж · 06.2017 — 06.2018', href:'/blog/detail/ntff-polisan/', kind:'Производство' },
+  { index:'04', title:'Квартира на Маршала Жукова', image:'/evidence/zhukov/owner-cover-v43.webp', location:'Санкт-Петербург', scope:'Квартира · приточно-вытяжная вентиляция', detail:'Объём / срок · ~100 м.п., 5 дней', href:'/blog/detail/kvartira-na-zhukova/', kind:'Квартиры' },
+  { index:'05', title:'PONSSE — Питкяранта', image:'/evidence/karelia/owner-cover-v43.webp', location:'Республика Карелия', scope:'Сервисно-образовательный центр · вентиляция + оборудование', detail:'Монтаж · 2 недели', href:'/blog/detail/montazh-ventilyatsii-v-karelii/', kind:'Сервисно-образовательный центр' },
+  { index:'06', title:'Кафе на Римского-Корсакова, 3', image:'/evidence/cafe/owner-cover-v43.webp', location:'Санкт-Петербург', scope:'Кафе · приточно-вытяжная вентиляция + оборудование', detail:'Объём / срок · 200 м², 5 дней', href:'/blog/detail/kafe-rimskogo-korsakova-3/', kind:'Рестораны' }
 ];
+
+// Owner-archive objects with explicit media attribution; no fabricated scope or URLs.
+const newOwnerCases = [
+  {
+    "index": "07",
+    "title": "Апарт-отель и коворкинг на Бумажном",
+    "kind": "Коммерческий объект",
+    "location": "Санкт-Петербург",
+    "cover": "/evidence/owner-portfolio/apart-hotel/cover.webp",
+    "photos": [
+      "/evidence/owner-portfolio/apart-hotel/cover.webp",
+      "/evidence/owner-portfolio/apart-hotel/02.webp",
+      "/evidence/owner-portfolio/apart-hotel/03.webp"
+    ]
+  },
+  {
+    "index": "08",
+    "title": "EUROSPAR · Васильевский остров",
+    "kind": "Торговый объект",
+    "location": "Санкт-Петербург",
+    "cover": "/evidence/owner-portfolio/eurospar-vo/cover.webp",
+    "photos": [
+      "/evidence/owner-portfolio/eurospar-vo/cover.webp",
+      "/evidence/owner-portfolio/eurospar-vo/02.webp",
+      "/evidence/owner-portfolio/eurospar-vo/03.webp"
+    ]
+  },
+  {
+    "index": "09",
+    "title": "EUROSPAR · Сестрорецк",
+    "kind": "Торговый объект",
+    "location": "Сестрорецк",
+    "cover": "/evidence/owner-portfolio/eurospar-sestroretsk/03.webp",
+    "photos": [
+      "/evidence/owner-portfolio/eurospar-sestroretsk/cover.webp",
+      "/evidence/owner-portfolio/eurospar-sestroretsk/02.webp",
+      "/evidence/owner-portfolio/eurospar-sestroretsk/03.webp"
+    ]
+  },
+  {
+    "index": "10",
+    "title": "Колледж туризма и гостиничного сервиса",
+    "kind": "Образовательный объект",
+    "location": "Санкт-Петербург",
+    "cover": "/evidence/owner-portfolio/college-obvodny/cover.webp",
+    "photos": [
+      "/evidence/owner-portfolio/college-obvodny/cover.webp",
+      "/evidence/owner-portfolio/college-obvodny/02.webp",
+      "/evidence/owner-portfolio/college-obvodny/03.webp"
+    ]
+  },
+  {
+    "index": "11",
+    "title": "Новатех",
+    "kind": "Производственный объект",
+    "location": "Московская область",
+    "cover": "/evidence/owner-portfolio/novatech/03.webp",
+    "photos": [
+      "/evidence/owner-portfolio/novatech/cover.webp",
+      "/evidence/owner-portfolio/novatech/02.webp",
+      "/evidence/owner-portfolio/novatech/03.webp"
+    ]
+  },
+  {
+    "index": "12",
+    "title": "Жилой комплекс «Аквилон» · Янино",
+    "kind": "Жилой комплекс",
+    "location": "Янино, Ленинградская область",
+    "cover": "/evidence/owner-portfolio/akvilon-yanino/cover.webp",
+    "photos": [
+      "/evidence/owner-portfolio/akvilon-yanino/cover.webp",
+      "/evidence/owner-portfolio/akvilon-yanino/02.webp",
+      "/evidence/owner-portfolio/akvilon-yanino/03.webp"
+    ]
+  },
+  {
+    "index": "13",
+    "title": "Химпром",
+    "kind": "Промышленный объект",
+    "location": "Санкт-Петербург",
+    "cover": "/evidence/owner-portfolio/himprom/03.webp",
+    "photos": [
+      "/evidence/owner-portfolio/himprom/cover.webp",
+      "/evidence/owner-portfolio/himprom/02.webp",
+      "/evidence/owner-portfolio/himprom/03.webp"
+    ]
+  },
+  {
+    "index": "14",
+    "title": "На излучине Невы",
+    "kind": "Жилой объект",
+    "location": "Санкт-Петербург",
+    "cover": "/evidence/residential/neva/IMG_7571.JPG",
+    "photos": ["/evidence/residential/neva/IMG_7571.JPG"]
+  }
+];
+// Source-locked project directories, no client-side listing and no fabricated photographs.
+// Every imported original in the dedicated archive directory becomes a gallery frame.
+const sourceSlugs = new Set(['apart-hotel','eurospar-vo','eurospar-sestroretsk','college-obvodny','novatech','akvilon-yanino','himprom','sport-komendantskiy']);
+const ownerGallery = (slug: string): string[] => {
+  if (!sourceSlugs.has(slug)) return [];
+  let names: string[] = [];
+  try { names = readdirSync(resolve('apps/web/public/evidence/owner-portfolio', slug)); }
+  catch { try { names = readdirSync(resolve('public/evidence/owner-portfolio', slug)); } catch { return []; } }
+  const valid = names.filter(n => /^(?:cover|0[2-9]|[1-9][0-9]|gallery-[0-9]{2,3})\.(?:webp|jpe?g|png)$/i.test(n));
+  valid.sort((a,b) => (a === 'cover.webp' ? -1 : b === 'cover.webp' ? 1 : a.localeCompare(b,undefined,{numeric:true})));
+  return [...new Set(valid)].map(n => '/evidence/owner-portfolio/' + slug + '/' + n);
+};
+const gallerySlugFor = (image: string): string => image.split('/')[3] || '';
+// Photo selection is fail-closed: all seven sports / six Neva originals must
+// be physically present and SHA256-identical before the extended galleries publish.
+// Until transferred, the existing verified media remain visible without broken links.
+const curatedSource = {
+  sport: [
+    ['curated-01.webp','df500175caf94701964d354a1e92da3e32dcb7f73dba40f2ecd423976e3e4d53'], // 2022-09-15 11-14-01.JPG
+    ['curated-02.webp','4a503b340ca5072c7d4b140412f5dbe73c0494f00b9b9d47ad0e26bd50861b67'], // 2022-08-17 15-58-18.JPG
+    ['curated-03.webp','bb53c7e0100bbf99d91c049cceea9bb055e4137e26b7d2bc457d8c4dc6826999'], // 2022-09-12 14-20-22.JPG
+    ['curated-04.webp','854131397bed13b0da0dc2ac7b84f85b0887eb73b4cbc958d0ace5ed58f749fb'], // 2022-09-15 09-56-35.JPG
+    ['curated-05.webp','f2d235ccaf4270964ea578c13e43b9a21100a3b69deefb9204ff604ad8968b71'], // 2022-08-24 11-54-38.JPG
+    ['curated-06.webp','b42391310cb20c5fba587a159ed0fc6825b7188bea48f8190e9d41216819262d'], // photo_5226735321473556566_y.jpg
+    ['curated-07.webp','d9ea8c8a9d9771b0ec87c28f81d8159d5fb259e18aa1cb9c1efe503ae07d4afa'], // 2022-09-12 14-20-07.JPG
+  ],
+  neva: [
+    ['curated-01.webp','3e277a403209126b14e4a2e64389c744dc5d8234d5875fc523118a6f6fd06320'], // photo_5222735321473556574_y.webp
+    ['curated-02.webp','e54f90ecec5747a7a930ed6ad7d95493bbbec7949588e3131d3a030e66b7695b'], // photo_5226735321473556571_y.png
+    ['curated-03.webp','38163a2a7dfdf3415dbe1d3c2682785b5ea1285c65e981af670e73baa97efa39'], // photo_5226735321473556576_y.png
+    ['curated-04.webp','e574fa2d3c8c31c9a885b02ca16189dffd32de67110983bbf11cf1d1902b4a81'], // photo_5226735321473556544_y.jpg
+    ['curated-05.webp','fc8b4990985c8d4e107790aa1b276b21f37c0ec21ee3c80e670bca9f8727d359'], // photo_5226735321473556574_y.png
+    ['curated-06.webp','91ebc5f2bccb2f9f2bba2b2b63967c83f26063b5977141ddb6678b113ac1f3c4'], // photo_5226735321473556575_y.png
+  ]
+} as const;
+function checkedCuratedPhotos(group:'sport'|'neva'): string[] {
+  const folder=group==='sport'?'evidence/owner-portfolio/sport-komendantskiy':'evidence/residential/neva';
+  const items=curatedSource[group];
+  const locate=(name:string)=>[
+    resolve('apps/web/public',folder,name),
+    resolve('public',folder,name)
+  ].find(existsSync);
+  const found=items.map(([name])=>locate(name));
+  if(found.every(p=>!p))return [];
+  if(found.some(p=>!p))throw new Error('Curated '+group+' photos: incomplete source set');
+  for(let i=0;i<items.length;i++){
+    const [,expectedSha]=items[i];
+    const actual=createHash('sha256').update(readFileSync(found[i]!)).digest('hex');
+    if(actual!==expectedSha)throw new Error('Curated '+group+' photo integrity mismatch: '+items[i][0]);
+  }
+  return items.map(([name])=>'/'+folder+'/'+name);
+}
+const addedSportPhotos=checkedCuratedPhotos('sport');
+const addedNevaPhotos=checkedCuratedPhotos('neva');
+if(addedNevaPhotos.length!==6)throw new Error('Owner Neva case requires six integrity-checked engineering photographs');
+const archiveCases = newOwnerCases.map(item => ({
+  ...item,
+  photos: item.index==='14'
+    ? [item.cover,...addedNevaPhotos]
+    : sourceSlugs.has(gallerySlugFor(item.cover)) ? ownerGallery(gallerySlugFor(item.cover)) : item.photos
+}));
+// The two Owner-locked leading photographs precede the engineering sequence.
+// Additional archive originals are published only after SHA256 readback in the build.
+const sportPhotos = [
+ '/evidence/owner-portfolio/sport-komendantskiy/owner-selected-aerial.webp',
+ '/evidence/owner-portfolio/sport-komendantskiy/gallery-01.webp',
+ ...addedSportPhotos,
+ '/evidence/owner-portfolio/sport-komendantskiy/02.webp',
+ '/evidence/owner-portfolio/sport-komendantskiy/03.webp',
+ '/evidence/owner-portfolio/sport-komendantskiy/04.webp'
+].filter((src,i,all)=>all.indexOf(src)===i);
 ---
 
-<article class="portfolio-hub">
-  <header class="portfolio-hero">
-    <div class="home-shell portfolio-hero__grid">
-      <div>
-        <p class="home-kicker">Выполненные работы AEROVENTA</p>
-        <h1>Реальные объекты и выполненные работы</h1>
+<article class="portfolio-hub av-page av-portfolio">
+  <section class="av-portfolio-feature" aria-labelledby="featured-case-title">
+    <div class="av-shell av-portfolio-feature__dossier">
+      <div class="av-portfolio-feature__first-view" data-owner-first-view>
+        <header class="av-portfolio-intro"><div><p class="av-kicker">Выполненные объекты</p><h1>Наши работы</h1></div><p class="av-lead">Монтаж вентиляции: от квартиры до производства.</p></header>
+        <div class="av-portfolio-feature__opening">
+          <header class="av-portfolio-feature__intro"><p class="av-kicker">Жилой объект · Санкт-Петербург</p><h2 id="featured-case-title">На излучине Невы</h2><p>Монтаж вентиляции в жилом объекте Санкт-Петербурга.</p></header>
+          <figure class="av-portfolio-feature__primary"><a href="/portfolio/obekt/na-izluchine-nevy/" aria-label="Открыть кейс «На излучине Невы»"><img src="/evidence/residential/neva/IMG_7571.JPG" width="3264" height="2448" loading="eager" decoding="async" alt="Кирпичное здание объекта «На излучине Невы» — оригинальная фотография" /></a><figcaption>Архитектура объекта</figcaption></figure>
+          <div class="av-portfolio-feature__support">
+            <figure class="av-portfolio-feature__secondary"><a href="/portfolio/obekt/na-izluchine-nevy/" aria-label="Монтажные фотографии объекта «На излучине Невы»"><img src="/evidence/residential/neva/curated-01.webp" width="1500" height="1125" loading="lazy" decoding="async" alt="Смонтированные воздуховоды на объекте «На излучине Невы»" /></a><figcaption>Монтаж вентиляции</figcaption></figure>
+            <dl class="av-portfolio-feature__facts"><div><dt>Объект</dt><dd>Жилое помещение</dd></div><div><dt>Работы</dt><dd>Монтаж вентиляционных трасс</dd></div></dl>
+          </div>
+          <a class="av-portfolio-feature__cta" href="/portfolio/obekt/na-izluchine-nevy/">Смотреть объект <span aria-hidden="true">→</span></a>
+        </div>
       </div>
-      <div>
-        <p class="portfolio-hero__lede">
-          Собрали жилые, коммерческие и производственные объекты: что монтировали, какой был объём работ и какие особенности пришлось учитывать.
-        </p>
-        
-      </div>
-    </div>
-  </header>
-
-  <section class="portfolio-feature" aria-labelledby="featured-case-title">
-    <div class="home-shell portfolio-feature__grid">
-      <div>
-        <p class="section-index section-index--orange">01 / Крупный повторяемый объём</p>
-        <h2 id="featured-case-title">7 PARK</h2>
-        <p class="portfolio-feature__sub">Павловск · 7 домов · приточно-вытяжная вентиляция</p>
-        <a class="button button--case" href="/blog/detail/kak-my-sdali-7-domov/">Открыть кейс →</a>
-      </div>
-      <figure class="portfolio-feature__visual portfolio-feature__visual--photo">
-        <img src="/evidence/7park/object-exterior-day.jpg" alt="Жилые дома квартала 7 PARK в Павловске" width="800" height="450" loading="lazy" />
-        <figcaption>7 PARK · жилой квартал в Павловске</figcaption>
-      </figure>
-      <dl class="case-facts">
-        <div><dt>Объём</dt><dd>7 домов</dd></div>
-        <div><dt>Период</dt><dd>18.11.2020 — 10.12.2020</dd></div>
-        <div><dt>Локация</dt><dd>Павловск, Санкт-Петербург</dd></div>
-        <div><dt>Роль</dt><dd>Монтаж приточно-вытяжной вентиляции</dd></div>
-      </dl>
     </div>
   </section>
 
@@ -55,54 +205,240 @@ const cases = [
       <div class="section-heading">
         <div>
           <p class="section-index">02 / Сравнить по объекту</p>
-          <h2 id="cases-title">Найдите опыт работы на похожем объекте.</h2>
+          <h2 id="cases-title">Ещё 12 объектов</h2>
         </div>
       </div>
+      <p class="portfolio-list__introduction">Жилые, коммерческие и производственные объекты. Фотографии показывают сами площадки и отдельные этапы монтажа вентиляции.</p>
       <div class="portfolio-grid">
-        {cases.filter((item) => item.index !== '01').map((item) => (
+        {cases.map((item) => (
           <a href={item.href} class="portfolio-card">
-            <div class="portfolio-card__media"><img src={item.image} width="800" height="520" alt={`Реальные фотографии работ: ${item.title}`} loading="lazy" decoding="async" /></div>
+            <div class="portfolio-card__media"><img src={item.image} width="800" height="520" alt={`Объект AEROVENTA: ${item.title}`} loading="lazy" decoding="async" /></div>
             <div class="portfolio-card__body">
-            <div class="portfolio-card__top"><span>{item.index}</span><b>{item.kind}</b></div>
+            <div class="portfolio-card__top"><b>{item.kind}</b></div>
             <div>
-              <p>{item.location}</p>
               <h3>{item.title}</h3>
-              <strong>{item.scope}</strong>
+
             </div>
             <div class="portfolio-card__bottom">
-              <span>{item.detail}</span><b>Смотреть работы →</b>
+              <span>{item.location}</span><b>Смотреть работы ↗</b>
             </div>
             </div>
           </a>
         ))}
+        {archiveCases.filter(item => item.index !== '14').map(item => (
+          <a id={`owner-${item.index}`} class="portfolio-card portfolio-card--archive" href={item.index==='14'?'/portfolio/obekt/na-izluchine-nevy/':`/portfolio/obekt/${gallerySlugFor(item.cover)}/`} aria-label={`Открыть объект: ${item.title}`}>
+            <div class="portfolio-card__media"><img src={item.cover} width="1200" height="800" loading="lazy" decoding="async" alt={`Фотография объекта: ${item.title}`}/></div>
+            <div class="portfolio-card__body">
+              <div class="portfolio-card__top"><b>{item.kind}</b></div>
+              <div><h3>{item.title}</h3></div>
+              <div class="portfolio-card__bottom"><span>{item.location}</span><b>Открыть объект ↗</b></div>
+            </div>
+          </a>
+        ))}
+      </div>
+      <a class="portfolio-list__extra" href="/blog/detail/kak-my-sdali-7-domov/"><span>7 PARK · Павловск · семь домов · 18.11.2020 — 10.12.2020</span><b>Смотреть монтаж →</b></a>
+
+    </div>
+  </section>
+
+
+  <!-- Source provenance: КОНТЕНТ.zip / СПОРТКОМПЛЕКС КОМЕНДАНТСКИЙ.
+       Architectural exterior corroborated with publicly pictured Centre on
+       Яхтенная 39; extent of AEROVENTA works remains source-unconfirmed. -->
+  <section class="portfolio-sport" aria-labelledby="portfolio-sport-title">
+    <div class="home-shell portfolio-sport__inner">
+      <div class="portfolio-sport__intro">
+        <p class="section-index">03 / Спортивный объект</p>
+        <h2 id="portfolio-sport-title">Центр адаптивного спорта</h2>
+        <p>Санкт-Петербург · Яхтенная, 39. Общий вид здания, потолочные трассы и детали вентиляционной системы на фотографиях этапа монтажа.</p>
+        <button type="button" class="portfolio-sport__gallery-link" data-archive-open
+          data-gallery-title="Центр адаптивного спорта"
+          data-gallery-images={JSON.stringify(sportPhotos)}
+          aria-haspopup="dialog" aria-controls="portfolio-archive-viewer">
+          Смотреть фотографии объекта <span aria-hidden="true">↗</span>
+        </button>
+      </div>
+      <div class="portfolio-sport__photography" aria-label="Две главные фотографии спортивного центра">
+        <figure class="portfolio-sport__photo portfolio-sport__photo--large">
+          <button type="button" data-archive-open data-gallery-title="Центр адаптивного спорта"
+            data-gallery-images={JSON.stringify(sportPhotos)} aria-haspopup="dialog"
+            aria-controls="portfolio-archive-viewer" aria-label="Открыть фотографии спортивного центра с общего вида">
+            <img src="/evidence/owner-portfolio/sport-komendantskiy/owner-selected-aerial.webp" width="1280" height="960" loading="lazy" decoding="async" alt="Общий вид Центра адаптивного спорта"/>
+          </button>
+          <figcaption>Общий вид</figcaption>
+        </figure>
+        <figure class="portfolio-sport__photo portfolio-sport__photo--detail">
+          <button type="button" data-archive-open data-gallery-title="Центр адаптивного спорта"
+            data-gallery-images={JSON.stringify(sportPhotos)} data-gallery-start="1" aria-haspopup="dialog"
+            aria-controls="portfolio-archive-viewer" aria-label="Открыть галерею с фотографией чёрного круглого диффузора">
+            <img src="/evidence/owner-portfolio/sport-komendantskiy/gallery-01.webp" width="1600" height="1200" loading="lazy" decoding="async" alt="Чёрный круглый воздухораспределитель в спортивном центре"/>
+          </button>
+          <figcaption>Диффузор · инженерный узел</figcaption>
+        </figure>
       </div>
     </div>
   </section>
 
-  <section class="portfolio-method" aria-labelledby="portfolio-method-title">
-    <div class="home-shell portfolio-method__grid">
-      <div>
-        <p class="section-index section-index--orange">03 / Как читаем кейс</p>
-        <h2 id="portfolio-method-title">Задача → особенности объекта → наша роль → результат.</h2>
-      </div>
-      <div class="portfolio-method__list">
-        <div><span>01</span><p>Что было за объект и на какой стадии.</p></div>
-        <div><span>02</span><p>Что реально входило в работу AEROVENTA.</p></div>
-        <div><span>03</span><p>Какие реальные фотографии показывают объект и монтаж.</p></div>
-        <div><span>04</span><p>Какие условия монтажа и объём работ отличаются от вашего объекта.</p></div>
-      </div>
+  <dialog id="portfolio-archive-viewer" class="portfolio-archive-viewer" aria-label="Фотографии объекта">
+    <div class="portfolio-archive-viewer__top">
+      <strong data-gallery-title></strong>
+      <button type="button" data-gallery-close aria-label="Закрыть просмотр">×</button>
     </div>
-  </section>
+    <div class="portfolio-archive-viewer__stage" tabindex="0"><img data-gallery-photo src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221%22%20height=%221%22/%3E" width="1200" height="800" loading="eager" decoding="async" alt="Фотография выбранного объекта"/></div>
+    <div class="portfolio-archive-viewer__nav" data-gallery-nav aria-label="Навигация по фотографиям">
+      <button type="button" data-gallery-prev aria-label="Предыдущая фотография">‹</button>
+      <span data-gallery-position aria-live="off">Фото объекта</span>
+      <button type="button" data-gallery-next aria-label="Следующая фотография">›</button>
+    </div>
+  </dialog>
 
-  <section class="conversion-close" aria-labelledby="portfolio-close-title">
-    <div class="home-shell">
-      <p class="section-index section-index--orange">04 / Ваш объект</p>
-      <h2 id="portfolio-close-title">Не нашли точного аналога — это нормально.</h2>
-      <p class="portfolio-close-copy">Пришлите проект или опишите задачу: сравнивать надо не по названию объекта, а по составу монтажных работ и особенностям исполнения.</p>
-      <div class="home-actions">
-        <a class="button button--light" href="/montazh-po-proektu/">Передать проект →</a>
-        <a class="button button--light" href="/contact/?intent=budget">Описать объект →</a>
-      </div>
-    </div>
-  </section>
+  <section class="av-close"><div class="av-shell av-close__grid"><div><p class="av-kicker">Ваш объект</p><h2>Обсудим монтаж для вашей задачи</h2><p>Пришлите документацию или описание объекта — уточним состав работ и исходные данные.</p></div><a class="button button--primary" href="/contact/" data-contact-open data-source="portfolio_close" aria-haspopup="dialog">Обсудить объект →</a></div></section>
 </article>
+
+<script>
+  import { createPhotoPreloader, setViewerPhoto } from "@/lib/gallery-runtime";
+  const dialog=document.querySelector<HTMLDialogElement>('#portfolio-archive-viewer');
+  if (dialog) {
+    const image=dialog.querySelector<HTMLImageElement>('[data-gallery-photo]');
+    const stage=dialog.querySelector<HTMLElement>('.portfolio-archive-viewer__stage');
+    const title=dialog.querySelector<HTMLElement>('[data-gallery-title]');
+    const close=dialog.querySelector<HTMLButtonElement>('[data-gallery-close]');
+    const nav=dialog.querySelector<HTMLElement>('[data-gallery-nav]');
+    const position=dialog.querySelector<HTMLElement>('[data-gallery-position]');
+    let photos:string[]=[];
+    let index=0, zoom=1;
+    let opener:HTMLElement|null=null;
+    // The only visible controls are arrows and close. Zoom uses touch pinch,
+    // double click/tap, Ctrl+wheel or + / - / 0 keys.
+    const setZoom=(value:number)=>{
+      if(!stage||!image)return;
+      zoom=Math.max(1,Math.min(4,Math.round(value*100)/100));
+      if(zoom===1){
+        dialog.classList.remove('is-zoomed');
+        for(const property of ['width','height','max-width','max-height'])image.style.removeProperty(property);
+        stage.scrollTo({left:0,top:0});
+      } else {
+        const ratio=image.naturalWidth>0&&image.naturalHeight>0?image.naturalWidth/image.naturalHeight:1.4;
+        const style=getComputedStyle(stage);
+        const availableWidth=stage.clientWidth-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight);
+        const availableHeight=stage.clientHeight-parseFloat(style.paddingTop)-parseFloat(style.paddingBottom);
+        const base=Math.min(availableWidth,availableHeight*ratio,image.naturalWidth||1800);
+        image.style.width=Math.round(Math.max(100,base)*zoom)+'px';
+        image.style.maxWidth='none';image.style.maxHeight='none';image.style.height='auto';
+        dialog.classList.add('is-zoomed');
+      }
+      dialog.dataset.zoom=String(zoom);
+    };
+    const cache=createPhotoPreloader(10);
+    const show=(n:number)=>{
+      if(!photos.length||!image)return;
+      index=(n+photos.length)%photos.length;
+      setZoom(1);
+      setViewerPhoto(image,photos[index],(title?.textContent||'Объект')+' — фотография '+(index+1));
+      if(position)position.textContent='Фото '+(index+1)+' из '+photos.length;
+      cache.neighbors(photos,index);
+    };
+    for(const button of document.querySelectorAll<HTMLElement>('[data-archive-open]')){
+      button.addEventListener('click',()=>{
+        try{
+          const value=JSON.parse(button.dataset.galleryImages||'[]');
+          const safe=/^(?:\/evidence\/owner-portfolio\/(?:apart-hotel|eurospar-vo|eurospar-sestroretsk|college-obvodny|novatech|akvilon-yanino|himprom|sport-komendantskiy)\/(?:owner-selected-aerial|cover|[0-9]{2,3}|gallery-[0-9]{2,3}|curated-[0-9]{2})\.(?:webp|jpe?g|png)|\/evidence\/residential\/(?:neva\/IMG_7571\.JPG|neva\/curated-[0-9]{2}\.webp))$/i;
+          if(!Array.isArray(value)||!value.length||!value.every((v:unknown)=>typeof v==='string'&&safe.test(v)))return;
+          photos=value;opener=button;
+           dialog.classList.toggle('is-neva',button.dataset.galleryTitle==='На излучине Невы');
+          if(nav)nav.hidden=photos.length<2;
+          if(title)title.textContent=button.dataset.galleryTitle||'Объект';
+          const requestedStart=Number(button.dataset.galleryStart ?? '0');
+          const start=Number.isInteger(requestedStart)&&requestedStart>=0&&requestedStart<photos.length?requestedStart:0;
+          show(start);dialog.showModal();close?.focus({preventScroll:true});
+        }catch{return;}
+      });
+    }
+    close?.addEventListener('click',()=>dialog.close());
+    dialog.querySelector('[data-gallery-prev]')?.addEventListener('click',()=>show(index-1));
+    dialog.querySelector('[data-gallery-next]')?.addEventListener('click',()=>show(index+1));
+    stage?.addEventListener('dblclick',e=>{e.preventDefault();setZoom(zoom>1?1:2);});
+    stage?.addEventListener('wheel',e=>{if(!e.ctrlKey)return;e.preventDefault();setZoom(zoom*(e.deltaY<0?1.15:1/1.15));},{passive:false});
+    let pinchStart=0, pinchZoom=1;
+    const distance=(a:Touch,b:Touch)=>Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);
+    stage?.addEventListener('touchstart',e=>{
+      if(e.touches.length===2){pinchStart=distance(e.touches[0],e.touches[1]);pinchZoom=zoom;e.preventDefault();}
+    },{passive:false});
+    stage?.addEventListener('touchmove',e=>{
+      if(e.touches.length===2&&pinchStart>0){setZoom(pinchZoom*distance(e.touches[0],e.touches[1])/pinchStart);e.preventDefault();}
+    },{passive:false});
+    stage?.addEventListener('touchend',e=>{if(e.touches.length<2)pinchStart=0;},{passive:true});
+    dialog.addEventListener('keydown',e=>{
+      if(photos.length>1&&e.key==='ArrowLeft'){e.preventDefault();show(index-1);}
+      if(photos.length>1&&e.key==='ArrowRight'){e.preventDefault();show(index+1);}
+      if(e.key==='+'||e.key==='='){e.preventDefault();setZoom(zoom+.35);}
+      if(e.key==='-'||e.key==='_'){e.preventDefault();setZoom(zoom-.35);}
+      if(e.key==='0'){e.preventDefault();setZoom(1);}
+      // Escape is handled natively by <dialog>, preserving focus and semantics.
+    });
+    let x:number|null=null;
+    stage?.addEventListener('touchstart',e=>{if(e.touches.length===1)x=e.touches[0].clientX;},{passive:true});
+    stage?.addEventListener('touchend',e=>{
+      if(x===null||photos.length<2||zoom>1||e.changedTouches.length!==1)return;
+      const end=e.changedTouches[0].clientX;
+      if(Math.abs(end-x)>65)show(index+(end<x?1:-1));x=null;
+    },{passive:true});
+    dialog.addEventListener('close',()=>{
+      if(nav)nav.hidden=true;
+      setZoom(1);if(image)image.removeAttribute('src');
+      photos=[];cache.clear();dialog.classList.remove('is-neva');opener?.focus({preventScroll:true});opener=null;
+    });
+  }
+</script>
+
+<style>
+
+/* Photography leads; typography and evidence are deliberately restrained. */
+
+/* Owner 2026-10-15: dedicated photographic sports feature, not a 13th card. */
+/* Architecture-only opening; retired 3-panel grid. */
+/* PR12 Owner final lightbox: photograph + centered title, side arrows and discreet close only. */
+.portfolio-archive-viewer{position:relative;width:min(100vw,1520px);max-width:100vw;height:100dvh;max-height:100dvh;background:#121c25;color:#f4f7f8}
+.portfolio-archive-viewer[open]{display:block}
+.portfolio-archive-viewer__top{position:absolute;top:0;left:0;right:0;z-index:4;display:flex;justify-content:center;padding:22px 63px 20px;background:linear-gradient(#0c1822d6,transparent);border:0}
+.portfolio-archive-viewer__top strong{font-size:.84rem;font-weight:500;margin:0;color:#ecf2f5;text-align:center;letter-spacing:.02em}
+.portfolio-archive-viewer__top [data-gallery-close]{position:absolute;top:10px;right:12px;width:48px;height:48px;padding:0;border:0;background:transparent;color:#fff;font-size:2rem;font-weight:300;cursor:pointer}
+.portfolio-archive-viewer__stage{height:100%;padding:72px clamp(36px,6vw,100px) 60px;display:flex;align-items:center;justify-content:center;overflow:auto}
+.portfolio-archive-viewer__stage img{max-height:100%;max-width:100%;width:auto;height:auto;object-fit:contain}
+.portfolio-archive-viewer__nav{position:absolute;inset:0;background:transparent;pointer-events:none;display:flex;align-items:center;justify-content:space-between;padding:0 4px}
+.portfolio-archive-viewer__nav button{pointer-events:auto;min-width:44px;min-height:54px;padding:0;border:0;background:transparent;color:#fff;font-size:2.45rem;font-weight:300;cursor:pointer}
+.portfolio-archive-viewer__nav span{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);font-size:.72rem;font-weight:400;letter-spacing:.025em;color:#d5e0e6;white-space:nowrap}
+.portfolio-archive-viewer button:focus-visible{outline:2px solid #fff;outline-offset:2px}
+@media(max-width:600px){.portfolio-archive-viewer__stage{padding:64px 34px 52px}.portfolio-archive-viewer__top{padding:18px 58px}}
+
+/* Independent case dossiers and the archival image record must not imply the same evidence level. */
+.portfolio-archive-viewer.is-zoomed .portfolio-archive-viewer__stage{display:block;overflow:auto;overscroll-behavior:contain}
+.portfolio-archive-viewer.is-zoomed .portfolio-archive-viewer__stage img{width:auto;max-width:none;max-height:none;height:auto;object-fit:contain}
+.portfolio-archive-viewer__stage{overscroll-behavior:contain}
+
+/* Fullscreen archival viewer, no accidental scrollbars at fit scale. */
+.portfolio-archive-viewer[open]{box-sizing:border-box;position:fixed;inset:0;margin:0;width:100vw;max-width:100vw;height:100dvh;max-height:100dvh;padding:0;border:0;overflow:hidden;scrollbar-width:none}
+.portfolio-archive-viewer__stage{box-sizing:border-box;min-width:0;min-height:0;overflow:hidden;scrollbar-width:none}
+.portfolio-archive-viewer__stage::-webkit-scrollbar,.portfolio-archive-viewer::-webkit-scrollbar{display:none}
+.portfolio-archive-viewer__nav{z-index:3}
+.portfolio-archive-viewer__top{pointer-events:none}
+.portfolio-archive-viewer__top [data-gallery-close]{pointer-events:auto}
+.portfolio-archive-viewer.is-zoomed .portfolio-archive-viewer__stage{overflow:auto;scrollbar-width:none}
+@media(max-width:600px){.portfolio-archive-viewer__stage{padding-inline:42px}.portfolio-archive-viewer__nav{padding-inline:0}}
+
+/* Documentary portfolio: one commanding object and its actual installation evidence. */
+
+
+/* Prevent intrinsic card strings from widening 125%-zoom grid tracks. */
+
+/* Owner architectural composition: Leontievsky primary, authenticated Neva inset. */
+
+/* Tablet integrity: the two real sports images form readable stacked editorial
+   photographs, never a scroll-width-expanding compressed two-column mosaic. */
+/* 21 October Owner P0: three genuine object types, without 7 PARK saturation. */
+/* Minimum opening height on full-size desktop prevents accidental next-section
+   fragments; intrinsic content height and natural scrolling are preserved. */
+.portfolio-archive-viewer__nav[hidden]{display:none!important}
+
+.portfolio-archive-viewer.is-neva{background:#edf2f3;color:#1b3746}.portfolio-archive-viewer.is-neva .portfolio-archive-viewer__top{background:linear-gradient(#edf2f3,transparent)}.portfolio-archive-viewer.is-neva .portfolio-archive-viewer__top strong,.portfolio-archive-viewer.is-neva .portfolio-archive-viewer__nav button,.portfolio-archive-viewer.is-neva .portfolio-archive-viewer__top [data-gallery-close]{color:#15374a}.portfolio-archive-viewer__nav span{bottom:calc(16px + env(safe-area-inset-bottom));padding:5px 11px;border-radius:10px;background:#183748;color:#fff}.portfolio-archive-viewer.is-neva .portfolio-archive-viewer__nav span{background:#dce6e9;color:#15374a}
+</style>

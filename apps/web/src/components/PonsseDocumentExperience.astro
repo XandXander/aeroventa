@@ -1,0 +1,52 @@
+<script>
+  // No visible zoom toolbar. Keyboard (+/-/0), double-click, Ctrl+wheel,
+  // touch pinch, Escape and close are available without adding UI noise.
+  for(const dialog of document.querySelectorAll<HTMLDialogElement>('dialog[data-document-viewer]')){
+    const stage=dialog.querySelector<HTMLElement>('[data-document-stage]');
+    const img=stage?.querySelector<HTMLImageElement>('img');
+    const close=dialog.querySelector<HTMLButtonElement>('[data-document-close]');
+    let opener:HTMLElement|null=null, zoom=1;
+    const setZoom=(value:number)=>{
+      if(!stage||!img)return;
+      zoom=Math.max(1,Math.min(4,Math.round(value*100)/100));
+      if(zoom===1){
+        dialog.classList.remove('is-document-zoomed');
+        img.style.removeProperty('width');
+        stage.scrollTo({left:0,top:0});
+      }else{
+        const ratio=img.naturalWidth>0&&img.naturalHeight>0?img.naturalWidth/img.naturalHeight:.72;
+        const base=Math.min(stage.clientWidth-24,(stage.clientHeight-18)*ratio,img.naturalWidth||1481);
+        img.style.width=Math.round(Math.max(120,base)*zoom)+'px';
+        dialog.classList.add('is-document-zoomed');
+      }
+    };
+    document.querySelectorAll<HTMLElement>('[aria-controls="'+dialog.id+'"]').forEach(trigger=>{
+      trigger.addEventListener('click',e=>{
+        // Letter zoom must retain the native document, not a phone thumbnail.
+        img?.removeAttribute('srcset');img?.removeAttribute('sizes');
+        e.preventDefault();opener=trigger;setZoom(1);
+        if(!dialog.open)dialog.showModal();
+        close?.focus({preventScroll:true});
+      });
+    });
+    close?.addEventListener('click',()=>dialog.close());
+    stage?.addEventListener('dblclick',e=>{e.preventDefault();setZoom(zoom>1?1:2.2);});
+    stage?.addEventListener('wheel',e=>{if(!e.ctrlKey)return;e.preventDefault();setZoom(zoom*(e.deltaY<0?1.15:1/1.15));},{passive:false});
+    let begin=0,baseZoom=1;
+    const length=(a:Touch,b:Touch)=>Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);
+    stage?.addEventListener('touchstart',e=>{
+      if(e.touches.length===2){begin=length(e.touches[0],e.touches[1]);baseZoom=zoom;e.preventDefault();}
+    },{passive:false});
+    stage?.addEventListener('touchmove',e=>{
+      if(e.touches.length===2&&begin>0){setZoom(baseZoom*length(e.touches[0],e.touches[1])/begin);e.preventDefault();}
+    },{passive:false});
+    stage?.addEventListener('touchend',e=>{if(e.touches.length<2)begin=0;},{passive:true});
+    dialog.addEventListener('keydown',e=>{
+      if(e.key==='+'||e.key==='='){e.preventDefault();setZoom(zoom+.35);}
+      if(e.key==='-'||e.key==='_'){e.preventDefault();setZoom(zoom-.35);}
+      if(e.key==='0'){e.preventDefault();setZoom(1);}
+    });
+    dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});
+    dialog.addEventListener('close',()=>{setZoom(1);opener?.focus({preventScroll:true});opener=null;});
+  }
+</script>

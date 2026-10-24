@@ -1,0 +1,22 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ObjectDetailPage from '@/components/pages/ObjectDetailPage.astro';
+import type { ContentRecord } from '@/lib/types';
+const content: ContentRecord = {
+ path:'/obekty/ofisy-i-kommerciya/',title:'Монтаж вентиляции офисов и коммерческих помещений — AEROVENTA',h1:'Монтаж вентиляции офисов и коммерческих помещений',
+ content_type:'landing',business_role:'CORE_SERVICE_HUB',status:'fixture_stub',
+ robots_index:false,robots_follow:true,sitemap_include:false,knowledge_allowed:true,ai_origin:false,
+ seo_title:'Монтаж вентиляции офисов и коммерческих помещений — AEROVENTA',seo_description:'Офисы, коворкинги и коммерческие объекты. Реальные фотографии выполненных объектов AEROVENTA.',
+ excerpt:'',body_html:'',body_html_safety_status:'not_applicable',owner_approved_at:null
+};
+const constraints:[string,string,string][] = [["01","Интерьер","Крепления и трассы согласовывают с архитектурой."],["02","График","Условия доступа определяются режимом помещения."],["03","Смежные сети","Потолки и инженерные системы должны быть согласованы."],["04","Обслуживание","Доступ к оборудованию предусматривается заранее."]];
+const evidence = [{"title":"Апарт-отель и коворкинг · Бумажный","meta":"Санкт-Петербург","detail":"Интерьер апарт-отеля и коворкинга на Бумажном проезде.","href":"/portfolio/obekt/apart-hotel/","image":"/evidence/owner-portfolio/apart-hotel/gallery-01.webp","imageAlt":"Другой подлинный кадр апарт-отеля и коворкинга на Бумажном"},{"title":"EUROSPAR · Васильевский остров","meta":"Торговый объект","detail":"Торговое помещение EUROSPAR на Васильевском острове.","href":"/portfolio/obekt/eurospar-vo/","image":"/evidence/owner-portfolio/eurospar-vo/cover.webp","imageAlt":"Коммерческий объект EUROSPAR"}];
+const drivers = ['Рабочая проектная документация и спецификация','Монтажные зоны и условия доступа','Стадия объекта и смежные инженерные системы','Оборудование, трассы и рабочие сроки'];
+const questions = ['Какие документы передать для расчёта монтажа?','Что согласовать до начала работ?','Какие ограничения объекта влияют на организацию монтажа?'];
+---
+<BaseLayout content={content}>
+ <ObjectDetailPage content={content} eyebrow="Офисы и коммерция"
+  lede="Здесь важны не только трассы и оборудование, но и точная интеграция системы в пространство и отделку." constraints={constraints} drivers={drivers} evidence={evidence} questions={questions}
+  proofTitle="Коммерческие объекты и инженерные системы"
+  heroMedia={{src:'/evidence/owner-portfolio/apart-hotel/cover.webp',alt:'Реальный интерьер апарт-отеля и коворкинга',caption:'Апарт-отель и коворкинг · Санкт-Петербург'}}/>
+</BaseLayout>

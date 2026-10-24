@@ -21,7 +21,7 @@ if ($origin === '' && $referer === '') answer(403, 'origin_required');
 foreach ([$origin, $referer] as $url) {
     if ($url === '') continue;
     $parsed = parse_url($url);
-    if ($parsed === false || !in_array(strtolower((string)($parsed['host'] ?? '')), ['aeroventa.ru', 'www.aeroventa.ru'], true)
+    if ($parsed === false || !in_array(strtolower((string)($parsed['host'] ?? '')), ['aeroventa.ru', 'www.aeroventa.ru', 'staging.aeroventa.ru'], true)
         || strtolower((string)($parsed['scheme'] ?? '')) !== 'https'
         || (isset($parsed['port']) && $parsed['port'] !== 443)) answer(403, 'origin_rejected');
 }
@@ -78,7 +78,7 @@ $validDomain = static function (string $addr): bool {
 // Recipient may be the Owner's already-public AEROVENTA Yandex mailbox.
 // This is an exact allowlisted address, never an arbitrary third-party destination.
 // Sender must still be a verified aeroventa.ru domain mailbox to preserve transport identity.
-$recipientAllowed = $validDomain($destination) || strcasecmp($destination, 'aeroventaspb@yandex.ru') === 0;
+$recipientAllowed = strcasecmp($destination, 'office@aeroventa.ru') === 0;
 if (!$recipientAllowed || !$validDomain($sender)) answer(503, 'mailbox_unconfigured');
 // Fail closed when rate limiting is unavailable. Atomic per-IP rolling 10m window.
 $ip = (string)($_SERVER['REMOTE_ADDR'] ?? '');

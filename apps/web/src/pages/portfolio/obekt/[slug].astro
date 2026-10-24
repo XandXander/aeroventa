@@ -1,0 +1,156 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import type { ContentRecord } from '@/lib/types';
+import { readdirSync, existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+
+export function getStaticPaths(){
+ const projects=[
+ {slug:'apart-hotel',title:'Апарт-отель и коворкинг на Бумажном',kind:'Коммерческий объект',place:'Санкт-Петербург',cover:'/evidence/owner-portfolio/apart-hotel/cover.webp'},
+ {slug:'eurospar-vo',title:'EUROSPAR · Васильевский остров',kind:'Торговый объект',place:'Санкт-Петербург',cover:'/evidence/owner-portfolio/eurospar-vo/cover.webp'},
+ {slug:'eurospar-sestroretsk',title:'EUROSPAR · Сестрорецк',kind:'Торговый объект',place:'Сестрорецк',cover:'/evidence/owner-portfolio/eurospar-sestroretsk/03.webp'},
+ {slug:'college-obvodny',title:'Колледж туризма и гостиничного сервиса',kind:'Образовательный объект',place:'Санкт-Петербург',cover:'/evidence/owner-portfolio/college-obvodny/cover.webp'},
+ {slug:'novatech',title:'Новатех',kind:'Производственный объект',place:'Московская область',cover:'/evidence/owner-portfolio/novatech/03.webp'},
+ {slug:'akvilon-yanino',title:'ЖК «Аквилон» · Янино',kind:'Жилой комплекс',place:'Янино, Ленинградская область',cover:'/evidence/owner-portfolio/akvilon-yanino/cover.webp'},
+ {slug:'himprom',title:'Химпром',kind:'Промышленный объект',place:'Санкт-Петербург',cover:'/evidence/owner-portfolio/himprom/03.webp'},
+ {slug:'na-izluchine-nevy',title:'На излучине Невы',kind:'Жилой объект',place:'Санкт-Петербург',cover:'/evidence/residential/neva/IMG_7571.JPG'}
+] as const;
+function realImages(slug:string,cover:string):string[]{
+ const roots=['apps/web/public','public'];
+ if(slug==='na-izluchine-nevy'){
+  const folder='evidence/residential/neva';
+  const locate=(file:string)=>roots.some(root=>existsSync(resolve(root,folder,file)));
+  return [cover,...['curated-01.webp','curated-02.webp','curated-03.webp','curated-04.webp','curated-05.webp','curated-06.webp'].filter(locate).map(file=>'/'+folder+'/'+file)];
+ }
+ const folder='evidence/owner-portfolio/'+slug;
+ const found=roots.map(root=>resolve(root,folder)).find(existsSync);
+ if(!found)throw Error('Missing source photographs for '+slug);
+ const matches=readdirSync(found).filter(n=>/^(?:cover|0[2-9]|[1-9]\d|gallery-\d{2,3})\.(?:webp|jpe?g|png)$/i.test(n));
+ matches.sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
+ return [...new Set([cover,...matches.map(file=>'/'+folder+'/'+file)])];
+}
+return projects.map(project=>({params:{slug:project.slug},props:{project,photos:realImages(project.slug,project.cover)}}));
+}
+interface Props{project:{slug:string;title:string;kind:string;place:string;cover:string};photos:string[]}
+const {project,photos}=Astro.props;
+// The supplied architectural reference stays in source; it is not used as
+// documentary proof while its exact object identity is unconfirmed.
+const contextualReferences=project.slug==='akvilon-yanino'?['gallery-12.webp']:[];
+const preferredFrames:Record<string,string[]>={
+ 'apart-hotel':['02.webp','03.webp','gallery-03.webp','gallery-04.webp','gallery-05.webp','gallery-06.webp','gallery-07.webp','gallery-10.webp','gallery-09.webp','gallery-08.webp','gallery-01.webp','gallery-02.webp'],
+ 'college-obvodny':['03.webp','02.webp','gallery-04.webp','gallery-05.webp','gallery-03.webp','gallery-02.webp','gallery-06.webp','gallery-08.webp','gallery-10.webp','gallery-11.webp','gallery-12.webp','gallery-09.webp'],
+ 'akvilon-yanino':['02.webp','03.webp','gallery-04.webp','gallery-05.webp','gallery-06.webp','gallery-07.webp','gallery-08.webp','gallery-10.webp','gallery-11.webp','gallery-13.webp','gallery-14.webp','gallery-16.webp'],
+ 'novatech':['gallery-04.webp','gallery-02.webp','02.webp','gallery-03.webp','gallery-06.webp','gallery-07.webp','gallery-01.webp','gallery-05.webp','cover.webp'],
+ 'eurospar-vo':['gallery-03.webp','02.webp','03.webp','gallery-05.webp','gallery-04.webp','gallery-06.webp','gallery-02.webp','gallery-01.webp'],
+ 'eurospar-sestroretsk':['02.webp','gallery-03.webp','gallery-06.webp','gallery-07.webp','gallery-08.webp','gallery-04.webp','gallery-01.webp','gallery-02.webp','cover.webp','gallery-05.webp'],
+ 'himprom':['cover.webp','gallery-06.webp','gallery-07.webp','02.webp','gallery-02.webp','gallery-08.webp','gallery-01.webp','gallery-03.webp','gallery-04.webp','gallery-05.webp']
+};
+const albumPhotos=photos.filter(src=>src!==project.cover&&!contextualReferences.includes(src.split('/').pop()||''));
+const preferred=(preferredFrames[project.slug]||[]).map(name=>albumPhotos.find(src=>src.endsWith('/'+name))).filter((src):src is string=>Boolean(src));
+const galleryPhotos=[...new Set([...preferred,...albumPhotos])];
+const visiblePhotos=galleryPhotos.slice(0,12);
+const additionalPhotos=galleryPhotos.slice(12);
+const heroWidth=project.slug==='na-izluchine-nevy'?3264:1200;
+const heroHeight=project.slug==='na-izluchine-nevy'?2448:['apart-hotel','eurospar-vo'].includes(project.slug)?800:900;
+if(project.slug==='na-izluchine-nevy'&&galleryPhotos.length!==6)throw Error('Neva requires six verified installation photos');
+const projectIntroductions:Record<string,string>={
+ 'apart-hotel':'Апарт-отель и коворкинг на Бумажном: инженерные трассы и интерьеры объекта.',
+ 'eurospar-vo':'Интерьеры магазина и виды здания на Васильевском острове.',
+ 'eurospar-sestroretsk':'Магазин EUROSPAR в Сестрорецке. Фотографии объекта и инженерных коммуникаций.',
+ 'college-obvodny':'Колледж туризма и гостиничного сервиса в Санкт-Петербурге. Фотографии площадки и инженерных систем.',
+ 'novatech':'Производственная площадка в Московской области. Оборудование и монтажные узлы — в фотогалерее.',
+ 'akvilon-yanino':'Жилой комплекс в Янино. Виды здания и монтаж вентиляционных трасс.',
+ 'himprom':'Промышленный объект в Санкт-Петербурге. Фотографии площадки и инженерных коммуникаций.',
+ 'na-izluchine-nevy':'Жилой объект в Санкт-Петербурге: вентиляционные трассы и монтажные узлы в помещениях.'
+};
+const introduction=projectIntroductions[project.slug];
+const path='/portfolio/obekt/'+project.slug+'/';
+const content:ContentRecord={
+ path,title:project.title+' — AEROVENTA',h1:project.title,content_type:'landing',business_role:'CORE_SERVICE_HUB',
+ status:'fixture_stub',robots_index:false,robots_follow:true,sitemap_include:false,knowledge_allowed:false,ai_origin:false,
+ seo_title:project.title+' — AEROVENTA',seo_description:project.title+' · '+project.place+'. '+introduction,excerpt:'',body_html:'',body_html_safety_status:'not_applicable',owner_approved_at:null
+};
+---
+<BaseLayout content={content}>
+<article class:list={["owner-case","av-page","av-owner-case",project.slug==="na-izluchine-nevy"&&"owner-case--neva"]}>
+<header class="owner-case__hero"><div class="av-shell owner-case__grid">
+ <div class="av-owner-case__title"><p class="av-kicker">Наши работы / {project.kind}</p><h1>{project.title}</h1></div>
+ <figure><button type="button" data-case-cover aria-label={'Открыть главное фото: '+project.title}><img src={project.cover} alt={'Объект '+project.title} width={heroWidth} height={heroHeight} fetchpriority="high" decoding="async"/></button><figcaption>{project.title} · {project.place}</figcaption></figure>
+ <div class="av-owner-case__summary"><p class="owner-case__place">{project.place}</p><p>{introduction}</p><div class="av-owner-case__links"><a class="av-link" href="/portfolio/">← Все объекты</a>
+ {project.slug==='eurospar-vo'&&<a class="av-link" href="/portfolio/obekt/eurospar-sestroretsk/">Другой объект EUROSPAR · Сестрорецк →</a>}
+ {project.slug==='eurospar-sestroretsk'&&<a class="av-link" href="/portfolio/obekt/eurospar-vo/">Другой объект EUROSPAR · Васильевский остров →</a>}</div></div>
+</div></header>
+<section class="owner-case__gallery av-shell" aria-label={'Галерея '+project.title}>
+ <div class="owner-case__heading"><h2>На объекте</h2><span>{galleryPhotos.length} фотографий</span></div>
+ <div class="owner-case__photos" data-grid-remainder={visiblePhotos.length%3}>{visiblePhotos.map((url,i)=><button type="button" data-case-frame={i} aria-label={'Открыть кадр '+(i+1)+' из '+galleryPhotos.length}><img src={url} width="900" height="700" alt={project.title+' · фотография '+(i+1)} loading="lazy" decoding="async"/></button>)}</div>
+ {additionalPhotos.length>0&&<details class="av-owner-case__more"><summary>Ещё {additionalPhotos.length} фотографий объекта</summary><div class="owner-case__photos" data-grid-remainder={additionalPhotos.length%3}>{additionalPhotos.map((url,i)=><button type="button" data-case-frame={i+visiblePhotos.length} aria-label={'Открыть дополнительный кадр '+(i+1)}><img src={url} width="900" height="700" alt={project.title+' · дополнительный ракурс '+(i+1)} loading="lazy" decoding="async"/></button>)}</div></details>}
+</section>
+<section class="av-close"><div class="av-shell av-close__grid"><div><p class="av-kicker">Ваш объект</p><h2>Расскажите о вашей задаче</h2><p>Пришлите проект или описание объекта — уточним состав монтажа и необходимые данные.</p></div><a href="/contact/" class="button button--primary" data-contact-open data-source="owner_case" aria-haspopup="dialog">Обсудить объект →</a></div></section>
+</article>
+<dialog id="owner-case-viewer" data-cover={project.cover} aria-label={'Просмотр фотографий '+project.title}>
+<div class="owner-case__viewer-title"><strong>{project.title}</strong><button type="button" data-case-zoom aria-label="Увеличить фотографию" aria-pressed="false">+</button><button type="button" data-case-close aria-label="Закрыть галерею">×</button></div>
+<div class="owner-case__viewer-stage"><img src={project.cover} data-case-large alt={project.title} width="1200" height="800"/></div>
+<nav class="owner-case__viewer-nav" aria-label="Перелистывание фотографий"><button type="button" data-case-prev aria-label="Предыдущая фотография">‹</button><span data-case-count>1 из {galleryPhotos.length}</span><button type="button" data-case-next aria-label="Следующая фотография">›</button></nav>
+</dialog>
+<script id="owner-case-image-data" type="application/json" set:html={JSON.stringify(galleryPhotos)} />
+</BaseLayout>
+<script>
+import {createPhotoPreloader,setViewerPhoto,bindPhotoZoom} from '@/lib/gallery-runtime';
+const cache=createPhotoPreloader(10);
+const dialog=document.querySelector<HTMLDialogElement>('#owner-case-viewer');
+const photos:string[]=JSON.parse(document.querySelector('#owner-case-image-data')?.textContent||'[]');
+const large=dialog?.querySelector<HTMLImageElement>('[data-case-large]');
+const counter=dialog?.querySelector<HTMLElement>('[data-case-count]');
+let activePhotos=photos,index=0,source:HTMLElement|null=null;
+const photoZoom=bindPhotoZoom(dialog,dialog?.querySelector<HTMLElement>('.owner-case__viewer-stage'),large,step=>show(index+step));
+function show(n:number){
+ if(!activePhotos.length||!large)return;index=(n+activePhotos.length)%activePhotos.length;photoZoom.reset();
+ setViewerPhoto(large,activePhotos[index],'Кадр '+(index+1)+' из '+activePhotos.length);
+ if(counter)counter.textContent=(index+1)+' из '+activePhotos.length;
+ cache.neighbors(activePhotos,index);
+}
+document.querySelectorAll<HTMLElement>('[data-case-frame]').forEach(node=>node.addEventListener('click',()=>{source=node;activePhotos=photos;show(Number(node.dataset.caseFrame)||0);dialog?.showModal();dialog?.querySelector<HTMLElement>('[data-case-close]')?.focus({preventScroll:true});}));
+document.querySelector<HTMLElement>('[data-case-cover]')?.addEventListener('click',event=>{
+ source=event.currentTarget as HTMLElement;
+ const cover=dialog?.dataset.cover||photos[0];activePhotos=[cover,...photos.filter(photo=>photo!==cover)];
+ show(0);dialog?.showModal();dialog?.querySelector<HTMLElement>('[data-case-close]')?.focus({preventScroll:true});
+});
+dialog?.querySelector('[data-case-zoom]')?.addEventListener('click',()=>photoZoom.toggle());
+dialog?.querySelector('[data-case-close]')?.addEventListener('click',()=>dialog.close());
+dialog?.querySelector('[data-case-prev]')?.addEventListener('click',()=>show(index-1));
+dialog?.querySelector('[data-case-next]')?.addEventListener('click',()=>show(index+1));
+dialog?.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'){e.preventDefault();show(index-1);}if(e.key==='ArrowRight'){e.preventDefault();show(index+1);}});
+dialog?.addEventListener('close',()=>{photoZoom.reset();cache.clear();source?.focus({preventScroll:true});source=null;});
+</script>
+<style>
+.owner-case{background:#f7f9f9;color:#193949}.owner-case__hero{background:#edf1f2;padding:clamp(35px,5vw,77px) 0}
+.owner-case__grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);align-items:center;gap:clamp(22px,4vw,65px)}
+.owner-case h1{font-size:clamp(2.2rem,4.4vw,4.8rem);line-height:1.09;letter-spacing:-.043em;overflow-wrap:break-word}
+.owner-case p{max-width:54ch;line-height:1.6}.owner-case__place{font-weight:600}
+.owner-case__back{display:inline-block;margin-top:20px;text-underline-offset:5px;color:#21516b}
+.owner-case figure{margin:0;min-width:0}.owner-case figure button{border:0;background:none;padding:0;width:100%;cursor:zoom-in}
+.owner-case figure img{display:block;width:100%;height:auto;max-height:520px;object-fit:contain;background:#dce6e8}
+.owner-case figcaption{font-size:.76rem;color:#526979;margin-top:8px}
+.owner-case__gallery{padding-block:clamp(45px,6vw,90px)}.owner-case__heading{display:flex;justify-content:space-between;align-items:end;gap:14px;flex-wrap:wrap;margin-bottom:25px}
+.owner-case h2{font-size:clamp(1.75rem,3vw,3.1rem);line-height:1.15}
+.owner-case__photos{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(9px,1.4vw,20px)}
+.owner-case__photos button{padding:0;border:0;background:#dce6e9;aspect-ratio:4/3;overflow:hidden;cursor:zoom-in}
+.owner-case__photos img{display:block;width:100%;height:100%;object-fit:cover}.owner-case__next{padding-block:clamp(40px,5.7vw,85px)}
+.owner-case button:focus-visible{outline:3px solid #1c6c8e;outline-offset:3px}
+#owner-case-viewer{position:fixed;inset:0;width:100vw;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:#edf2f3;color:#193949;overflow:hidden}
+#owner-case-viewer::backdrop{background:rgba(9,28,41,.88)}
+.owner-case__viewer-title{position:absolute;top:0;left:0;right:0;z-index:4;display:flex;align-items:center;justify-content:center;min-height:56px;background:#edf2f3;padding:11px 114px 11px 20px;box-sizing:border-box}
+.owner-case__viewer-title strong{font-size:.86rem;text-align:center}
+.owner-case__viewer-title button{position:absolute;top:5px;right:10px;width:46px;height:46px;border:0;background:transparent;color:#15374a;font-size:2rem;cursor:pointer}
+.owner-case__viewer-title [data-case-zoom]{right:62px;font-size:1.5rem}
+.owner-case__viewer-stage{display:flex;align-items:center;justify-content:center;width:100%;height:100%;padding:67px clamp(44px,6vw,90px) 62px;box-sizing:border-box}
+.owner-case__viewer-stage img{display:block;width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain}
+.owner-case__viewer-nav{position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;pointer-events:none}
+.owner-case__viewer-nav button{pointer-events:auto;min-width:45px;min-height:58px;padding:0;border:0;background:#dce7ea;color:#15374a;font-size:2.5rem;cursor:pointer}
+.owner-case__viewer-nav span{position:absolute;left:50%;bottom:calc(13px + env(safe-area-inset-bottom));transform:translateX(-50%);padding:5px 11px;font-size:.8rem;background:#dce7ea}
+@media(max-width:850px){.owner-case__grid{grid-template-columns:1fr}.owner-case__photos{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:470px){.owner-case__photos{grid-template-columns:1fr}.owner-case__viewer-stage{padding-inline:38px}}
+@media(prefers-reduced-motion:reduce){.owner-case *{scroll-behavior:auto}}
+/* Neva: facade only in hero, six construction photos in balanced rows. */
+.owner-case--neva .owner-case__viewer-stage{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+</style>

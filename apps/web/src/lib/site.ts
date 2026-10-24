@@ -3,7 +3,7 @@ export const SITE = {
   name: 'AEROVENTA',
   primaryBusiness: 'Монтаж вентиляции',
   phone: '+7 922 640 99 22',
-  email: 'aeroventaspb@yandex.ru',
+  email: 'office@aeroventa.ru',
   primaryServiceArea: 'Санкт-Петербург и Ленинградская область',
   additionalServiceAreas: ['Москва', 'Республика Карелия'],
   schemaServiceAreas: [
