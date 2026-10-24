@@ -37,7 +37,7 @@
     const sync=()=>{document.documentElement.classList.toggle('av-mobile-menu-open',menu.open);toggle?.setAttribute('aria-expanded',String(menu.open));toggle?.setAttribute('aria-label',menu.open?'Закрыть меню':'Открыть меню');if(menu.open)nav?.querySelector<HTMLElement>('a')?.focus({preventScroll:true})};
     menu.addEventListener('toggle',sync);
     document.addEventListener('keydown',e=>{if(e.key==='Escape'&&menu.open){e.preventDefault();menu.open=false;toggle?.focus({preventScroll:true})}});
-    document.addEventListener('click',e=>{if(!menu.open||!(e.target instanceof Element))return;if(!menu.closest('header')?.contains(e.target))menu.open=false;else if(e.target.closest('[data-consultant-open]')){menu.open=false;}else if(e.target.closest('nav a')){menu.open=false;toggle?.focus({preventScroll:true})}});
+    document.addEventListener('click',e=>{if(!menu.open||!(e.target instanceof Element))return;if(!menu.closest('header')?.contains(e.target))menu.open=false;else if(e.target.closest('nav a')){menu.open=false;toggle?.focus({preventScroll:true})}});
     window.addEventListener('resize',()=>{if(window.innerWidth>1050&&menu.open)menu.open=false});
     sync();
   }

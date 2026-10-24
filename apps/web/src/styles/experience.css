@@ -2,7 +2,6 @@
 
 .nav-consultant,
 .mobile-menu__consultant,
-.footer-consultant,
 .experience-link-button {
   appearance:none;
   border:0;
@@ -27,14 +26,8 @@
   color:var(--ink);
 }
 
-.footer-consultant {
-  width:max-content;
-  padding:0;
-  color:#425162;
-  font-weight:750;
-  text-align:left;
-}
-.footer-consultant:hover { color:#000; }
+
+
 
 .experience-dialog {
   width:min(960px, calc(100% - 32px));
@@ -369,7 +362,6 @@
 
 .nav-consultant:focus-visible,
 .mobile-menu__consultant:focus-visible,
-.footer-consultant:focus-visible,
 .dialog-close:focus-visible,
 .field input:focus-visible,
 .field textarea:focus-visible,
@@ -611,32 +603,32 @@
 /* 2026-10-20 Owner acceptance — integrated correction; preserve original media and SEO routes. */
 :root{--av-fold-header:64px;--av-fold-ribbon:68px}
 @media(min-width:761px){
- .home-hero--owner-airflow{min-height:0;padding:0}
- .home-hero--owner-airflow .home-hero__grid{min-height:calc(100svh - var(--av-fold-header) - var(--av-fold-ribbon))!important;height:auto;max-height:none}
- .home-hero--owner-airflow .hero-engineering{min-height:0;height:100%;align-self:stretch}
- .home-hero--owner-airflow .home-hero__copy{min-height:0;padding-block:clamp(20px,3svh,38px)!important;max-width:min(840px,72vw)}
- .home-hero--owner-airflow h1{font-size:clamp(2.3rem,min(3.7vw,6.7svh),3.9rem);line-height:1.1;max-width:19ch;text-wrap:balance}
- .home-hero--owner-airflow .home-lede{font-size:clamp(.94rem,1.1vw,1.1rem);line-height:1.45;max-width:47ch}
- .home-hero--owner-airflow .home-actions{gap:10px;margin-top:clamp(12px,1.7svh,20px)}
- .home-hero--owner-airflow .object-ribbon{min-height:var(--av-fold-ribbon);align-items:center}
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  .practice-hub--articles .practice-index-intro{min-height:0;display:block}
  .practice-hub--articles .practice-index-intro>.home-shell{padding-block:clamp(24px,3.3vw,48px) clamp(17px,2.2vw,29px)}
  .practice-hub--articles .practice-index-intro h1{font-size:clamp(2.8rem,5.2vw,5.6rem);font-weight:550;line-height:1.04;letter-spacing:-.044em;margin:10px 0 15px}
  .practice-hub--articles .practice-index-intro p:not(.home-kicker){font-size:clamp(.98rem,1.2vw,1.18rem);line-height:1.55;max-width:63ch}
 }
 @media(min-width:761px) and (max-height:760px){
- .home-hero--owner-airflow h1{font-size:clamp(2.15rem,6.8svh,3.5rem);line-height:1.04}
- .home-hero--owner-airflow .home-lede{font-size:.92rem;line-height:1.36}
- .home-hero--owner-airflow .home-kicker{margin-bottom:12px}
- .home-hero--owner-airflow .home-geo{margin-block:10px}
- .home-hero--owner-airflow .home-actions .button{min-height:40px;padding-block:9px}
+ 
+ 
+ 
+ 
+ 
 }
 @media(max-width:760px){
- .home-hero--owner-airflow .home-hero__grid{min-height:calc(100svh - 60px);height:auto;box-sizing:border-box}
- .home-hero--owner-airflow .home-hero__copy{padding-block:clamp(16px,3svh,25px) 17px}
- .home-hero--owner-airflow h1{font-size:clamp(2rem,8vw,3.3rem);line-height:1.08}
- .home-hero--owner-airflow .home-lede{line-height:1.43}
- .home-hero--owner-airflow .home-actions{margin-top:13px}
+ 
+ 
+ 
+ 
+ 
  .practice-hub--articles .practice-index-intro{min-height:0;display:block}
  .practice-hub--articles .practice-index-intro>.home-shell{padding-block:clamp(18px,4svh,30px) 14px}
  .practice-hub--articles .practice-index-intro h1{font-size:clamp(2.55rem,10vw,4rem)}
@@ -750,10 +742,10 @@ img[src="/evidence/7park/object-exterior-day.jpg"]{
 }
 
 @media(max-width:760px){
- .home-hero--owner-airflow .home-hero__grid{min-height:0;height:auto}
- .home-hero--owner-airflow .home-hero__copy{padding-block:22px 24px}
- .home-hero--owner-airflow .home-geo{font-size:.8rem;line-height:1.4}
- .home-hero--owner-airflow .home-actions .button{width:100%;min-height:46px}
+ 
+ 
+ 
+ 
  .object-detail__hero,.engagement-hero,.case-detail-hero{min-height:0}
  .object-detail__hero-grid,.engagement-hero__grid{align-items:start;gap:20px}
  .object-detail__hero h1,.engagement-hero h1{font-size:clamp(2.15rem,8.8vw,3.1rem);line-height:1.07}
@@ -764,7 +756,7 @@ img[src="/evidence/7park/object-exterior-day.jpg"]{
  html:has(.mobile-menu[open]){overflow:hidden}
  html.av-mobile-menu-open{overflow:hidden}
  .site-header:has(.mobile-menu[open]){z-index:80;background:#fff}
- .site-header:has(.mobile-menu[open]) .consultant-launcher--header{visibility:hidden;pointer-events:none}
+ 
  .site-header .mobile-menu[open] nav{position:fixed;left:0;right:0;top:56px;max-height:calc(100dvh - 56px);overflow-y:auto;overscroll-behavior:contain;padding:clamp(18px,4vw,32px) 20px max(24px,env(safe-area-inset-bottom,24px));background:#fff;border-bottom:1px solid #cad6dd;box-shadow:0 24px 36px #091f3133;display:grid;gap:4px}
  .site-header .mobile-menu[open] nav a{padding:11px 4px;min-height:44px}
  .site-header .mobile-menu[open] nav .button{justify-content:center;margin-top:9px}
@@ -826,15 +818,15 @@ body{background:#fff}
 
 /* Persistent help has its own place in the sticky header, outside navigation.
    It cannot cover a form, photograph, gallery control or mobile keyboard. */
-.consultant-launcher{position:static;display:inline-flex;align-items:center;justify-content:center;gap:8px;flex:none;min-height:44px;max-width:none;padding:5px 12px 5px 6px;border:1px solid #bed0d9;border-radius:999px;background:#fff;color:#183c51;font:550 .76rem/1.2 Onest,system-ui,sans-serif;cursor:pointer;appearance:none}
-.consultant-launcher__symbol{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#1b6084;color:#fff;flex:none}
-.consultant-launcher__symbol svg{width:19px;height:19px}
-.consultant-launcher:hover{background:#edf4f6;border-color:#628da3}
-.consultant-launcher:focus-visible{outline:3px solid #9d4329;outline-offset:3px}
+
+
+
+
+
 .site-header__inner{gap:clamp(12px,1.4vw,25px)}
 @media(max-width:1180px){
- .consultant-launcher{width:44px;padding:5px}
- .consultant-launcher__label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+ 
+ 
 }
 @media(max-width:1050px){
  .site-header__inner{display:flex;gap:12px}
@@ -845,6 +837,6 @@ body{background:#fff}
 @media(min-width:761px) and (max-height:760px){
  /* A short desktop shows the whole approved scene against an intentional
     engineering-ink field, rather than cutting the room out of the source. */
- .home-hero--owner-airflow .hero-engineering{background:#142b3a}
- .home-hero--owner-airflow .hero-engineering__photo{object-fit:contain;object-position:right center}
+ 
+ 
 }

@@ -2962,6 +2962,97 @@
       "requirement_exact": "Два пустых generic object openings",
       "candidate_status": "LOCAL_CHECKED_OWNER_ACCEPTANCE_PENDING",
       "evidence_required": "Current full desktop/mobile frames + relevant actual browser interaction/foreground-background evidence; automated checks are not artistic approval"
+    },
+    {
+      "id": "D-055",
+      "route": "/",
+      "section": "Продолжение существующего PR",
+      "requirement_exact": "Продолжение существующего PR",
+      "source": "Latest explicit Owner instruction2026-10-24 + canonical D055–060",
+      "changed_section": "docs/recovery/OWNER_DELIVERY_2026-10-24.md",
+      "correction": "Один интегрированный кандидат поверх6c1c5647, без отката; сохранены последующие рабочие исправления.",
+      "evidence_required": "docs/recovery/OWNER_DELIVERY_2026-10-24.md",
+      "candidate_status": "CANDIDATE_REQUIRES_EXACT_SHA_CI_AND_OWNER_ACCEPTANCE"
+    },
+    {
+      "id": "D-056",
+      "route": "/",
+      "section": "Первые экраны и каскад",
+      "requirement_exact": "Первые экраны и каскад",
+      "source": "Latest explicit Owner instruction2026-10-24 + canonical D055–060",
+      "changed_section": "PR12_OWNER_CONTRACT/report.json + FIRST_VIEW_*",
+      "correction": "Удалены конфликтующие фиксированные высоты HOME и пустые viewport-заголовки. Статьи и проекты видны сразу; CONTACT завершает прямой контакт перед формой на коротких экранах.",
+      "evidence_required": "PR12_OWNER_CONTRACT/report.json + FIRST_VIEW_*",
+      "candidate_status": "CANDIDATE_REQUIRES_EXACT_SHA_CI_AND_OWNER_ACCEPTANCE"
+    },
+    {
+      "id": "D-057",
+      "route": "/portfolio/",
+      "section": "Оригинал Невы и ведущий кейс",
+      "requirement_exact": "Оригинал Невы и ведущий кейс",
+      "source": "Latest explicit Owner instruction2026-10-24 + canonical D055–060",
+      "changed_section": "docs/PR12_OWNER_NEVA_PHOTO_PROVENANCE_2026-10-22.json",
+      "correction": "Byte-exact IMG_7571.JPG3264×2448/f83228bf…9779e привязан к обложкам и social cards. Шесть монтажных оригиналов сохранены.",
+      "evidence_required": "docs/PR12_OWNER_NEVA_PHOTO_PROVENANCE_2026-10-22.json",
+      "candidate_status": "CANDIDATE_REQUIRES_EXACT_SHA_CI_AND_OWNER_ACCEPTANCE"
+    },
+    {
+      "id": "D-058",
+      "route": "/obekty/restorany-i-kafe/",
+      "section": "Обложки объектов",
+      "requirement_exact": "Обложки объектов",
+      "source": "Latest explicit Owner instruction2026-10-24 + canonical D055–060",
+      "changed_section": "Owner cover checks + portfolio frames",
+      "correction": "Сохранена принятая обложка Леонтьевского Мыса. Подлинные покрытия Сестрорецка/Новатеха согласованы с social cards.",
+      "evidence_required": "Owner cover checks + portfolio frames",
+      "candidate_status": "CANDIDATE_REQUIRES_EXACT_SHA_CI_AND_OWNER_ACCEPTANCE"
+    },
+    {
+      "id": "D-059",
+      "route": "/",
+      "section": "Шапка, нижний консультант, подвал",
+      "requirement_exact": "Шапка, нижний консультант, подвал",
+      "source": "Latest explicit Owner instruction2026-10-24 + canonical D055–060",
+      "changed_section": "PremiumExperience.astro / Footer.astro / actual interaction states",
+      "correction": "Нет консультанта в desktop/mobile меню. Один исторический46px нижний значок; отступает от ссылок/текста/полей и скрывается под меню/диалогом. Подвал целиком пересобран.",
+      "evidence_required": "PremiumExperience.astro / Footer.astro / actual interaction states",
+      "candidate_status": "CANDIDATE_REQUIRES_EXACT_SHA_CI_AND_OWNER_ACCEPTANCE"
+    },
+    {
+      "id": "D-060",
+      "route": "/",
+      "section": "Схема и сохранность функций",
+      "requirement_exact": "Схема и сохранность функций",
+      "source": "Latest explicit Owner instruction2026-10-24 + canonical D055–060",
+      "changed_section": "render/interaction/source-integrity evidence",
+      "correction": "Сохранены native1036×338 и mobile crops; интеграция краёв без изменения ядра. Более резкий оригинал остаётся SOURCE HOLD. Upload/галереи/статьи сохранены.",
+      "evidence_required": "render/interaction/source-integrity evidence",
+      "candidate_status": "LOCAL_INTEGRATION_CHECKED_SHARPER_NATIVE_SOURCE_HOLD"
+    },
+    {
+      "id": "OWNER24-PORTFOLIO",
+      "route": "/portfolio/",
+      "section": "Нева плюс12разных объектов",
+      "requirement_exact": "Нева плюс12разных объектов",
+      "source": "Latest explicit Owner instruction2026-10-24 + canonical D055–060",
+      "changed_section": "Built count and unique-route checks; actual portfolio frames",
+      "correction": "12уникальных карточек, EUROSPARСестрорецк — полноценная карточка, Невы в нижней сетке нет.7PARK сохранён отдельно.",
+      "evidence_required": "Built count and unique-route checks; actual portfolio frames",
+      "candidate_status": "CANDIDATE_REQUIRES_EXACT_SHA_CI_AND_OWNER_ACCEPTANCE"
+    },
+    {
+      "id": "OWNER24-FOUR-AUDIENCES",
+      "route": "sitewide",
+      "section": "Четыре аудитории",
+      "requirement_exact": "Четыре аудитории",
+      "source": "Latest explicit Owner instruction2026-10-24 + canonical D055–060",
+      "changed_section": "Existing migration validators, browser interactions, built HTML",
+      "correction": "Содержательный HTML, реальные факты/фото/ответы, доступные кнопки/формы, URL/301/410/canonical/schema и noindex защищённой fixture-сборки. Публичная индексация/доставка/runtime не объявлены проверенными.",
+      "evidence_required": "Existing migration validators, browser interactions, built HTML",
+      "candidate_status": "CANDIDATE_REQUIRES_EXACT_SHA_CI_AND_OWNER_ACCEPTANCE"
     }
-  ]
+  ],
+  "current_base": "6c1c564743030c14f98500be9ed2ee008da93f9b",
+  "preferred_work_reference": "6afdba86fcafde9dab94e4e069be987196b2bcf9",
+  "artistic_status": "OWNER ACCEPTANCE PENDING"
 }

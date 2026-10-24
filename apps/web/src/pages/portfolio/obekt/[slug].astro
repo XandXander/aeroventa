@@ -13,7 +13,7 @@ export function getStaticPaths(){
  {slug:'novatech',title:'Новатех',kind:'Производственный объект',place:'Московская область',cover:'/evidence/owner-portfolio/novatech/03.webp'},
  {slug:'akvilon-yanino',title:'ЖК «Аквилон» · Янино',kind:'Жилой комплекс',place:'Янино, Ленинградская область',cover:'/evidence/owner-portfolio/akvilon-yanino/cover.webp'},
  {slug:'himprom',title:'Химпром',kind:'Промышленный объект',place:'Санкт-Петербург',cover:'/evidence/owner-portfolio/himprom/03.webp'},
- {slug:'na-izluchine-nevy',title:'На излучине Невы',kind:'Жилой объект',place:'Санкт-Петербург',cover:'/evidence/residential/owner-neva-facade-20261016.jpg'}
+ {slug:'na-izluchine-nevy',title:'На излучине Невы',kind:'Жилой объект',place:'Санкт-Петербург',cover:'/evidence/residential/neva/IMG_7571.JPG'}
 ] as const;
 function realImages(slug:string,cover:string):string[]{
  const roots=['apps/web/public','public'];
@@ -50,8 +50,8 @@ const preferred=(preferredFrames[project.slug]||[]).map(name=>albumPhotos.find(s
 const galleryPhotos=[...new Set([...preferred,...albumPhotos])];
 const visiblePhotos=galleryPhotos.slice(0,12);
 const additionalPhotos=galleryPhotos.slice(12);
-const heroWidth=project.slug==='na-izluchine-nevy'?531:1200;
-const heroHeight=project.slug==='na-izluchine-nevy'?376:['apart-hotel','eurospar-vo'].includes(project.slug)?800:900;
+const heroWidth=project.slug==='na-izluchine-nevy'?3264:1200;
+const heroHeight=project.slug==='na-izluchine-nevy'?2448:['apart-hotel','eurospar-vo'].includes(project.slug)?800:900;
 if(project.slug==='na-izluchine-nevy'&&galleryPhotos.length!==6)throw Error('Neva requires six verified installation photos');
 const projectIntroductions:Record<string,string>={
  'apart-hotel':'Апарт-отель и коворкинг на Бумажном: инженерные трассы и интерьеры объекта.',

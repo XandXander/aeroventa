@@ -40,14 +40,14 @@ const questions = [
 ---
 
 <BaseLayout content={page}>
-  <section class:list={['home-hero', 'home-hero--v43', hasOwnerHeroMedia && 'home-hero--owner-interior', hasOwnerHeroMedia && 'home-hero--owner-airflow']} aria-labelledby="home-title">
+  <section class:list={['home-hero', 'home-hero--v43', hasOwnerHeroMedia && 'home-hero--owner-interior', hasOwnerHeroMedia && 'home-hero--owner-airflow']} aria-labelledby="home-title" data-first-fold-boundary>
     <div class="home-shell home-hero__grid">
       <div class="home-hero__copy">
         <p class="home-kicker">Монтаж систем вентиляции</p>
         <h1 id="home-title">Инженерная вентиляция без лишнего.</h1>
         <p class="home-lede">
-          От квартиры и дома до ресторана, склада и производства. Работаем по готовому проекту.
-          Если проекта нет — определим, какие исходные данные нужны для корректной сметы и монтажа.
+          Монтаж вентиляции в квартирах и домах, ресторанах, коммерческих и производственных зданиях.
+          Работаем по проекту; если его нет — уточним задачу и исходные данные.
         </p>
         <p class="home-geo">Санкт-Петербург · Ленинградская область · Москва · Карелия</p>
         <div class="home-actions" aria-label="Основные действия">
@@ -74,6 +74,9 @@ const questions = [
       </figure>
     </div>
 
+
+  </section>
+
     <nav class="object-ribbon home-shell" aria-label="Типы объектов">
       {objects.map(([label, href]) => (
         <a href={href} class="object-ribbon__item">
@@ -81,8 +84,6 @@ const questions = [
         </a>
       ))}
     </nav>
-    <a class="home-consultant-inline" href="/contact/" data-consultant-open data-source="home_inline_mobile" aria-controls="aeroventa-consultant-dialog" aria-haspopup="dialog">Задать вопрос по вентиляции <span aria-hidden="true">↗</span></a>
-  </section>
 
   <section class="home-section home-solution" id="process" aria-labelledby="solution-title">
     <div class="home-shell solution-grid">
@@ -246,8 +247,6 @@ const questions = [
         </a>
       </div>
       <div class="conversion-close__assist" aria-label="Помощь с выбором следующего шага">
-        <button class="button button--ghost" type="button" data-consultant-open data-source="home_close">Разобрать задачу с консультантом</button>
-        <button class="button button--ghost" type="button" data-contact-open data-source="home_close">Обсудить объект</button>
       </div>
     </div>
   </section>

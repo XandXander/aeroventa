@@ -23,7 +23,7 @@ const server = http.createServer(async(req,res)=>{
     if(!file.startsWith(root + path.sep) && file !== root){res.writeHead(403).end();return;}
     if((await fs.stat(file)).isDirectory()) file = path.join(file, 'index.html');
     const bytes = await fs.readFile(file);
-    res.writeHead(200, {'Content-Type':mime[path.extname(file)] || 'application/octet-stream'});
+    res.writeHead(200, {'Content-Type':mime[path.extname(file).toLowerCase()] || 'application/octet-stream'});
     res.end(bytes);
   } catch {res.writeHead(404, {'Content-Type':'text/plain'}).end('Not found');}
 });
@@ -57,6 +57,37 @@ async function settle(){
   });
 }
 try {
+
+ if(phase==='owner'){
+  const original=await fs.readFile(path.join(root,'evidence/residential/neva/IMG_7571.JPG'));
+  const {createHash}=await import('node:crypto');
+  report.checks.push({name:'D057_original_sha256',pass:createHash('sha256').update(original).digest('hex')==='f83228bf67af248c14a5170d442ec7fff290297d6c16b2c1860e8d0c1469779e'});
+  report.first_views=[];
+  const keyRoutes=['/','/services/','/montazh-ventiliacii/','/montazh-po-proektu/','/obekt-bez-gotovogo-proekta/','/portfolio/','/blog/','/about/','/contact/','/obekty/kvartiry-i-doma/','/portfolio/obekt/na-izluchine-nevy/','/news/'];
+  for(const [width,height]of [[1440,900],[1364,646],[390,844],[375,667]])for(const route of keyRoutes){
+   await page.setViewportSize({width,height});await page.goto(origin+route,{waitUntil:'networkidle'});
+   await page.evaluate(async()=>{await document.fonts.ready;for(const i of document.images)i.loading='eager';await Promise.all([...document.images].map(i=>i.decode().catch(()=>{})));await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));});
+   const result=await page.evaluate(()=>{
+    const box=el=>el?{top:el.getBoundingClientRect().top,bottom:el.getBoundingClientRect().bottom,width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height}:null;
+    const hero=document.querySelector('.home-hero'),help=document.querySelector('.consultant-launcher'),hs=help&&getComputedStyle(help);
+    const visible=el=>el&&getComputedStyle(el).display!=='none'&&getComputedStyle(el).visibility!=='hidden';
+    const images=[...document.querySelectorAll('main img')].filter(visible).map(el=>({src:el.getAttribute('src'),...box(el)}));
+    return{header:box(document.querySelector('.site-header')),h1:box(document.querySelector('h1')),home:box(hero),scene:box(document.querySelector('.hero-engineering')),ribbon:box(document.querySelector('.object-ribbon')),feature:box(document.querySelector('.av-portfolio-feature')),nevaFirst:box(document.querySelector('[data-owner-first-view]')),journal:box(document.querySelector('.av-journal-opening')),contact:box(document.querySelector('.av-contact__direct')),headerAssistant:document.querySelectorAll('.site-header [data-consultant-open]').length,assistantCount:document.querySelectorAll('button.consultant-launcher').length,assistant:{...box(help),visible:!!help&&hs.visibility!=='hidden',position:hs?.position},images,overflow:document.documentElement.scrollWidth-innerWidth};
+   });
+   if(result.headerAssistant||result.assistantCount!==1||result.assistant.width>50||result.assistant.height>50||result.assistant.position!=='fixed')report.issues.push({type:'OWNER_SINGLE_COMPACT_ASSISTANT',route,width,height,result});
+   if(result.overflow>1||!result.h1||result.h1.top<result.header.bottom-1)report.issues.push({type:'OWNER_INITIAL_HEADING',route,width,height,result});
+   if(route==='/'&&width>760&&(Math.abs(result.home.bottom-height)>4||result.scene.bottom>height+4))report.issues.push({type:'OWNER_HOME_CLIPPED_OR_EMPTY_FOLD',route,width,height,result});
+   if(route==='/'&&width<=760&&result.scene.bottom>height+4)report.issues.push({type:'OWNER_HOME_MOBILE_SCENE_CLIPPED',route,width,height,result});
+   if(['/portfolio/','/blog/','/news/'].includes(route)&&!result.images.some(i=>i.top<height-120&&i.bottom>result.header.bottom+100))report.issues.push({type:'OWNER_INDEX_WITHOUT_VISIBLE_PHOTOGRAPHY',route,width,height,result});
+   if(route==='/portfolio/'&&result.nevaFirst&&width<=760&&Math.abs(result.nevaFirst.bottom-height)>4)report.issues.push({type:'OWNER_NEVA_FIRST_COMPOSITION',route,width,height,result});
+   const screenshot='FIRST_VIEW_'+slug(route)+'__'+width+'x'+height+'.jpg';await page.screenshot({path:path.join(output,screenshot),type:'jpeg',quality:82});report.first_views.push({route,width,height,screenshot,...result});
+  }
+  await page.setViewportSize({width:1440,height:900});await page.goto(origin+'/portfolio/',{waitUntil:'networkidle'});
+  const links=await page.locator('.portfolio-grid>.portfolio-card').evaluateAll(nodes=>nodes.map(n=>({href:n.getAttribute('href'),image:n.querySelector('img')?.getAttribute('src')})));
+  report.checks.push({name:'Owner_Neva_plus_twelve_distinct_other_objects',pass:links.length===12&&new Set(links.map(x=>x.href)).size===12&&links.some(x=>x.href==='/portfolio/obekt/eurospar-sestroretsk/')&&!links.some(x=>x.href==='/portfolio/obekt/na-izluchine-nevy/')});
+  report.checks.push({name:'D058_Leont_approved_cover_preserved',pass:links.some(x=>x.href==='/blog/detail/restoran-v-zhk-leontevskiy-mys/'&&x.image==='/evidence/leont/owner-cover-v43.webp')});
+  for(const route of ['/portfolio/','/portfolio/obekt/na-izluchine-nevy/','/obekty/kvartiry-i-doma/']){await page.goto(origin+route,{waitUntil:'networkidle'});report.checks.push({name:'D057_public_cover_'+route,pass:await page.locator('main img[src="/evidence/residential/neva/IMG_7571.JPG"]').count()>=1&&await page.locator('main img[src*="owner-neva-facade-20261016"]').count()===0});}
+ }
  if(phase==='surfaces'){
   report.pixel_contrast=[];
   const luminance=rgb=>rgb.map(c=>{c/=255;return c<=.04045?c/12.92:((c+.055)/1.055)**2.4}).reduce((s,c,i)=>s+c*[.2126,.7152,.0722][i],0);
@@ -266,7 +297,7 @@ try {
     if(width===390){await swipeLeft('.owner-case__viewer-stage');expect((await page.locator('[data-case-count]').innerText())==='2 из 6','Neva touch swipe failed');}
     await page.keyboard.press('Escape');
     expect(await opener.evaluate(e=>e===document.activeElement),'Neva focus restoration failed');
-    const cover=page.locator('[data-case-cover]');await cover.click();await decodedImage('[data-case-large]');expect((await page.locator('[data-case-large]').getAttribute('src')).includes('owner-neva-facade-20261016.jpg'),'Neva facade opens the wrong image');await page.locator('[data-case-next]').click();await decodedImage('[data-case-large]');expect(!(await page.locator('[data-case-large]').getAttribute('src')).includes('owner-neva-facade'),'Neva cover does not connect to interior photographs');await page.keyboard.press('Escape');expect(await cover.evaluate(e=>e===document.activeElement),'Neva cover focus restoration failed');return {decoded_unique_frames:seen,facade:true};
+    const cover=page.locator('[data-case-cover]');await cover.click();await decodedImage('[data-case-large]');expect((await page.locator('[data-case-large]').getAttribute('src')).includes('IMG_7571.JPG'),'Neva facade opens the wrong image');await page.locator('[data-case-next]').click();await decodedImage('[data-case-large]');expect(!(await page.locator('[data-case-large]').getAttribute('src')).includes('IMG_7571.JPG'),'Neva cover does not connect to interior photographs');await page.keyboard.press('Escape');expect(await cover.evaluate(e=>e===document.activeElement),'Neva cover focus restoration failed');return {decoded_unique_frames:seen,facade:true};
    });
    for(const name of ['apart-hotel','eurospar-vo','eurospar-sestroretsk','college-obvodny','novatech','akvilon-yanino','himprom'])await scenario('OWNER_OBJECT_GALLERY','/portfolio/obekt/'+name+'/',width,width>1000?650:844,async()=>{
     const opener=page.locator('[data-case-frame]').first();const total=await page.locator('[data-case-frame]').count();expect(total>1,'Object album incomplete');
@@ -303,16 +334,16 @@ try {
   await scenario('MOBILE_MENU_CONTACT_FOCUS','/',390,780,async()=>{
    const toggle=page.locator('[data-mobile-menu] summary');await toggle.click();
    expect(await page.locator('[data-mobile-menu]').evaluate(e=>e.open),'Menu closed');
-   expect(await page.locator('.consultant-launcher').count()===0,'Owner rejected header consultant pill still exists');
+   expect(await page.locator('.site-header [data-consultant-open]').count()===0 && !(await page.locator('.consultant-launcher').isVisible()),'Header duplicate or launcher visible over menu');
    await page.keyboard.press('Escape');expect(await toggle.evaluate(e=>e===document.activeElement),'Menu Escape focus');
-   expect(await page.locator('.home-consultant-inline').count()===1,'Home contextual consultant not available after menu close');
+   expect(await page.locator('.consultant-launcher').count()===1,'Home contextual consultant not available after menu close');
    await toggle.click();await page.locator('[data-mobile-menu] [data-contact-open]').click();
    expect(await page.locator('[data-contact-dialog]').evaluate(e=>e.open),'Menu CTA failed');
    await page.keyboard.press('Escape');expect(await toggle.evaluate(e=>e===document.activeElement),'Focus restored into hidden menu');
    return {};
   });
   await scenario('CONSULTANT_QUESTION_AND_CONTEXT','/',390,844,async()=>{
-   await page.locator('.home-consultant-inline').click();await page.locator('#consultant-chat-question').fill('Есть проект вентиляции ресторана, нужен монтаж');
+   await page.locator('.consultant-launcher').click();await page.locator('#consultant-chat-question').fill('Есть проект вентиляции ресторана, нужен монтаж');
    await page.locator('#consultant-chat-question').press('Enter');
    expect(await page.locator('[data-consultant-chat-messages] a[href="/montazh-po-proektu/"]').count()===1,'Relevant route not returned');
    expect(!(await page.locator('html').evaluate(e=>e.hasAttribute('data-airflow-processing'))),'Synchronous guide must not simulate request pulse');

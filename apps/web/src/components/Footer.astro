@@ -4,31 +4,48 @@ const year = new Date().getFullYear();
 const tel = SITE.phone.replace(/[^+\d]/g, '');
 ---
 <footer class="site-footer">
-  <div class="home-shell footer-grid">
-    <div class="footer-brand">
-      <a href="/" class="footer-brand__name" aria-label="AEROVENTA — главная">
-        <img class="brand-mark-locked brand-mark-locked--footer" src="/brand/aeroventa-mark.svg" width="82" height="57" alt="" aria-hidden="true" />
-        <span class="baseline-wordmark"><span class="brand-wordmark-tail">EROVENTA</span></span>
-      </a>
-      <p>{SITE.primaryBusiness} для частных, коммерческих и производственных объектов.</p>
-      <p class="footer-geo"><strong>Основная зона:</strong> {SITE.primaryServiceArea}<br /><strong>Также берём объекты:</strong> {SITE.additionalServiceAreas.join(' · ')}</p>
+  <div class="home-shell">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="footer-brand__name" aria-label="AEROVENTA — главная">
+          <img class="brand-mark-locked brand-mark-locked--footer" src="/brand/aeroventa-mark.svg" width="82" height="57" alt="" aria-hidden="true" />
+          <span class="baseline-wordmark"><span class="brand-wordmark-tail">EROVENTA</span></span>
+        </a>
+        <p>{SITE.primaryBusiness} для частных, коммерческих и производственных объектов.</p>
+        <p class="footer-geo">{SITE.primaryServiceArea}<br />Также берём объекты: {SITE.additionalServiceAreas.join(' · ')}</p>
+      </div>
+      <address class="footer-contact">
+        <span class="footer-heading">Связаться с командой</span>
+        <a class="footer-phone" href={'tel:'+tel}><span>Телефон</span>{SITE.phone}</a>
+        <a class="footer-email" href={'mailto:'+SITE.email}><span>E-mail</span>{SITE.email}</a>
+      </address>
     </div>
-
-    <div class="footer-contact">
-      <span class="footer-heading">Контакт по объекту</span>
-      <a class="footer-phone" href={`tel:${tel}`}>{SITE.phone}</a>
-      <a class="footer-email" href={`mailto:${SITE.email}`}>{SITE.email}</a>
+    <div class="footer-bottom">
+      <nav class="footer-nav" aria-label="Навигация в подвале">
+        <a href="/services/">Услуги</a><a href="/portfolio/">Наши работы</a><a href="/blog/">Статьи</a><a href="/about/">О компании</a><a href="/contact/">Контакты</a>
+      </nav>
+      <div class="footer-legal"><span>© {year} AEROVENTA</span><a href="/privacy/">Конфиденциальность</a></div>
     </div>
-
-    <nav class="footer-nav" aria-label="Навигация в подвале">
-      <span class="footer-heading">Разделы</span>
-      <a href="/services/">Услуги</a>
-      <a href="/portfolio/">Наши работы</a>
-      <a href="/about/">О компании</a>
-      <a href="/privacy/">Конфиденциальность</a>
-    </nav>
-  </div>
-  <div class="home-shell footer-bottom">
-    <span>© {year} AEROVENTA</span>
   </div>
 </footer>
+<style>
+.site-footer{background:#f0f3f1;color:#1a3541;padding:clamp(36px,4.5vw,64px) 0 28px}
+.footer-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:clamp(32px,8vw,128px);align-items:start}
+.footer-brand__name{display:flex;align-items:center;gap:0;width:fit-content;text-decoration:none;color:inherit}
+.footer-brand p{max-width:43ch;margin:20px 0 0;font-size:.94rem;line-height:1.65}
+.footer-brand .footer-geo{margin-top:16px;color:#48616a;font-size:.8rem;line-height:1.65}
+.footer-contact{display:grid;grid-template-columns:1fr 1fr;gap:18px 28px;font-style:normal;padding-top:3px}
+.footer-heading{grid-column:1/-1;font-size:.76rem;font-weight:580;color:#48616a}
+.footer-contact a{display:flex;flex-direction:column;gap:7px;color:inherit;text-decoration:none;font-size:clamp(1.03rem,1.45vw,1.35rem);font-weight:550;letter-spacing:-.025em;line-height:1.5;min-width:0;overflow-wrap:anywhere}
+.footer-contact a>span{font-size:.73rem;letter-spacing:0;font-weight:450;color:#48616a}
+.footer-contact a:hover{text-decoration:underline;text-underline-offset:5px}
+.footer-bottom{margin-top:34px;padding-top:22px;border-top:1px solid #c4d0cc;display:flex;flex-wrap:wrap;justify-content:space-between;gap:24px}
+.footer-nav{display:flex;flex-wrap:wrap;gap:12px 26px;align-items:start}
+.footer-nav a{display:inline-flex;align-items:center;min-height:32px;font-size:.85rem;color:inherit;text-decoration:none;line-height:1.5}
+.footer-legal{display:flex;flex-wrap:wrap;gap:10px 22px;font-size:.75rem;color:#48616a;align-items:baseline}
+.footer-legal a{color:inherit;text-underline-offset:3px}
+.site-footer a:focus-visible{outline:2px solid #9d4329;outline-offset:5px}
+@media(max-width:1050px){.footer-contact{grid-template-columns:1fr}.footer-grid{gap:36px}.footer-bottom{gap:22px}.footer-heading{grid-column:auto}}
+@media(max-width:600px){.footer-grid{grid-template-columns:1fr;gap:28px}.footer-brand p{max-width:35ch;margin-top:16px}.footer-contact{grid-template-columns:1fr 1fr;gap:13px 20px}.footer-heading{grid-column:1/-1}.footer-contact a{font-size:.97rem}.footer-bottom{margin-top:28px;padding-bottom:34px}.footer-nav{display:grid;grid-template-columns:1fr 1fr;gap:10px 28px;width:100%}.footer-nav a{min-height:40px}.footer-legal{padding-top:8px;gap:8px 20px}}
+@media(max-width:360px){.footer-contact{grid-template-columns:1fr}.footer-heading{grid-column:auto}}
+</style>

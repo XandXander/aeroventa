@@ -127,8 +127,8 @@ try {
             const image = document.querySelector('.home-hero--owner-airflow .hero-engineering__photo');
             const photo = document.querySelector('.home-hero--owner-airflow .hero-engineering');
             const copy = document.querySelector('.home-hero--owner-airflow .home-hero__copy');
-            const strip = document.querySelector('.home-hero--owner-airflow .object-ribbon');
-            const inline = document.querySelector('.home-consultant-inline');
+            const strip = document.querySelector('.home-hero--owner-airflow + .object-ribbon');
+            const inline = document.querySelector('.consultant-launcher');
             const fixed = document.querySelector('.consultant-launcher');
             const rect = el => el?.getBoundingClientRect();
             const p = rect(photo),c=rect(copy),r=rect(strip);
@@ -150,7 +150,7 @@ try {
           // mobile preserves independent reading order before the contained image.
           const mobileReadingOrder = optical.photo_top >= optical.copy_bottom - 3 &&
             ['cover','contain'].includes(optical.photo_fit) && optical.strip_top >= optical.photo_bottom - 3;
-          const desktopBleed = optical.photo_fit === 'cover' &&
+          const desktopBleed = optical.photo_fit === 'contain' &&
             optical.photo_left <= 3 && optical.photo_right >= width - 3 &&
             optical.copy_left >= -1 && optical.copy_right <= width + 3 &&
             optical.photo_bottom > optical.copy_top + 100 &&
@@ -160,7 +160,7 @@ try {
             (isMobile ? (!optical.desktop_diagram_visible && optical.mobile_pair_visible) :
                         (optical.desktop_diagram_visible && !optical.mobile_pair_visible)) &&
             (isMobile ? mobileReadingOrder : desktopBleed) &&
-            (!isMobile || (optical.inline_visible && !optical.floating_visible));
+            optical.floating_visible;
           if (!ownerScenePass) report.fail.push({route,view,reason:'Approved Owner airflow HERO scene/adaptation contract',optical});
           const recognition = page.locator('.home-ponsse');
           const orderCorrect = await page.evaluate(() => {
@@ -266,7 +266,7 @@ try {
             return {headingTop:h?.top,photoTop:p?.top,photoWidth:i?.naturalWidth,photoHeight:p?.height,photoBottom:p?.bottom,launcherOverlap:overlaps,launcherVisible:!!l && getComputedStyle(document.querySelector('.consultant-launcher')).display!=='none' && getComputedStyle(document.querySelector('.consultant-launcher')).visibility!=='hidden' && parseFloat(getComputedStyle(document.querySelector('.consultant-launcher')).opacity)>.01,inlineConsultant:!!document.querySelector('.av-about a[data-consultant-open]')};
           });
           if (!optical.photoWidth || optical.headingTop == null || optical.headingTop >= height*.55 ||
-              (width<=760 && (optical.photoHeight < 160 || optical.photoHeight > height*.85 || optical.photoTop >= height*.7 || optical.launcherVisible))) {
+              (width<=760 && (optical.photoHeight < 160 || optical.photoHeight > height*.85 || optical.photoTop >= height*.7 || (optical.launcherVisible && optical.launcherOverlap)))) {
             report.fail.push({route,view,reason:'About first-fold heading and documentary team photo must be visible without consultant obscuring the image',optical});
           }
         }
@@ -291,8 +291,8 @@ try {
           const historical=page.locator('a.portfolio-card[href^="/blog/detail/"]');
           const archives=page.locator('a.portfolio-card--archive[href^="/portfolio/obekt/"]');
           const sourceValid=await archives.evaluateAll(nodes=>{
-            const expected=new Set(['apart-hotel','eurospar-vo','college-obvodny','novatech','akvilon-yanino','himprom']);
-            return nodes.length===6&&nodes.every(n=>{
+            const expected=new Set(['apart-hotel','eurospar-vo','eurospar-sestroretsk','college-obvodny','novatech','akvilon-yanino','himprom']);
+            return nodes.length===7&&nodes.every(n=>{
               const href=n.getAttribute('href')||'';
               const slug=href.match(/^\/portfolio\/obekt\/([a-z0-9-]+)\/$/)?.[1];
               const image=n.querySelector('img')?.getAttribute('src')||'';
@@ -301,13 +301,13 @@ try {
             })&&expected.size===0;
           });
           const historicUrls=await historical.evaluateAll(nodes=>nodes.map(n=>n.getAttribute('href')));
-          if(count!==11||photos!==11||ponsse!==1||nevaLead<1||sevenParkRetained!==1||
-             await historical.count()!==5||await archives.count()!==6||!sourceValid||
+          if(count!==12||photos!==12||ponsse!==1||nevaLead<1||sevenParkRetained!==1||
+             await historical.count()!==5||await archives.count()!==7||!sourceValid||
              await page.locator('a.portfolio-card[href="/portfolio/obekt/na-izluchine-nevy/"]').count()!==0||
              !historicUrls.every(h=>h?.startsWith('/blog/detail/'))||
              await page.locator('.portfolio-card[href="/blog/detail/ntff-polisan/"]').count()!==1||
-             await page.locator('a.portfolio-list__extra[href="/portfolio/obekt/eurospar-sestroretsk/"]').count()!==1){
-            report.fail.push({route,view,reason:'Current Owner eleven unique grid cases plus single dominant Neva feature, 7 PARK retained',count,photos,ponsse,nevaLead,sevenParkRetained,historic:historicUrls,archiveCount:await archives.count(),sourceValid});
+             await page.locator('a.portfolio-card[href="/portfolio/obekt/eurospar-sestroretsk/"]').count()!==1){
+            report.fail.push({route,view,reason:'Current Owner twelve unique grid cases plus single dominant Neva feature, 7 PARK retained',count,photos,ponsse,nevaLead,sevenParkRetained,historic:historicUrls,archiveCount:await archives.count(),sourceValid});
           }
         }
         if (['drill_crown', 'drill_screed', 'drill_cost', 'drill_horizontal'].includes(id)) {
@@ -338,7 +338,7 @@ try {
             const intro=document.querySelector('.av-services .av-hero__body');
             const picture = pics[0]?.getBoundingClientRect();
             const text = intro?.getBoundingClientRect();
-            const inline=document.querySelector('.services-consultant-inline');
+            const inline=document.querySelector('.consultant-launcher');
             const floating=document.querySelector('.consultant-launcher');
             return {
               natural_widths:pics.map(n=>n.naturalWidth),
@@ -359,7 +359,7 @@ try {
 
               (mobile && (servicesOptical.photo_bottom>servicesOptical.intro_top+3 ||
                   !servicesOptical.inline_visible)) ||
-              servicesOptical.launcher_overlaps_intro) {
+              (servicesOptical.floating_visible && servicesOptical.launcher_overlaps_intro)) {
             report.fail.push({route,view,reason:'Owner Services single authentic image, no obstructive launcher in first fold',wrong,actual,servicesOptical});
           }
           // Even after suppressing the colliding initial launcher, the
@@ -370,7 +370,7 @@ try {
             window.scrollTo({top:window.scrollY+strip.getBoundingClientRect().bottom+40,behavior:'instant'});
           });
           await page.waitForFunction(()=>document.documentElement.classList.contains('is-past-first-fold'),null,{timeout:4500});
-          const contextualConsultant=page.locator('.services-consultant-inline');
+          const contextualConsultant=page.locator('.consultant-launcher');
           const postFoldLauncher=await contextualConsultant.evaluate(el=>{
             const s=getComputedStyle(el),r=el.getBoundingClientRect();
             return s.visibility!=='hidden'&&s.display!=='none'&&s.pointerEvents!=='none'&&r.width>0&&r.height>0;
@@ -470,7 +470,7 @@ try {
             return rect?{bottom:Math.round(rect.bottom),viewport:innerHeight}:null;
           },id);
           entry.first_fold = firstFold;
-          if (firstFold && firstFold.bottom < firstFold.viewport-24) {
+          if (firstFold && (firstFold.bottom < firstFold.viewport-4 || firstFold.bottom > firstFold.viewport+4)) {
             report.fail.push({route,view,reason:'Owner first fold leaks next section',...firstFold});
           }
         }
@@ -538,7 +538,7 @@ try {
         }
         if (id === 'home' && (view === 'desktop_1440' || view === 'mobile_390')) {
           // Open the retained contextual assistant, without reintroducing the rejected header pill.
-          const contextual=view === 'mobile_390' ? '.home-consultant-inline' : '.conversion-close [data-consultant-open]';
+          const contextual='.consultant-launcher';
           await page.locator(contextual).first().click();
           await page.locator('[data-consultant-dialog]').waitFor({ state: 'visible' });
           await page.screenshot({ path: path.join(root, 'consultant_open__' + view + '.png'), animations: 'disabled' });
@@ -685,7 +685,7 @@ try {
         const copy=box('.av-services .av-hero__body');
         const routes=[...document.querySelectorAll('.av-services .av-routes>a')].map(a=>a.getBoundingClientRect());
         const text=[...document.querySelectorAll('.av-services .av-routes>a')].map(a=>a.innerText);
-        const inline=document.querySelector('.services-consultant-inline');
+        const inline=document.querySelector('.consultant-launcher');
         return {hero:hero&&{x:hero.x,y:hero.y,w:hero.width,h:hero.height},photo:photo&&{x:photo.x,y:photo.y,w:photo.width,h:photo.height},
           copy:copy&&{x:copy.x,y:copy.y,w:copy.width,h:copy.height,bottom:copy.bottom},
           routes:routes.map(x=>({x:x.x,y:x.y,w:x.width,h:x.height})),
@@ -728,10 +728,10 @@ try {
       await page.goto(baseUrl+'/',{waitUntil:'load'});
       const measured=await page.evaluate(()=>{
         const button=document.querySelector('.consultant-launcher');
-        const ribbon=document.querySelector('.home-hero--owner-airflow .object-ribbon');
+        const ribbon=document.querySelector('.home-hero--owner-airflow + .object-ribbon');
         const primary=document.querySelector('.home-hero--owner-airflow .home-actions .button--primary');
         const show=button&&getComputedStyle(button).display!=='none'&&getComputedStyle(button).visibility!=='hidden';
-        const contextual=document.querySelector('.conversion-close [data-consultant-open]');
+        const contextual=document.querySelector('.consultant-launcher');
         const collide=(a,b)=>{
           if(!a||!b)return false;
           const x=a.getBoundingClientRect(),y=b.getBoundingClientRect();
@@ -739,8 +739,8 @@ try {
         };
         return {show,contextual:!!contextual,overlapsCategories:collide(button,ribbon),overlapsMainCTA:collide(button,primary)};
       });
-      if(measured.show||!measured.contextual||measured.overlapsCategories||measured.overlapsMainCTA)
-        report.fail.push({reason:'Owner: no permanent consultant pill; contextual assistant retained without first-fold obstruction',measured});
+      if(!measured.show||!measured.contextual||measured.overlapsCategories||measured.overlapsMainCTA)
+        report.fail.push({reason:'Owner: one compact floating assistant without header duplicate or first-fold obstruction',measured});
     }catch(e){report.fail.push({reason:'Consultant first-fold geometry QA failed',error:String(e)})}
     finally{await context.close()}
   }
@@ -891,8 +891,8 @@ try {
           };
         },zoom);
         if (result.horizontal>1 ||
-            (width>=1024&&zoom===1&&route==='/'&&result.firstFoldBottom!==null&&result.firstFoldBottom<height-5) ||
-            (route==='/blog/'&&zoom===1&&(result.firstArticleTop===null||result.firstArticleTop<height-5)) ||
+            (width>=1024&&zoom===1&&route==='/'&&result.firstFoldBottom!==null&&(result.firstFoldBottom<height-4||result.firstFoldBottom>height+4)) ||
+            (route==='/blog/'&&zoom===1&&(result.firstArticleTop===null||result.firstArticleTop>height-120)) ||
             (zoom===1&&!result.traceVisible)) {
           if (result.horizontal>1) result.offenders=await page.evaluate(()=>[...document.querySelectorAll('body *')].map(el=>{const b=el.getBoundingClientRect();return{tag:el.tagName.toLowerCase(),cls:typeof el.className==='string'?el.className.slice(0,90):'',left:Math.round(b.left),right:Math.round(b.right),scroll:el.scrollWidth,client:el.clientWidth}}).filter(x=>x.right>innerWidth+1||x.left < -1).slice(0,15));
           report.fail.push({reason:'Owner height/zoom/real TRACE gate',route,width,height,zoom,result});
@@ -910,8 +910,8 @@ try {
       }
       if(route==='/portfolio/'&&width===1440){
         const grid=await page.locator('.portfolio-grid>.portfolio-card').evaluateAll(nodes=>nodes.map(n=>{const b=n.getBoundingClientRect();return {top:b.top,width:b.width,height:b.height};}));
-        if(grid.length!==11||grid.some(b=>b.width<220||b.height<150))
-          report.fail.push({reason:'Portfolio eleven readable cards; twelfth object is sole Neva dossier',grid});
+        if(grid.length!==12||grid.some(b=>b.width<220||b.height<150))
+          report.fail.push({reason:'Portfolio twelve readable cards plus sole Neva dossier',grid});
       }
     } catch(e){report.fail.push({reason:'Owner additional QA exception',route,width,height,error:String(e)})}
     finally{await context.close()}
@@ -937,11 +937,11 @@ try {
         natural:n.complete&&n.naturalWidth>0,
         src:n.getAttribute('src')
       })));
-      if(sportCount!==1||gridCount!==11||media.length!==2||media.some(x=>!x.natural) ||
+      if(sportCount!==1||gridCount!==12||media.length!==2||media.some(x=>!x.natural) ||
          !media.some(x=>x.src?.endsWith('/sport-komendantskiy/owner-selected-aerial.webp')) ||
          !media.some(x=>x.src?.endsWith('/sport-komendantskiy/gallery-01.webp')) ||
         await page.getByRole('heading',{name:'Центр адаптивного спорта'}).count()!==1) {
-        report.fail.push({reason:'Separate owner sports feature: eleven grid cards plus Neva dossier plus sports study',width,sportCount,gridCount,media});
+        report.fail.push({reason:'Separate owner sports feature: twelve grid cards plus Neva dossier plus sports study',width,sportCount,gridCount,media});
       }
       const open=sport.locator('.portfolio-sport__photo--large button[data-archive-open]');
       const diffuserOpen=sport.locator('.portfolio-sport__photo--detail button[data-archive-open]');
@@ -1118,7 +1118,7 @@ try {
       const menu=page.locator('.mobile-menu');
       await menu.locator('summary').click();
       const expanded=await menu.evaluate(el=>el.open);
-      const hiddenLauncher=await page.locator('.consultant-launcher').count()===0;
+      const hiddenLauncher=!(await page.locator('.consultant-launcher').isVisible());
       await page.keyboard.press('Escape');
       const closed=!(await menu.evaluate(el=>el.open));
       if(!expanded||!hiddenLauncher||!closed)report.fail.push({reason:'Mobile navigation state/focus lifecycle',width,expanded,hiddenLauncher,closed});
@@ -1144,7 +1144,7 @@ try {
       await page.keyboard.press('Escape');
       const closed=!(await dialog.evaluate(el=>el.open));
       const focused=await opener.evaluate(el=>document.activeElement===el);
-      if(!open||!closed||!focused||src!=='/evidence/residential/owner-neva-facade-20261016.jpg')
+      if(!open||!closed||!focused||src!=='/evidence/residential/neva/IMG_7571.JPG')
         report.fail.push({reason:'Neva native-size lightbox/focus',width,open,closed,focused,src});
     }catch(error){report.fail.push({reason:'Neva lightbox interaction exception',width,error:String(error)})}
     finally{await ctx.close()}

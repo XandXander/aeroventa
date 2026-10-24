@@ -4,7 +4,7 @@
   "archive": "Новая папка (2).zip",
   "archive_folder": "КВАРТИРА На излучине Невы СПб",
   "known_group": "Owner archive, attribution by original folder; technical scene images, no invented equipment characteristics",
-  "protected_facade": "/evidence/residential/owner-neva-facade-20261016.jpg",
+  "protected_facade": "/evidence/residential/neva/IMG_7571.JPG",
   "new_originals": [
     {
       "source": "photo_5226735321473556544_y.jpg",
@@ -49,8 +49,14 @@
       2448
     ],
     "bytes": 2338495,
-    "transfer_status": "REQUIRED_NOT_YET_COMMITTED",
-    "source_identity": "OWNER_SELECTED_ORIGINAL"
+    "transfer_status": "COMMITTED_BYTE_EXACT_ORIGINAL",
+    "source_identity": "OWNER_SELECTED_ORIGINAL",
+    "target": "apps/web/public/evidence/residential/neva/IMG_7571.JPG",
+    "retrieved_from": "Library /САЙТ/AEROVENTA_NEVA_IMG_7571_ORIGINAL.JPG; byte-exact original archive member"
   },
-  "current_facade_asset_status": "REJECTED_SUPERSEDED_IDENTITY; requires byte-exact IMG_7571 replacement before acceptance"
+  "current_facade_asset_status": "OWNER_SELECTED_ORIGINAL_BOUND_ALL_PUBLIC_COVERS_AND_SOCIAL",
+  "superseded_facade": {
+    "path": "/evidence/residential/owner-neva-facade-20261016.jpg",
+    "status": "REJECTED_IDENTITY; source binary retained, not used as Neva proof"
+  }
 }

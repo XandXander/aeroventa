@@ -172,9 +172,9 @@ if(await exists(portfolioFile)){
   const html=await fs.readFile(portfolioFile,'utf8');
   check(/id="featured-case-title"[^>]*>На излучине Невы<\/h2>/.test(html),'Owner 2026-10-23: Neva must be the featured lead');
   const cards=[...html.matchAll(/<a\b[^>]*class="portfolio-card(?: [^"]*)?"[^>]*>/g)].map(m=>m[0]);
-  check(cards.length===11,'Current Owner: exactly eleven independent cards plus the single Neva leading dossier');
+  check(cards.length===12,'Current Owner: exactly twelve independent cards plus the single Neva leading dossier');
   const hrefs=cards.map(tag=>tag.match(/href="([^"]+)"/)?.[1]).filter(Boolean);
-  check(hrefs.length===11 && new Set(hrefs).size===11 && !hrefs.includes('/portfolio/obekt/na-izluchine-nevy/') && html.includes('class="av-portfolio-feature__primary"'), 'Current Owner: all eleven grid cards have unique direct routes; Neva exists only in its main dossier');
+  check(hrefs.length===12 && new Set(hrefs).size===12 && !hrefs.includes('/portfolio/obekt/na-izluchine-nevy/') && html.includes('class="av-portfolio-feature__primary"'), 'Current Owner: all twelve grid cards have unique direct routes; Neva exists only in its main dossier');
   for(const href of hrefs)check(await exists(htmlFileFor(href)), 'Owner O22: card direct route missing '+href);
   check(html.includes('id="portfolio-sport-title"') && html.includes('Центр адаптивного спорта'),'Owner O22: independent sport section required');
 }
@@ -185,7 +185,7 @@ if(await exists(nevaFile)){
   check(photos.length===6,'Owner Neva: facade in HERO only, plus exactly six gallery triggers');
   const thumbs=html.match(/<div\b[^>]*class="owner-case__photos"[^>]*>([\s\S]*?)<\/div>/)?.[1]||'';
   check((thumbs.match(/data-case-frame=/g)||[]).length===6,'Owner Neva: six photos in lower grid');
-  check(!/owner-neva-facade-20261016\.jpg/.test(thumbs),'Owner Neva: facade cannot repeat in lower gallery');
+  check(!/IMG_7571\.JPG/.test(thumbs),'Owner Neva: facade cannot repeat in lower gallery');
   for(const [name,expected] of [
     ['curated-04.webp','e574fa2d3c8c31c9a885b02ca16189dffd32de67110983bbf11cf1d1902b4a81'],
     ['curated-05.webp','fc8b4990985c8d4e107790aa1b276b21f37c0ec21ee3c80e670bca9f8727d359'],

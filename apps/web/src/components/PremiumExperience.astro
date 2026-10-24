@@ -9,6 +9,9 @@ const { pagePath = '' } = Astro.props;
 ---
 
 
+<button class="consultant-launcher" type="button" data-consultant-open data-source="persistent_launcher" aria-haspopup="dialog" aria-controls="aeroventa-consultant-dialog" aria-label="Открыть консультанта AEROVENTA">
+  <span class="consultant-launcher__symbol" aria-hidden="true">↗</span>
+</button>
 <dialog id="aeroventa-consultant-dialog" class="experience-dialog experience-dialog--consultant" data-consultant-dialog aria-labelledby="consultant-title">
   <div class="experience-dialog__shell">
     <div class="experience-dialog__head">
@@ -161,6 +164,40 @@ const { pagePath = '' } = Astro.props;
 <script>
 (() => {
   const consultantDialog = document.querySelector<HTMLDialogElement>('[data-consultant-dialog]');
+  const launcher = document.querySelector<HTMLButtonElement>('.consultant-launcher');
+  if (launcher) {
+    let launcherFrame = 0;
+    const clearLauncher = () => {
+      launcherFrame = 0;
+      if (document.querySelector('dialog[open], .mobile-menu[open]')) {
+        launcher.classList.remove('is-obstructed');
+        return;
+      }
+      const active = document.activeElement;
+      const typing = active instanceof Element && active.matches('input,textarea,select,[contenteditable="true"]');
+      if (active === launcher) return;
+      launcher.style.setProperty('--help-rise', '0px');
+      const base = launcher.getBoundingClientRect();
+      const obstacles = [...document.querySelectorAll<HTMLElement>('main a,main button,main p,main h1,main h2,main h3,main label,main input,main textarea,main select,.site-footer a')]
+        .filter(el => getComputedStyle(el).visibility !== 'hidden')
+        .map(el => el.getBoundingClientRect()).filter(b => b.width > 0 && b.height > 0);
+      const rise = [0,56,112,168].find(offset => !obstacles.some(b =>
+        b.left < base.right + 2 && b.right > base.left - 2 && b.top < base.bottom - offset + 2 && b.bottom > base.top - offset - 2));
+      launcher.style.setProperty('--help-rise', (rise || 0) + 'px');
+      launcher.classList.toggle('is-obstructed', typing || rise === undefined);
+    };
+    const scheduleLauncher = () => { if (!launcherFrame) launcherFrame = requestAnimationFrame(clearLauncher); };
+    window.addEventListener('scroll', scheduleLauncher, {passive:true});
+    window.addEventListener('resize', scheduleLauncher);
+    window.addEventListener('load', scheduleLauncher, {once:true});
+    void document.fonts.ready.then(scheduleLauncher);
+    window.visualViewport?.addEventListener('resize', scheduleLauncher);
+    document.addEventListener('focusin', scheduleLauncher);
+    document.addEventListener('focusout', scheduleLauncher);
+    new MutationObserver(scheduleLauncher).observe(document.body, {subtree:true,attributes:true,attributeFilter:['open']});
+    scheduleLauncher();
+  }
+
   const contactDialog = document.querySelector<HTMLDialogElement>('[data-contact-dialog]');
   const projectDialog = document.querySelector<HTMLDialogElement>('[data-project-dialog]');
   const consultantForm = document.querySelector<HTMLFormElement>('[data-consultant-form]');

@@ -105,8 +105,8 @@ const newOwnerCases = [
     "title": "На излучине Невы",
     "kind": "Жилой объект",
     "location": "Санкт-Петербург",
-    "cover": "/evidence/residential/owner-neva-facade-20261016.jpg",
-    "photos": ["/evidence/residential/owner-neva-facade-20261016.jpg"]
+    "cover": "/evidence/residential/neva/IMG_7571.JPG",
+    "photos": ["/evidence/residential/neva/IMG_7571.JPG"]
   }
 ];
 // Source-locked project directories, no client-side listing and no fabricated photographs.
@@ -183,32 +183,20 @@ const sportPhotos = [
 ---
 
 <article class="portfolio-hub av-page av-portfolio">
-  <header class="av-portfolio-intro av-shell"><div><p class="av-kicker">Выполненные объекты AEROVENTA</p><h1>Наши работы</h1></div><p class="av-lead">Жилые, коммерческие и производственные объекты. Задачи, состав монтажа и фотографии каждой площадки.</p></header>
   <section class="av-portfolio-feature" aria-labelledby="featured-case-title">
     <div class="av-shell av-portfolio-feature__dossier">
-      <header class="av-portfolio-feature__intro">
-        <p class="av-kicker">Жилой объект · Санкт-Петербург</p>
-        <h2 id="featured-case-title">На излучине Невы</h2>
-        <p>Реальный объект и подтверждённые фотографии монтажа вентиляции.</p>
-      </header>
-      <figure class="av-portfolio-feature__primary">
-        <a href="/portfolio/obekt/na-izluchine-nevy/" aria-label="Открыть кейс «На излучине Невы»">
-          <img src="/evidence/residential/owner-neva-facade-20261016.jpg" width="531" height="376" loading="eager" decoding="async" alt="Архитектурный вид объекта «На излучине Невы»" />
-        </a>
-        <figcaption>Архитектура объекта</figcaption>
-      </figure>
-      <figure class="av-portfolio-feature__secondary">
-        <a href="/portfolio/obekt/na-izluchine-nevy/" aria-label="Монтажные фотографии объекта «На излучине Невы»">
-          <img src="/evidence/residential/neva/curated-01.webp" width="1500" height="1125" loading="lazy" decoding="async" alt="Реальные смонтированные воздуховоды на объекте «На излучине Невы»" />
-        </a>
-        <figcaption>Монтаж вентиляции</figcaption>
-      </figure>
-      <dl class="av-portfolio-feature__facts">
-        <div><dt>Объект</dt><dd>Жилое помещение</dd></div>
-        <div><dt>Работы</dt><dd>Монтаж вентиляционных трасс</dd></div>
-        <div><dt>Подтверждение</dt><dd>Фотографии работ</dd></div>
-      </dl>
-      <a class="av-portfolio-feature__cta" href="/portfolio/obekt/na-izluchine-nevy/">Смотреть объект <span aria-hidden="true">→</span></a>
+      <div class="av-portfolio-feature__first-view" data-owner-first-view>
+        <header class="av-portfolio-intro"><div><p class="av-kicker">Выполненные объекты</p><h1>Наши работы</h1></div><p class="av-lead">Монтаж вентиляции: от квартиры до производства.</p></header>
+        <div class="av-portfolio-feature__opening">
+          <header class="av-portfolio-feature__intro"><p class="av-kicker">Жилой объект · Санкт-Петербург</p><h2 id="featured-case-title">На излучине Невы</h2><p>Монтаж вентиляции в жилом объекте Санкт-Петербурга.</p></header>
+          <figure class="av-portfolio-feature__primary"><a href="/portfolio/obekt/na-izluchine-nevy/" aria-label="Открыть кейс «На излучине Невы»"><img src="/evidence/residential/neva/IMG_7571.JPG" width="3264" height="2448" loading="eager" decoding="async" alt="Кирпичное здание объекта «На излучине Невы» — оригинальная фотография" /></a><figcaption>Архитектура объекта</figcaption></figure>
+          <div class="av-portfolio-feature__support">
+            <figure class="av-portfolio-feature__secondary"><a href="/portfolio/obekt/na-izluchine-nevy/" aria-label="Монтажные фотографии объекта «На излучине Невы»"><img src="/evidence/residential/neva/curated-01.webp" width="1500" height="1125" loading="lazy" decoding="async" alt="Смонтированные воздуховоды на объекте «На излучине Невы»" /></a><figcaption>Монтаж вентиляции</figcaption></figure>
+            <dl class="av-portfolio-feature__facts"><div><dt>Объект</dt><dd>Жилое помещение</dd></div><div><dt>Работы</dt><dd>Монтаж вентиляционных трасс</dd></div></dl>
+          </div>
+          <a class="av-portfolio-feature__cta" href="/portfolio/obekt/na-izluchine-nevy/">Смотреть объект <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -217,7 +205,7 @@ const sportPhotos = [
       <div class="section-heading">
         <div>
           <p class="section-index">02 / Сравнить по объекту</p>
-          <h2 id="cases-title">Ещё 11 объектов</h2>
+          <h2 id="cases-title">Ещё 12 объектов</h2>
         </div>
       </div>
       <p class="portfolio-list__introduction">Жилые, коммерческие и производственные объекты. Фотографии показывают сами площадки и отдельные этапы монтажа вентиляции.</p>
@@ -237,7 +225,7 @@ const sportPhotos = [
             </div>
           </a>
         ))}
-        {archiveCases.filter(item => item.index !== '09' && item.index !== '14').map(item => (
+        {archiveCases.filter(item => item.index !== '14').map(item => (
           <a id={`owner-${item.index}`} class="portfolio-card portfolio-card--archive" href={item.index==='14'?'/portfolio/obekt/na-izluchine-nevy/':`/portfolio/obekt/${gallerySlugFor(item.cover)}/`} aria-label={`Открыть объект: ${item.title}`}>
             <div class="portfolio-card__media"><img src={item.cover} width="1200" height="800" loading="lazy" decoding="async" alt={`Фотография объекта: ${item.title}`}/></div>
             <div class="portfolio-card__body">
@@ -249,9 +237,7 @@ const sportPhotos = [
         ))}
       </div>
       <a class="portfolio-list__extra" href="/blog/detail/kak-my-sdali-7-domov/"><span>7 PARK · Павловск · семь домов · 18.11.2020 — 10.12.2020</span><b>Смотреть монтаж →</b></a>
-      <a class="portfolio-list__extra" href="/portfolio/obekt/eurospar-sestroretsk/">
-        <span>Дополнительный объект · EUROSPAR, Сестрорецк</span><b>Смотреть фотографии →</b>
-      </a>
+
     </div>
   </section>
 
@@ -356,7 +342,7 @@ const sportPhotos = [
       button.addEventListener('click',()=>{
         try{
           const value=JSON.parse(button.dataset.galleryImages||'[]');
-          const safe=/^(?:\/evidence\/owner-portfolio\/(?:apart-hotel|eurospar-vo|eurospar-sestroretsk|college-obvodny|novatech|akvilon-yanino|himprom|sport-komendantskiy)\/(?:owner-selected-aerial|cover|[0-9]{2,3}|gallery-[0-9]{2,3}|curated-[0-9]{2})\.(?:webp|jpe?g|png)|\/evidence\/residential\/(?:owner-neva-facade-20261016\.jpg|neva\/curated-[0-9]{2}\.webp))$/i;
+          const safe=/^(?:\/evidence\/owner-portfolio\/(?:apart-hotel|eurospar-vo|eurospar-sestroretsk|college-obvodny|novatech|akvilon-yanino|himprom|sport-komendantskiy)\/(?:owner-selected-aerial|cover|[0-9]{2,3}|gallery-[0-9]{2,3}|curated-[0-9]{2})\.(?:webp|jpe?g|png)|\/evidence\/residential\/(?:neva\/IMG_7571\.JPG|neva\/curated-[0-9]{2}\.webp))$/i;
           if(!Array.isArray(value)||!value.length||!value.every((v:unknown)=>typeof v==='string'&&safe.test(v)))return;
           photos=value;opener=button;
            dialog.classList.toggle('is-neva',button.dataset.galleryTitle==='На излучине Невы');

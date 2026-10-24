@@ -140,13 +140,13 @@ check(files.premium.includes('if (!endpoint)'), 'Lead form has safe no-endpoint 
 check(files.premium.includes('mailto:'), 'Lead fallback keeps direct human contact');
 
 const primaryNav = files.header.match(/<nav class="nav nav--desktop"[\s\S]*?<\/nav>/)?.[0] || '';
-check(!primaryNav.includes('data-consultant-open') && !files.header.includes('data-source="persistent_launcher"') && !files.header.includes('consultant-launcher--header') && files.home.includes('data-consultant-open') && files.services.includes('data-consultant-open'), 'Owner: no header consultant pill; contextual HOME/services launchers retained');
+check(!primaryNav.includes('data-consultant-open') && !files.header.includes('data-source="persistent_launcher"') && !files.header.includes('consultant-launcher--header') && files.premium.includes('class="consultant-launcher"'), 'Owner: no header consultant pill; one global compact launcher retained');
 check(!files.footer.includes('data-consultant-open') && !files.footer.includes('data-contact-open') && files.footer.includes('mailto:'), 'Footer uses direct human contact without repetitive CTA or consultant menu');
 check(files.lead.includes('data-contact-open'), 'Lead CTA opens modern contact form');
 check(files.contactPage.includes('<ContactForm'), 'Contact page includes semantic form');
-check(files.home.includes('data-consultant-open') && files.home.includes('data-contact-open'), 'Homepage close offers consultant and direct contact');
+check(files.premium.includes('class="consultant-launcher"') && files.home.includes('data-contact-open'), 'Homepage retains direct contact plus the single global assistant');
 check(files.ready.includes('projectMail') && files.ready.includes('href={projectMail}') && files.header.includes('data-contact-open'), 'Ready-project route offers direct mail and header contact without repetitive CTAs');
-check(files.notReady.includes('data-contact-open') && files.notReady.includes('data-consultant-open'), 'No-project route exposes form and consultant');
+check(files.notReady.includes('data-contact-open') && files.premium.includes('class="consultant-launcher"'), 'No-project route exposes form and consultant');
 
 check(files.airflow.includes('airflow-header-trace__route--supply'), 'AIRFLOW TRACE supply route preserved');
 check(files.airflow.includes('airflow-header-trace__route--exhaust'), 'AIRFLOW TRACE exhaust route preserved');
@@ -243,11 +243,11 @@ for(const p of ['evidence/cafe/owner-cover-v43.webp']){
   const stat=await fs.stat(path.join(root,'apps/web/public',p)).catch(()=>null);
   check(Boolean(stat?.isFile() && stat.size>20000), 'Source-valid Services evidence asset exists: '+p);
 }
-check(files.home.includes('class="home-consultant-inline"') &&
-      files.services.includes('class="services-consultant-inline"') &&
-      !files.css.includes('.home-consultant-inline,.services-consultant-inline{display:none!important}') &&
-      !files.header.includes('data-source="persistent_launcher"'),
-      'Mobile consultant access stays in both contextual HOME/services links without a persistent header button');
+check(!files.header.includes('data-consultant-open') &&
+      !files.home.includes('data-consultant-open') && !files.services.includes('data-consultant-open') &&
+      (files.premium.match(/<button[^>]+class="consultant-launcher"/g)||[]).length===1 &&
+      files.artCss.includes('.consultant-launcher{position:fixed'),
+      'Latest Owner: one compact floating assistant; no header, mobile-menu or inline duplicate');
 
 const heroFigure = files.home.match(/<figure class="hero-engineering">([\s\S]*?)<\/figure>/)?.[1] ?? '';
 const caseSection = files.home.match(/<section class="case-feature"[\s\S]*?<\/section>/)?.[0] ?? '';
@@ -329,7 +329,7 @@ check(polisanMediaSection.includes('    media:[') &&
       'Owner Polisan: chosen exterior case cover with authentic roof photos');
 check(portfolioSource.includes('id="featured-case-title">На излучине Невы') &&
       portfolioSource.includes('{cases.map((item) => (') &&
-      portfolioSource.includes("archiveCases.filter(item => item.index !== '09' && item.index !== '14')") &&
+      portfolioSource.includes("archiveCases.filter(item => item.index !== '14')") &&
       portfolioSource.includes('href="/blog/detail/kak-my-sdali-7-domov/"') &&
       portfolioSource.includes('class="portfolio-sport"') &&
       portfolioSource.includes("if(addedNevaPhotos.length!==6)"),
@@ -366,6 +366,7 @@ check(verifiedBitrix.articles.every(article=>article.original_media_paths.every(
   'Nine exact article images and schemas route to recovered assets');
 check(p0Actual.includes('p0-source-photo-gallery') && casesActual.includes('case-gallery__verified-originals'),
   'Original photos exposed in native article and case galleries rather than omitted');
+check(createHash('sha256').update(await fs.readFile(path.join(root,'apps/web/public/evidence/residential/neva/IMG_7571.JPG'))).digest('hex')==='f83228bf67af248c14a5170d442ec7fff290297d6c16b2c1860e8d0c1469779e','D-057: maximum-resolution Neva original must be byte-exact');
 const result = {
   generated_at: new Date().toISOString(),
   verdict: failures.length ? 'FAIL' : 'PASS',
