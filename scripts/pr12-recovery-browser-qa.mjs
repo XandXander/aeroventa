@@ -81,6 +81,7 @@ try {
    if(['/portfolio/','/blog/','/news/'].includes(route)&&!result.images.some(i=>i.top<height-120&&i.bottom>result.header.bottom+100))report.issues.push({type:'OWNER_INDEX_WITHOUT_VISIBLE_PHOTOGRAPHY',route,width,height,result});
    if(route==='/portfolio/'&&result.nevaFirst&&width<=760&&Math.abs(result.nevaFirst.bottom-height)>4)report.issues.push({type:'OWNER_NEVA_FIRST_COMPOSITION',route,width,height,result});
    const screenshot='FIRST_VIEW_'+slug(route)+'__'+width+'x'+height+'.jpg';await page.screenshot({path:path.join(output,screenshot),type:'jpeg',quality:82});report.first_views.push({route,width,height,screenshot,...result});
+   if(route==='/portfolio/'&&width<=760){const collision=await page.evaluate(()=>{const a=document.querySelector('.av-portfolio-feature__secondary').getBoundingClientRect(),b=document.querySelector('.av-portfolio-feature__facts').getBoundingClientRect();return Math.min(a.right,b.right)-Math.max(a.left,b.left)>1&&Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top)>1;});if(collision)report.issues.push({type:'OWNER_NEVA_FACTS_OVERLAP_PHOTO',route,width,height});}
   }
   await page.setViewportSize({width:1440,height:900});await page.goto(origin+'/portfolio/',{waitUntil:'networkidle'});
   const links=await page.locator('.portfolio-grid>.portfolio-card').evaluateAll(nodes=>nodes.map(n=>({href:n.getAttribute('href'),image:n.querySelector('img')?.getAttribute('src')})));
@@ -251,7 +252,7 @@ try {
  }
  if(['all','interactions'].includes(phase)) {
   for(const width of [320,390,768,1440])for(const [trigger,selector,label] of [
-   ['.conversion-close [data-consultant-open]','#aeroventa-consultant-dialog','consultant'],
+   ['.consultant-launcher','#aeroventa-consultant-dialog','consultant'],
    ['[data-project-open]','#aeroventa-project-dialog','project'],
    ['.home-actions [data-contact-open]','[data-contact-dialog]','contact']
   ])await scenario('DIALOG_'+label,label==='project'?'/montazh-po-proektu/':'/',width,width>1000?650:780,async()=>{
@@ -382,7 +383,8 @@ try {
   });
   await scenario('TEXT_ZOOM_200_PERCENT','/',390,844,async()=>{
    await page.addStyleTag({content:'html{font-size:200%}'});await settle();
-   const width=await page.evaluate(()=>document.documentElement.scrollWidth);expect(width<=391,'Text zoom causes horizontal overflow: '+width);
+   const zoom=await page.evaluate(()=>({width:document.documentElement.scrollWidth,overflow:[...document.querySelectorAll('main *,footer *')].map(e=>({selector:e.tagName.toLowerCase()+'.'+e.className,box:e.getBoundingClientRect()})).filter(x=>x.box.width>0&&(x.box.right>innerWidth+1||x.box.left< -1)).slice(0,20).map(x=>({selector:x.selector,left:x.box.left,right:x.box.right,width:x.box.width}))}));
+   const width=zoom.width;if(width>391)console.log('TEXT_ZOOM_OVERFLOW_DETAIL',JSON.stringify(zoom));expect(width<=391,'Text zoom causes horizontal overflow: '+width);
    await page.screenshot({path:path.join(output,'home-text-zoom-200.jpg'),type:'jpeg',quality:85,fullPage:true});return {scrollWidth:width};
   });
   await scenario('ENTRY_FIRST_REPEAT_REDUCED','/',1440,900,async()=>{

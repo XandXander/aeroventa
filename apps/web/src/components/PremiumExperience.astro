@@ -182,14 +182,23 @@ const { pagePath = '' } = Astro.props;
       const crossesRail = (b:DOMRect) => b.width > 0 && b.height > 0 &&
         b.right > base.left - 2 && b.left < base.right + 2 &&
         b.bottom > bottomRegion && b.top < base.bottom + 2;
-      const controls = [...document.querySelectorAll<HTMLElement>('main a,main button,main input,main textarea,main select,.site-footer a')]
-        .filter(el => getComputedStyle(el).visibility !== 'hidden')
+      // Reserve actual text and action targets; a linked photograph's large
+      // empty frame is not a text/action rectangle.
+      const actionable = [...document.querySelectorAll<HTMLElement>('main button,main input,main textarea,main select,main .button,main [data-contact-open],main [data-project-open]')]
+        .filter(el => !el.querySelector('img') && getComputedStyle(el).visibility !== 'hidden')
         .map(el => el.getBoundingClientRect()).filter(crossesRail);
-      // Text blocks include empty space: protect actual line rectangles instead.
-      const text = [...document.querySelectorAll<HTMLElement>('main p,main h1,main h2,main h3,main label')]
+      const text = [...document.querySelectorAll<HTMLElement>('main a,main p,main h1,main h2,main h3,main label,main figcaption,main dt,main dd,.site-footer a')]
         .filter(el => getComputedStyle(el).visibility !== 'hidden' && crossesRail(el.getBoundingClientRect()))
-        .flatMap(el => { const range = document.createRange(); range.selectNodeContents(el); return [...range.getClientRects()]; });
-      const obstacles = [...controls,...text];
+        .flatMap(el => {
+          const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), rects:DOMRect[] = [];
+          for(let node = walker.nextNode(); node; node = walker.nextNode()){
+            if(!node.textContent?.trim()) continue;
+            const range = document.createRange(); range.selectNodeContents(node);
+            rects.push(...range.getClientRects());
+          }
+          return rects;
+        });
+      const obstacles = [...actionable,...text];
       const slots = Array.from({length:Math.floor(Math.min(280,innerHeight*.44)/8)+1},(_,i)=>i*8);
       const rise = slots.find(offset => !obstacles.some(b =>
         b.left < base.right + 2 && b.right > base.left - 2 && b.top < base.bottom - offset + 2 && b.bottom > base.top - offset - 2));

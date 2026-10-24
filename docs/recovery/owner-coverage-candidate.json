@@ -3050,6 +3050,17 @@
       "correction": "Содержательный HTML, реальные факты/фото/ответы, доступные кнопки/формы, URL/301/410/canonical/schema и noindex защищённой fixture-сборки. Публичная индексация/доставка/runtime не объявлены проверенными.",
       "evidence_required": "Existing migration validators, browser interactions, built HTML",
       "candidate_status": "CANDIDATE_REQUIRES_EXACT_SHA_CI_AND_OWNER_ACCEPTANCE"
+    },
+    {
+      "id": "SELF-OWNER24-BROWSER",
+      "source": "Exact d6cddd9f Chromium images and interactions",
+      "route": "HOME / portfolio / news / sitewide",
+      "section": "Actual first views, text enlargement and single helper",
+      "requirement_exact": "No text over photographs, reachable small assistant, legible enlarged text and complete action targets",
+      "root_cause": "Desktop named grid areas leaked into a nested mobile grid; linked image rectangles over-suppressed the launcher; one secondary action was too short; headline min-font exceeded narrow enlarged text measure",
+      "correction": "Mobile photo/facts receive independent grid cells; launcher reserves text and action rectangles; HOME secondary target is44px and enlarged headline wraps; historical index has a source-backed PONSSE lead. No legacy route, media or runtime contract changed.",
+      "candidate_status": "CANDIDATE_REQUIRES_EXACT_SHA_CI_AND_OWNER_ACCEPTANCE",
+      "evidence_required": "Current owner first views, source-bound browser interactions and raster contrast; all full-page HTML frames"
     }
   ],
   "current_base": "6c1c564743030c14f98500be9ed2ee008da93f9b",

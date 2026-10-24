@@ -134,6 +134,7 @@ jobs:
             console.log('AV_OWNER_FIRST_END '+file);
           }
           if(fs.existsSync(root+'/report.json'))console.log('AV_OWNER_CONTRACT_REPORT '+fs.readFileSync(root+'/report.json','utf8'));
+          for(const f of['PR12_EXACT_QA/report.json','PR12_EXACT_SURFACES/report.json'])if(fs.existsSync(f)){const r=JSON.parse(fs.readFileSync(f,'utf8'));console.log('AV_EXACT_DIAGNOSTICS '+JSON.stringify({phase:r.phase,source_sha:r.source_sha,source_dirty:r.source_dirty,issues:r.issues,failed_checks:r.checks.filter(c=>!c.pass)}));}
           JS
       - name: Emit complete changed page families for executor visual inspection
         if: always()
@@ -143,7 +144,7 @@ jobs:
           import fs from 'node:fs';
           import sharp from 'sharp';
           const root='PR12_EXACT_QA';
-          const routes=['services','montazh-ventiliacii','montazh-po-proektu','obekt-bez-gotovogo-proekta','blog','contact','obekty','obekty__kvartiry-i-doma','obekty__proizvodstvo','obekty__sklady','obekty__restorany-i-kafe','portfolio__obekt__na-izluchine-nevy'];
+          const routes=['news','faq','services','montazh-ventiliacii','montazh-po-proektu','obekt-bez-gotovogo-proekta','blog','contact','obekty','obekty__kvartiry-i-doma','obekty__proizvodstvo','obekty__sklady','obekty__restorany-i-kafe','portfolio__obekt__na-izluchine-nevy'];
           for(const route of routes)for(const width of[1440,390]){
             const name=route+'__'+width+'.jpg',file=root+'/'+name;
             if(!fs.existsSync(file))continue;

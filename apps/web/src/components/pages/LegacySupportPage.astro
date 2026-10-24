@@ -166,15 +166,20 @@ const cardPhotos: Record<string, string> = {
   '/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/':'/upload/medialibrary/fb3/fb3d693282a8085971dd4e2fe87bf28e.jpg',
   '/blog/detail/gorizontalnoe-almaznoe-burenie/':'/upload/medialibrary/e1c/e1cd51110183f9c6b2e704b70664eba1.jpg',
 };
+const isHistoryIndex = content.path === '/news/';
 const spec=specs[content.path];
 if(!spec) throw new Error('Support spec missing: '+content.path);
 ---
 
-<article class="support-page av-page av-support">
+<article class:list={["support-page av-page av-support", {"av-support--history": isHistoryIndex}]}>
   <header class="support-hero">
     <div class="home-shell support-hero__grid">
       <div><p class="home-kicker">{spec.eyebrow}</p><h1>{content.h1}</h1></div>
-      <div><p class="support-hero__lede">{spec.lede}</p>{!originalArticle && <div class="support-state"><span>{spec.state}</span><p>{spec.stateText}</p></div>}</div>
+      <div><p class="support-hero__lede">{spec.lede}</p>{!originalArticle && !isHistoryIndex && <div class="support-state"><span>{spec.state}</span><p>{spec.stateText}</p></div>}</div>
+      {isHistoryIndex && <a class="support-history-feature" href="/blog/detail/montazh-ventilyatsii-v-karelii/">
+        <figure><img src="/evidence/karelia/owner-cover-v43.webp" width="1200" height="800" alt="Сервисно-образовательный центр PONSSE в Питкяранте — выполненный объект AEROVENTA" loading="eager" decoding="async" /></figure>
+        <div><p class="home-kicker">Из истории компании · 2022</p><h2>Монтаж вентиляции в Карелии</h2><p>Сервисно-образовательный центр PONSSE в Питкяранте. Фотографии работ и благодарственное письмо заказчика.</p><b>Читать историю объекта →</b></div>
+      </a>}
     </div>
   </header>
 
@@ -219,6 +224,14 @@ if(!spec) throw new Error('Support spec missing: '+content.path);
 </article>
 
 <style>
+.av-support--history .support-hero__grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:24px 64px;align-items:center;min-height:0}
+.av-support--history .support-hero__grid>div{grid-column:1;min-width:0}
+.av-support--history .support-hero__grid>div:first-child{align-self:end}.av-support--history .support-hero__grid>div:nth-child(2){align-self:start}
+.support-history-feature{grid-column:2;grid-row:1/3;min-width:0;display:block;text-decoration:none;color:inherit}
+.support-history-feature figure{margin:0 0 20px}.support-history-feature img{display:block;width:100%;height:clamp(180px,34svh,340px);object-fit:contain}
+.support-history-feature h2{font-size:clamp(1.3rem,2.2vw,2rem);line-height:1.2;margin:10px 0 12px}.support-history-feature p:not(.home-kicker){font-size:.9rem;line-height:1.6;max-width:53ch}.support-history-feature b{display:inline-block;margin-top:14px;font-size:.85rem;font-weight:550}.support-history-feature:focus-visible{outline:2px solid #9d4329;outline-offset:5px}
+@media(max-width:760px){.av-support--history .support-hero__grid{display:block}.av-support--history .support-hero{padding-block:26px 34px}.av-support--history .support-hero__lede{margin-block:18px 26px}.support-history-feature{margin-top:26px}.support-history-feature figure{margin-bottom:18px}.support-history-feature img{height:clamp(180px,29svh,250px)}.support-history-feature h2{font-size:1.45rem}}
+
 .support-page .support-hero h1{font-size:clamp(2.15rem,4.1vw,3.8rem);line-height:1.12;max-width:24ch}
 .support-original{background:#fff;color:#203a49}
 .support-original>.home-shell{max-width:1180px}
