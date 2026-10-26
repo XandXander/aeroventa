@@ -2814,6 +2814,7 @@ main .av-case .case-detail-hero {
   padding-block: 44px 34px;
   background: #eeefe8;
 }
+.case-detail-hero__opening{display:contents}
 main .av-case .case-detail-hero__grid {
   display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.15fr);
@@ -3174,14 +3175,11 @@ main .av-case .ponsse-recognition__signer {
   }
 }
 @media (max-width: 760px) {
-  main .av-case .case-detail-hero {
-    padding-block: 28px;
-  }
-  main .av-case .case-detail-hero__grid {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto auto;
-    gap: 22px;
-  }
+  main .av-case .case-detail-hero {padding-block:0}
+  main .av-case .case-detail-hero__grid {display:block}
+  main .av-case .case-detail-hero__opening{min-height:calc(100svh - var(--av-entry-header));display:flex;flex-direction:column;justify-content:center;gap:22px;padding-block:28px}
+  main .av-case .av-case__facts{margin:0;padding-block:24px 28px}
+
   main .av-case .case-detail-hero__copy {
     grid-area: 1/1;
   }
@@ -5088,3 +5086,9 @@ html:has(.mobile-menu[open]) .consultant-launcher,body:has(dialog[open]) .consul
 
 /* Portrait photographs remain whole within a deliberate opening measure. */
 @media(max-width:1050px){main .av-type{--av-object-media-max:min(42svh,360px)}}
+
+@media(max-width:760px) and (max-height:720px){
+ main .av-case .case-detail-hero__opening{gap:12px;padding-block:12px}
+ main .av-case .case-detail-hero__location{margin-bottom:0}
+ main .av-case .case-detail-hero__photograph img{max-height:24svh;width:100%;object-fit:contain}
+}

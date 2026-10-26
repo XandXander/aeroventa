@@ -3102,7 +3102,7 @@
       "route": "all existing routes",
       "section": "Полнота начальных состояний",
       "root_cause": "Remaining verified scope after e4f1e8b5",
-      "correction": "100начальных снимков50маршрутов плюс48дополнительных размеров12ключевых маршрутов; отдельный ручной art review, без автоматического художественногоPASS.",
+      "correction": "100начальных снимков50маршрутов плюс54дополнительных состояний:12ключевых маршрутов и шесть кейсов на375×667; отдельный ручной art review, без автоматического художественногоPASS.",
       "candidate_status": "REQUIRES_EXACT_SHA_BROWSER_AND_OWNER_ACCEPTANCE",
       "evidence_required": "Current source-bound initial/full page frames and affected interactions; Owner artistic approval separate"
     }

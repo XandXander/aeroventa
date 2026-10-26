@@ -514,6 +514,7 @@ const [heroWidth,heroHeight]=heroDimensions[content.path];
 <article class:list={['evidence-case','av-page','av-case',heroWidth<=680&&'av-case--small-cover',isLeont && 'evidence-case--leont',(isPolisan || isPonsse) && 'evidence-case--industrial',!isPolisan && !isPonsse && !isLeont && 'evidence-case--interior']}>
   <header class="case-detail-hero">
     <div class="home-shell case-detail-hero__grid">
+      <div class="case-detail-hero__opening">
       <div class="case-detail-hero__copy">
         <p class="home-kicker">{spec.eyebrow}</p>
         <h1>{content.h1}</h1>
@@ -528,6 +529,7 @@ const [heroWidth,heroHeight]=heroDimensions[content.path];
         <figcaption>{spec.media[0][2]}</figcaption>
       </figure>
       <div class="av-case__introduction"><p class="case-detail-hero__lede">{spec.lede}</p><div class="av-case__actions"><button class="button button--primary" type="button" data-contact-open data-source="evidence_case" data-project-status="unknown">Обсудить ваш объект →</button><a class="av-link" href="/portfolio/">Все объекты</a></div></div>
+      </div>
       <dl class="av-case__facts" aria-label={documentary.facts}>{spec.facts.map(([label,value])=><div><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
     </div>
   </header>
