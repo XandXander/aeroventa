@@ -61,6 +61,16 @@ const routes = [
 ];
 await fs.mkdir(root, { recursive: true });
 const report = { build_mode: 'fixture', local_http_only: true, routes: routes.length, viewports: views.map(x => x[0]), pages: [], fail: [], owner_media: [] };
+// The lightbox uses a compiled responsive FIT image; compare source identity
+// against only the variants of its clicked source image, never an arbitrary WebP.
+const viewerMatchesSource = async (trigger, original, shown) => {
+  if (!original || !shown) return false;
+  const pathname = x => new URL(x, baseUrl).pathname;
+  if (pathname(original) === pathname(shown)) return true;
+  const srcset = await trigger.locator('img').first().getAttribute('srcset') || '';
+  return srcset.split(',').map(part => part.trim().split(/\s+/)[0])
+    .filter(Boolean).some(variant => pathname(variant) === pathname(shown));
+};
 for (const [name, file, expected] of [
   ['services_owner_640','apps/web/public/evidence/hero/services-owner-editorial-640.webp','f86045ef038c95c93ed8c7968c19a149cc1b822b0495fa94a9b40da43c0a3e6f'],
   ['services_owner_1100','apps/web/public/evidence/hero/services-owner-editorial-1100.webp','e9e9e51c2a5b390f94d45880082a8fc63a34165c3e575677c809889d998d4aa5'],
@@ -485,7 +495,7 @@ try {
           const viewer = page.locator('#case-photo-viewer');
           await viewer.waitFor({state:'visible'});
           const shown = await viewer.locator('[data-photo-large]').getAttribute('src');
-          if (shown !== firstSrc) report.fail.push({route,view,reason:'Case viewer selected image mismatch',firstSrc,shown});
+          if (!(await viewerMatchesSource(firstPhoto,firstSrc,shown))) report.fail.push({route,view,reason:'Case viewer selected image mismatch',firstSrc,shown});
           await viewer.locator('[data-photo-next]').click();
           const secondSrc = await viewer.locator('[data-photo-large]').getAttribute('src');
           const clean = await viewer.locator('button').count() === 3 &&
@@ -852,9 +862,10 @@ try {
       await page.keyboard.press('Escape');
       await lightbox.waitFor({state:'hidden'});
       const nevaRestored=await nevaFirst.evaluate(el=>el===document.activeElement);
+      const nevaFirstMatch=await viewerMatchesSource(nevaFirst,'/evidence/residential/neva/curated-01.webp',nevaBefore);
+      const nevaSecondMatch=await viewerMatchesSource(page.locator('.owner-case__photos button').nth(1),'/evidence/residential/neva/curated-02.webp',nevaAfter);
       if(!authentic||!before||!after||before===after||secondCount!=='2 из 12'||!decode||!restored||
-         !six||nevaBefore!=='/evidence/residential/neva/curated-01.webp'||
-         nevaAfter!=='/evidence/residential/neva/curated-02.webp'||nevaCounter!=='2 из 6'||!nevaRestored){
+         !six||!nevaFirstMatch||!nevaSecondMatch||nevaCounter!=='2 из 6'||!nevaRestored){
         report.fail.push({reason:'Named-object real photo viewer / first click / keyboard / focus',authentic,before,after,secondCount,decode,restored,six,nevaBefore,nevaAfter,nevaCounter,nevaRestored});
       }
     }catch(error){report.fail.push({reason:'Named-case real viewer interaction exception',error:String(error)})}
@@ -1146,7 +1157,7 @@ try {
       await page.keyboard.press('Escape');
       const closed=!(await dialog.evaluate(el=>el.open));
       const focused=await opener.evaluate(el=>document.activeElement===el);
-      if(!open||!closed||!focused||src!=='/evidence/residential/neva/IMG_7571.JPG')
+      if(!open||!closed||!focused||!(await viewerMatchesSource(opener,'/evidence/residential/neva/IMG_7571.JPG',src)))
         report.fail.push({reason:'Neva native-size lightbox/focus',width,open,closed,focused,src});
     }catch(error){report.fail.push({reason:'Neva lightbox interaction exception',width,error:String(error)})}
     finally{await ctx.close()}
