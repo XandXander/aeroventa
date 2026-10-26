@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import ObjectEditorialPage from '@/components/pages/ObjectEditorialPage.astro';
+import ObjectDetailPage from '@/components/pages/ObjectDetailPage.astro';
+import photos from '../../../../../migration/owner-warehouse-photo-provenance-2026-10-22.json';
 import type { ContentRecord } from '@/lib/types';
 const content: ContentRecord = {
   path: "/obekty/magaziny-i-sklady/",title: "Монтаж вентиляции магазинов и складов — AEROVENTA",h1:"Монтаж вентиляции магазинов и складов",
@@ -10,16 +11,18 @@ const content: ContentRecord = {
   seo_description:"При оценке монтажа на торговых и складских объектах важны высота помещений, условия доступа, график работы площадки и проектные решения.",
   excerpt:'',body_html:'',body_html_safety_status:'not_applicable',owner_approved_at:null
 };
-const detail={
-  "eyebrow": "Торговые и складские объекты",
-  "lead": "При оценке монтажа на торговых и складских объектах важны высота помещений, условия доступа, график работы площадки и проектные решения.",
-  "proofTitle": "Фармацевтический склад · Санкт-Петербург",
-  "photo": "/evidence/warehouses/farm-spb/01.webp",
-  "photoAlt": "Фармацевтический склад в Санкт-Петербурге — внешний вид здания",
-  "proofText": "Порядок монтажа зависит от проекта, режима работы склада или магазина и возможности доставки оборудования. ",
-  "link": "/obekty/sklady/",
-  "linkLabel": "Склады: условия и фотографии",
-  "description": "Для предметной оценки нужны планы, спецификация, монтажные зоны, доступ, особенности хранения или торговой работы во время монтажа."
-};
+const galleryFor=(slug:string)=>photos.filter(item=>item.path.includes('/warehouses/'+slug+'/')).map(item=>item.path.replace('apps/web/public',''));
+const avers=galleryFor('avers-razbegaevo'),farm=galleryFor('farm-spb');
+if(avers.length!==5||farm.length!==7)throw Error('Owner warehouse originals must remain complete');
+const evidence=[
+ {title:'Фарм · Санкт-Петербург',meta:'Складской объект · Санкт-Петербург',detail:'Здание площадки и фотографии инженерных коммуникаций.',href:'#object-photo-dialog',image:farm[0],imageAlt:'Здание объекта Фарм в Санкт-Петербурге',gallery:farm},
+ {title:'EUROSPAR · Васильевский остров',meta:'Торговый объект · Санкт-Петербург',detail:'Магазин на Васильевском острове: фотографии объекта и выполненных работ.',href:'/portfolio/obekt/eurospar-vo/',image:'/evidence/owner-portfolio/eurospar-vo/cover.webp',imageAlt:'Магазин EUROSPAR на Васильевском острове'}
+];
+const constraints:[string,string,string][]=[['01','Режим работы','Монтаж согласуют с эксплуатацией торговой или складской площадки.'],['02','Высота','До начала работ уточняют доступ к монтажным зонам.'],['03','Логистика','Места хранения и перемещение материалов учитывают в последовательности работ.'],['04','Смежные системы','Рабочие трассы и оборудование сверяют с документацией.']];
+const drivers=['Рабочие чертежи и спецификация','Условия доступа к монтажным зонам','Рабочий режим объекта','Оборудование и последовательность работ'];
+const questions=['Какие документы передать для расчёта монтажа?','Когда доступна площадка?','Что согласовать со смежными исполнителями?'];
+
 ---
-<BaseLayout content={content}><ObjectEditorialPage content={content} {...detail}/></BaseLayout>
+<BaseLayout content={content}>
+ <ObjectDetailPage content={content} eyebrow="Магазины и склады" lede="При оценке монтажа на торговых и складских объектах важны высота помещений, условия доступа, график работы площадки и проектные решения." constraints={constraints} drivers={drivers} evidence={evidence} questions={questions} proofTitle="Торговые и складские объекты" heroMedia={{src:avers[0],alt:'Здание складского объекта Аверс в Разбегаево',caption:'Аверс · Разбегаево',gallery:avers,nativeWidth:1024,nativeHeight:768}}/>
+</BaseLayout>

@@ -10,7 +10,10 @@ const content: ContentRecord = {
  excerpt:'',body_html:'',body_html_safety_status:'not_applicable',owner_approved_at:null
 };
 const constraints:[string,string,string][] = [["01","Режим производства","Очередность работ учитывает условия технологических участков."],["02","Трассы","Рабочие чертежи и спецификация определяют состав."],["03","Доступ","Монтажные зоны и оборудование согласовывают заранее."],["04","Сроки","Работы координируют со смежными подрядчиками."]];
-const evidence = [{"title":"НТФФ «Полисан»","meta":"Санкт-Петербург · фармацевтическое производство","detail":"Реальный кейс монтажа приточно-вытяжной вентиляции и оборудования.","href":"/blog/detail/ntff-polisan/","image":"/evidence/polisan/owner-cover-v43.webp","imageAlt":"Фармацевтический объект «Полисан»"},{"title":"Химпром","meta":"Промышленный объект","detail":"Фотографии производственного помещения и инженерных коммуникаций.","href":"/portfolio/obekt/himprom/","image":"/evidence/owner-portfolio/himprom/03.webp","imageAlt":"Промышленная площадка «Химпром»"}];
+const evidence = [
+ {title:'Химпром',meta:'Промышленный объект · Санкт-Петербург',detail:'Фотографии производственного помещения и инженерных коммуникаций.',href:'/portfolio/obekt/himprom/',image:'/evidence/owner-portfolio/himprom/03.webp',imageAlt:'Производственное помещение объекта «Химпром»'},
+ {title:'Новатех',meta:'Производственный объект · Московская область',detail:'Фотографии площадки, оборудования и монтажных узлов.',href:'/portfolio/obekt/novatech/',image:'/evidence/owner-portfolio/novatech/cover.webp',imageAlt:'Производственная площадка «Новатех»'}
+];
 const drivers = ['Рабочая проектная документация и спецификация','Монтажные зоны и условия доступа','Стадия объекта и смежные инженерные системы','Оборудование, трассы и рабочие сроки'];
 const questions = ['Какие документы передать для расчёта монтажа?','Что согласовать до начала работ?','Какие ограничения объекта влияют на организацию монтажа?'];
 ---
@@ -18,5 +21,5 @@ const questions = ['Какие документы передать для рас
  <ObjectDetailPage content={content} eyebrow="Производственные объекты"
   lede="Монтаж по проекту с учётом рабочего режима площадки, доступа к оборудованию и требований смежных систем." constraints={constraints} drivers={drivers} evidence={evidence} questions={questions}
   proofTitle="Вентиляция на производственных площадках"
-  heroMedia={{src:'/evidence/polisan/owner-cover-v43.webp',nativeWidth:1600,nativeHeight:903,alt:'Здание НТФФ «Полисан» в Санкт-Петербурге',caption:'НТФФ «Полисан» · фармацевтическое производство'}}/>
+  heroMedia={{src:'/evidence/polisan/owner-cover-v43.webp',nativeWidth:1600,nativeHeight:903,alt:'Здание НТФФ «Полисан» в Санкт-Петербурге',caption:'НТФФ «Полисан» · фармацевтическое производство',href:'/blog/detail/ntff-polisan/'}}/>
 </BaseLayout>

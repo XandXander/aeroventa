@@ -52,10 +52,18 @@ for(const file of names.filter(x=>x.endsWith('.html'))){
   if(!choices?.length)return tag;
   const sets=[...choices.map(v=>v.url+' '+v.width+'w'),src+' '+m.width+'w'].join(', ');
   const hero=/\b(?:fetchpriority=["']high["']|class=["'][^"']*(?:hero|cover)[^"']*["'])/i.test(tag);
-  const sizes=hero?'100vw':'(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 40vw';
+  const declaredSizes=tag.match(/\bsizes=(["'])([^"']+)\1/i)?.[2];
+  const sizes=declaredSizes||(hero?'100vw':'(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 40vw');
   updated++;
-  return tag.slice(0,-1)+' srcset="'+sets+'" sizes="'+sizes+'">';
+  return tag.slice(0,-1)+' srcset="'+sets+'"'+(declaredSizes?'':' sizes="'+sizes+'"')+'>';
  });
+ if(html.includes('<!-- AEROVENTA_OBJECT_PHOTO_DELIVERY -->')){
+  const delivery={};
+  for(const match of html.matchAll(/\/evidence\/[^\s"'<>;&]+?\.(?:webp|png|jpe?g)/gi)){
+   const src=match[0],m=sourceInfo.get(src);if(m)delivery[src]={width:m.width,height:m.height,variants:variants.get(src)||[]};
+  }
+  html=html.replace('<!-- AEROVENTA_OBJECT_PHOTO_DELIVERY -->','<script id="object-photo-delivery" type="application/json">'+JSON.stringify(delivery).replaceAll('<','\\u003c')+'</script>');
+ }
  await fs.writeFile(file,html);
 }
 audit.sort((a,b)=>a.asset.localeCompare(b.asset));

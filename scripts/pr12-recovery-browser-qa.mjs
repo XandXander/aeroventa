@@ -98,7 +98,7 @@ try {
    for(const a of facts.anchors){if(!a.href||/^(?:mailto:|tel:|javascript:)/.test(a.href))continue;const u=new URL(a.href,origin+route);if(u.origin!==origin)continue;if(!await resolveFile(u.pathname))missing.push(a.href);const target=u.pathname.endsWith('/')?u.pathname:u.pathname;if(incoming.has(target)&&target!==route)incoming.get(target).add(route);if(/\.(?:jpe?g|webp|png)$/i.test(u.pathname)&&!a.photo&&!a.download&&!a.gallery)rawLinks.push(a.href);if(route==='/obekty/sklady/'&&a.gallery&&!u.hash)rawLinks.push(a.href);}
    if(missing.length)report.issues.push({type:'LINK_OR_MEDIA_MISSING',route,missing:[...new Set(missing)]});
    if(rawLinks.length)report.issues.push({type:'UNLABELLED_RAW_IMAGE_LINK',route,links:rawLinks});
-   for(const c of facts.cards){if(!c.href||c.proof||!covers[c.href])continue;if(c.src!==covers[c.href])report.issues.push({type:'INCORRECT_PUBLIC_OBJECT_COVER',route,...c,expected:covers[c.href]});}
+   for(const c of facts.cards){if(!c.href||c.proof||!covers[c.href]||(route==='/obekty/restorany-i-kafe/'&&c.href==='/blog/detail/kafe-rimskogo-korsakova-3/'&&c.src==='/evidence/cafe/owner-interior-v43.webp'))continue;if(c.src!==covers[c.href])report.issues.push({type:'INCORRECT_PUBLIC_OBJECT_COVER',route,...c,expected:covers[c.href]});}
    if(covers[route]&&route.startsWith('/portfolio/obekt/')&&facts.hero!==covers[route])report.issues.push({type:'CASE_COVER_MISMATCH',route,actual:facts.hero,expected:covers[route]});
    const sources=facts.cards.filter(c=>!c.proof&&Object.values(covers).includes(c.src)).map(c=>c.src);
    // Include an unlinked HERO in the same comparison as linked public cards.
@@ -109,16 +109,38 @@ try {
   }
   report.orphans=[...incoming].filter(([r,links])=>r!=='/404.html'&&r!=='/'&&!links.size).map(([r])=>r);
   if(report.orphans.length)report.issues.push({type:'ORPHAN_HTML_ROUTES',routes:report.orphans});
-  const affected=['/portfolio/','/obekty/kvartiry-i-doma/','/obekty/novostroyki/','/obekty/proizvodstvo/','/obekty/sklady/','/obekty/ofisy-i-kommerciya/','/obekty/ofisy-i-kommercheskie-pomeshcheniya/','/montazh-ventiliacii/','/montazh-po-proektu/','/portfolio/obekt/novatech/','/about/','/news/','/blog/poleznye-stati/'];
+  if(process.env.RECOVERY_QA_OWNER_CONTRACT==='D061_D065'){
+   const map=[
+    {route:'/obekty/kvartiry-i-doma/',hero:'/evidence/residential/neva/IMG_7571.JPG',subjects:['Маршала Жукова','Митроф'],images:['/evidence/zhukov/owner-cover-v43.webp',null]},
+    {route:'/obekty/restorany-i-kafe/',hero:'/evidence/cafe/owner-interior-v43.webp',subjects:['Леонтьевский','Кафе'],images:['/evidence/leont/owner-cover-v43.webp','/evidence/cafe/owner-cover-v43.webp']},
+    {route:'/obekty/ofisy-i-kommerciya/',hero:'/evidence/owner-portfolio/apart-hotel/cover.webp',subjects:['Фитнес','Офис в Леонтьевском'],images:[null,null]},
+    {route:'/obekty/proizvodstvo/',hero:'/evidence/polisan/owner-cover-v43.webp',subjects:['Химпром','Новатех'],images:['/evidence/owner-portfolio/himprom/03.webp','/evidence/owner-portfolio/novatech/cover.webp']},
+    {route:'/obekty/novostroyki/',hero:'/evidence/owner-portfolio/akvilon-yanino/cover.webp',subjects:['7 PARK','На излучине Невы'],images:['/evidence/7park/object-exterior-day.jpg','/evidence/residential/neva/IMG_7571.JPG']},
+    {route:'/obekty/magaziny-i-sklady/',hero:'/evidence/warehouses/avers-razbegaevo/01.webp',subjects:['Фарм','EUROSPAR'],images:['/evidence/warehouses/farm-spb/01.webp','/evidence/owner-portfolio/eurospar-vo/cover.webp']}
+   ];
+   report.owner_scope={contract:'D-061–D-065',required:18,checks:[],card_counts:[],complete:false};
+   for(const item of map){await page.goto(origin+item.route,{waitUntil:'load'});const actual=await page.evaluate(()=>({hero:document.querySelector('.object-detail__hero-media img')?.getAttribute('src'),cards:[...document.querySelectorAll('.object-evidence__grid > a,.object-evidence__grid > button')].map(e=>({title:e.querySelector('h3')?.textContent.trim(),image:e.querySelector('img')?.getAttribute('src'),href:e.getAttribute('href'),gallery:e.getAttribute('data-object-gallery')}))}));
+    report.owner_scope.checks.push({route:item.route,placement:'HERO',expected:item.hero,actual:actual.hero,pass:actual.hero===item.hero});
+    report.owner_scope.card_counts.push({route:item.route,expected:2,actual:actual.cards.length,pass:actual.cards.length===2});
+    item.subjects.forEach((subject,i)=>report.owner_scope.checks.push({route:item.route,placement:'CARD'+(i+1),expected:subject,actual:actual.cards[i]||null,expected_image:item.images[i],pass:Boolean(item.images[i]&&actual.cards[i]?.title?.includes(subject)&&actual.cards[i]?.image===item.images[i])}));
+   }
+   report.owner_scope.complete=report.owner_scope.checks.length===18&&report.owner_scope.checks.every(c=>c.pass)&&report.owner_scope.card_counts.every(c=>c.pass);
+   report.owner_scope.verdict=report.owner_scope.complete?'SOURCE_PLACEMENTS_VERIFIED':'SOURCE_MEDIA_HOLD';
+   console.log('OWNER18_STRICT_CONTRACT',JSON.stringify(report.owner_scope));
+  }
+  let affected=['/portfolio/','/obekty/kvartiry-i-doma/','/obekty/novostroyki/','/obekty/proizvodstvo/','/obekty/sklady/','/obekty/ofisy-i-kommerciya/','/obekty/ofisy-i-kommercheskie-pomeshcheniya/','/montazh-ventiliacii/','/montazh-po-proektu/','/portfolio/obekt/novatech/','/about/','/news/','/blog/poleznye-stati/'];
+  if(report.owner_scope)affected=['/obekty/kvartiry-i-doma/','/obekty/restorany-i-kafe/','/obekty/ofisy-i-kommerciya/','/obekty/proizvodstvo/','/obekty/novostroyki/','/obekty/magaziny-i-sklady/','/obekty/sklady/','/','/blog/detail/kafe-rimskogo-korsakova-3/'];
   if(process.env.RECOVERY_QA_COVER_CAPTURE!=='0')for(const [width,height]of[[1440,900],[390,844]])for(const route of affected){
    await page.setViewportSize({width,height});await page.goto(origin+route,{waitUntil:'load'});await settle();
    const bad=await page.evaluate(()=>({overflow:document.documentElement.scrollWidth-innerWidth,broken:[...document.querySelectorAll('main img')].filter(i=>i.checkVisibility()&&(!i.complete||!i.naturalWidth)).map(i=>i.getAttribute('src'))}));
    if(bad.overflow>1||bad.broken.length)report.issues.push({type:'AFFECTED_COVER_RENDER',route,width,...bad});
+   if(report.owner_scope){await page.addScriptTag({content:axeSource});const violations=await page.evaluate(async()=>{const a=await window.axe.run(document.querySelector('main'),{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa','wcag22aa']}});return a.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)}));});report.accessibility ||= [];report.accessibility.push({route,width,violations});if(violations.length)report.issues.push({type:'AFFECTED_ACCESSIBILITY',route,width,violations});}
+
    await page.evaluate(()=>{if(document.activeElement instanceof HTMLElement)document.activeElement.blur();window.scrollTo(0,0);});
    const screenshot='COVERS_'+slug(route)+'__'+width+'.jpg';
    await page.screenshot({path:path.join(output,screenshot),type:'jpeg',quality:84,fullPage:true,animations:'disabled'});
    report.pages.push({route,width,height,screenshot});
-   const proofTargets={
+   let proofTargets={
     '/portfolio/':[['.portfolio-grid > a[href="/portfolio/obekt/novatech/"]','Новатех · Избранные проекты']],
     '/obekty/kvartiry-i-doma/':[['.object-detail__hero-media','На излучине Невы · ведущий объект'],['.object-evidence__grid > a','Маршала Жукова · связанный кейс']],
     '/obekty/novostroyki/':[['.object-detail__hero-media','Аквилон · ведущий объект'],['.object-evidence__grid > a','7 PARK · связанный кейс']],
@@ -126,12 +148,51 @@ try {
     '/obekty/sklady/':[['.object-detail__hero-media','Аверс · Разбегаево · галерея'],['.object-evidence__grid > a','Фарм · Санкт-Петербург · галерея']],
     '/portfolio/obekt/novatech/':[['.owner-case__hero figure','Новатех · главное фото кейса']]
    };
+   if(report.owner_scope){proofTargets={};if(report.owner_scope.checks.some(c=>c.route===route))proofTargets[route]=[
+    ['.object-detail__hero-media','HERO · '+route],
+    ['.object-evidence__grid > a:nth-child(1)','CARD1 · '+(report.owner_scope.checks.find(c=>c.route===route&&c.placement==='CARD1')?.actual?.title||'SOURCE HOLD')],
+    ['.object-evidence__grid > a:nth-child(2)','CARD2 · '+(report.owner_scope.checks.find(c=>c.route===route&&c.placement==='CARD2')?.actual?.title||'SOURCE HOLD')]
+   ];}
    report.proof_frames ||= [];
-   for(const [selector,label]of proofTargets[route]||[]){const file='PROOF_'+slug(route)+'_'+report.proof_frames.length+'__'+width+'.jpg';await page.locator(selector).first().screenshot({path:path.join(output,file),type:'jpeg',quality:87,animations:'disabled'});report.proof_frames.push({route,width,selector,label,screenshot:file});}
-   if(route==='/obekty/sklady/'){
+   for(const [selector,label]of proofTargets[route]||[]){if(!await page.locator(selector).count())continue;const file='PROOF_'+slug(route)+'_'+report.proof_frames.length+'__'+width+'.jpg';await page.locator(selector).first().screenshot({path:path.join(output,file),type:'jpeg',quality:87,animations:'disabled'});report.proof_frames.push({route,width,selector,label,screenshot:file});}
+   if(report.owner_scope){
+    report.placement_clicks ||= [];
+    for(const placement of report.owner_scope.checks.filter(c=>c.route===route&&c.pass)){
+     const locator=placement.placement==='HERO'?page.locator('.object-detail__hero-media a[href]').first():page.locator('.object-evidence__grid > a').nth(Number(placement.placement.slice(-1))-1);
+     if(!await locator.count()||await locator.getAttribute('data-object-gallery')!==null)continue;
+     const href=await locator.getAttribute('href');if(!href||href.startsWith('#'))continue;
+     await locator.click();await page.waitForURL(origin+href,{waitUntil:'load'});
+     const status=await page.locator('meta[name="aeroventa:source"]').getAttribute('content');
+     if(status!==report.source_sha)report.issues.push({type:'PLACEMENT_REAL_CLICK_SOURCE',route,width,placement:placement.placement,href});
+     report.placement_clicks.push({route,width,placement:placement.placement,target:href,pass:status===report.source_sha});
+     await page.goto(origin+route,{waitUntil:'load'});
+    }
+   }
+   if(route==='/obekty/sklady/'||(report.owner_scope&&route==='/obekty/magaziny-i-sklady/')){
     for(const locator of ['.object-detail__hero-media [data-object-gallery]','.object-evidence__grid [data-object-gallery]']){
      const opener=page.locator(locator).first();if(!await opener.count()){report.issues.push({type:'WAREHOUSE_GALLERY_ENTRY_MISSING',width,locator});continue;}await opener.click();const d=page.locator('#object-photo-dialog');await d.waitFor({state:'visible'});const before=await d.locator('img').getAttribute('src');await d.locator('[data-object-photo-next]').click();const after=await d.locator('img').getAttribute('src');if(before===after)report.issues.push({type:'WAREHOUSE_GALLERY_FIRST_CLICK',width,locator});await page.keyboard.press('Escape');if(!await opener.evaluate(e=>e===document.activeElement))report.issues.push({type:'WAREHOUSE_GALLERY_FOCUS',width,locator});report.interactions.push({route,width,locator,first_click:before!==after,escape:true,focus_return:true});
     }
+   }
+  }
+  if(report.owner_scope){
+   report.neva_delivery=[];
+   for(const[width,height]of[[1440,900],[390,844]]){
+    const c=await browser.newContext({viewport:{width,height},reducedMotion:'reduce',serviceWorkers:'block'});
+    await c.route('**/*',r=>new URL(r.request().url()).origin===origin?r.continue():r.abort());
+    const p=await c.newPage(),requests=[];p.on('request',r=>{if(r.resourceType()==='image')requests.push(new URL(r.url()).pathname)});
+    await p.goto(origin+'/obekty/kvartiry-i-doma/',{waitUntil:'networkidle'});
+    const opener=p.locator('[data-object-photo-open]');await opener.click();const d=p.locator('#object-photo-dialog');await d.waitFor({state:'visible'});await d.locator('img').evaluate(i=>i.decode());
+    const before=await d.locator('img').evaluate(i=>{const b=i.getBoundingClientRect();return {src:i.getAttribute('src'),width:b.width,height:b.height,natural:[i.naturalWidth,i.naturalHeight],fit:getComputedStyle(i).objectFit};});
+    const original='/evidence/residential/neva/IMG_7571.JPG',originalBefore=requests.filter(s=>s===original).length;
+    if(originalBefore||!before.src.startsWith('/media/responsive/')||Math.abs(before.width/before.height-4/3)>.015)report.issues.push({type:'NEVA_PREVIEW_DELIVERY_OR_ASPECT',width,before,originalBefore});
+
+    await p.addScriptTag({content:axeSource});const accessibility=await p.evaluate(async()=>{const r=await window.axe.run(document.querySelector('#object-photo-dialog'),{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa','wcag22aa']}});return r.violations.map(v=>v.id);});if(accessibility.length)report.issues.push({type:'NEVA_DIALOG_ACCESSIBILITY',width,accessibility});
+    await p.screenshot({path:path.join(output,'NEVA_LIGHTBOX_'+width+'.jpg'),type:'jpeg',quality:85});
+    await d.locator('.object-photo-dialog__stage').dblclick();await p.waitForFunction(()=>document.querySelector('#object-photo-dialog img')?.getAttribute('src')==='/evidence/residential/neva/IMG_7571.JPG');await d.locator('img').evaluate(i=>i.decode());
+    const originalNatural=await d.locator('img').evaluate(i=>[i.naturalWidth,i.naturalHeight]);
+    if(originalNatural[0]!==3264||originalNatural[1]!==2448)report.issues.push({type:'NEVA_ORIGINAL_ZOOM',width,originalNatural});
+    await p.keyboard.press('Escape');const focus=await opener.evaluate(e=>e===document.activeElement);if(!focus)report.issues.push({type:'NEVA_FOCUS_RETURN',width});
+    report.neva_delivery.push({width,original_requests_before_zoom:originalBefore,preview:before.src,preview_bytes:(await fs.stat(path.join(root,before.src))).size,original_bytes:(await fs.stat(path.join(root,original))).size,preview_dimensions:before.natural,original_dimensions_on_zoom:originalNatural,focus_return:focus});await c.close();
    }
   }
   console.log('COVER_CORRECTION',JSON.stringify({routes:report.link_media.length,frames:report.pages.length,issues:report.issues}));

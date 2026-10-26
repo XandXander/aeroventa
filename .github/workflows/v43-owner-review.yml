@@ -32,11 +32,12 @@ jobs:
         id: scope
         shell: bash
         run: |
-          if git log -1 --format=%B | grep -qx 'QA-Scope: object-cover-correction'; then
+          if git log -1 --format=%B | grep -qEx 'QA-Scope: (object-cover-correction|d061-d065-source-closure)'; then
             echo 'cover_only=true' >> "$GITHUB_OUTPUT"
           else
             echo 'cover_only=false' >> "$GITHUB_OUTPUT"
           fi
+          if git log -1 --format=%B | grep -qx 'QA-Scope: d061-d065-source-closure'; then echo 'source_closure=true' >> "$GITHUB_OUTPUT"; else echo 'source_closure=false' >> "$GITHUB_OUTPUT"; fi
       - name: Set up Node
         uses: actions/setup-node@v6
         with:
@@ -94,6 +95,7 @@ jobs:
         if: steps.scope.outputs.cover_only == 'true'
         env:
           RECOVERY_QA_PHASE: covers
+          RECOVERY_QA_OWNER_CONTRACT: ${{ steps.scope.outputs.source_closure == 'true' && 'D061_D065' || '' }}
           RECOVERY_QA_OUTPUT: PR12_COVER_QA
         run: node scripts/pr12-recovery-browser-qa.mjs
       - name: Latest Owner first-view, authentic Neva, twelve-object and compact-assistant contract
@@ -219,13 +221,24 @@ jobs:
         if: success() && (github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.number == 12))
         uses: actions/upload-artifact@v6
         with:
-          name: ${{ steps.scope.outputs.cover_only == 'true' && 'AEROVENTA_PR12_OBJECT_COVERS_AND_STAGING_ZIP' || 'AEROVENTA_PR12_FINAL_ART_REVIEW_AND_STAGING_ZIP' }}
+          name: ${{ steps.scope.outputs.source_closure == 'true' && 'AEROVENTA_PR12_SOURCE_SCOPE_CANDIDATE' || steps.scope.outputs.cover_only == 'true' && 'AEROVENTA_PR12_OBJECT_COVERS_AND_STAGING_ZIP' || 'AEROVENTA_PR12_FINAL_ART_REVIEW_AND_STAGING_ZIP' }}
           path: PR12_FINAL_DELIVERY/
           if-no-files-found: error
           retention-days: 30
           compression-level: 6
-
-
+      - name: Enforce all eighteen Owner placements (source HOLD cannot pass)
+        if: steps.scope.outputs.source_closure == 'true'
+        run: |
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          const r=JSON.parse(fs.readFileSync('PR12_COVER_QA/report.json','utf8')).owner_scope;
+          if(!r||r.required!==18||r.checks.length!==18||!r.complete){
+            console.error('SOURCE_SCOPE_HOLD: all18 Owner placements are mandatory. No reduced-count acceptance.');
+            console.error(JSON.stringify(r?.checks.filter(c=>!c.pass)||[],null,2));
+            process.exit(1);
+          }
+          console.log('OWNER18_SOURCE_SCOPE_PASS');
+          JS
 
   bitrix-preserved-sources:
     if: github.event_name == 'workflow_dispatch' || github.event.pull_request.number == 12

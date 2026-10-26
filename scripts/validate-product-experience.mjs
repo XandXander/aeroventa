@@ -207,7 +207,7 @@ const acceptedScene = await fs.stat(path.join(root, 'apps/web/public/evidence/he
 check(Boolean(acceptedScene?.isFile() && acceptedScene.size > 20000), 'Original accepted engineering-scene visual exists physically in build sources');
 
 check(!/\/obekty\/#(?:private|commercial|warehouses|production)/.test(files.home + files.services), 'Owner: homepage/services never route categories through fragment detours');
-for(const directRoute of ['/obekty/kvartiry-i-doma/','/obekty/ofisy-i-kommerciya/','/obekty/sklady/','/obekty/proizvodstvo/']) {
+for(const directRoute of ['/obekty/kvartiry-i-doma/','/obekty/ofisy-i-kommerciya/','/obekty/magaziny-i-sklady/','/obekty/proizvodstvo/','/obekty/novostroyki/','/obekty/restorany-i-kafe/']) {
   check(files.home.includes(directRoute) && files.services.includes(directRoute), 'Owner: category directly addresses destination '+directRoute);
 }
 check(files.home.includes('owner-luxury-airflow-20261010.png') && files.home.includes('hasOwnerHeroMedia') && files.home.includes('if (!hasOwnerHeroMedia) throw') && !files.home.includes('home-owner-editorial-1672.webp'), 'Current Owner-approved original blue-airflow HERO is fail-closed and not substituted');

@@ -31,7 +31,7 @@ const cards = [
  ['novatech','evidence/owner-portfolio/novatech/cover.webp','Новатех'],
  ['himprom','evidence/owner-portfolio/himprom/03.webp','Химпром'],
  ['warehouses','evidence/warehouses/avers-razbegaevo/01.webp','Вентиляция складов'],
- ['retail-warehouses','evidence/warehouses/farm-spb/01.webp','Магазины и склады'],
+ ['retail-warehouses','evidence/warehouses/avers-razbegaevo/01.webp','Магазины и склады'],
  ['drill-core','upload/medialibrary/548/5488fb415056eee52ac63ff9d4850c63.jpg','Застрявшая алмазная коронка'],
  ['drill-screed','upload/medialibrary/0a2/0a2f0d1be2900e0a1fe74bcd9604e3f8.jpg','Бурение в стяжке'],
  ['drill-cost','upload/medialibrary/fb3/fb3d693282a8085971dd4e2fe87bf28e.jpg','Стоимость алмазного бурения'],

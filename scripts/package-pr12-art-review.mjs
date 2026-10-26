@@ -15,18 +15,18 @@ const python="from pathlib import Path\nimport sys,json,hashlib,zipfile\ndist=Pa
 
 if(process.env.PR12_REVIEW_SCOPE==='covers'){
  const qa=await readJSON('PR12_COVER_QA/report.json');
- if(qa.source_sha!==sha||qa.source_dirty.length||qa.issues.length||qa.checks.some(c=>!c.pass)||qa.link_media.length!==50||qa.orphans.length||qa.interactions.length!==4||qa.interactions.some(x=>!x.first_click||!x.focus_return))throw Error('Focused Owner cover/link/media regression failed');
+ if(qa.source_sha!==sha||qa.source_dirty.length||qa.issues.length||qa.checks.some(c=>!c.pass)||qa.link_media.length!==50||qa.orphans.length||qa.interactions.length!==(qa.owner_scope?8:4)||qa.interactions.some(x=>!x.first_click||!x.focus_return))throw Error('Focused Owner cover/link/media regression failed');
  const digest=b=>createHash('sha256').update(b).digest('hex');
- const base='871d74a760a052eecf77c34707406e50ed1a327e';
- const diffName='AEROVENTA_SOURCE_DIFF_871d74a7_'+sha.slice(0,8)+'.patch';
+ const base=qa.owner_scope?'305d09fe7764a72e54ee80ecfca05780305bfe10':'871d74a760a052eecf77c34707406e50ed1a327e';
+ const diffName='AEROVENTA_SOURCE_DIFF_'+base.slice(0,8)+'_'+sha.slice(0,8)+'.patch';
  const exactDiff=execFileSync('git',['diff','--binary',base,sha],{maxBuffer:16*1024*1024});
  await fs.writeFile(path.join(out,diffName),exactDiff);
- const zipName='AEROVENTA_PR12_STAGING_'+sha.slice(0,8)+'.zip';
+ const zipName='AEROVENTA_PR12_STAGING_'+(qa.owner_scope&&!qa.owner_scope.complete?'SOURCE_HOLD_':'')+sha.slice(0,8)+'.zip';
  const sealed=JSON.parse(execFileSync('python3',['-c',python,dist,path.join(out,zipName),sha],{encoding:'utf8',maxBuffer:8*1024*1024}));
  const proofFiles=[];
  const xml=s=>s.replaceAll('&','&amp;').replaceAll('<','&lt;');
  for(const width of[1440,390]){
-  const list=qa.proof_frames.filter(f=>f.width===width),cellWidth=width===390?390:600,columns=width===390?3:2,cellHeight=520;
+  const list=qa.proof_frames.filter(f=>f.width===width),cellWidth=width===390?390:600,columns=width===390?3:2,cellHeight=qa.owner_scope?380:520;
   const overlays=[];
   for(let i=0;i<list.length;i++){
    const frame=list[i],bytes=await fs.readFile(path.join('PR12_COVER_QA',frame.screenshot));
@@ -41,9 +41,9 @@ if(process.env.PR12_REVIEW_SCOPE==='covers'){
   await fs.writeFile(path.join(out,name),bytes);proofFiles.push({name,bytes:bytes.length,sha256:digest(bytes),actual_frames:list.length,viewport_width:width});
  }
  const reportName='AEROVENTA_COVER_QA_'+sha.slice(0,8)+'.json';const reportBytes=Buffer.from(JSON.stringify(qa,null,2));await fs.writeFile(path.join(out,reportName),reportBytes);
- const manifest={source_sha:sha,source_tree:execFileSync('git',['rev-parse','HEAD^{tree}'],{encoding:'utf8'}).trim(),continuation_base:base,pr:'https://github.com/XandXander/aeroventa/pull/12',scope:'Owner object-cover, selection heading, nonduplication and relevant HTML links only',mode:'fixture-staging-only',verdict:'OWNER ARTISTIC ACCEPTANCE PENDING — PRODUCTION HOLD',remaining_requested_defects:'ZERO; truthful Himprom interior retained as the explicitly permitted no-exterior exception',zip_name:zipName,...sealed,source_diff:{name:diffName,bytes:exactDiff.length,sha256:digest(exactDiff)},qa:{routes:qa.link_media.length,affected_frames:qa.pages.length,proof_frames:qa.proof_frames.length,warehouse_gallery_interactions:qa.interactions.length,issues:qa.issues.length,orphans:qa.orphans,report:{name:reportName,bytes:reportBytes.length,sha256:digest(reportBytes)}},visual:proofFiles,cover_exceptions:qa.cover_exceptions,source_check:'PR12 exact source; Knowledge7b81b78a491000d65ed3c59a7b62fc3f2a1291a7; current direct Owner correction governs',knowledge_writeback:'NOT NEEDED — Owner acceptance pending.',boundaries:['No staging or production deployment; no hosting/auth/config changes','Fixture build; real backend delivery, public crawler/Telegram and installed staging SHA remain unproven','Original media and legacy routes retained; all payload hashes and ZIP CRC rechecked']};
+ const manifest={source_sha:sha,source_tree:execFileSync('git',['rev-parse','HEAD^{tree}'],{encoding:'utf8'}).trim(),continuation_base:base,pr:'https://github.com/XandXander/aeroventa/pull/12',scope:qa.owner_scope?'D-061–D-065; available corrections with explicit mandatory18-placement SOURCE HOLD':'Owner object-cover, selection heading, nonduplication and relevant HTML links only',mode:'fixture-staging-only',verdict:qa.owner_scope&&!qa.owner_scope.complete?'SOURCE_SCOPE_HOLD — NOT READY FOR OWNER FINAL ACCEPTANCE':'OWNER ARTISTIC ACCEPTANCE PENDING — PRODUCTION HOLD',remaining_requested_defects:qa.owner_scope&&!qa.owner_scope.complete?'SOURCE_MEDIA_HOLD: three approved subject albums are unavailable; strict18-placement CI remains FAIL':'ZERO; truthful Himprom interior retained as the explicitly permitted no-exterior exception',source_scope:qa.owner_scope||null,zip_name:zipName,...sealed,source_diff:{name:diffName,bytes:exactDiff.length,sha256:digest(exactDiff)},qa:{routes:qa.link_media.length,affected_frames:qa.pages.length,proof_frames:qa.proof_frames.length,warehouse_gallery_interactions:qa.interactions.length,issues:qa.issues.length,orphans:qa.orphans,report:{name:reportName,bytes:reportBytes.length,sha256:digest(reportBytes)}},visual:proofFiles,cover_exceptions:qa.cover_exceptions,source_check:qa.owner_scope?'PR12 exact source; Knowledgef7f2128af5a1d289cfd67bf74a3e01491b247bcd; D-061–D-065':'PR12 exact source; Knowledge7b81b78a491000d65ed3c59a7b62fc3f2a1291a7; current direct Owner correction governs',knowledge_writeback:'NOT NEEDED — source scope/Owner acceptance pending.',boundaries:['No staging or production deployment; no hosting/auth/config changes','Fixture build; real backend delivery, public crawler/Telegram and installed staging SHA remain unproven','Original media and legacy routes retained; all payload hashes and ZIP CRC rechecked']};
  await fs.writeFile(path.join(out,'AEROVENTA_MANIFEST_'+sha.slice(0,8)+'.json'),JSON.stringify(manifest,null,2));
- console.log('AV_FINAL_DELIVERY '+JSON.stringify({source_sha:sha,zip_name:zipName,zip_sha256:sealed.zip_sha256,zip_bytes:sealed.zip_bytes,runtime_files:sealed.files.length,crc:sealed.crc,scope:'covers',routes:qa.link_media.length,issues:qa.issues.length,source_diff_sha256:digest(exactDiff)}));
+ console.log('AV_FINAL_DELIVERY '+JSON.stringify({source_sha:sha,zip_name:zipName,zip_sha256:sealed.zip_sha256,zip_bytes:sealed.zip_bytes,runtime_files:sealed.files.length,crc:sealed.crc,scope:qa.owner_scope?.verdict||'covers',routes:qa.link_media.length,issues:qa.issues.length,owner18_passed:qa.owner_scope?.checks.filter(c=>c.pass).length,source_diff_sha256:digest(exactDiff)}));
  process.exit(0);
 }
 const qa=await readJSON('PR12_EXACT_QA/report.json'),surfaces=await readJSON('PR12_EXACT_SURFACES/report.json');

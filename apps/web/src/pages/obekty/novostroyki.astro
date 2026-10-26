@@ -11,8 +11,8 @@ const content: ContentRecord = {
 };
 const constraints:[string,string,string][] = [["01","Повторяемые монтажные узлы","Общие решения и порядок контроля нужно согласовать по проекту."],["02","Готовность корпусов","Стадия каждого корпуса определяет доступность работ."],["03","Логистика","Перемещение оборудования и материалов учитывают в графике."],["04","Усиление команды","Повторяемые объёмы требуют организованного выполнения."]];
 const evidence = [
-  {title:'ЖК «Аквилон» · Янино',meta:'Ленинградская область',detail:'Фотографии корпуса на стадии строительства и монтажа вентиляционных коммуникаций.',href:'/portfolio/obekt/akvilon-yanino/',image:'/evidence/owner-portfolio/akvilon-yanino/cover.webp',imageAlt:'Жилой корпус ЖК «Аквилон» в Янино'},
-  {title:'7 PARK · Павловск',meta:'Санкт-Петербург · 7 домов',detail:'Монтаж приточно-вытяжной вентиляции в жилом квартале.',href:'/blog/detail/kak-my-sdali-7-domov/',image:'/evidence/7park/object-exterior-day.jpg',imageAlt:'Архитектура квартала 7 PARK в Павловске'}
+ {title:'7 PARK · Павловск',meta:'Санкт-Петербург · 7 домов',detail:'Монтаж приточно-вытяжной вентиляции в жилом квартале.',href:'/blog/detail/kak-my-sdali-7-domov/',image:'/evidence/7park/object-exterior-day.jpg',imageAlt:'Архитектурная визуализация квартала 7 PARK в Павловске'},
+ {title:'На излучине Невы',meta:'Жилой объект · Санкт-Петербург',detail:'Монтаж вентиляции в жилом помещении. Фотографии трасс и монтажных узлов.',href:'/portfolio/obekt/na-izluchine-nevy/',image:'/evidence/residential/neva/IMG_7571.JPG',imageAlt:'Подлинная фотография здания объекта «На излучине Невы»'}
 ];
 const drivers = ['Рабочая проектная документация и спецификация','Монтажные зоны и условия доступа','Стадия объекта и смежные инженерные системы','Оборудование, трассы и рабочие сроки'];
 const questions = ['Какие документы передать для расчёта монтажа?','Что согласовать до начала работ?','Какие ограничения объекта влияют на организацию монтажа?'];
@@ -21,5 +21,5 @@ const questions = ['Какие документы передать для рас
  <ObjectDetailPage content={content} eyebrow="Новостройки"
   lede="Монтаж по проекту и повторяемые работы по корпусам требуют согласованной последовательности и контроля качества." constraints={constraints} drivers={drivers} evidence={evidence} questions={questions}
   proofTitle="Реальные работы в жилых комплексах"
-  heroMedia={{src:'/evidence/owner-portfolio/akvilon-yanino/cover.webp',alt:'Фотография строящегося жилого корпуса ЖК «Аквилон» в Янино',caption:'ЖК «Аквилон» · Янино · реальный объект'}}/>
+  heroMedia={{src:'/evidence/owner-portfolio/akvilon-yanino/cover.webp',alt:'Фотография строящегося жилого корпуса ЖК «Аквилон» в Янино',caption:'ЖК «Аквилон» · Янино · реальный объект',href:'/portfolio/obekt/akvilon-yanino/'}}/>
 </BaseLayout>
