@@ -1,8 +1,18 @@
-/** Use the already-rendered responsive image for a normal FIT view. Preserve originals for zoom. */
+/** Use a generated WebP for FIT view, and reserve the immutable original for explicit zoom. */
 export function viewerPreviewFor(original:string):string{
  if(!original)return original;
  for(const img of document.images){
-  if(img.getAttribute('src')===original && img.getAttribute('srcset'))return img.currentSrc||original;
+  if(img.getAttribute('src')!==original)continue;
+  const matches=(img.getAttribute('srcset')||'').split(',').map(candidate=>{
+   const parts=candidate.trim().split(/\s+/);
+   return {url:parts[0]||'',width:Number((parts[1]||'').replace(/w$/,''))||0};
+  }).filter(entry=>entry.url.startsWith('/media/responsive/')&&entry.url.endsWith('.webp'))
+   .sort((a,b)=>a.width-b.width);
+  if(matches.length){
+   const needed=Math.min(1400,innerWidth*Math.min(devicePixelRatio||1,2));
+   return (matches.find(entry=>entry.width>=needed)||matches[matches.length-1]).url;
+  }
+  return original;
  }
  return original;
 }

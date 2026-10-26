@@ -89,7 +89,7 @@ const content:ContentRecord={
 </article>
 <dialog id="owner-case-viewer" data-cover={project.cover} aria-label={'Просмотр фотографий '+project.title}>
 <div class="owner-case__viewer-title"><strong>{project.title}</strong><button type="button" data-case-zoom aria-label="Увеличить фотографию" aria-pressed="false">+</button><button type="button" data-case-close aria-label="Закрыть галерею">×</button></div>
-<div class="owner-case__viewer-stage"><img data-case-large alt={project.title} width="1200" height="800"/></div>
+<div class="owner-case__viewer-stage"><img data-case-large src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221%22%20height=%221%22/%3E" alt={project.title} width="1200" height="800"/></div>
 <nav class="owner-case__viewer-nav" aria-label="Перелистывание фотографий"><button type="button" data-case-prev aria-label="Предыдущая фотография">‹</button><span data-case-count>1 из {galleryPhotos.length}</span><button type="button" data-case-next aria-label="Следующая фотография">›</button></nav>
 </dialog>
 <script id="owner-case-image-data" type="application/json" set:html={JSON.stringify(galleryPhotos)} />

@@ -98,7 +98,7 @@ const hasPhotoViewer=Boolean(heroMedia?.editorialSplit||heroMedia?.gallery?.leng
 
 {hasPhotoViewer && <dialog id="object-photo-dialog" class="object-photo-dialog" aria-labelledby="object-photo-title">
  <div class="object-photo-dialog__heading"><strong id="object-photo-title" data-object-photo-title>Фотография объекта</strong><button type="button" data-object-photo-close aria-label="Закрыть фотографию">×</button></div>
- <div class="object-photo-dialog__stage"><img alt={heroMedia?.alt||'Фотография объекта'} /></div>
+ <div class="object-photo-dialog__stage"><img src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221%22%20height=%221%22/%3E" alt={heroMedia?.alt||'Фотография объекта'} /></div>
  <p data-object-photo-caption>{heroMedia?.caption}</p>
  <nav class="object-photo-dialog__nav" hidden aria-label="Перелистывание фотографий"><button type="button" data-object-photo-prev aria-label="Предыдущая фотография">‹</button><span data-object-photo-count aria-live="polite"></span><button type="button" data-object-photo-next aria-label="Следующая фотография">›</button></nav>
 </dialog>}

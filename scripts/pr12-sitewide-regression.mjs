@@ -139,7 +139,7 @@ await scenario('PONSSE_DOCUMENT','/blog/detail/montazh-ventilyatsii-v-karelii/',
  await page.keyboard.press('Escape');eq(await dlg.evaluate(d=>d.open),false,'PONSSE close');return {};
 });
 await scenario('DIRECT_CATEGORY_NAVIGATION','/',async()=>{
- const labels=['/obekty/proizvodstvo/','/obekty/restorany-i-kafe/','/obekty/novostroyki/','/obekty/kvartiry-i-doma/','/obekty/sklady/','/obekty/ofisy-i-kommerciya/'];
+ const labels=['/obekty/proizvodstvo/','/obekty/restorany-i-kafe/','/obekty/novostroyki/','/obekty/kvartiry-i-doma/','/obekty/magaziny-i-sklady/','/obekty/ofisy-i-kommerciya/'];
  for(const href of labels){
   const a=page.locator('a[href="'+href+'"]').first();
   if(await a.count()===0)throw Error('Category missing on HOME '+href);

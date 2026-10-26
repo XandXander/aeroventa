@@ -481,7 +481,16 @@ try {
     if(width===390){await swipeLeft('.owner-case__viewer-stage');expect((await page.locator('[data-case-count]').innerText())==='2 из 6','Neva touch swipe failed');}
     await page.keyboard.press('Escape');
     expect(await opener.evaluate(e=>e===document.activeElement),'Neva focus restoration failed');
-    const cover=page.locator('[data-case-cover]');await cover.click();await decodedImage('[data-case-large]');expect((await page.locator('[data-case-large]').getAttribute('src')).includes('IMG_7571.JPG'),'Neva facade opens the wrong image');await page.locator('[data-case-next]').click();await decodedImage('[data-case-large]');expect(!(await page.locator('[data-case-large]').getAttribute('src')).includes('IMG_7571.JPG'),'Neva cover does not connect to interior photographs');await page.keyboard.press('Escape');expect(await cover.evaluate(e=>e===document.activeElement),'Neva cover focus restoration failed');return {decoded_unique_frames:seen,facade:true};
+    const cover=page.locator('[data-case-cover]');await cover.click();await decodedImage('[data-case-large]');const nevaCoverSource=await page.locator('[data-case-large]').getAttribute('src');
+    const coverFrameMatches=await page.evaluate(()=>{
+      const dialog=document.querySelector('#owner-case-viewer');
+      const original=dialog?.getAttribute('data-cover');
+      const shown=dialog?.querySelector('[data-case-large]')?.getAttribute('src');
+      const thumb=[...document.images].find(img=>img.getAttribute('src')===original);
+      const responsive=(thumb?.getAttribute('srcset')||'').split(',').map(x=>x.trim().split(/\s+/)[0]).filter(Boolean);
+      return !!original&&!!shown&&(shown===original||responsive.includes(shown));
+    });
+    expect(coverFrameMatches,'Neva facade opens the wrong image');await page.locator('[data-case-next]').click();await decodedImage('[data-case-large]');expect((await page.locator('[data-case-large]').getAttribute('src'))!==nevaCoverSource,'Neva cover does not connect to interior photographs');await page.keyboard.press('Escape');expect(await cover.evaluate(e=>e===document.activeElement),'Neva cover focus restoration failed');return {decoded_unique_frames:seen,facade:true};
    });
    for(const name of ['apart-hotel','eurospar-vo','eurospar-sestroretsk','college-obvodny','novatech','akvilon-yanino','himprom'])await scenario('OWNER_OBJECT_GALLERY','/portfolio/obekt/'+name+'/',width,width>1000?650:844,async()=>{
     const opener=page.locator('[data-case-frame]').first();const total=await page.locator('[data-case-frame]').count();expect(total>1,'Object album incomplete');
@@ -489,7 +498,15 @@ try {
     await page.locator('[data-case-next]').click();await decodedImage('[data-case-large]');expect(before!==await page.locator('[data-case-large]').getAttribute('src'),'Object album first click failed');
     const fit=await page.locator('[data-case-large]').boundingBox();await page.locator('[data-case-zoom]').click();const enlarged=await page.locator('[data-case-large]').boundingBox();expect(enlarged.width>fit.width*1.1,'Object zoom button failed');
     await page.locator('[data-case-zoom]').click();await page.keyboard.press('Escape');expect(await opener.evaluate(e=>e===document.activeElement),'Object album focus restoration failed');
-    await page.locator('[data-case-cover]').click();await decodedImage('[data-case-large]');expect(await page.locator('[data-case-large]').getAttribute('src')===await page.locator('#owner-case-viewer').getAttribute('data-cover'),'Wrong object cover opened');await page.keyboard.press('Escape');return {total,first_click:true,cover:true,zoom_button:true};
+    await page.locator('[data-case-cover]').click();await decodedImage('[data-case-large]');    const coverFrameMatches=await page.evaluate(()=>{
+      const dialog=document.querySelector('#owner-case-viewer');
+      const original=dialog?.getAttribute('data-cover');
+      const shown=dialog?.querySelector('[data-case-large]')?.getAttribute('src');
+      const thumb=[...document.images].find(img=>img.getAttribute('src')===original);
+      const responsive=(thumb?.getAttribute('srcset')||'').split(',').map(x=>x.trim().split(/\s+/)[0]).filter(Boolean);
+      return !!original&&!!shown&&(shown===original||responsive.includes(shown));
+    });
+    expect(coverFrameMatches,'Wrong object cover opened');await page.keyboard.press('Escape');return {total,first_click:true,cover:true,zoom_button:true};
    });
    for(const route of ['/blog/detail/kak-my-sdali-7-domov/','/blog/detail/restoran-v-zhk-leontevskiy-mys/','/blog/detail/ntff-polisan/','/blog/detail/montazh-ventilyatsii-v-karelii/'])await scenario('CASE_GALLERY',route,width,width>1000?650:844,async()=>{
     const opener=page.locator('[data-case-photo]').first();const total=await page.locator('[data-case-photo]').count();
