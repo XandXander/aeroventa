@@ -2885,7 +2885,7 @@ html::-webkit-scrollbar-thumb:hover {background:#7c93a2;}
 }
 
 /* Gallery image occupies the available plane; side navigation never displaces it. */
-.case-photo-dialog{position:relative;width:min(98vw,1550px);height:min(95dvh,1050px);background:#0b1823}
+.case-photo-dialog{position:fixed;inset:0;margin:auto;width:min(98vw,1550px);height:min(95dvh,1050px);background:#0b1823}
 .case-photo-dialog__panel{position:relative}
 .case-photo-dialog__top{position:absolute;top:0;left:0;right:0;z-index:3;background:linear-gradient(180deg,rgba(5,15,22,.8),transparent);border:0}
 .case-photo-dialog__top button{border:0;font-size:1.8rem;min-width:44px;min-height:44px}

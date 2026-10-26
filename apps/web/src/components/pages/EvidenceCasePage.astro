@@ -663,7 +663,7 @@ const [heroWidth,heroHeight]=heroDimensions[content.path];
         <button type="button" class="case-photo-dialog__close" data-photo-close aria-label="Закрыть">×</button>
       </div>
       <figure class="case-photo-dialog__figure">
-        <img data-photo-large src={spec.media[0][0]} alt={spec.media[0][1]} decoding="async" />
+        <img data-photo-large alt={spec.media[0][1]} decoding="async" />
         <figcaption>Фотографии работ</figcaption>
       </figure>
       <nav class="case-photo-dialog__nav" aria-label="Перелистывание фотографий">
@@ -729,7 +729,7 @@ const [heroWidth,heroHeight]=heroDimensions[content.path];
 </article>
 
 <script>
-  import {createPhotoPreloader,setViewerPhoto,bindPhotoZoom} from "@/lib/gallery-runtime";
+  import {createPhotoPreloader,setViewerPhoto,bindPhotoZoom,viewerPreviewFor} from "@/lib/gallery-runtime";
   const cache=createPhotoPreloader(10);
   const photos = [...document.querySelectorAll<HTMLButtonElement>('[data-case-photo]')];
   const viewer = document.getElementById('case-photo-viewer');
@@ -750,13 +750,18 @@ const [heroWidth,heroHeight]=heroDimensions[content.path];
     const counter = viewer.querySelector<HTMLElement>('[data-photo-count]');
     const frame = viewer.querySelector<HTMLElement>('.case-photo-dialog__figure');
     const photoZoom=bindPhotoZoom(viewer,frame,large,step=>show(activeIndex+step));
+    new MutationObserver(()=>{
+      const original=photos[activeIndex]?.dataset.photoSrc;
+      if(Number(viewer.dataset.zoom)>1 && original && large && large.getAttribute('src')!==original)
+        setViewerPhoto(large,original,large.alt);
+    }).observe(viewer,{attributes:true,attributeFilter:['data-zoom']});
     const fit=()=>photoZoom.reset();
     const show = (index: number) => {
       fit();
       activeIndex = (index + photos.length) % photos.length;
       const photo = photos[activeIndex];
-      setViewerPhoto(large, photo.dataset.photoSrc || '', photo.dataset.photoAlt || '');
-       cache.neighbors(photos.map(node=>node.dataset.photoSrc||''),activeIndex);
+      setViewerPhoto(large, viewerPreviewFor(photo.dataset.photoSrc || ''), photo.dataset.photoAlt || '');
+       cache.neighbors(photos.map(node=>viewerPreviewFor(node.dataset.photoSrc||'')),activeIndex);
       if (description) description.textContent = photo.dataset.photoCaption || photo.dataset.photoAlt || '';
       if (counter) counter.textContent = `${activeIndex + 1} / ${photos.length}`;
     };

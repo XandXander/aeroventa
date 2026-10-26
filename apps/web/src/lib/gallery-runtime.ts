@@ -1,3 +1,11 @@
+/** Use the already-rendered responsive image for a normal FIT view. Preserve originals for zoom. */
+export function viewerPreviewFor(original:string):string{
+ if(!original)return original;
+ for(const img of document.images){
+  if(img.getAttribute('src')===original && img.getAttribute('srcset'))return img.currentSrc||original;
+ }
+ return original;
+}
 /** Shared non-blocking photo state for the three object/case viewer implementations.
  * Index/counter update synchronously on each interaction; fetching NEVER gates clicks.
  */
