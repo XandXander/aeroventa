@@ -54,6 +54,7 @@ async function settle(){
     }
     await Promise.race([Promise.all([...document.images].filter(img=>img.checkVisibility({visibilityProperty:true})).map(img=>img.decode().catch(()=>{}))),new Promise(r=>setTimeout(r,5000))]);
     window.scrollTo(0,0);
+    await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
   });
 }
 try {
@@ -64,7 +65,8 @@ try {
   report.checks.push({name:'D057_original_sha256',pass:createHash('sha256').update(original).digest('hex')==='f83228bf67af248c14a5170d442ec7fff290297d6c16b2c1860e8d0c1469779e'});
   report.first_views=[];
   const keyRoutes=['/','/services/','/montazh-ventiliacii/','/montazh-po-proektu/','/obekt-bez-gotovogo-proekta/','/portfolio/','/blog/','/about/','/contact/','/obekty/kvartiry-i-doma/','/portfolio/obekt/na-izluchine-nevy/','/news/'];
-  for(const [width,height]of [[1440,900],[1364,646],[390,844],[375,667]])for(const route of keyRoutes){
+  const firstViewSamples = [[1440,900,[...routes,'/404.html']],[390,844,[...routes,'/404.html']],[1364,646,keyRoutes],[375,667,keyRoutes],[1280,720,keyRoutes],[1366,768,keyRoutes]];
+  for(const [width,height,initialRoutes] of firstViewSamples)for(const route of initialRoutes){
    await page.setViewportSize({width,height});await page.goto(origin+route,{waitUntil:'networkidle'});
    await page.evaluate(async()=>{await document.fonts.ready;for(const i of document.images)i.loading='eager';await Promise.all([...document.images].map(i=>i.decode().catch(()=>{})));await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));});
    const result=await page.evaluate(()=>{
@@ -72,11 +74,12 @@ try {
     const hero=document.querySelector('.home-hero'),help=document.querySelector('.consultant-launcher'),hs=help&&getComputedStyle(help);
     const visible=el=>el&&getComputedStyle(el).display!=='none'&&getComputedStyle(el).visibility!=='hidden';
     const images=[...document.querySelectorAll('main img')].filter(visible).map(el=>({src:el.getAttribute('src'),...box(el)}));
-    return{header:box(document.querySelector('.site-header')),h1:box(document.querySelector('h1')),home:box(hero),scene:box(document.querySelector('.hero-engineering')),ribbon:box(document.querySelector('.object-ribbon')),feature:box(document.querySelector('.av-portfolio-feature')),nevaFirst:box(document.querySelector('[data-owner-first-view]')),journal:box(document.querySelector('.av-journal-opening')),contact:box(document.querySelector('.av-contact__direct')),headerAssistant:document.querySelectorAll('.site-header [data-consultant-open]').length,assistantCount:document.querySelectorAll('button.consultant-launcher').length,assistant:{...box(help),visible:!!help&&hs.visibility!=='hidden',position:hs?.position},images,overflow:document.documentElement.scrollWidth-innerWidth};
+    return{entry:box(document.querySelector('.av-services-opening,main header.av-hero,main .object-detail__hero,main .case-detail-hero,main .owner-case__hero')),header:box(document.querySelector('.site-header')),h1:box(document.querySelector('h1')),home:box(hero),scene:box(document.querySelector('.hero-engineering')),ribbon:box(document.querySelector('.object-ribbon')),feature:box(document.querySelector('.av-portfolio-feature')),nevaFirst:box(document.querySelector('[data-owner-first-view]')),journal:box(document.querySelector('.av-journal-opening')),contact:box(document.querySelector('.av-contact__direct')),headerAssistant:document.querySelectorAll('.site-header [data-consultant-open]').length,assistantCount:document.querySelectorAll('button.consultant-launcher').length,assistant:{...box(help),visible:!!help&&hs.visibility!=='hidden',position:hs?.position},images,overflow:document.documentElement.scrollWidth-innerWidth};
    });
-   if(result.headerAssistant||result.assistantCount!==1||result.assistant.width>50||result.assistant.height>50||result.assistant.position!=='fixed')report.issues.push({type:'OWNER_SINGLE_COMPACT_ASSISTANT',route,width,height,result});
-   if(result.overflow>1||!result.h1||result.h1.top<result.header.bottom-1)report.issues.push({type:'OWNER_INITIAL_HEADING',route,width,height,result});
-   if(result.assistant.visible){const overlap=await page.evaluate(()=>{
+   if(route!=='/404.html'&&(result.headerAssistant||result.assistantCount!==1||result.assistant?.width>50||result.assistant?.height>50||result.assistant?.position!=='fixed'))report.issues.push({type:'OWNER_SINGLE_COMPACT_ASSISTANT',route,width,height,result});
+   if(result.overflow>1||!result.h1||result.h1.top<(result.header?.bottom??0)-1)report.issues.push({type:'OWNER_INITIAL_HEADING',route,width,height,result});
+   if(width===1440&&height===900&&result.entry&&Math.abs(result.entry.bottom-height)>4)report.issues.push({type:'OWNER_PHOTOGRAPHIC_OPENING_NOT_COMPLETE',route,width,height,entry:result.entry});
+   if(result.assistant?.visible){const overlap=await page.evaluate(()=>{
     const help=document.querySelector('.consultant-launcher').getBoundingClientRect(),rects=[];
     for(const el of document.querySelectorAll('main a,main button,main input,main textarea,main select')){
      if(el.querySelector('img')||getComputedStyle(el).visibility==='hidden')continue;
@@ -156,7 +159,7 @@ try {
       const failures=axe.violations.map(v=>({rule:v.id,impact:v.impact,nodes:v.nodes.map(n=>({target:n.target,summary:n.failureSummary,html:n.html.slice(0,500)}))}));
       if(failures.length)report.issues.push({type:'ACCESSIBILITY',route,width,failures});
       const screenshot=slug(route)+'__'+width+'.jpg';
-      await page.screenshot({path:path.join(output,screenshot),fullPage:true,type:'jpeg',quality:80});
+      await page.screenshot({path:path.join(output,screenshot),fullPage:true,type:'jpeg',quality:80,animations:'disabled'});
       report.pages.push({route,width,height,screenshot,...facts,axe:failures,contrast_incomplete:axe.incomplete.filter(x=>x.id==='color-contrast').flatMap(x=>x.nodes.map(n=>({target:n.target,summary:n.failureSummary}))) });
       // Hidden legacy originals and answers are a separate real expanded state.
       // Opening summaries also proves lazy source photos, rather than treating
@@ -485,6 +488,16 @@ try {
   const diagram=await page.locator('.solution-diagram').boundingBox();
   const diagramPosition=await page.locator('.solution-diagram').evaluate(el=>getComputedStyle(el).position);
   report.checks.push({name:'diagram_intrinsic_layout',pass:diagramPosition!=='absolute' && diagram.width>400});
+  if(phase==='owner'){
+   for(const width of [390,1440]){
+    await page.setViewportSize({width,height:844});await page.goto(origin+'/',{waitUntil:'networkidle'});
+    const legend=await page.evaluate(()=>{const root=document.querySelector(innerWidth<=760?'.solution-mobile-pair':'.solution-legend');return {labels:[...root.querySelectorAll('strong')].map(e=>({text:e.textContent.trim(),size:parseFloat(getComputedStyle(e).fontSize)})),clip:getComputedStyle(document.querySelector('.solution-diagram img')).clipPath};});
+    report.checks.push({name:'D060_readable_live_labels_'+width,pass:legend.labels.length===2&&legend.labels[0].text==='Подача'&&legend.labels[1].text==='Вытяжка'&&legend.labels.every(l=>l.size>=14)&&legend.clip!=='none',evidence:legend});
+    await page.locator(width<=760?'.solution-mobile-pair':'.solution-grid').screenshot({path:path.join(output,'LIVE_DIAGRAM_'+width+'.jpg'),type:'jpeg',quality:90});
+    await page.goto(origin+'/blog/',{waitUntil:'networkidle'});
+    report.checks.push({name:'Owner_ventilation_leads_journal_'+width,pass:await page.locator('.av-journal-lead__link').getAttribute('href')==='/blog/detail/ntff-polisan/'&&await page.locator('.av-journal-stories').evaluate(e=>!!(e.compareDocumentPosition(document.querySelector('.av-journal-articles'))&Node.DOCUMENT_POSITION_FOLLOWING))});
+   }
+  }
   await fs.writeFile(path.join(output,'report.json'),JSON.stringify(report,null,2));
   console.log('REPORT',output,'pages',report.pages.length,'issues',report.issues.length,'checks',report.checks);
   if(phase==='surfaces' && report.issues.length)console.error('RASTER_CONTRAST_DETAIL',JSON.stringify(report.issues,null,2));

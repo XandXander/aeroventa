@@ -72,8 +72,11 @@ const objects = [
 
 <BaseLayout content={content}>
   <article class="objects-hub av-page av-object-index">
+    <div class="av-object-index-opening">
     <header class="av-shell av-object-index__intro"><div><p class="av-kicker">Монтаж по типу объекта</p><h1>Вентиляция под конкретный объект</h1></div><div><p class="av-lead">У квартиры, ресторана и производства — разные условия монтажа.</p><p>Выберите свой тип объекта: покажем выполненные работы и данные, которые нужны для обсуждения задачи.</p><p class="av-geo">Санкт-Петербург и Ленинградская область · Москва · Карелия</p></div></header>
-    <section class="av-shell av-object-index__grid" aria-label="Типы объектов">{objects.map(item=><a href={item.href} class="av-object-index__item"><figure><img src={item.image} alt={item.imageAlt} width="800" height="500" loading="lazy" decoding="async"/></figure><div><span>{item.index}</span><h2>{item.title}</h2><p>{item.text}</p><b>Условия и выполненные работы ↗</b></div></a>)}</section>
+    <section class="av-shell av-object-index__grid" aria-label="Типы объектов">{objects.slice(0,2).map(item=><a href={item.href} class="av-object-index__item"><figure><img src={item.image} alt={item.imageAlt} width="800" height="500" loading="eager" decoding="async"/></figure><div><span>{item.index}</span><h2>{item.title}</h2><p>{item.text}</p><b>Условия и выполненные работы ↗</b></div></a>)}</section>
+    </div>
+    <section class="av-shell av-object-index__grid" aria-label="Типы объектов">{objects.slice(2).map(item=><a href={item.href} class="av-object-index__item"><figure><img src={item.image} alt={item.imageAlt} width="800" height="500" loading="lazy" decoding="async"/></figure><div><span>{item.index}</span><h2>{item.title}</h2><p>{item.text}</p><b>Условия и выполненные работы ↗</b></div></a>)}</section>
     <section class="av-close"><div class="av-shell av-close__grid"><div><p class="av-kicker">Ваш объект</p><h2>Есть задача по вентиляции?</h2></div><a href="/contact/" class="button button--primary" data-contact-open data-source="objects_hub">Обсудить объект →</a></div></section>
   </article>
 </BaseLayout>

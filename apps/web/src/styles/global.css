@@ -3398,7 +3398,7 @@ html[data-airflow-processing] .airflow-header-trace__route--exhaust i{animation:
   border-top:1px solid #cbd8df;padding:11px 0 0;font-size:.76rem;line-height:1.42;color:#4a6572}
 .evidence-case .case-detail-hero__photograph figcaption span{color:#7a5d4e;font-size:.68rem;letter-spacing:.045em;text-transform:uppercase;white-space:nowrap}
 @media(min-width:1051px) and (min-height:700px){
-  .evidence-case .case-detail-hero{min-height:0;display:block}
+  .evidence-case .case-detail-hero{overflow:visible}
   .evidence-case .case-detail-hero>.home-shell{width:min(var(--editorial-content,1360px),calc(100% - 2*var(--editorial-gutter,40px)))}
 }
 .evidence-case .case-gallery--lead{background:#fff;padding:clamp(34px,5vw,64px) 0 clamp(42px,5vw,78px)}
@@ -3462,7 +3462,7 @@ html[data-airflow-processing] .airflow-header-trace__route--exhaust i{animation:
   .evidence-case .case-detail-hero__photo-open img{aspect-ratio:1.85}
 }
 @media(max-width:760px){
-  .evidence-case .case-detail-hero{padding:clamp(25px,5vw,44px) 0 37px;min-height:0}
+  .evidence-case .case-detail-hero{padding:clamp(25px,5vw,44px) 0 37px}
   .evidence-case .case-detail-hero h1{font-size:clamp(1.95rem,7.8vw,3rem);letter-spacing:-.029em;line-height:1.12;margin:12px 0 20px}
   .evidence-case .case-detail-hero__photograph figcaption{flex-wrap:wrap;gap:5px 12px}
   .evidence-case .case-detail-hero__photo-open img{aspect-ratio:1.52}
@@ -3648,8 +3648,7 @@ dialog.ponsse-letter-dialog.is-document-zoomed .ponsse-letter-dialog__sheet img{
 .evidence-case .case-story--editorial .case-story__grid p{font-size:clamp(.93rem,1.11vw,1.09rem);line-height:1.64;margin:0;max-width:52ch}
 @media(max-width:760px){.object-grid--editorial{grid-template-columns:1fr;gap:0}.object-grid--editorial .object-link{padding:20px 0 23px}.evidence-case .case-story--editorial .case-story__grid{grid-template-columns:1fr;gap:17px}.evidence-case .case-story--editorial .case-story__grid>div{padding:18px 0 0}}
 
-/* The accepted illustration has one intrinsic layout. No absolute overlays,
-   cross-column crops or blurred edges; source bytes and annotations are kept. */
+/* Native scene and verified live legend. Source bytes are retained. */
 .home-solution{padding-block:clamp(42px,5vw,76px);background:#f8fafb}
 .solution-grid{display:grid;grid-template-columns:minmax(0,.66fr) minmax(0,1.85fr);align-items:center;gap:clamp(20px,3vw,46px);min-height:0}
 .solution-grid>.section-copy{min-width:0;max-width:37ch}
@@ -3658,16 +3657,27 @@ dialog.ponsse-letter-dialog.is-document-zoomed .ponsse-letter-dialog__sheet img{
 .solution-grid .section-index{color:var(--av-accent-text)}
 .solution-grid .solution-cta{margin-top:18px}
 .solution-diagram{position:relative;inset:auto;width:100%;height:auto;min-width:0;margin:0;background:transparent}
-.solution-diagram img{display:block;width:100%;height:auto;max-width:1036px;object-fit:contain;mask-image:radial-gradient(ellipse 84% 88% at center,#000 76%,transparent 100%);-webkit-mask-image:radial-gradient(ellipse 84% 88% at center,#000 76%,transparent 100%)}
+.solution-label-mask{position:absolute;pointer-events:none}
+.solution-diagram img,.solution-mobile-pair__crop img{clip-path:url(#solution-scene-ink)}
+.solution-diagram img{display:block;width:100%;height:auto;max-width:1036px;object-fit:contain}
+.solution-legend{position:absolute;inset:0;margin:0;z-index:1;pointer-events:none}
+.solution-legend p{position:absolute;top:10%;left:14.6%;width:22.4%;margin:0;padding:3px 6px;background:#f8fafb}
+.solution-legend p+p{left:70.6%;width:24.6%}
+.solution-legend strong,.solution-mobile-pair figcaption strong{display:block;font-weight:620;font-size:1rem;line-height:1.25;color:#99452b;margin-bottom:3px}
+.solution-legend p+p strong,.solution-mobile-pair__panel--exhaust figcaption strong{color:#176087}
+.solution-legend span,.solution-mobile-pair figcaption span{display:block;color:#405c6b;font-size:.875rem;line-height:1.35}
+
 .solution-mobile-pair{display:none}
 @media(max-width:760px){
  .solution-grid{grid-template-columns:minmax(0,1fr);gap:28px}
  .solution-grid>.section-copy{max-width:100%}
  .solution-diagram{display:none}
  .solution-mobile-pair{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;margin:0;min-width:0}
- .solution-mobile-pair__panel{margin:0;min-width:0}
+ .solution-mobile-pair__panel{position:relative;margin:0;min-width:0}
  .solution-mobile-pair__crop{width:100%;aspect-ratio:518/338;overflow:hidden}
  .solution-mobile-pair__crop img{display:block;width:200%;max-width:none;height:auto}
  .solution-mobile-pair__panel--exhaust img{transform:translateX(-50%)}
- .solution-mobile-pair figcaption{padding-top:10px;color:#405c6b;font-size:.88rem;line-height:1.5;border-top:1px solid #c7d5db}
+ .solution-mobile-pair figcaption{position:absolute;z-index:1;top:10%;left:29.2%;width:44.8%;padding:2px 4px;margin:0;background:#f8fafb}
+ .solution-mobile-pair__panel--exhaust figcaption{left:41.2%;width:49.2%}
+ .solution-mobile-pair figcaption strong{font-size:.9375rem}
 }
