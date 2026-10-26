@@ -209,8 +209,12 @@ for(const [route,needle] of [
 }
 const officeHtml=await fs.readFile(htmlFileFor('/obekty/ofisy-i-kommerciya/'),'utf8').catch(()=>null);
 check(Boolean(officeHtml && !officeHtml.includes('/portfolio/#owner-') &&
-  officeHtml.includes('/evidence/owner-portfolio/apart-hotel/gallery-01.webp')),
-  'O22-09 / J-08: direct case links and nonduplicated commercial lead photography');
+  (officeHtml.match(/src="\/evidence\/owner-portfolio\/apart-hotel\/cover\.webp"/g)||[]).length===1 &&
+  officeHtml.includes('href="/portfolio/obekt/apart-hotel/"') &&
+  officeHtml.includes('href="/portfolio/obekt/eurospar-vo/"') &&
+  officeHtml.includes('href="/portfolio/obekt/eurospar-sestroretsk/"') &&
+  !officeHtml.includes('/evidence/owner-portfolio/apart-hotel/gallery-01.webp')),
+  'O22-09 / J-08 + Owner26Oct: direct case links, one hotel cover and two distinct retail objects');
 const contactHtml=await fs.readFile(htmlFileFor('/contact/'),'utf8').catch(()=>null);
 check(Boolean(contactHtml && !contactHtml.includes('Без технического «идеального брифа»')),
   'J-09: rejected public lead-form wording remains');

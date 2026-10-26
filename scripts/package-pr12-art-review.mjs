@@ -11,6 +11,41 @@ const sha=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
 if(sha!==process.env.REVIEW_SHA||!/^[a-f0-9]{40}$/.test(sha))throw Error('Exact checkout/source binding failed');
 const out=path.join(root,'PR12_FINAL_DELIVERY');await fs.mkdir(out,{recursive:true});
 const readJSON=async f=>JSON.parse(await fs.readFile(f,'utf8'));
+const python="from pathlib import Path\nimport sys,json,hashlib,zipfile\ndist=Path(sys.argv[1]);out=Path(sys.argv[2]);sha=sys.argv[3]\nfiles=[]\nfor f in sorted(dist.rglob('*')):\n if not f.is_file():continue\n assert not f.is_symlink(),str(f)\n rel=f.relative_to(dist).as_posix()\n if any(p in {'.htaccess','.htpasswd','.git','node_modules'} or p.startswith('.env') for p in f.relative_to(dist).parts):continue\n if f.suffix.lower() in {'.md','.csv','.log','.zip','.dpapi','.ts','.astro','.yaml','.yml'}:continue\n assert not rel.startswith(('cache/','docs/','scripts/'))\n b=f.read_bytes()\n if f.suffix=='.html' and 'http-equiv=\"refresh\"' not in b.decode('utf8'):\n  if rel!='404.html':assert 'name=\"aeroventa:source\" content=\"'+sha+'\"' in b.decode('utf8'),rel\n  assert 'name=\"robots\" content=\"noindex' in b.decode('utf8'),rel\n files.append({'path':rel,'bytes':len(b),'sha256':hashlib.sha256(b).hexdigest()})\nassert (dist/'robots.txt').read_text()=='User-agent: *\\nDisallow: /\\n'\nmarker=json.dumps({'source_sha':sha,'mode':'fixture-staging-only','release':'HOLD','installed_staging_sha':'NOT_ASSERTED'},indent=2).encode()\nfiles.append({'path':'aeroventa-build.json','bytes':len(marker),'sha256':hashlib.sha256(marker).hexdigest()})\nwith zipfile.ZipFile(out,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=6) as z:\n for item in files:\n  b=marker if item['path']=='aeroventa-build.json' else (dist/item['path']).read_bytes()\n  info=zipfile.ZipInfo(item['path'],date_time=(2026,10,24,0,0,0));info.compress_type=zipfile.ZIP_DEFLATED;info.external_attr=0o100644<<16\n  z.writestr(info,b)\nwith zipfile.ZipFile(out) as z:\n assert z.testzip() is None\n assert len(z.namelist())==len(files) and 'index.html' in z.namelist() and '404.html' in z.namelist()\n assert '.htaccess' not in z.namelist()\n for item in files:\n  b=z.read(item['path']);assert len(b)==item['bytes'] and hashlib.sha256(b).hexdigest()==item['sha256'],item['path']\nprint(json.dumps({'files':files,'zip_sha256':hashlib.sha256(out.read_bytes()).hexdigest(),'zip_bytes':out.stat().st_size,'crc':'PASS','reextracted_payload_hashes':'PASS','preserve_existing_staging_auth':True}))\n";
+
+if(process.env.PR12_REVIEW_SCOPE==='covers'){
+ const qa=await readJSON('PR12_COVER_QA/report.json');
+ if(qa.source_sha!==sha||qa.source_dirty.length||qa.issues.length||qa.checks.some(c=>!c.pass)||qa.link_media.length!==50||qa.orphans.length||qa.interactions.length!==4||qa.interactions.some(x=>!x.first_click||!x.focus_return))throw Error('Focused Owner cover/link/media regression failed');
+ const digest=b=>createHash('sha256').update(b).digest('hex');
+ const base='871d74a760a052eecf77c34707406e50ed1a327e';
+ const diffName='AEROVENTA_SOURCE_DIFF_871d74a7_'+sha.slice(0,8)+'.patch';
+ const exactDiff=execFileSync('git',['diff','--binary',base,sha],{maxBuffer:16*1024*1024});
+ await fs.writeFile(path.join(out,diffName),exactDiff);
+ const zipName='AEROVENTA_PR12_STAGING_'+sha.slice(0,8)+'.zip';
+ const sealed=JSON.parse(execFileSync('python3',['-c',python,dist,path.join(out,zipName),sha],{encoding:'utf8',maxBuffer:8*1024*1024}));
+ const proofFiles=[];
+ const xml=s=>s.replaceAll('&','&amp;').replaceAll('<','&lt;');
+ for(const width of[1440,390]){
+  const list=qa.proof_frames.filter(f=>f.width===width),cellWidth=width===390?390:600,columns=width===390?3:2,cellHeight=520;
+  const overlays=[];
+  for(let i=0;i<list.length;i++){
+   const frame=list[i],bytes=await fs.readFile(path.join('PR12_COVER_QA',frame.screenshot));
+   const photo=await sharp(bytes).resize({width:cellWidth-24,height:cellHeight-70,fit:'inside',withoutEnlargement:true}).jpeg({quality:86}).toBuffer(),info=await sharp(photo).metadata();
+   const x=(i%columns)*cellWidth,y=Math.floor(i/columns)*cellHeight;
+   overlays.push({input:photo,left:x+Math.floor((cellWidth-info.width)/2),top:y+54});
+   const label=Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="'+cellWidth+'" height="48"><text x="12" y="20" font-family="Arial,DejaVu Sans,sans-serif" font-size="16" fill="#193945">'+xml(frame.label)+'</text><text x="12" y="40" font-family="Arial,DejaVu Sans,sans-serif" font-size="12" fill="#536f7a">'+xml(frame.route)+' · '+width+'px</text></svg>');
+   overlays.push({input:label,left:x,top:y});
+  }
+  const name='AEROVENTA_COVERS_'+(width===390?'MOBILE_':'DESKTOP_')+sha.slice(0,8)+'.jpg';
+  const bytes=await sharp({create:{width:cellWidth*columns,height:cellHeight*Math.ceil(list.length/columns),channels:3,background:'#edf1ef'}}).composite(overlays).jpeg({quality:88,mozjpeg:true}).toBuffer();
+  await fs.writeFile(path.join(out,name),bytes);proofFiles.push({name,bytes:bytes.length,sha256:digest(bytes),actual_frames:list.length,viewport_width:width});
+ }
+ const reportName='AEROVENTA_COVER_QA_'+sha.slice(0,8)+'.json';const reportBytes=Buffer.from(JSON.stringify(qa,null,2));await fs.writeFile(path.join(out,reportName),reportBytes);
+ const manifest={source_sha:sha,source_tree:execFileSync('git',['rev-parse','HEAD^{tree}'],{encoding:'utf8'}).trim(),continuation_base:base,pr:'https://github.com/XandXander/aeroventa/pull/12',scope:'Owner object-cover, selection heading, nonduplication and relevant HTML links only',mode:'fixture-staging-only',verdict:'OWNER ARTISTIC ACCEPTANCE PENDING — PRODUCTION HOLD',remaining_requested_defects:'ZERO; truthful Himprom interior retained as the explicitly permitted no-exterior exception',zip_name:zipName,...sealed,source_diff:{name:diffName,bytes:exactDiff.length,sha256:digest(exactDiff)},qa:{routes:qa.link_media.length,affected_frames:qa.pages.length,proof_frames:qa.proof_frames.length,warehouse_gallery_interactions:qa.interactions.length,issues:qa.issues.length,orphans:qa.orphans,report:{name:reportName,bytes:reportBytes.length,sha256:digest(reportBytes)}},visual:proofFiles,cover_exceptions:qa.cover_exceptions,source_check:'PR12 exact source; Knowledge7b81b78a491000d65ed3c59a7b62fc3f2a1291a7; current direct Owner correction governs',knowledge_writeback:'NOT NEEDED — Owner acceptance pending.',boundaries:['No staging or production deployment; no hosting/auth/config changes','Fixture build; real backend delivery, public crawler/Telegram and installed staging SHA remain unproven','Original media and legacy routes retained; all payload hashes and ZIP CRC rechecked']};
+ await fs.writeFile(path.join(out,'AEROVENTA_MANIFEST_'+sha.slice(0,8)+'.json'),JSON.stringify(manifest,null,2));
+ console.log('AV_FINAL_DELIVERY '+JSON.stringify({source_sha:sha,zip_name:zipName,zip_sha256:sealed.zip_sha256,zip_bytes:sealed.zip_bytes,runtime_files:sealed.files.length,crc:sealed.crc,scope:'covers',routes:qa.link_media.length,issues:qa.issues.length,source_diff_sha256:digest(exactDiff)}));
+ process.exit(0);
+}
 const qa=await readJSON('PR12_EXACT_QA/report.json'),surfaces=await readJSON('PR12_EXACT_SURFACES/report.json');
 for(const r of[qa,surfaces])if(r.source_sha!==sha||r.issues.length||r.source_dirty.length||r.checks.some(c=>!c.pass))throw Error('Exact-source QA is not clear');
 if((await readJSON('V43_OWNER_BROWSER_REVIEW/manifest.json')).fail.length)throw Error('Media/interaction regression failed');
@@ -77,7 +112,7 @@ const exactDiff=execFileSync('git',['diff','--binary','e4f1e8b5053e866e7485ff46d
 await fs.writeFile(path.join(out,diffName),exactDiff);
 const zipName='AEROVENTA_PR12_STAGING_'+sha.slice(0,8)+'.zip';
 
-const python="from pathlib import Path\nimport sys,json,hashlib,zipfile\ndist=Path(sys.argv[1]);out=Path(sys.argv[2]);sha=sys.argv[3]\nfiles=[]\nfor f in sorted(dist.rglob('*')):\n if not f.is_file():continue\n assert not f.is_symlink(),str(f)\n rel=f.relative_to(dist).as_posix()\n if any(p in {'.htaccess','.htpasswd','.git','node_modules'} or p.startswith('.env') for p in f.relative_to(dist).parts):continue\n if f.suffix.lower() in {'.md','.csv','.log','.zip','.dpapi','.ts','.astro','.yaml','.yml'}:continue\n assert not rel.startswith(('cache/','docs/','scripts/'))\n b=f.read_bytes()\n if f.suffix=='.html' and 'http-equiv=\"refresh\"' not in b.decode('utf8'):\n  if rel!='404.html':assert 'name=\"aeroventa:source\" content=\"'+sha+'\"' in b.decode('utf8'),rel\n  assert 'name=\"robots\" content=\"noindex' in b.decode('utf8'),rel\n files.append({'path':rel,'bytes':len(b),'sha256':hashlib.sha256(b).hexdigest()})\nassert (dist/'robots.txt').read_text()=='User-agent: *\\nDisallow: /\\n'\nmarker=json.dumps({'source_sha':sha,'mode':'fixture-staging-only','release':'HOLD','installed_staging_sha':'NOT_ASSERTED'},indent=2).encode()\nfiles.append({'path':'aeroventa-build.json','bytes':len(marker),'sha256':hashlib.sha256(marker).hexdigest()})\nwith zipfile.ZipFile(out,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=6) as z:\n for item in files:\n  b=marker if item['path']=='aeroventa-build.json' else (dist/item['path']).read_bytes()\n  info=zipfile.ZipInfo(item['path'],date_time=(2026,10,24,0,0,0));info.compress_type=zipfile.ZIP_DEFLATED;info.external_attr=0o100644<<16\n  z.writestr(info,b)\nwith zipfile.ZipFile(out) as z:\n assert z.testzip() is None\n assert len(z.namelist())==len(files) and 'index.html' in z.namelist() and '404.html' in z.namelist()\n assert '.htaccess' not in z.namelist()\n for item in files:\n  b=z.read(item['path']);assert len(b)==item['bytes'] and hashlib.sha256(b).hexdigest()==item['sha256'],item['path']\nprint(json.dumps({'files':files,'zip_sha256':hashlib.sha256(out.read_bytes()).hexdigest(),'zip_bytes':out.stat().st_size,'crc':'PASS','reextracted_payload_hashes':'PASS','preserve_existing_staging_auth':True}))\n";
+
 
 const sealed=JSON.parse(execFileSync('python3',['-c',python,dist,path.join(out,zipName),sha],{encoding:'utf8',maxBuffer:8*1024*1024}));
 const limitations=[

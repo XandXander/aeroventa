@@ -15,8 +15,8 @@ const galleryFor=(slug:string)=>photos.filter(item=>item.path.includes('/warehou
 const avers=galleryFor('avers-razbegaevo'),farm=galleryFor('farm-spb');
 if(avers.length!==5||farm.length!==7)throw new Error('Warehouse source albums must contain five Avers and seven Farm originals');
 const evidence = [
- {title:'Разбегаево · Аверс Тверь',meta:'Складской объект · Разбегаево',detail:'Здание объекта, монтаж воздуховодов и инженерное оборудование.',href:avers[0],image:avers[0],imageAlt:'Здание складского объекта в Разбегаево',gallery:avers},
- {title:'Фарм · Санкт-Петербург',meta:'Промышленная площадка · Санкт-Петербург',detail:'Общий вид здания и фотодокументация инженерных трасс.',href:farm[0],image:farm[0],imageAlt:'Здание объекта Фарм в Санкт-Петербурге',gallery:farm}
+ {title:'Разбегаево · Аверс Тверь',meta:'Складской объект · Разбегаево',detail:'Здание объекта, монтаж воздуховодов и инженерное оборудование.',href:'#object-photo-dialog',image:avers[0],imageAlt:'Здание складского объекта в Разбегаево',gallery:avers},
+ {title:'Фарм · Санкт-Петербург',meta:'Промышленная площадка · Санкт-Петербург',detail:'Общий вид здания и фотодокументация инженерных трасс.',href:'#object-photo-dialog',image:farm[0],imageAlt:'Здание объекта Фарм в Санкт-Петербурге',gallery:farm}
 ];
 const drivers = ['Рабочая проектная документация и спецификация','Монтажные зоны и условия доступа','Стадия объекта и смежные инженерные системы','Оборудование, трассы и рабочие сроки'];
 const questions = ['Какие документы передать для расчёта монтажа?','Что согласовать до начала работ?','Какие ограничения объекта влияют на организацию монтажа?'];
@@ -25,5 +25,5 @@ const questions = ['Какие документы передать для рас
  <ObjectDetailPage content={content} eyebrow="Склады"
   lede="Высота помещений, оборудование и доступ к монтажным зонам определяют порядок работ. Показываем монтажные фотографии объектов в Разбегаево и Санкт-Петербурге." constraints={constraints} drivers={drivers} evidence={evidence} questions={questions}
   proofTitle="Объекты и монтажные работы"
-  heroMedia={{src:'/evidence/warehouses/avers-razbegaevo/03.webp',alt:'Монтаж воздуховодов в помещении объекта в Разбегаево',caption:'Разбегаево · складской объект · монтажные трассы'}}/>
+  heroMedia={{src:'/evidence/warehouses/avers-razbegaevo/01.webp',alt:'Здание складского объекта в Разбегаево',caption:'Разбегаево · Аверс Тверь · складской объект'}}/>
 </BaseLayout>

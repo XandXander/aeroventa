@@ -32,7 +32,8 @@ const isStories = content.path === '/blog/istorii-proektov/';
     </section>
     <section class="av-section av-journal-stories" aria-labelledby="practice-featured-title"><div class="av-shell"><div class="av-heading"><div><p class="av-kicker">Монтаж вентиляции</p><h2 id="practice-featured-title">Истории объектов</h2></div><a class="av-link" href="/blog/istorii-proektov/">Все истории →</a></div><div class="av-story-grid">{cases.filter(item=>item.href!==leadingCase.href).slice(0,4).map(item=><a href={item.href}><img src={item.image} alt={item.imageAlt} width="800" height="520" loading="lazy" decoding="async"/><span>{item.tag}</span><h3>{item.title}</h3><p>{item.meta}</p><b>Смотреть объект ↗</b></a>)}</div></div></section>
     <section class="av-section av-journal-articles" aria-labelledby="article-index-title"><div class="av-shell"><div class="av-heading"><div><p class="av-kicker">Технические материалы</p><h2 id="article-index-title">Условия, решения, стоимость</h2></div><a class="av-link" href="/blog/poleznye-stati/">Все полезные материалы →</a></div><div class="av-article-grid">{p0.map(item=><a href={item.href}><figure><img src={item.image} alt={item.imageAlt} width="720" height="480" loading="lazy" decoding="async"/></figure><span>{item.tag}</span><h3>{item.title}</h3><p>{item.text}</p><b>Читать статью ↗</b></a>)}</div><a class="av-journal-archive" href="/blog/detail/novoe-almaznoe-burenie/"><span>Ещё один материал</span><strong>Новое алмазное бурение</strong><b aria-hidden="true">↗</b></a></div></section>
-  </article>
+
+</article>
 ) : isPractical ? (
   <article class="practice-hub av-page av-journal-secondary">
     <section class="av-journal-opening" aria-label="Практические материалы и главный материал">
@@ -64,6 +65,7 @@ const isStories = content.path === '/blog/istorii-proektov/';
       <div class="home-shell practical-next__grid">
         <a href="/faq/"><span>До монтажа</span><h3>Вопросы до начала монтажа</h3><p>Документы, состав работ, смета и приёмка — ответы на частые вопросы.</p><b>Открыть FAQ →</b></a>
         <a href="/blog/istorii-proektov/"><span>Объекты</span><h3>Истории реальных объектов</h3><p>Выполненные работы, инженерные задачи и фотографии объектов.</p><b>Смотреть объекты →</b></a>
+<p><a class="av-link" href="/blog/obzory-i-intervyu/">Другие технические статьи →</a></p><p><a class="av-link" href="/covid-pritochnaya-ventilacia/">Вентиляция и качество воздуха: рекомендации и их контекст →</a></p>
       </div>
     </section>
   </article>

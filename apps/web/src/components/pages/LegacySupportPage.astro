@@ -160,7 +160,7 @@ const cardPhotos: Record<string, string> = {
   '/blog/detail/restoran-v-zhk-leontevskiy-mys/':'/evidence/leont/owner-cover-v43.webp',
   '/blog/detail/ntff-polisan/':'/evidence/polisan/owner-cover-v43.webp',
   '/blog/detail/kvartira-na-zhukova/':'/evidence/zhukov/owner-cover-v43.webp',
-  '/blog/detail/montazh-ventilyatsii-v-karelii/':'/evidence/karelia/object-exterior.jpg',
+  '/blog/detail/montazh-ventilyatsii-v-karelii/':'/evidence/karelia/owner-cover-v43.webp',
   '/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/':'/upload/medialibrary/548/5488fb415056eee52ac63ff9d4850c63.jpg',
   '/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/':'/upload/medialibrary/0a2/0a2f0d1be2900e0a1fe74bcd9604e3f8.jpg',
   '/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/':'/upload/medialibrary/fb3/fb3d693282a8085971dd4e2fe87bf28e.jpg',
@@ -213,6 +213,7 @@ if(!spec) throw new Error('Support spec missing: '+content.path);
     </section>
   )}
 
+  {isHistoryIndex && <section class="home-section"><nav class="home-shell" aria-label="Команда и сотрудничество"><a class="av-link" href="/news/korporativnaya-zhizn/">Команда AEROVENTA →</a><p><a class="av-link" href="/vakansii/">Сотрудничество со специалистами →</a></p></nav></section>}
   <section class="conversion-close">
     <div class="home-shell">
       <p class="section-index section-index--orange">Следующий шаг</p>
@@ -221,6 +222,7 @@ if(!spec) throw new Error('Support spec missing: '+content.path);
       <a class="button button--light" href={spec.closeHref}>{spec.closeLabel}</a>
     </div>
   </section>
+
 </article>
 
 <style>

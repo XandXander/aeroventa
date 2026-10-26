@@ -3646,6 +3646,15 @@ main .av-type .object-evidence__grid {
   margin-top: 30px;
   align-items: stretch;
 }
+main .av-type .object-evidence__grid--single { grid-template-columns: minmax(0, 1fr); }
+main .av-type .object-evidence__grid.object-evidence__grid--single > a {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: 32px; align-content: center;
+}
+main .av-type .object-evidence__grid--single .object-evidence__photo {
+  grid-column: 1; grid-row: 1 / span 4; margin: 0; align-self: center;
+}
+main .av-type .object-evidence__grid.object-evidence__grid--single > a > :not(img) { grid-column: 2; }
 main .av-type .object-evidence__grid > a {
   display: flex;
   flex-direction: column;
@@ -3975,6 +3984,8 @@ main .av-type .object-constraints__grid p {
     gap: 26px;
     margin-top: 26px;
   }
+  main .av-type .object-evidence__grid.object-evidence__grid--single > a { display: flex; }
+  main .av-type .object-evidence__grid--single .object-evidence__photo { margin-bottom: 16px; }
   main .av-type .object-evidence__photo {
     aspect-ratio: 1.55;
     margin-bottom: 16px;

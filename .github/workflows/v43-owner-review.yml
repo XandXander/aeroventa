@@ -28,6 +28,15 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
           persist-credentials: false
+      - name: Select explicitly requested affected regression
+        id: scope
+        shell: bash
+        run: |
+          if git log -1 --format=%B | grep -qx 'QA-Scope: object-cover-correction'; then
+            echo 'cover_only=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'cover_only=false' >> "$GITHUB_OUTPUT"
+          fi
       - name: Set up Node
         uses: actions/setup-node@v6
         with:
@@ -55,6 +64,7 @@ jobs:
           npm install --no-save --no-package-lock --no-audit --no-fund playwright@1.56.1
           npx --no-install playwright install --with-deps chromium
       - name: Launch isolated local HTTP server
+        if: steps.scope.outputs.cover_only != 'true'
         run: |
           nohup python3 -m http.server 4178 --bind 127.0.0.1 --directory apps/web/dist > /tmp/v43-render-http.log 2>&1 &
           echo $! > /tmp/v43-render-http.pid
@@ -65,6 +75,7 @@ jobs:
           cat /tmp/v43-render-http.log
           exit 1
       - name: Focused current HOME text enlargement regression
+        if: steps.scope.outputs.cover_only != 'true'
         id: focused-reflow
         env:
           RECOVERY_QA_PHASE: interactions
@@ -72,12 +83,19 @@ jobs:
           RECOVERY_QA_OUTPUT: PR12_REFLOW_QA
         run: node scripts/pr12-recovery-browser-qa.mjs
       - name: Render real compiled HTML at four viewports
+        if: steps.scope.outputs.cover_only != 'true'
         run: node scripts/render-v43-owner-review.mjs
       - name: Sitewide 51-HTML route / 10-viewport geometry and real-click gallery regression
         if: ${{ !cancelled() && steps.fixture-build.outcome == 'success' && steps.focused-reflow.outcome == 'success' }}
         env:
           GITHUB_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: node scripts/pr12-sitewide-regression.mjs
+      - name: Focused object covers, all fifty route links/media and warehouse galleries
+        if: steps.scope.outputs.cover_only == 'true'
+        env:
+          RECOVERY_QA_PHASE: covers
+          RECOVERY_QA_OUTPUT: PR12_COVER_QA
+        run: node scripts/pr12-recovery-browser-qa.mjs
       - name: Latest Owner first-view, authentic Neva, twelve-object and compact-assistant contract
         if: ${{ !cancelled() && steps.fixture-build.outcome == 'success' && steps.focused-reflow.outcome == 'success' }}
         env:
@@ -97,7 +115,7 @@ jobs:
           RECOVERY_QA_OUTPUT: PR12_EXACT_SURFACES
         run: node scripts/pr12-recovery-browser-qa.mjs
       - name: Upload compact sitewide interaction and first-fold evidence
-        if: always()
+        if: always() && steps.scope.outputs.cover_only != 'true'
         uses: actions/upload-artifact@v6
         with:
           name: PR12-SITEWIDE-10-VIEWPORT-AND-REAL-CLICKS
@@ -163,7 +181,7 @@ jobs:
           }
           JS
       - name: Upload browser screenshots and machine report
-        if: always()
+        if: always() && steps.scope.outputs.cover_only != 'true'
         uses: actions/upload-artifact@v6
         with:
           name: v43-final-selected-owner-review
@@ -195,12 +213,13 @@ jobs:
         if: success() && (github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.number == 12))
         env:
           REVIEW_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          PR12_REVIEW_SCOPE: ${{ steps.scope.outputs.cover_only == 'true' && 'covers' || 'full' }}
         run: node scripts/package-pr12-art-review.mjs
       - name: Upload one final review delivery (NO deployment)
         if: success() && (github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.number == 12))
         uses: actions/upload-artifact@v6
         with:
-          name: AEROVENTA_PR12_FINAL_ART_REVIEW_AND_STAGING_ZIP
+          name: ${{ steps.scope.outputs.cover_only == 'true' && 'AEROVENTA_PR12_OBJECT_COVERS_AND_STAGING_ZIP' || 'AEROVENTA_PR12_FINAL_ART_REVIEW_AND_STAGING_ZIP' }}
           path: PR12_FINAL_DELIVERY/
           if-no-files-found: error
           retention-days: 30
