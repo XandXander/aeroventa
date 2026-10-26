@@ -2456,7 +2456,7 @@ main .av-portfolio .portfolio-sport__gallery-link {
 }
 .av-article-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 32px;
 }
 .av-article-grid > a,
@@ -2467,17 +2467,23 @@ main .av-portfolio .portfolio-sport__gallery-link {
   min-width: 0;
   align-items: start;
 }
+.av-article-grid > a{display:grid;grid-template-columns:140px minmax(0,1fr);column-gap:24px;border-bottom:1px solid #c3d0d1;padding-bottom:24px}
+.av-article-grid figure{grid-area:1/1/5/2;align-self:start;margin:0}
+.av-article-grid > a > span{grid-area:1/2}
+.av-article-grid h3{grid-area:2/2}
+.av-article-grid p{grid-area:3/2}
+.av-article-grid b{grid-area:4/2}
 .av-article-grid figure {
   box-sizing: border-box;
   background: #e5ebe8;
   border: 1px solid #d4e0e1;
-  padding: clamp(12px, 1.8vw, 24px);
+  padding: 10px;
   overflow: hidden;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  aspect-ratio: 1.5;
+  aspect-ratio: 1.15;
 }
 .av-article-grid img {
   display: block;
@@ -2496,8 +2502,9 @@ main .av-portfolio .portfolio-sport__gallery-link {
   line-height: 1.5;
   margin-block: 18px 12px;
 }
+.av-article-grid > a > span{margin:0 0 9px}
 .av-article-grid h3 {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   line-height: 1.3;
 }
 .av-article-grid p {
@@ -2567,8 +2574,9 @@ main .av-portfolio .portfolio-sport__gallery-link {
   gap: 32px;
   background: transparent;
   border: 0;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
+.av-journal-secondary .practical-index__photo{max-height:200px}
 .av-journal-secondary .practical-index__grid a {
   padding: 0 0 28px;
   border: 0;
@@ -2677,6 +2685,7 @@ main .av-portfolio .portfolio-sport__gallery-link {
     margin-top: 20px;
     font-size: 0.84rem;
   }
+  .av-journal-secondary .practical-index__grid {grid-template-columns:minmax(0,1fr)}
   .av-article-grid {
     grid-template-columns: 1fr;
     gap: 28px;

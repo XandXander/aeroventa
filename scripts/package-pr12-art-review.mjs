@@ -57,7 +57,7 @@ async function capture(directory,version,routes,target){
 }
 await capture(dist,sha,['/404.html'],frames);
 if(frames.length!==100||new Set(frames.map(f=>f.route+'|'+f.width)).size!==100)throw Error('Fifty complete desktop/mobile pairs required');
-const compare=['/','/services/','/montazh-ventiliacii/','/montazh-po-proektu/','/obekt-bez-gotovogo-proekta/','/portfolio/','/about/','/blog/','/contact/','/faq/','/obekty/','/obekty/kvartiry-i-doma/','/blog/detail/restoran-v-zhk-leontevskiy-mys/','/blog/detail/kafe-rimskogo-korsakova-3/','/portfolio/obekt/akvilon-yanino/','/portfolio/obekt/na-izluchine-nevy/','/news/istoriya-kompanii/','/covid-pritochnaya-ventilacia/','/obekty/magaziny-i-sklady/','/obekty/ofisy-i-kommercheskie-pomeshcheniya/'];
+const compare=['/','/services/','/montazh-ventiliacii/','/montazh-po-proektu/','/obekt-bez-gotovogo-proekta/','/portfolio/','/about/','/blog/','/blog/istorii-proektov/','/blog/poleznye-stati/','/contact/','/faq/','/obekty/','/obekty/kvartiry-i-doma/','/blog/detail/restoran-v-zhk-leontevskiy-mys/','/blog/detail/kafe-rimskogo-korsakova-3/','/portfolio/obekt/akvilon-yanino/','/portfolio/obekt/na-izluchine-nevy/','/news/istoriya-kompanii/','/covid-pritochnaya-ventilacia/','/obekty/magaziny-i-sklady/','/obekty/ofisy-i-kommercheskie-pomeshcheniya/'];
 try{
  for(const version of['e4f1e8b5053e866e7485ff46d0220c17c982b0a5']){
   const dir=path.join(process.env.RUNNER_TEMP,'art-before-'+version.slice(0,8));
