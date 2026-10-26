@@ -211,10 +211,14 @@ const officeHtml=await fs.readFile(htmlFileFor('/obekty/ofisy-i-kommerciya/'),'u
 check(Boolean(officeHtml && !officeHtml.includes('/portfolio/#owner-') &&
   (officeHtml.match(/src="\/evidence\/owner-portfolio\/apart-hotel\/cover\.webp"/g)||[]).length===1 &&
   officeHtml.includes('href="/portfolio/obekt/apart-hotel/"') &&
-  officeHtml.includes('href="/portfolio/obekt/eurospar-vo/"') &&
-  officeHtml.includes('href="/portfolio/obekt/eurospar-sestroretsk/"') &&
+  officeHtml.includes('src="/evidence/owner-source-20261026/fitness-spb/photo_5226735321473556539_y.jpg"') &&
+  officeHtml.includes('src="/evidence/owner-source-20261026/leont-office/IMG_6686.JPG"') &&
+  officeHtml.includes('data-object-gallery-title="Фитнес-студия СПб"') &&
+  officeHtml.includes('data-object-gallery-title="Офис в Леонтьевском Мысе"') &&
+  !officeHtml.includes('href="/portfolio/obekt/eurospar-vo/"') &&
+  !officeHtml.includes('href="/portfolio/obekt/eurospar-sestroretsk/"') &&
   !officeHtml.includes('/evidence/owner-portfolio/apart-hotel/gallery-01.webp')),
-  'O22-09 / J-08 + Owner26Oct: direct case links, one hotel cover and two distinct retail objects');
+  'D-061–D-065 supersede the old retail pair: one hotel HERO, authentic fitness and Leont-office gallery cards');
 const contactHtml=await fs.readFile(htmlFileFor('/contact/'),'utf8').catch(()=>null);
 check(Boolean(contactHtml && !contactHtml.includes('Без технического «идеального брифа»')),
   'J-09: rejected public lead-form wording remains');

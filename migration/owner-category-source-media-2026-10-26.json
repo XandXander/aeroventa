@@ -1,0 +1,467 @@
+{
+  "source": "Owner attachment контент.zip supplied for closing the three D061–D065 source slots",
+  "archive_sha256": "500a661ccfb66399944ec60e4326580ed93861d4596fba9e9dcc8246ca5603ec",
+  "archive_bytes": 37174490,
+  "original_count": 33,
+  "objects": [
+    {
+      "slug": "mitrofanievskoe",
+      "owner_folder": "Дом Митрофаньевское СПб",
+      "cover": "/evidence/owner-source-20261026/mitrofanievskoe/photo_5226735321473556570_y.png",
+      "gallery": [
+        "/evidence/owner-source-20261026/mitrofanievskoe/photo_5226735321473556570_y.png",
+        "/evidence/owner-source-20261026/mitrofanievskoe/photo_5226735321473556576_y.jpg",
+        "/evidence/owner-source-20261026/mitrofanievskoe/photo_5226735321473556577_y.jpg",
+        "/evidence/owner-source-20261026/mitrofanievskoe/photo_5226735321473556578_y.jpg",
+        "/evidence/owner-source-20261026/mitrofanievskoe/photo_5226735321473556579_y.jpg",
+        "/evidence/owner-source-20261026/mitrofanievskoe/photo_5226735321473556580_y.jpg",
+        "/evidence/owner-source-20261026/mitrofanievskoe/photo_5226735321473556581_y.jpg",
+        "/evidence/owner-source-20261026/mitrofanievskoe/photo_5226735321473556582_y.jpg",
+        "/evidence/owner-source-20261026/mitrofanievskoe/photo_5226735321473556583_y.jpg",
+        "/evidence/owner-source-20261026/mitrofanievskoe/photo_5226735321473556584_y.jpg",
+        "/evidence/owner-source-20261026/mitrofanievskoe/photo_5226735321473556585_y.jpg",
+        "/evidence/owner-source-20261026/mitrofanievskoe/photo_5226735321473556586_y.jpg",
+        "/evidence/owner-source-20261026/mitrofanievskoe/photo_5226735321473556587_y.jpg"
+      ],
+      "original_count": 13,
+      "cover_kind": "exterior"
+    },
+    {
+      "slug": "fitness-spb",
+      "owner_folder": "ФитнессСтудия СПб",
+      "cover": "/evidence/owner-source-20261026/fitness-spb/photo_5226735321473556539_y.jpg",
+      "gallery": [
+        "/evidence/owner-source-20261026/fitness-spb/photo_5226735321473556539_y.jpg",
+        "/evidence/owner-source-20261026/fitness-spb/photo_5226735321473556540_y.jpg",
+        "/evidence/owner-source-20261026/fitness-spb/photo_5226735321473556541_y.jpg",
+        "/evidence/owner-source-20261026/fitness-spb/photo_5226735321473556542_y.jpg",
+        "/evidence/owner-source-20261026/fitness-spb/photo_5226735321473556543_y.jpg"
+      ],
+      "original_count": 5,
+      "cover_kind": "interior"
+    },
+    {
+      "slug": "leont-office",
+      "owner_folder": "ОФИС ЛЕОНТ МЫС",
+      "cover": "/evidence/owner-source-20261026/leont-office/IMG_6686.JPG",
+      "gallery": [
+        "/evidence/owner-source-20261026/leont-office/IMG_6686.JPG",
+        "/evidence/owner-source-20261026/leont-office/IMG_6660.JPG",
+        "/evidence/owner-source-20261026/leont-office/IMG_6661.JPG",
+        "/evidence/owner-source-20261026/leont-office/IMG_6662.JPG",
+        "/evidence/owner-source-20261026/leont-office/IMG_6663.JPG",
+        "/evidence/owner-source-20261026/leont-office/IMG_6664.JPG",
+        "/evidence/owner-source-20261026/leont-office/IMG_6666.JPG",
+        "/evidence/owner-source-20261026/leont-office/IMG_6668.JPG",
+        "/evidence/owner-source-20261026/leont-office/IMG_6699.JPG",
+        "/evidence/owner-source-20261026/leont-office/IMG_6700.JPG",
+        "/evidence/owner-source-20261026/leont-office/IMG_6709.JPG",
+        "/evidence/owner-source-20261026/leont-office/IMG_6710.JPG",
+        "/evidence/owner-source-20261026/leont-office/IMG_6711.JPG",
+        "/evidence/owner-source-20261026/leont-office/IMG_6712.JPG",
+        "/evidence/owner-source-20261026/leont-office/IMG_6713.JPG"
+      ],
+      "original_count": 15,
+      "cover_kind": "exterior"
+    }
+  ],
+  "files": [
+    {
+      "path": "/evidence/owner-source-20261026/fitness-spb/photo_5226735321473556539_y.jpg",
+      "bytes": 93588,
+      "sha256": "54765fc3104a13f5317d53417754634d52fd1df1de34ff13c8f1c550299936b8",
+      "size": [
+        1024,
+        768
+      ],
+      "orientation": 1,
+      "archive_path": "ФитнессСтудия СПб/photo_5226735321473556539_y.jpg",
+      "git_blob_sha": "d2b6024548bc4eaf3cb57b44e57763dbe77bff9a"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/fitness-spb/photo_5226735321473556540_y.jpg",
+      "bytes": 136281,
+      "sha256": "482fa2f4a0c95f00f83dd905b661635033740539e3408120c1bf68f930c781bd",
+      "size": [
+        1024,
+        768
+      ],
+      "orientation": 1,
+      "archive_path": "ФитнессСтудия СПб/photo_5226735321473556540_y.jpg",
+      "git_blob_sha": "33623ebdc43d75b8993f2eda46fab7afe09e4c64"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/fitness-spb/photo_5226735321473556541_y.jpg",
+      "bytes": 155958,
+      "sha256": "ebbef697819427557a32f14ee54ae363dd96db750a735912f9b680002c154416",
+      "size": [
+        1024,
+        768
+      ],
+      "orientation": 1,
+      "archive_path": "ФитнессСтудия СПб/photo_5226735321473556541_y.jpg",
+      "git_blob_sha": "ae3ddb87e31ad87518ed6d6bf753892ff28efd75"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/fitness-spb/photo_5226735321473556542_y.jpg",
+      "bytes": 146998,
+      "sha256": "f44342c2060545b66d28b5739d012158eefc4645060ff9998ce9f378031b48b7",
+      "size": [
+        1024,
+        768
+      ],
+      "orientation": 1,
+      "archive_path": "ФитнессСтудия СПб/photo_5226735321473556542_y.jpg",
+      "git_blob_sha": "83243a333d08f246ff454830aa81e8706c576ba1"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/fitness-spb/photo_5226735321473556543_y.jpg",
+      "bytes": 165529,
+      "sha256": "1c517e84cb78dc6ee225764bd847a58e02642432982d9bc0dc0d02a6f1979581",
+      "size": [
+        1024,
+        768
+      ],
+      "orientation": 1,
+      "archive_path": "ФитнессСтудия СПб/photo_5226735321473556543_y.jpg",
+      "git_blob_sha": "0127e3264e86198d3240abdc2be43615dba8736f"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/mitrofanievskoe/photo_5226735321473556570_y.png",
+      "bytes": 1555230,
+      "sha256": "c9043abad4115481db7634f31bc486b63d0edbb5f2f3b6e00f6ae4bd6f54a7ac",
+      "size": [
+        1280,
+        960
+      ],
+      "orientation": 1,
+      "archive_path": "Дом Митрофаньевское СПб/photo_5226735321473556570_y.png",
+      "git_blob_sha": "f389cedb6fef523a6edab743038fe8904de8a742"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/mitrofanievskoe/photo_5226735321473556576_y.jpg",
+      "bytes": 133951,
+      "sha256": "76767b3b71c79309b4a30a5edac2862b73b9b153aea68c603f5bc133e6a633ea",
+      "size": [
+        1280,
+        960
+      ],
+      "orientation": 1,
+      "archive_path": "Дом Митрофаньевское СПб/photo_5226735321473556576_y.jpg",
+      "git_blob_sha": "bf1822e2739abc3c50b6e3e97a5baadd8e378a71"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/mitrofanievskoe/photo_5226735321473556577_y.jpg",
+      "bytes": 130189,
+      "sha256": "09ebc52c0cd0b5a6a67fabf45eac4db07f96a3eb2e9156bff0b5f497cc2c667f",
+      "size": [
+        1280,
+        960
+      ],
+      "orientation": 1,
+      "archive_path": "Дом Митрофаньевское СПб/photo_5226735321473556577_y.jpg",
+      "git_blob_sha": "df53e54355d4c3b963a0c065713278afe00491b4"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/mitrofanievskoe/photo_5226735321473556578_y.jpg",
+      "bytes": 223009,
+      "sha256": "0f2c8ad05973cb711f62360d9370b47e114c6bbd0fafaca56bd0592dc85651ca",
+      "size": [
+        1280,
+        960
+      ],
+      "orientation": 1,
+      "archive_path": "Дом Митрофаньевское СПб/photo_5226735321473556578_y.jpg",
+      "git_blob_sha": "d3b90ec97eb47d54f4fdc05919b6119cb5119925"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/mitrofanievskoe/photo_5226735321473556579_y.jpg",
+      "bytes": 233361,
+      "sha256": "4956aec6c918260f26d464ca7a47596c824317e2748a829bab421b35fa2dcee5",
+      "size": [
+        1280,
+        960
+      ],
+      "orientation": 1,
+      "archive_path": "Дом Митрофаньевское СПб/photo_5226735321473556579_y.jpg",
+      "git_blob_sha": "e84090662dcc6a53e5f9e2c236b36b295ec8e923"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/mitrofanievskoe/photo_5226735321473556580_y.jpg",
+      "bytes": 259049,
+      "sha256": "126d7435b1029c400df335995d162738366020eff9e7f2049c196f663f77866c",
+      "size": [
+        1280,
+        960
+      ],
+      "orientation": 1,
+      "archive_path": "Дом Митрофаньевское СПб/photo_5226735321473556580_y.jpg",
+      "git_blob_sha": "aff5428c450699d9b5b941abc62a4bc501164ff7"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/mitrofanievskoe/photo_5226735321473556581_y.jpg",
+      "bytes": 183585,
+      "sha256": "7aca8fe635fc2f447b951477b02bcb15059658c16da5d475241944c08fe4753c",
+      "size": [
+        1280,
+        960
+      ],
+      "orientation": 1,
+      "archive_path": "Дом Митрофаньевское СПб/photo_5226735321473556581_y.jpg",
+      "git_blob_sha": "f5ec8dca86bfa7b7feddd2a5b4163431b2bb9323"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/mitrofanievskoe/photo_5226735321473556582_y.jpg",
+      "bytes": 150555,
+      "sha256": "7fed82e61aaa354f45a67cd520dbb9c49d5520aff5f668d2c32ecc7c0441ab46",
+      "size": [
+        1280,
+        960
+      ],
+      "orientation": 1,
+      "archive_path": "Дом Митрофаньевское СПб/photo_5226735321473556582_y.jpg",
+      "git_blob_sha": "7b28c1632d473f8c059bdfe4796d4726fb590b3b"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/mitrofanievskoe/photo_5226735321473556583_y.jpg",
+      "bytes": 186185,
+      "sha256": "751fa5132d7890e225e9556c67149e8bf4e4a76bd250da170524a1ea6f0bc1fb",
+      "size": [
+        1280,
+        960
+      ],
+      "orientation": 1,
+      "archive_path": "Дом Митрофаньевское СПб/photo_5226735321473556583_y.jpg",
+      "git_blob_sha": "8719f8003387e58e18a229394836b67b0709d21a"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/mitrofanievskoe/photo_5226735321473556584_y.jpg",
+      "bytes": 296124,
+      "sha256": "12a99c5c61db0f43e4115fb3c9e0f426618e3d32bdae5fd41177f0c591dd2a37",
+      "size": [
+        960,
+        1280
+      ],
+      "orientation": 1,
+      "archive_path": "Дом Митрофаньевское СПб/photo_5226735321473556584_y.jpg",
+      "git_blob_sha": "fa5998f143bfe4ad89b7be4ee461ceb0fc6ae5e1"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/mitrofanievskoe/photo_5226735321473556585_y.jpg",
+      "bytes": 283515,
+      "sha256": "65fdc5ef4111d5b688b5459860fb6aafc383a26738cdab339f1c087df50e23d2",
+      "size": [
+        960,
+        1280
+      ],
+      "orientation": 1,
+      "archive_path": "Дом Митрофаньевское СПб/photo_5226735321473556585_y.jpg",
+      "git_blob_sha": "cf10a5d1dc825e86d1a7b9eea986577da021dfc8"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/mitrofanievskoe/photo_5226735321473556586_y.jpg",
+      "bytes": 299769,
+      "sha256": "72c541ea1a44fbfc12026e6a019d7f87d3afe3f30fc3bc2f295394964fda97fc",
+      "size": [
+        960,
+        1280
+      ],
+      "orientation": 1,
+      "archive_path": "Дом Митрофаньевское СПб/photo_5226735321473556586_y.jpg",
+      "git_blob_sha": "586722d64e0efbcffd2784065f0f3f9d8189a849"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/mitrofanievskoe/photo_5226735321473556587_y.jpg",
+      "bytes": 344208,
+      "sha256": "5936f9d0110ff130ad3fbe71a8f589bb7f04cdf6eff52b45e99e7381b59d1af0",
+      "size": [
+        960,
+        1280
+      ],
+      "orientation": 1,
+      "archive_path": "Дом Митрофаньевское СПб/photo_5226735321473556587_y.jpg",
+      "git_blob_sha": "5ed5a1f5b1f367dd27359533fd15b1a37c852308"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/leont-office/IMG_6660.JPG",
+      "bytes": 2674028,
+      "sha256": "d19518941decbe6bb65b2514896393c8ecaea9827a52b8b34cc8a2b7b4e9b5e1",
+      "size": [
+        3264,
+        2448
+      ],
+      "orientation": 1,
+      "archive_path": "ОФИС ЛЕОНТ МЫС/IMG_6660.JPG",
+      "git_blob_sha": "bd4bddfa9af01f6e349bd59e543cb5895915c7ce"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/leont-office/IMG_6661.JPG",
+      "bytes": 1762328,
+      "sha256": "7c538bf0e79ff4d71be46da362d3674ac65a2fb49f119e86ec59780599e45bcd",
+      "size": [
+        3264,
+        2448
+      ],
+      "orientation": 1,
+      "archive_path": "ОФИС ЛЕОНТ МЫС/IMG_6661.JPG",
+      "git_blob_sha": "322c6f7fcca4923620016b1dd3ae3ebfdc8f2abc"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/leont-office/IMG_6662.JPG",
+      "bytes": 1731525,
+      "sha256": "9e5bbc60653c1c4fe20f2fc23ed008fdc8420b66188e059ccee9981dfef1c717",
+      "size": [
+        3264,
+        2448
+      ],
+      "orientation": 1,
+      "archive_path": "ОФИС ЛЕОНТ МЫС/IMG_6662.JPG",
+      "git_blob_sha": "e6f272cb26627c230a8a5ff609acc7f0a3483908"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/leont-office/IMG_6663.JPG",
+      "bytes": 1235740,
+      "sha256": "2cc1f64b83af3d65e49c492b599d26432b428bd25c61145a97a401ed381d555e",
+      "size": [
+        3264,
+        2448
+      ],
+      "orientation": 1,
+      "archive_path": "ОФИС ЛЕОНТ МЫС/IMG_6663.JPG",
+      "git_blob_sha": "1329778e081dd873dbcedda44a09aeca0a9e40bb"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/leont-office/IMG_6664.JPG",
+      "bytes": 1474795,
+      "sha256": "fffd29be751f7ebad63fde075796ed06b504bdadf22e7b78275b6260e74e3fe4",
+      "size": [
+        3264,
+        2448
+      ],
+      "orientation": 1,
+      "archive_path": "ОФИС ЛЕОНТ МЫС/IMG_6664.JPG",
+      "git_blob_sha": "c4726b4ba5d6a9ced9e2c83902fe1fd3c52d5c3c"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/leont-office/IMG_6666.JPG",
+      "bytes": 1810364,
+      "sha256": "a24dbdfc53bcb16360461ded8cab845634ae87d22c745a3049b4cb0eb42c1d86",
+      "size": [
+        3264,
+        2448
+      ],
+      "orientation": 1,
+      "archive_path": "ОФИС ЛЕОНТ МЫС/IMG_6666.JPG",
+      "git_blob_sha": "d42d67f22efbaeb318a24aa216552736b2494df5"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/leont-office/IMG_6668.JPG",
+      "bytes": 3290617,
+      "sha256": "ad49b38ac53304cd8a31e115579b5a1380a0ca1b2fe34b3525eaca5245d072fa",
+      "size": [
+        3264,
+        2448
+      ],
+      "orientation": 1,
+      "archive_path": "ОФИС ЛЕОНТ МЫС/IMG_6668.JPG",
+      "git_blob_sha": "fc7e17c125538b12de8dd80ceb9a9807fdac106e"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/leont-office/IMG_6686.JPG",
+      "bytes": 2164360,
+      "sha256": "6971e74d7bbb8e591c75515791c8195f36d1041e6210afc90bc89744b54b4f28",
+      "size": [
+        3264,
+        2448
+      ],
+      "orientation": 1,
+      "archive_path": "ОФИС ЛЕОНТ МЫС/IMG_6686.JPG",
+      "git_blob_sha": "a019200a3b2b1210a0bc93e4c11febf6c4a737d1"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/leont-office/IMG_6699.JPG",
+      "bytes": 1779971,
+      "sha256": "f7d36cd66f34d62fc17e0f3d7b2a948bd21d565ced4f6379738bb436733296a0",
+      "size": [
+        3264,
+        2448
+      ],
+      "orientation": 1,
+      "archive_path": "ОФИС ЛЕОНТ МЫС/IMG_6699.JPG",
+      "git_blob_sha": "d41d0692880ee042a951c2e4d2e0de0e19db7221"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/leont-office/IMG_6700.JPG",
+      "bytes": 1731782,
+      "sha256": "b0075c4e8fb899d78b7e279cdb0e8041f4950a43c620d1d4d5403650d6d448b3",
+      "size": [
+        3264,
+        2448
+      ],
+      "orientation": 1,
+      "archive_path": "ОФИС ЛЕОНТ МЫС/IMG_6700.JPG",
+      "git_blob_sha": "1c310fc4ad612ba88a3a89df64084a2eb815fccb"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/leont-office/IMG_6709.JPG",
+      "bytes": 3577334,
+      "sha256": "4ac60e01073be5a5fb61348dbec88054245da58eb9cb3dd37df6c5b460be01e6",
+      "size": [
+        3264,
+        2448
+      ],
+      "orientation": 1,
+      "archive_path": "ОФИС ЛЕОНТ МЫС/IMG_6709.JPG",
+      "git_blob_sha": "d6d37bf4ce5434c7730cdf44a276cbec8137895e"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/leont-office/IMG_6710.JPG",
+      "bytes": 2731148,
+      "sha256": "4b324845129627ade749c9f0b48cbc5e2a3abf25264ac653531c9ef164499536",
+      "size": [
+        3264,
+        2448
+      ],
+      "orientation": 1,
+      "archive_path": "ОФИС ЛЕОНТ МЫС/IMG_6710.JPG",
+      "git_blob_sha": "6de7c87db1a45e0b8025285757a0cd647906ec0d"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/leont-office/IMG_6711.JPG",
+      "bytes": 2658091,
+      "sha256": "0599b630106de375281997db1a030c7547b9ce1cf061ed5d5b7993ab0d34c5c6",
+      "size": [
+        3264,
+        2448
+      ],
+      "orientation": 1,
+      "archive_path": "ОФИС ЛЕОНТ МЫС/IMG_6711.JPG",
+      "git_blob_sha": "50a63ef908a188e81199fcc1170706b58ff52a8e"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/leont-office/IMG_6712.JPG",
+      "bytes": 1037863,
+      "sha256": "78f882ff6c38bfc0796f44a11a7b3ca624c93e2ea806be8a010081ee20c95b5c",
+      "size": [
+        3264,
+        2448
+      ],
+      "orientation": 1,
+      "archive_path": "ОФИС ЛЕОНТ МЫС/IMG_6712.JPG",
+      "git_blob_sha": "e0fd009f69a939d8fd4dbde5a9c1b2c60fdc4f2a"
+    },
+    {
+      "path": "/evidence/owner-source-20261026/leont-office/IMG_6713.JPG",
+      "bytes": 2724014,
+      "sha256": "2f226ed014a086e5d44a1d2c52e20081f3b0d9d860bc3ec4679593f57551a227",
+      "size": [
+        3264,
+        2448
+      ],
+      "orientation": 1,
+      "archive_path": "ОФИС ЛЕОНТ МЫС/IMG_6713.JPG",
+      "git_blob_sha": "66c5bc9503ebb1511cc518accce04b1166cb84ca"
+    }
+  ],
+  "processing": "All33 originals copied byte-for-byte; existing build generates separate responsive variants. No AI, substituted object, crop or original deletion."
+}

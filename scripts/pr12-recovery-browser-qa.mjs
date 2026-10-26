@@ -5,6 +5,7 @@ import path from 'node:path';
 import http from 'node:http';
 import { createRequire } from 'node:module';
 import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { chromium } from 'playwright';
 import sharp from 'sharp';
 const require = createRequire(import.meta.url);
@@ -110,10 +111,18 @@ try {
   report.orphans=[...incoming].filter(([r,links])=>r!=='/404.html'&&r!=='/'&&!links.size).map(([r])=>r);
   if(report.orphans.length)report.issues.push({type:'ORPHAN_HTML_ROUTES',routes:report.orphans});
   if(process.env.RECOVERY_QA_OWNER_CONTRACT==='D061_D065'){
+   const sourceMedia=JSON.parse(await fs.readFile('migration/owner-category-source-media-2026-10-26.json','utf8'));
+   const nativeChecks=[];
+   for(const file of sourceMedia.files){const b=await fs.readFile(path.join(root,file.path.replace(/^\//,'')));nativeChecks.push({path:file.path,pass:b.length===file.bytes&&createHash('sha256').update(b).digest('hex')===file.sha256});}
+   const albums=Object.fromEntries(sourceMedia.objects.map(o=>[o.slug,o.gallery.length]));
+   const sourcePass=sourceMedia.archive_sha256==='500a661ccfb66399944ec60e4326580ed93861d4596fba9e9dcc8246ca5603ec'&&nativeChecks.length===33&&nativeChecks.every(c=>c.pass)&&albums.mitrofanievskoe===13&&albums['fitness-spb']===5&&albums['leont-office']===15;
+   report.source_media={archive_sha256:sourceMedia.archive_sha256,originals:nativeChecks.length,albums,checks:nativeChecks,pass:sourcePass};
+   if(!sourcePass)report.issues.push({type:'OWNER_ORIGINAL_MEDIA_PROVENANCE',checks:nativeChecks.filter(c=>!c.pass),albums});
+   const album=slug=>sourceMedia.objects.find(o=>o.slug===slug)?.gallery;
    const map=[
-    {route:'/obekty/kvartiry-i-doma/',hero:'/evidence/residential/neva/IMG_7571.JPG',subjects:['Маршала Жукова','Митроф'],images:['/evidence/zhukov/owner-cover-v43.webp',null]},
+    {route:'/obekty/kvartiry-i-doma/',hero:'/evidence/residential/neva/IMG_7571.JPG',subjects:['Маршала Жукова','Митроф'],images:['/evidence/zhukov/owner-cover-v43.webp','/evidence/owner-source-20261026/mitrofanievskoe/photo_5226735321473556570_y.png'],galleries:[null,album('mitrofanievskoe')]},
     {route:'/obekty/restorany-i-kafe/',hero:'/evidence/cafe/owner-interior-v43.webp',subjects:['Леонтьевский','Кафе'],images:['/evidence/leont/owner-cover-v43.webp','/evidence/cafe/owner-cover-v43.webp']},
-    {route:'/obekty/ofisy-i-kommerciya/',hero:'/evidence/owner-portfolio/apart-hotel/cover.webp',subjects:['Фитнес','Офис в Леонтьевском'],images:[null,null]},
+    {route:'/obekty/ofisy-i-kommerciya/',hero:'/evidence/owner-portfolio/apart-hotel/cover.webp',subjects:['Фитнес','Офис в Леонтьевском'],images:['/evidence/owner-source-20261026/fitness-spb/photo_5226735321473556539_y.jpg','/evidence/owner-source-20261026/leont-office/IMG_6686.JPG'],galleries:[album('fitness-spb'),album('leont-office')]},
     {route:'/obekty/proizvodstvo/',hero:'/evidence/polisan/owner-cover-v43.webp',subjects:['Химпром','Новатех'],images:['/evidence/owner-portfolio/himprom/03.webp','/evidence/owner-portfolio/novatech/cover.webp']},
     {route:'/obekty/novostroyki/',hero:'/evidence/owner-portfolio/akvilon-yanino/cover.webp',subjects:['7 PARK','На излучине Невы'],images:['/evidence/7park/object-exterior-day.jpg','/evidence/residential/neva/IMG_7571.JPG']},
     {route:'/obekty/magaziny-i-sklady/',hero:'/evidence/warehouses/avers-razbegaevo/01.webp',subjects:['Фарм','EUROSPAR'],images:['/evidence/warehouses/farm-spb/01.webp','/evidence/owner-portfolio/eurospar-vo/cover.webp']}
@@ -122,7 +131,7 @@ try {
    for(const item of map){await page.goto(origin+item.route,{waitUntil:'load'});const actual=await page.evaluate(()=>({hero:document.querySelector('.object-detail__hero-media img')?.getAttribute('src'),cards:[...document.querySelectorAll('.object-evidence__grid > a,.object-evidence__grid > button')].map(e=>({title:e.querySelector('h3')?.textContent.trim(),image:e.querySelector('img')?.getAttribute('src'),href:e.getAttribute('href'),gallery:e.getAttribute('data-object-gallery')}))}));
     report.owner_scope.checks.push({route:item.route,placement:'HERO',expected:item.hero,actual:actual.hero,pass:actual.hero===item.hero});
     report.owner_scope.card_counts.push({route:item.route,expected:2,actual:actual.cards.length,pass:actual.cards.length===2});
-    item.subjects.forEach((subject,i)=>report.owner_scope.checks.push({route:item.route,placement:'CARD'+(i+1),expected:subject,actual:actual.cards[i]||null,expected_image:item.images[i],pass:Boolean(item.images[i]&&actual.cards[i]?.title?.includes(subject)&&actual.cards[i]?.image===item.images[i])}));
+    item.subjects.forEach((subject,i)=>report.owner_scope.checks.push({route:item.route,placement:'CARD'+(i+1),expected:subject,actual:actual.cards[i]||null,expected_image:item.images[i],pass:Boolean(item.images[i]&&actual.cards[i]?.title?.includes(subject)&&actual.cards[i]?.image===item.images[i]&&(!item.galleries?.[i]||JSON.stringify(JSON.parse(actual.cards[i]?.gallery||'[]'))===JSON.stringify(item.galleries[i])))}));
    }
    report.owner_scope.complete=report.owner_scope.checks.length===18&&report.owner_scope.checks.every(c=>c.pass)&&report.owner_scope.card_counts.every(c=>c.pass);
    report.owner_scope.verdict=report.owner_scope.complete?'SOURCE_PLACEMENTS_VERIFIED':'SOURCE_MEDIA_HOLD';
@@ -168,9 +177,28 @@ try {
      await page.goto(origin+route,{waitUntil:'load'});
     }
    }
-   if(route==='/obekty/sklady/'||(report.owner_scope&&route==='/obekty/magaziny-i-sklady/')){
-    for(const locator of ['.object-detail__hero-media [data-object-gallery]','.object-evidence__grid [data-object-gallery]']){
-     const opener=page.locator(locator).first();if(!await opener.count()){report.issues.push({type:'WAREHOUSE_GALLERY_ENTRY_MISSING',width,locator});continue;}await opener.click();const d=page.locator('#object-photo-dialog');await d.waitFor({state:'visible'});const before=await d.locator('img').getAttribute('src');await d.locator('[data-object-photo-next]').click();const after=await d.locator('img').getAttribute('src');if(before===after)report.issues.push({type:'WAREHOUSE_GALLERY_FIRST_CLICK',width,locator});await page.keyboard.press('Escape');if(!await opener.evaluate(e=>e===document.activeElement))report.issues.push({type:'WAREHOUSE_GALLERY_FOCUS',width,locator});report.interactions.push({route,width,locator,first_click:before!==after,escape:true,focus_return:true});
+   if(route==='/obekty/sklady/'||report.owner_scope){
+    const openers=await page.locator('[data-object-gallery]').all();
+    for(let gi=0;gi<openers.length;gi++){
+     const opener=openers[gi],photos=JSON.parse(await opener.getAttribute('data-object-gallery'));await opener.click();const d=page.locator('#object-photo-dialog');await d.waitFor({state:'visible'});
+     const seen=[];let fitted=true;
+     for(let i=0;i<photos.length;i++){
+      await d.locator('img').evaluate(img=>img.decode());
+      const state=await d.locator('img').evaluate(img=>{const r=img.getBoundingClientRect(),stage=img.parentElement.getBoundingClientRect();return {src:img.getAttribute('src'),width:r.width,height:r.height,natural:[img.naturalWidth,img.naturalHeight],stage:[stage.width,stage.height],fit:getComputedStyle(img).objectFit};});
+      const delivery=await page.evaluate(src=>JSON.parse(document.querySelector('#object-photo-delivery').textContent)[src],photos[i]);
+      const sourceMatches=state.src===photos[i]||delivery?.variants.some(v=>v.url===state.src);
+      const aspect=delivery&&Math.abs(state.width/state.height-delivery.width/delivery.height)<.02;
+      const contained=state.width>40&&state.height>40&&state.width<=state.stage[0]+2&&state.height<=state.stage[1]+2&&state.fit==='contain';fitted&&=Boolean(aspect&&contained);
+      if(!sourceMatches||!aspect||!contained)report.issues.push({type:'CATEGORY_GALLERY_FRAME',route,width,index:i,original:photos[i],state,sourceMatches,aspect,contained});
+      seen.push(state.src);if(i<photos.length-1)await d.locator('[data-object-photo-next]').click();
+     }
+     await d.locator('[data-object-photo-next]').click();await d.locator('img').evaluate(img=>img.decode());const wrap=await d.locator('[data-object-photo-count]').innerText();
+     await page.keyboard.press('ArrowLeft');await d.locator('img').evaluate(img=>img.decode());const keyboard=await d.locator('[data-object-photo-count]').innerText();
+     const controls=wrap==='Фото 1 из '+photos.length&&keyboard==='Фото '+photos.length+' из '+photos.length;
+     await page.addScriptTag({content:axeSource});const violations=await page.evaluate(async()=>{const r=await window.axe.run(document.querySelector('#object-photo-dialog'),{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa','wcag22aa']}});return r.violations.map(v=>v.id);});
+     if(!controls||violations.length)report.issues.push({type:'CATEGORY_GALLERY_CONTROLS_OR_A11Y',route,width,controls,violations});
+     await page.keyboard.press('Escape');const focus=await opener.evaluate(e=>e===document.activeElement);if(!focus)report.issues.push({type:'CATEGORY_GALLERY_FOCUS',route,width});
+     report.interactions.push({route,width,gallery:gi,title:await opener.getAttribute('data-object-gallery-title'),photos:photos.length,all_photos_decoded:seen.length===photos.length,first_click:seen[0]!==seen[1],all_contained:fitted,wrap_and_keyboard:controls,escape:true,focus_return:focus,accessibility_violations:violations});
     }
    }
   }

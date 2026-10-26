@@ -124,7 +124,7 @@ const hasPhotoViewer=Boolean(heroMedia?.editorialSplit||heroMedia?.gallery?.leng
    for(const trigger of document.querySelectorAll<HTMLElement>('[data-object-photo-open],[data-object-gallery]'))trigger.addEventListener('click',event=>{
     let next:string[]=[];
     if(trigger.dataset.objectGallery){
-     try{const value=JSON.parse(trigger.dataset.objectGallery);if(!Array.isArray(value)||!value.length||!value.every(src=>typeof src==='string'&&/^\/evidence\/warehouses\/(?:avers-razbegaevo|farm-spb)\/[0-9]{2}\.webp$/.test(src)))return;next=value;}catch{return;}
+     try{const value=JSON.parse(trigger.dataset.objectGallery);if(!Array.isArray(value)||!value.length||!value.every(src=>typeof src==='string'&&src.startsWith('/evidence/')&&Object.prototype.hasOwnProperty.call(delivery,src)))return;next=value;}catch{return;}
     }else{const src=trigger.querySelector('img')?.getAttribute('src');if(src)next=[src];}
     if(!next.length)return;event.preventDefault();opener=trigger;photos=next;
     if(title)title.textContent=trigger.dataset.objectGalleryTitle||trigger.dataset.objectPhotoCaption||'Фотография объекта';
