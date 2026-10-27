@@ -145,7 +145,6 @@ main .owner-case__photos img {
   color: #214257 !important;
   text-shadow: none !important;
 }
-.case-photo-dialog__close,
 .case-photo-dialog__nav button {
   background: #dbe5e9 !important;
   color: #173a4c !important;
@@ -5111,4 +5110,80 @@ html:has(.mobile-menu[open]) .consultant-launcher,body:has(dialog[open]) .consul
  main .av-case .case-detail-hero__opening{gap:12px;padding-block:12px}
  main .av-case .case-detail-hero__location{margin-bottom:0}
  main .av-case .case-detail-hero__photograph img{max-height:24svh;width:100%;object-fit:contain}
+}
+
+/* OWNER GATE: one consistent, unboxed X on every existing modal.
+   Only close-control appearance and positioning. Keep backgrounds,
+   media geometry, navigation, scripts and site-wide typography untouched. */
+:where(
+ dialog.case-photo-dialog,
+ dialog#object-photo-dialog,
+ dialog#owner-case-viewer,
+ dialog#portfolio-archive-viewer,
+ dialog.ponsse-letter-dialog,
+ dialog.experience-dialog
+) :is(
+ [data-photo-close],
+ [data-object-photo-close],
+ [data-case-close],
+ [data-gallery-close],
+ [data-document-close],
+ [data-dialog-close]
+) {
+ box-sizing:border-box;
+ width:44px !important;height:44px !important;
+ min-width:44px !important;min-height:44px !important;
+ padding:0 !important;
+ display:grid !important;place-items:center !important;
+ border:0 !important;border-radius:0 !important;
+ background:transparent !important;background-image:none !important;
+ color:#193949 !important;
+ box-shadow:none !important;text-shadow:none !important;
+ filter:none !important;
+ font-size:30px !important;font-weight:300 !important;line-height:1 !important;
+ opacity:1 !important;
+}
+:where(
+ dialog.case-photo-dialog,
+ dialog#object-photo-dialog,
+ dialog#owner-case-viewer,
+ dialog#portfolio-archive-viewer,
+ dialog.ponsse-letter-dialog,
+ dialog.experience-dialog
+) :is(
+ [data-photo-close],
+ [data-object-photo-close],
+ [data-case-close],
+ [data-gallery-close],
+ [data-document-close],
+ [data-dialog-close]
+):is(:hover,:active,:focus) {
+ background:transparent !important;background-image:none !important;
+ color:#193949 !important;box-shadow:none !important;text-shadow:none !important;
+}
+:where(
+ dialog.case-photo-dialog,
+ dialog#object-photo-dialog,
+ dialog#owner-case-viewer,
+ dialog#portfolio-archive-viewer
+) :is(
+ [data-photo-close],[data-object-photo-close],[data-case-close],[data-gallery-close]
+) {
+ position:absolute !important;top:12px !important;right:12px !important;
+ left:auto !important;bottom:auto !important;z-index:20 !important;
+ transform:none !important;
+}
+/* Retain keyboard visibility, but without a bright colored fill or glow. */
+:where(
+ dialog.case-photo-dialog,
+ dialog#object-photo-dialog,
+ dialog#owner-case-viewer,
+ dialog#portfolio-archive-viewer,
+ dialog.ponsse-letter-dialog,
+ dialog.experience-dialog
+) :is(
+ [data-photo-close],[data-object-photo-close],[data-case-close],
+ [data-gallery-close],[data-document-close],[data-dialog-close]
+):focus-visible {
+ outline:2px solid currentColor !important;outline-offset:2px !important;
 }
