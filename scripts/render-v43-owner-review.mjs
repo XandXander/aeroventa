@@ -832,7 +832,7 @@ try {
         report.fail.push({reason:'ART-DELTA-04 actual cafe editorial title',route,width,dom});
       if(route==='/portfolio/'){
         const tags=await page.locator('.portfolio-card__top b').allTextContents();
-        if(tags.includes('География')||!tags.includes('Сервисно-образовательный центр'))
+        if(tags.includes('География')||!tags.includes('Складские объекты'))
           report.fail.push({reason:'ART-DELTA-05 portfolio object type',width,tags});
       }
     }catch(e){report.fail.push({reason:'ART-DELTA compiled browser exception',route,width,error:String(e)})}
