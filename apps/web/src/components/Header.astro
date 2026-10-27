@@ -3,8 +3,10 @@
 <header class="site-header">
   <div class="home-shell site-header__inner">
     <a class="brand" href="/" aria-label="AEROVENTA.RU — главная">
-      <img class="brand-mark-locked" src="/brand/aeroventa-mark.svg" width="82" height="57" alt="" aria-hidden="true" />
-      <span class="baseline-wordmark"><span class="brand-wordmark-tail">EROVENTA</span><span class="brand-domain">.RU</span></span>
+      <picture class="brand-logo">
+        <source media="(max-width: 1050px)" srcset="/brand/wordmark-aeroventa-ru-high-contrast.svg" width="982" height="108" />
+        <img src="/brand/logo-header-color.svg" width="1460" height="310" alt="AEROVENTA.RU" />
+      </picture>
     </a>
 
     <nav class="nav nav--desktop" aria-label="Основная навигация">
@@ -28,6 +30,17 @@
     </details>
   </div>
 </header>
+
+<style>
+  .site-header__inner { min-height:80px; padding-block:6px; }
+  .brand { flex:none; }
+  .brand-logo { display:block; width:clamp(280px,23vw,320px); }
+  .brand-logo img { width:100%; height:auto; }
+  @media(max-width:1050px) {
+    .site-header__inner { min-height:56px; padding-block:0; }
+    .brand-logo { width:240px; max-width:calc(100vw - 112px); }
+  }
+</style>
 
 <script>
   const menu=document.querySelector<HTMLDetailsElement>('[data-mobile-menu]');

@@ -37,6 +37,7 @@ const cards = [
  ['drill-cost','upload/medialibrary/fb3/fb3d693282a8085971dd4e2fe87bf28e.jpg','Стоимость алмазного бурения'],
  ['drill-wall','upload/medialibrary/e1c/e1cd51110183f9c6b2e704b70664eba1.jpg','Проходка под вентиляцию']
 ];
+const finalWhiteLogo=await sharp(path.join(publicRoot,'brand/logo-header-white.svg')).resize({width:360}).png().toBuffer();
 const xmlEscape=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 await mkdir(outputRoot,{recursive:true});
 for (const [key,src,title] of cards){
@@ -55,12 +56,20 @@ for (const [key,src,title] of cards){
  const overlay=`<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
  <defs><linearGradient id="shade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#081b28" stop-opacity="0"/><stop offset=".45" stop-color="#081b28" stop-opacity=".20"/><stop offset="1" stop-color="#081b28" stop-opacity=".88"/></linearGradient></defs>
  <rect width="1200" height="630" fill="url(#shade)"/>
- <text x="54" y="518" fill="#fff" font-family="Arial,DejaVu Sans,sans-serif" font-weight="600" font-size="22" letter-spacing="3">AEROVENTA</text>
- <text x="54" y="578" fill="#fff" font-family="Arial,DejaVu Sans,sans-serif" font-weight="600" font-size="40">${xmlEscape(title)}</text>
+
+ <text x="54" y="578" fill="#fff" font-family="Arial,DejaVu Sans,sans-serif" font-weight="600" font-size="${Math.min(40,Math.floor(1092/(title.length*.57)))}">${xmlEscape(title)}</text>
  </svg>`;
  const output=path.join(outputRoot,key+'.jpg');
- await sharp(canvas).composite([{input:Buffer.from(overlay)}]).jpeg({quality:86,mozjpeg:true}).toFile(output);
+ await sharp(canvas).composite([{input:Buffer.from(overlay)},{input:finalWhiteLogo,left:48,top:446}]).jpeg({quality:86,mozjpeg:true}).toFile(output);
  const size=(await stat(output)).size;
  if(size<12000||size>1900000)throw new Error('Social card invalid size: '+key+' '+size);
  console.log('SHARE_CARD_READY '+key+' 1200x630 bytes='+size);
 }
+
+// Complete the supplied OG template with accepted imagery in its photo slot.
+// Never expose the empty asset template as a finished link preview.
+const brandPhoto=await sharp(path.join(publicRoot,'evidence/hero/owner-luxury-airflow-20261010.png'))
+ .resize(560,630,{fit:'cover',position:'right'}).png().toBuffer();
+await sharp(path.join(publicRoot,'brand/og-base-1200x630.png'))
+ .composite([{input:brandPhoto,left:640,top:0}]).jpeg({quality:88,mozjpeg:true})
+ .toFile(path.join(outputRoot,'brand.jpg'));

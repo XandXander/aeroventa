@@ -13,6 +13,8 @@ with socket.socket() as sock:
 env = {**os.environ, 'AEROVENTA_LEAD_TO':'office@aeroventa.ru',
        'AEROVENTA_LEAD_FROM':'office@aeroventa.ru'}  # MOCK ONLY
 test_state = tempfile.TemporaryDirectory(prefix='aeroventa-lead-test-')
+failure_flag = Path(test_state.name) / 'mail-failure'
+env['AEROVENTA_TEST_MAIL_FAILURE'] = str(failure_flag)
 server = subprocess.Popen(['php', '-d', f'sys_temp_dir={test_state.name}', '-d', f'sendmail_path={stub}',
                            '-S', f'127.0.0.1:{port}', '-t', str(webroot)],
                           env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -47,14 +49,19 @@ try:
         ('contact',request({**payload,'contact':'bad-contact'}),422),
         ('too-fast',request({**payload,'started_at':int(time.time()*1000)}),422),
         ('honeypot',request({**payload,'website':'spam.com'}),200),
-        ('valid',request(),200),
-        ('duplicate',request(),409),
     ]
+    failure_flag.touch()
+    cases.append(('mail-failure',request(),503))
+    failure_flag.unlink()
+    cases.extend([
+        ('same-request-retry-after-mail-failure',request(),200),
+        ('duplicate-after-acceptance',request(),409),
+    ])
     for name, got, expected in cases:
         print(name, 'PASS' if got[0] == expected else 'FAIL', got[0], expected)
     assert all(got[0] == expected for _,got,expected in cases)
     assert capture.is_file() and capture.read_text().count('---END MOCK EMAIL---') == 1
-    print('PASS: 9/9, mock captured 1, outbound messages 0')
+    print(f'PASS: {len(cases)}/{len(cases)}, mock captured 1, outbound messages 0')
 finally:
     server.terminate()
     try: server.wait(timeout=3)

@@ -1,0 +1,266 @@
+{
+  "source_zip_sha256": "b80ac69a3a6a287734900adbe8b1bbbda1352404a7ed4c85f8a37f659829d194",
+  "source_zip_bytes": 2410680,
+  "source_members": 54,
+  "integrated_assets": [
+    {
+      "archive_path": "favicon/android-chrome-192x192.png",
+      "public_path": "/brand/android-chrome-192x192.png",
+      "sha256": "9afa03c777e43bf2b4f00b99a7e2b7de9ac8861092fb43922893b5c4783b9c69",
+      "bytes": 13211
+    },
+    {
+      "archive_path": "favicon/android-chrome-512x512.png",
+      "public_path": "/brand/android-chrome-512x512.png",
+      "sha256": "40e9da6c6de501deaf5748cd654dcc5dc39cf3790155085be44fbc561a58f441",
+      "bytes": 40849
+    },
+    {
+      "archive_path": "favicon/app-icon-dark.svg",
+      "public_path": "/brand/app-icon-dark.svg",
+      "sha256": "0bb698d476f72d13d47c2c8a731034651f51c8cb81b631817b5a49bc1725f48a",
+      "bytes": 588
+    },
+    {
+      "archive_path": "favicon/app-icon-light.svg",
+      "public_path": "/brand/app-icon-light.svg",
+      "sha256": "4ad7e2e4a59e485e83a7a5916b7a98f4dd25924491c8e8e1b1ec6d7feea9e780",
+      "bytes": 778
+    },
+    {
+      "archive_path": "favicon/apple-touch-icon.png",
+      "public_path": "/brand/apple-touch-icon.png",
+      "sha256": "b42c98615f4b22d7e9ef403e98af813a9249ae790b2a0f62a07541ca61f3abbe",
+      "bytes": 12188
+    },
+    {
+      "archive_path": "favicon/favicon-16x16.png",
+      "public_path": "/brand/favicon-16x16.png",
+      "sha256": "72e4a081d090659057a060b208668e018c32b3ad62071f96dca2c552c29aed87",
+      "bytes": 514
+    },
+    {
+      "archive_path": "favicon/favicon-192x192.png",
+      "public_path": "/brand/favicon-192x192.png",
+      "sha256": "d2d572cd500438e3dc1acd3404ef28c4cca98d241a922bfb157c8e0fe43ff3ed",
+      "bytes": 12131
+    },
+    {
+      "archive_path": "favicon/favicon-32x32.png",
+      "public_path": "/brand/favicon-32x32.png",
+      "sha256": "1b5583f89225a74182d1a2a3f37507c3c6d8bde882bef7d9677371a68728c109",
+      "bytes": 1326
+    },
+    {
+      "archive_path": "favicon/favicon-48x48.png",
+      "public_path": "/brand/favicon-48x48.png",
+      "sha256": "c73d0e9056115bf510725516ac3a7ac831ea28bbfaab0667d37bb259fa1a750d",
+      "bytes": 2292
+    },
+    {
+      "archive_path": "favicon/favicon-512x512.png",
+      "public_path": "/brand/favicon-512x512.png",
+      "sha256": "f082c386640cd228f5084f586bb6dc792e627ce19445407dc0a81e7e1932e91b",
+      "bytes": 37745
+    },
+    {
+      "archive_path": "favicon/favicon-ink.svg",
+      "public_path": "/brand/favicon-ink.svg",
+      "sha256": "8f36e5e5d42df5e1c6ed498ebdcea1f03c62605eaae75a6b9073d02c78a454e0",
+      "bytes": 521
+    },
+    {
+      "archive_path": "favicon/favicon-white.svg",
+      "public_path": "/brand/favicon-white.svg",
+      "sha256": "fbd0b220287f42aecab50e53b844039f0418f5a29e2c4aff277180031e8d11d8",
+      "bytes": 521
+    },
+    {
+      "archive_path": "favicon/favicon.ico",
+      "public_path": "/brand/favicon.ico",
+      "sha256": "305842a162d063d970439471d29a6d1ed0ca591dc4b381be7efe1b26937f2bd5",
+      "bytes": 2028
+    },
+    {
+      "archive_path": "favicon/favicon.svg",
+      "public_path": "/brand/favicon.svg",
+      "sha256": "1490256ce79482817dd0dfef865745de3e0ca16b9c212408997f4042e2eca26e",
+      "bytes": 711
+    },
+    {
+      "archive_path": "favicon/site.webmanifest",
+      "public_path": "/brand/site.webmanifest",
+      "sha256": "f3dc668b276202a1debbf776e051da2073f33bac569210f34b47009191cd6188",
+      "bytes": 390
+    },
+    {
+      "archive_path": "og/og-base-1200x630.png",
+      "public_path": "/brand/og-base-1200x630.png",
+      "sha256": "c6ea25be8c4652895ded812225a9a0aebb9b3a65aba3ad60802d86dbb2ac3686",
+      "bytes": 36622
+    },
+    {
+      "archive_path": "og/og-base-1200x630.svg",
+      "public_path": "/brand/og-base-1200x630.svg",
+      "sha256": "c6c4ae28bfec6a4ba7bc69d2b084995fef240bf6d5e5da2a914140be8ee819e5",
+      "bytes": 7298
+    },
+    {
+      "archive_path": "png/logo-full-color.png",
+      "public_path": "/brand/logo-full-color.png",
+      "sha256": "175b9f0c8c4afaea341ad350b8361310d2821feac47fc216582ec28ed0f34d1c",
+      "bytes": 134660
+    },
+    {
+      "archive_path": "png/logo-full-ink.png",
+      "public_path": "/brand/logo-full-ink.png",
+      "sha256": "01d1953f3aa7ad9e5cb16705a7848e61c57757c9d7ea2aba160d563cd1d8a63f",
+      "bytes": 120418
+    },
+    {
+      "archive_path": "png/logo-full-white.png",
+      "public_path": "/brand/logo-full-white.png",
+      "sha256": "01e863de8222306c0fbf3b4b23778f739202064bc2182bb56ca9e264599c2de3",
+      "bytes": 100743
+    },
+    {
+      "archive_path": "png/logo-header-color.png",
+      "public_path": "/brand/logo-header-color.png",
+      "sha256": "d99c73e3ee11ba09f569b7de1d61e95ad3c29a5b966f6da2bcac460328c670ff",
+      "bytes": 123051
+    },
+    {
+      "archive_path": "png/logo-header-high-contrast.png",
+      "public_path": "/brand/logo-header-high-contrast.png",
+      "sha256": "f2ba000915c021e13c0d51f3b2dd7349a36780d94f3db47c618c91bb1a6cada1",
+      "bytes": 109919
+    },
+    {
+      "archive_path": "png/logo-header-white.png",
+      "public_path": "/brand/logo-header-white.png",
+      "sha256": "9c26ba74f5eab550251c2572bf384b07f581368b63e20c6bba72cd4b673a1555",
+      "bytes": 87228
+    },
+    {
+      "archive_path": "png/symbol-color.png",
+      "public_path": "/brand/symbol-color.png",
+      "sha256": "576bcaac3e0363a5832f792c13127e2b341738f94ca32473d8ef83d51dbb36e3",
+      "bytes": 136938
+    },
+    {
+      "archive_path": "png/symbol-ink.png",
+      "public_path": "/brand/symbol-ink.png",
+      "sha256": "c1c7b35d19ab93021a6a9e485ac9b1d15ac4d756f3bd6af6db99e69b596f75c9",
+      "bytes": 116384
+    },
+    {
+      "archive_path": "png/symbol-white.png",
+      "public_path": "/brand/symbol-white.png",
+      "sha256": "ae1048b4dae9e53eaad6dec0fbea9ac4c22f25835be5d579b35ef903b698557f",
+      "bytes": 100900
+    },
+    {
+      "archive_path": "png/wordmark-aeroventa-ru-white.png",
+      "public_path": "/brand/wordmark-aeroventa-ru-white.png",
+      "sha256": "da8180cb4f0b8d3e4cee1ab6ccf79c07b89aeec634562a41180f9f14cfa5f553",
+      "bytes": 24983
+    },
+    {
+      "archive_path": "png/wordmark-aeroventa-ru.png",
+      "public_path": "/brand/wordmark-aeroventa-ru.png",
+      "sha256": "e65aea4a19111f7ed57c222ca6683c4e33ff52c79e072788b913eeb0315862aa",
+      "bytes": 27057
+    },
+    {
+      "archive_path": "png/wordmark-aeroventa.png",
+      "public_path": "/brand/wordmark-aeroventa.png",
+      "sha256": "366430b3e82af1c8430bd2323e0d5fefbba81c0294b8fa0cd106cc6952d49c94",
+      "bytes": 22987
+    },
+    {
+      "archive_path": "svg/logo-full-color.svg",
+      "public_path": "/brand/logo-full-color.svg",
+      "sha256": "6d92e9066c23aecdd8629618c1e9e5659651f5243ede92f43da3f5ffd219b313",
+      "bytes": 13248
+    },
+    {
+      "archive_path": "svg/logo-full-ink.svg",
+      "public_path": "/brand/logo-full-ink.svg",
+      "sha256": "950bd4662eaa0bba963723163ab3f76ad6e8a3394b5ed16f30822a48cf030d7f",
+      "bytes": 12913
+    },
+    {
+      "archive_path": "svg/logo-full-white.svg",
+      "public_path": "/brand/logo-full-white.svg",
+      "sha256": "e897b9467ac61f2ee8c1f777e5e0bb098e48885d0e95b1354f02b76ca77ede13",
+      "bytes": 12913
+    },
+    {
+      "archive_path": "svg/logo-header-color.svg",
+      "public_path": "/brand/logo-header-color.svg",
+      "sha256": "8bac673bf3bb760ee45c3ca549d2c3b76ba3b301e1c4f6025d299d490b94f851",
+      "bytes": 6439
+    },
+    {
+      "archive_path": "svg/logo-header-high-contrast.svg",
+      "public_path": "/brand/logo-header-high-contrast.svg",
+      "sha256": "d295182a6571fc0f00a3fade9c6fb76731f5d96f57fc87cf2a369cb1490baa36",
+      "bytes": 6104
+    },
+    {
+      "archive_path": "svg/logo-header-white.svg",
+      "public_path": "/brand/logo-header-white.svg",
+      "sha256": "7cc6eacb99b3f86d1b9bb34d186aec83c4832a4eda24a3d29f210b868d8b30cb",
+      "bytes": 6104
+    },
+    {
+      "archive_path": "svg/symbol-color.svg",
+      "public_path": "/brand/symbol-color.svg",
+      "sha256": "3ce882c7ee04cd77ce1cbf2e0f990ecb15a5122d77be9c3371fe3cbac62fd3e4",
+      "bytes": 1474
+    },
+    {
+      "archive_path": "svg/symbol-ink.svg",
+      "public_path": "/brand/symbol-ink.svg",
+      "sha256": "34e61aef38ea0927052fa30298680d6f0de6a16b9bbaf1923fb98bc78cf54f88",
+      "bytes": 1139
+    },
+    {
+      "archive_path": "svg/symbol-white.svg",
+      "public_path": "/brand/symbol-white.svg",
+      "sha256": "ea3ccf66d87d5c2eb38fda6c714919a970edf51a4a06f9970217d8fbd06ca086",
+      "bytes": 1139
+    },
+    {
+      "archive_path": "svg/wordmark-aeroventa-ru-high-contrast.svg",
+      "public_path": "/brand/wordmark-aeroventa-ru-high-contrast.svg",
+      "sha256": "40c4bac6839e426bcf6c2379f3a1126e426ccf3b0267df2b8b83e31254a9c7a0",
+      "bytes": 5133
+    },
+    {
+      "archive_path": "svg/wordmark-aeroventa-ru-white.svg",
+      "public_path": "/brand/wordmark-aeroventa-ru-white.svg",
+      "sha256": "2f3fbbaaf8b419f2a4006a9a03ee8cfa51dd919b24fce04202191cbb7518b612",
+      "bytes": 5133
+    },
+    {
+      "archive_path": "svg/wordmark-aeroventa-ru.svg",
+      "public_path": "/brand/wordmark-aeroventa-ru.svg",
+      "sha256": "5688a7615090f6109df8b462a57bdcb6fcc986441b8b7b9ee453bc7f85cb975f",
+      "bytes": 5456
+    },
+    {
+      "archive_path": "svg/wordmark-aeroventa-white.svg",
+      "public_path": "/brand/wordmark-aeroventa-white.svg",
+      "sha256": "7688f7661da9082d71783059880f70b7d2f1ffc9a94d7416a5a5e5a52807b273",
+      "bytes": 3892
+    },
+    {
+      "archive_path": "svg/wordmark-aeroventa.svg",
+      "public_path": "/brand/wordmark-aeroventa.svg",
+      "sha256": "809fdadc4acb6905879c1f2101314fd7b9c0dfc7ccd54fb84f4904b14cbfe3a6",
+      "bytes": 4215
+    }
+  ],
+  "ui_font": "Onest retained, logo uses Owner-supplied vector outlines"
+}

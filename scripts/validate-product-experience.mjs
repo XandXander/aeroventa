@@ -157,15 +157,23 @@ check(!files.airflow.includes('mobile-contact-dock') &&
       !files.css.includes('.mobile-contact-dock'),
       'Owner P0: mobile contact dock removed from markup, behavior and CSS');
 
-const ownerShortlistHash = '07B137BF2405D6A863194C254EED12EFBB6557033281DE2427FF279773B3A427';
-check(files.brandWordmark.includes(ownerShortlistHash), 'Owner shortlist provenance retained in AEROVENTA 01 candidate wordmark asset');
-check(files.brandMark.includes(ownerShortlistHash), 'Owner shortlist provenance retained in AEROVENTA 01 candidate compact-mark asset');
-check(files.favicon.includes(ownerShortlistHash), 'Owner shortlist provenance retained in AEROVENTA 01 candidate favicon asset');
-check(files.brandWordmark.includes('data:image/png;base64,'), 'Candidate wordmark asset still embeds the extracted Owner reference crop');
-check(files.brandMark.includes('data:image/png;base64,'), 'Candidate compact-mark asset still embeds the extracted Owner reference crop');
-check(files.header.includes('/brand/aeroventa-mark.svg') && files.header.includes('brand-mark-locked') && files.header.includes('brand-wordmark-tail">EROVENTA') && files.header.includes('brand-domain">.RU'), 'Header uses locked AEROVENTA 01 A-symbol integrated into the wordmark');
-check(files.footer.includes('/brand/aeroventa-mark.svg') && files.footer.includes('brand-mark-locked--footer') && files.footer.includes('brand-wordmark-tail">EROVENTA'), 'Footer uses locked AEROVENTA 01 A-symbol integrated into the wordmark');
-check(!files.header.includes('/brand/aeroventa-wordmark.svg') && !files.footer.includes('/brand/aeroventa-wordmark.svg'), 'Corrupt shortlist-heading crop is not exposed as the visible wordmark');
+// Owner 27-Oct final vector pack supersedes the old AEROVENTA 01 raster lock.
+const finalBrand=JSON.parse(await read('migration/brand-assets-20261027.json'));
+check(finalBrand.source_zip_sha256==='b80ac69a3a6a287734900adbe8b1bbbda1352404a7ed4c85f8a37f659829d194' && finalBrand.source_members===54,
+  'Owner 27-Oct final brand ZIP provenance');
+for(const asset of finalBrand.integrated_assets){
+ const bytes=await fs.readFile(path.join(root,'apps/web/public',asset.public_path));
+ check(bytes.length===asset.bytes&&createHash('sha256').update(bytes).digest('hex')===asset.sha256,
+  'Immutable final brand asset '+asset.public_path);
+}
+check(files.header.includes('/brand/logo-header-color.svg')&&files.header.includes('/brand/wordmark-aeroventa-ru-high-contrast.svg'),
+  'Final vector header with a readable narrow-screen AEROVENTA.RU wordmark');
+check(files.footer.includes('/brand/logo-full-color.svg')&&files.footer.includes('/brand/wordmark-aeroventa-ru-high-contrast.svg'),
+  'Final vector footer with responsive wordmark');
+check(![files.header,files.footer].some(s=>s.includes('/brand/aeroventa-mark.svg')||s.includes('brand-wordmark-tail')),
+  'Superseded integrated A-symbol/raster is absent from visible header/footer');
+check(files.layout.includes('/brand/favicon.svg')&&files.layout.includes('/brand/favicon.ico')&&files.layout.includes('/brand/apple-touch-icon.png')&&files.layout.includes('/brand/site.webmanifest'),
+  'Browser, Apple and PWA final identity wired');
 check(files.header.includes('Обсудить задачу <span aria-hidden="true">→</span>') && files.header.includes('data-contact-open'), 'Header universal CTA links to contact');
 check(files.home.includes('href="/contact/" data-contact-open data-source="home_primary"') && files.home.includes('href="/montazh-po-proektu/" data-contact-open data-project-status="ready"') && files.home.includes('Есть проект — запросить смету'), 'Homepage CTAs open contextual same-page contact, retain href fallback and Owner wording');
 check(files.home.includes('AEROVENTA — инженерные системы вентиляции в СПб и Ленобласти'), 'Home SEO title distinct from primary installation service title');

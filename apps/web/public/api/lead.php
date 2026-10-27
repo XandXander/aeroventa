@@ -101,8 +101,11 @@ $events[] = ['t' => time(), 'h' => $fingerprint];
 rewind($handle); ftruncate($handle, 0);
 $written = fwrite($handle, json_encode($events));
 $flushed = fflush($handle);
-flock($handle, LOCK_UN); fclose($handle);
-if ($written === false || !$flushed) answer(503, 'temporarily_unavailable');
+if ($written === false || !$flushed) {
+    flock($handle, LOCK_UN); fclose($handle); answer(503, 'temporarily_unavailable');
+}
+// Keep the per-IP lock until the MTA answers. Concurrent retries cannot send
+// twice, and a definite transport rejection must not poison the retry window.
 $body = implode("\n", [
     'Заявка с сайта AEROVENTA', '',
     'Имя: '.$name,
@@ -126,6 +129,13 @@ $headers = [
 ];
 if ($email !== false) $headers[] = 'Reply-To: '.$email;
 $subject = '=?UTF-8?B?'.base64_encode('Новая заявка AEROVENTA').'?=';
-if (!@mail($destination, $subject, $body, implode("\r\n", $headers))) answer(503, 'delivery_unavailable');
+$accepted = @mail($destination, $subject, $body, implode("\r\n", $headers));
+if (!$accepted) {
+    array_pop($events);
+    rewind($handle); ftruncate($handle, 0);
+    fwrite($handle, json_encode($events)); fflush($handle);
+}
+flock($handle, LOCK_UN); fclose($handle);
+if (!$accepted) answer(503, 'delivery_unavailable');
 // mail() reports local MTA acceptance, not recipient inbox delivery.
 answer(200);

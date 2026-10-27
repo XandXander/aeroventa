@@ -184,7 +184,7 @@ try {
      const seen=[];let fitted=true;
      for(let i=0;i<photos.length;i++){
       await d.locator('img').evaluate(img=>img.decode());
-      const state=await d.locator('img').evaluate(img=>{const r=img.getBoundingClientRect(),stage=img.parentElement.getBoundingClientRect();return {src:img.getAttribute('src'),width:r.width,height:r.height,natural:[img.naturalWidth,img.naturalHeight],stage:[stage.width,stage.height],fit:getComputedStyle(img).objectFit};});
+      const state=await d.locator('img').evaluate(img=>{const r=img.getBoundingClientRect(),stage=img.parentElement.getBoundingClientRect(),fit=getComputedStyle(img).objectFit,scale=Math.min(r.width/img.naturalWidth,r.height/img.naturalHeight);return {src:img.getAttribute('src'),width:img.naturalWidth*scale,height:img.naturalHeight*scale,element:[r.width,r.height],natural:[img.naturalWidth,img.naturalHeight],stage:[stage.width,stage.height],fit};});
       const delivery=await page.evaluate(src=>JSON.parse(document.querySelector('#object-photo-delivery').textContent)[src],photos[i]);
       const sourceMatches=state.src===photos[i]||delivery?.variants.some(v=>v.url===state.src);
       const aspect=delivery&&Math.abs(state.width/state.height-delivery.width/delivery.height)<.02;
@@ -210,7 +210,7 @@ try {
     const p=await c.newPage(),requests=[];p.on('request',r=>{if(r.resourceType()==='image')requests.push(new URL(r.url()).pathname)});
     await p.goto(origin+'/obekty/kvartiry-i-doma/',{waitUntil:'networkidle'});
     const opener=p.locator('[data-object-photo-open]');await opener.click();const d=p.locator('#object-photo-dialog');await d.waitFor({state:'visible'});await d.locator('img').evaluate(i=>i.decode());
-    const before=await d.locator('img').evaluate(i=>{const b=i.getBoundingClientRect();return {src:i.getAttribute('src'),width:b.width,height:b.height,natural:[i.naturalWidth,i.naturalHeight],fit:getComputedStyle(i).objectFit};});
+    const before=await d.locator('img').evaluate(i=>{const b=i.getBoundingClientRect(),scale=Math.min(b.width/i.naturalWidth,b.height/i.naturalHeight);return {src:i.getAttribute('src'),width:i.naturalWidth*scale,height:i.naturalHeight*scale,element:[b.width,b.height],natural:[i.naturalWidth,i.naturalHeight],fit:getComputedStyle(i).objectFit};});
     const original='/evidence/residential/neva/IMG_7571.JPG',originalBefore=requests.filter(s=>s===original).length;
     if(originalBefore||!before.src.startsWith('/media/responsive/')||Math.abs(before.width/before.height-4/3)>.015)report.issues.push({type:'NEVA_PREVIEW_DELIVERY_OR_ASPECT',width,before,originalBefore});
 
@@ -322,6 +322,7 @@ try {
       }));
       if(facts.scrollWidth>width+1)report.issues.push({type:'OVERFLOW',route,width,scrollWidth:facts.scrollWidth});
       if(facts.stretchedImages.length)report.issues.push({type:'STRETCHED_IMAGE',route,width,images:facts.stretchedImages});
+      if(route==='/'){const gap=await page.locator('.case-dossier__primary').evaluate(e=>{const f=e.getBoundingClientRect(),i=e.querySelector('img').getBoundingClientRect();return f.height-i.height;});if(gap>3)report.issues.push({type:'SEVENPARK_EMPTY_PHOTO_FIELD',route,width,gap});}
       if(facts.brokenImages.length)report.issues.push({type:'BROKEN_IMAGE',route,width,images:facts.brokenImages});
       await page.addScriptTag({content:axeSource});
       const axe = await page.evaluate(async()=>await window.axe.run(document,{runOnly:{type:'rule',values:['color-contrast','button-name','link-name','label','aria-valid-attr-value']}}));
@@ -423,6 +424,28 @@ try {
    }
   });
  }
+ // object-fit:contain paints an aspect-fitted photograph inside a larger DOM box.
+ // Compare decoded painted pixels, otherwise a portrait on a short desktop can
+ // visibly grow while its formerly full-width element becomes narrower.
+ async function paintedPhoto(selector) {
+  await decodedImage(selector);
+  return page.locator(selector).evaluate(img=>{
+   const rect=img.getBoundingClientRect(),css=getComputedStyle(img);
+   const cw=img.clientWidth-parseFloat(css.paddingLeft)-parseFloat(css.paddingRight);
+   const ch=img.clientHeight-parseFloat(css.paddingTop)-parseFloat(css.paddingBottom);
+   const scale=css.objectFit==='contain'?Math.min(cw/img.naturalWidth,ch/img.naturalHeight)
+    :css.objectFit==='cover'?Math.max(cw/img.naturalWidth,ch/img.naturalHeight):1;
+   const width=['contain','cover'].includes(css.objectFit)?img.naturalWidth*scale:cw;
+   const height=['contain','cover'].includes(css.objectFit)?img.naturalHeight*scale:ch;
+   return {width,height,element:{width:rect.width,height:rect.height},natural:[img.naturalWidth,img.naturalHeight],objectFit:css.objectFit,src:img.getAttribute('src')};
+  });
+ }
+ function assertPaintedZoom(label,fit,zoomed){
+  const proof={label,route:new URL(page.url()).pathname,width:page.viewportSize().width,fit,zoomed,ratio:zoomed.width/fit.width};
+  (report.zoom_measurements ||= []).push(proof);
+  expect(zoomed.width>fit.width*1.1&&zoomed.height>fit.height*1.1,
+   label+' did not enlarge decoded painted photograph: '+JSON.stringify(proof));
+ }
  async function swipeLeft(selector) {
   const box=await page.locator(selector).boundingBox();expect(!!box,'Touch surface missing');
   const cdp=await context.newCDPSession(page);
@@ -459,9 +482,9 @@ try {
     expect(new Set(seen).size===12,'Duplicate sports frames');
     await page.keyboard.press('ArrowLeft');expect((await dialog.locator('[data-gallery-position]').innerText())==='Фото 12 из 12','Keyboard previous failed');
     await decodedImage('#portfolio-archive-viewer [data-gallery-photo]');
-    const fit=await dialog.locator('[data-gallery-photo]').boundingBox();
+    const fit=await paintedPhoto('#portfolio-archive-viewer [data-gallery-photo]');
     await page.keyboard.press('+');expect(Number(await dialog.getAttribute('data-zoom'))>1,'Keyboard zoom failed');
-    const zoomed=await dialog.locator('[data-gallery-photo]').boundingBox();expect(zoomed.width>fit.width*1.1,'Sports zoom did not enlarge decoded photo: '+JSON.stringify({fit,zoomed}));
+    const zoomed=await paintedPhoto('#portfolio-archive-viewer [data-gallery-photo]');assertPaintedZoom('SPORT',fit,zoomed);
     await page.keyboard.press('0');expect(await dialog.getAttribute('data-zoom')==='1','Fit failed');
     if(width===390){await swipeLeft('.portfolio-archive-viewer__stage');expect((await dialog.locator('[data-gallery-position]').innerText())==='Фото 1 из 12','Touch swipe failed');}
     await page.keyboard.press('Escape');expect(await opener.evaluate(e=>e===document.activeElement),'Sports focus restoration failed');
@@ -474,9 +497,9 @@ try {
     const seen=[];for(let n=0;n<6;n++){await decodedImage('#owner-case-viewer [data-case-large]');seen.push(await page.locator('#owner-case-viewer [data-case-large]').getAttribute('src'));await page.locator('#owner-case-viewer [data-case-next]').click();}
     expect(new Set(seen).size===6,'Duplicate Neva photos');
     await decodedImage('#owner-case-viewer [data-case-large]');
-    const fit=await page.locator('#owner-case-viewer [data-case-large]').boundingBox();
+    const fit=await paintedPhoto('#owner-case-viewer [data-case-large]');
     await page.keyboard.press('+');expect(Number(await page.locator('#owner-case-viewer').getAttribute('data-zoom'))>1,'Neva zoom unavailable');
-    const zoomed=await page.locator('#owner-case-viewer [data-case-large]').boundingBox();expect(zoomed.width>fit.width*1.1,'Neva photo does not actually enlarge');
+    const zoomed=await paintedPhoto('#owner-case-viewer [data-case-large]');assertPaintedZoom('NEVA',fit,zoomed);
     await page.keyboard.press('0');expect(await page.locator('#owner-case-viewer').getAttribute('data-zoom')==='1','Neva fit failed');
     if(width===390){await swipeLeft('.owner-case__viewer-stage');expect((await page.locator('[data-case-count]').innerText())==='2 из 6','Neva touch swipe failed');}
     await page.keyboard.press('Escape');
@@ -496,7 +519,7 @@ try {
     const opener=page.locator('[data-case-frame]').first();const total=await page.locator('[data-case-frame]').count();expect(total>1,'Object album incomplete');
     await opener.click();await checkDialog('#owner-case-viewer','owner-'+name+'-'+width);await decodedImage('[data-case-large]');const before=await page.locator('[data-case-large]').getAttribute('src');
     await page.locator('[data-case-next]').click();await decodedImage('[data-case-large]');expect(before!==await page.locator('[data-case-large]').getAttribute('src'),'Object album first click failed');
-    const fit=await page.locator('[data-case-large]').boundingBox();await page.locator('[data-case-zoom]').click();const enlarged=await page.locator('[data-case-large]').boundingBox();expect(enlarged.width>fit.width*1.1,'Object zoom button failed');
+    const fit=await paintedPhoto('[data-case-large]');await page.locator('[data-case-zoom]').click();const enlarged=await paintedPhoto('[data-case-large]');assertPaintedZoom('OWNER_OBJECT',fit,enlarged);
     await page.locator('[data-case-zoom]').click();await page.keyboard.press('Escape');expect(await opener.evaluate(e=>e===document.activeElement),'Object album focus restoration failed');
     await page.locator('[data-case-cover]').click();await decodedImage('[data-case-large]');    const coverFrameMatches=await page.evaluate(()=>{
       const dialog=document.querySelector('#owner-case-viewer');
@@ -520,15 +543,15 @@ try {
    });
    await scenario('PONSSE_DOCUMENT_FIT_AND_ZOOM','/blog/detail/montazh-ventilyatsii-v-karelii/',width,width>1000?650:844,async()=>{
     const opener=page.locator('[data-ponsse-open]').first();await opener.click();await checkDialog('#ponsse-letter-dialog','ponsse-document-'+width);
-    await decodedImage('#ponsse-letter-dialog img');const fit=await page.locator('#ponsse-letter-dialog img').boundingBox();
+    const fit=await paintedPhoto('#ponsse-letter-dialog img');
     expect(fit.height<=(width>1000?650:844)-60,'Portrait document does not fit initial screen');
-    await page.keyboard.press('+');const zoomed=await page.locator('#ponsse-letter-dialog img').boundingBox();expect(zoomed.width>fit.width*1.1,'PONSSE document does not actually enlarge');await page.screenshot({path:path.join(output,'ponsse-document-zoom-'+width+'.jpg'),type:'jpeg',quality:85});
+    await page.keyboard.press('+');const zoomed=await paintedPhoto('#ponsse-letter-dialog img');assertPaintedZoom('PONSSE_DOCUMENT',fit,zoomed);await page.screenshot({path:path.join(output,'ponsse-document-zoom-'+width+'.jpg'),type:'jpeg',quality:85});
     await page.keyboard.press('0');await page.keyboard.press('Escape');expect(await opener.evaluate(e=>e===document.activeElement),'Letter focus restoration failed');return {fit};
    });
    for(const [album,total] of [[0,5],[1,7]])await scenario('WAREHOUSE_AUTHENTIC_ALBUM_'+album,'/obekty/sklady/',width,width>1000?650:844,async()=>{
     const opener=page.locator('[data-object-gallery]').nth(album);await opener.click();await checkDialog('#object-photo-dialog','warehouse-'+album+'-'+width);
     const seen=[];for(let n=1;n<=total;n++){await decodedImage('#object-photo-dialog img');expect(await page.locator('[data-object-photo-count]').innerText()===`Фото ${n} из ${total}`,'Warehouse first-click counter mismatch');seen.push(await page.locator('#object-photo-dialog img').getAttribute('src'));await page.locator('[data-object-photo-next]').click();}
-    expect(new Set(seen).size===total,'Warehouse album repeats a source frame');const fit=await page.locator('#object-photo-dialog img').boundingBox();await page.keyboard.press('+');const enlarged=await page.locator('#object-photo-dialog img').boundingBox();expect(enlarged.width>fit.width*1.1,'Warehouse photo does not enlarge');
+    expect(new Set(seen).size===total,'Warehouse album repeats a source frame');const fit=await paintedPhoto('#object-photo-dialog img');await page.keyboard.press('+');const enlarged=await paintedPhoto('#object-photo-dialog img');assertPaintedZoom('WAREHOUSE',fit,enlarged);
     await page.keyboard.press('0');await page.keyboard.press('Escape');expect(await opener.evaluate(e=>e===document.activeElement),'Warehouse focus restoration failed');return {decoded_unique_frames:seen};
    });
   }

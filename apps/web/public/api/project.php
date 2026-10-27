@@ -55,7 +55,7 @@ if(!is_array($files)||!isset($files['name'])||!is_array($files['name']))respond(
 $count=count($files['name']);
 if($count<1||$count>3)respond(422,'file_count_invalid');
 $allowed=['pdf','dwg','dxf','zip','jpg','jpeg','png'];
-$parts=[];$names=[];$total=0;
+$parts=[];$names=[];$fileHashes=[];$total=0;
 if(!class_exists(finfo::class))respond(503,'file_validation_unavailable');
 $mime=new finfo(FILEINFO_MIME_TYPE);
 for($i=0;$i<$count;$i++){
@@ -101,6 +101,7 @@ for($i=0;$i<$count;$i++){
   $names[]=$safeName?:'project-file';
   $bytes=file_get_contents($tmp);
   if(!is_string($bytes)||strlen($bytes)!==$size)respond(503,'file_read_failed');
+  $fileHashes[]=hash('sha256',$bytes);
   $parts[]=['name'=>sprintf('project-%02d.%s',$i+1,$ext),'mime'=>$actual,'encoded'=>chunk_split(base64_encode($bytes),76,"\r\n")];
 }
 $ip=(string)($_SERVER['REMOTE_ADDR']??'');
@@ -110,7 +111,7 @@ if($h===false||!flock($h,LOCK_EX))respond(503,'rate_unavailable');
 $events=json_decode(stream_get_contents($h)?:'[]',true);
 $events=is_array($events)?array_values(array_filter($events,static fn($e)=>is_array($e)&&is_int($e['t']??null)&&$e['t']>=time()-600)):[];
 if(count($events)>=3){flock($h,LOCK_UN);fclose($h);respond(429,'rate_limited');}
-$fp=hash('sha256',$contact."\n".$task."\n".implode('|',$names));
+$fp=hash('sha256',$contact."\n".$task."\n".implode('|',$names)."\n".implode('|',$fileHashes));
 foreach($events as $event){
   if(($event['h']??'')===$fp&&time()-$event['t']<120){flock($h,LOCK_UN);fclose($h);respond(409,'duplicate_submission');}
 }
@@ -118,8 +119,9 @@ $events[]=['t'=>time(),'h'=>$fp];
 rewind($h);ftruncate($h,0);
 $written=fwrite($h,json_encode($events));
 $flushed=fflush($h);
-flock($h,LOCK_UN);fclose($h);
-if($written===false||!$flushed)respond(503,'rate_unavailable');
+if($written===false||!$flushed){flock($h,LOCK_UN);fclose($h);respond(503,'rate_unavailable');}
+// Serialize send/retry under the existing lock. Only an accepted message
+// remains deduplicated; revised file bytes are a distinct submission.
 $boundary='AVPROJECT'.bin2hex(random_bytes(18));
 $text=implode("\n",['Проектная документация AEROVENTA','Имя: '.$name,'Контакт: '.$contact,
   'Задача: '.$task,'Страница: '.$source,'Файлы: '.implode(', ',$names),
@@ -136,5 +138,11 @@ $headers=['From: AEROVENTA Website <'.$from.'>','MIME-Version: 1.0',
   'Content-Type: multipart/mixed; boundary="'.$boundary.'"','X-AEROVENTA-Source: project-upload'];
 if($email!==false)$headers[]='Reply-To: '.$email;
 $subject='=?UTF-8?B?'.base64_encode('AEROVENTA: документация проекта').'?=';
-if(!@mail($to,$subject,$body,implode("\r\n",$headers)))respond(503,'delivery_unavailable');
+$accepted=@mail($to,$subject,$body,implode("\r\n",$headers));
+if(!$accepted){
+  array_pop($events);
+  rewind($h);ftruncate($h,0);fwrite($h,json_encode($events));fflush($h);
+}
+flock($h,LOCK_UN);fclose($h);
+if(!$accepted)respond(503,'delivery_unavailable');
 respond(200);

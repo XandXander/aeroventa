@@ -11,14 +11,14 @@
   color: #081728;
   background: #f4f7f8;
   font-synthesis: none;
-  --ink: #081728;
+  --ink: #25313A;
   --muted: #475569;
   --line: #d7dfe4;
   --paper: #ffffff;
   --paper-soft: #f7f9fa;
   --orange: #ff4d00;
   --blue: #148cff;
-  --navy: #071c2b;
+  --navy: #25313A;
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 82px; }
@@ -770,7 +770,7 @@ main { min-height: 60vh; }
   z-index:45;
   left:0;
   right:0;
-  top:63px;
+  top:calc(var(--av-entry-header, 65px) - 2px);
   height:2px;
   pointer-events:none;
   opacity:.92;
@@ -894,7 +894,6 @@ main { min-height: 60vh; }
   .airflow-entry-trace {top:56px;height:72px}
   .airflow-entry-trace__inner { width:calc(100% - 28px); }
   .airflow-entry-trace__steps { font-size:.56rem; gap:5px; }
-  .airflow-header-trace { top:55px; }
   .airflow-header-trace__route { width:44%; }
   .airflow-trace-section::before,
   .airflow-trace-section::after { left:14px; top:10px; }
@@ -1164,20 +1163,6 @@ main { min-height: 60vh; }
   align-items:center;
   gap:10px;
 }
-.brand-mark {
-  width:30px;
-  height:30px;
-  flex:0 0 30px;
-  overflow:visible;
-}
-.brand-mark path {
-  fill:none;
-  stroke-width:7.5;
-  stroke-linecap:square;
-  stroke-linejoin:round;
-}
-.brand-mark__supply { stroke:var(--orange); }
-.brand-mark__return { stroke:var(--ink); }
 
 
 .hero-engineering__frame {
@@ -1213,7 +1198,6 @@ main { min-height: 60vh; }
 
 @media (max-width:760px) {
   .brand { gap:8px; }
-  .brand-mark { width:26px; height:26px; flex-basis:26px; }
   .hero-engineering__frame { inset:10px; }
 }
 
@@ -1227,12 +1211,6 @@ main { min-height: 60vh; }
 /* V38 — canonical identity + exact visual-baseline fidelity correction */
 .brand {
   line-height:0;
-}
-.brand-wordmark {
-  display:block;
-  width:clamp(176px,14vw,205px);
-  height:auto;
-  max-width:100%;
 }
 
 
@@ -1346,9 +1324,6 @@ main { min-height: 60vh; }
 }
 
 @media (max-width:1050px) {
-  .brand-wordmark {
-    width:184px;
-  }
   .home-hero__grid {
     grid-template-columns:1fr 1fr;
   }
@@ -1357,9 +1332,6 @@ main { min-height: 60vh; }
 @media (max-width:760px) {
   .site-header__inner {
     min-height:56px;
-  }
-  .brand-wordmark {
-    width:158px;
   }
   .home-hero__copy {
     padding-right:14px;
@@ -1407,9 +1379,6 @@ main { min-height: 60vh; }
 }
 
 @media (max-width:360px) {
-  .brand-wordmark {
-    width:148px;
-  }
   .hero-engineering__label strong {
     font-size:.7rem;
   }
@@ -1423,13 +1392,6 @@ main { min-height: 60vh; }
 /* V39 — bounded pre-lock visual-fidelity correction */
 .brand {
   line-height:1;
-}
-.baseline-wordmark {
-  display:inline-block;
-  font-weight:900;
-  letter-spacing:-.055em;
-  line-height:1;
-  font-size:clamp(1.15rem,1.8vw,1.55rem);
 }
 
 
@@ -1485,12 +1447,6 @@ main { min-height: 60vh; }
 
 .brand{
   line-height:0;
-}
-.brand-wordmark {
-  display:block;
-  width:clamp(178px,14vw,208px);
-  height:auto;
-  max-width:100%;
 }
 
 
@@ -1640,7 +1596,8 @@ main { min-height: 60vh; }
 /* 7 PARK — evidence dossier, exactly two images */
 .case-feature {
   padding:clamp(62px,6.5vw,94px) 0;
-  background:#071c2b;
+  background:var(--av-surface-soft);
+  color:var(--av-typography);
 }
 .case-dossier {
   display:grid;
@@ -1657,18 +1614,19 @@ main { min-height: 60vh; }
 .case-dossier__intro h2 {
   margin:0;
   font-size:clamp(4rem,7vw,7rem);
-  line-height:.82;
-  letter-spacing:-.075em;
+  line-height:1;
+  letter-spacing:-.04em;
+  font-weight:500;
 }
 .case-feature__subtitle {
   margin:16px 0 0;
-  color:#d4dde3;
+  color:var(--av-secondary);
   font-size:1.05rem;
 }
 .case-dossier__statement {
   max-width:440px;
   margin:20px 0 0;
-  color:#aebdc7;
+  color:var(--av-secondary);
   font-size:.98rem;
   line-height:1.55;
 }
@@ -1682,7 +1640,9 @@ main { min-height: 60vh; }
 }
 .case-dossier__primary {
   grid-area:primary;
-  min-height:500px;
+  min-height:0;
+  aspect-ratio:2/1;
+  align-self:start;
 }
 .case-dossier__secondary {
   grid-area:secondary;
@@ -1744,7 +1704,7 @@ main { min-height: 60vh; }
 }
 .case-dossier__facts {
   margin:0;
-  border-top:1px solid #526876;
+  border-top:1px solid var(--av-rule);
 }
 .case-dossier__facts--primary {
   grid-area:facts-primary;
@@ -1760,15 +1720,15 @@ main { min-height: 60vh; }
 .case-dossier__facts div {
   min-width:0;
   padding:13px 14px 12px 0;
-  border-bottom:1px solid #405766;
+  border-bottom:1px solid var(--av-rule);
 }
 .case-dossier__facts--primary div + div {
   padding-left:16px;
-  border-left:1px solid #405766;
+  border-left:1px solid var(--av-rule);
 }
 .case-dossier__facts dt {
   margin:0 0 6px;
-  color:#8fa2ae;
+  color:var(--av-secondary);
   font-size:.66rem;
   font-weight:800;
   letter-spacing:.065em;
@@ -1776,7 +1736,7 @@ main { min-height: 60vh; }
 }
 .case-dossier__facts dd {
   margin:0;
-  color:#fff;
+  color:var(--av-typography);
   font-size:.9rem;
   line-height:1.32;
   font-weight:750;
@@ -1791,13 +1751,13 @@ main { min-height: 60vh; }
   gap:20px;
   padding:0 18px;
   border:1px solid #637886;
-  color:#fff;
+  color:var(--av-typography);
   text-decoration:none;
   font-weight:850;
   transition:background .16s ease,border-color .16s ease;
 }
 .case-dossier__cta:hover {
-  background:#0c2a3e;
+  background:#dce7e9;
   border-color:#8ba0ad;
 }
 
@@ -1895,12 +1855,11 @@ main { min-height: 60vh; }
     grid-template-columns:minmax(250px,.8fr) minmax(0,1.2fr);
     gap:22px 26px;
   }
-  .case-dossier__primary { min-height:440px; }
+  .case-dossier__primary { min-height:0; }
   
 }
 
 @media (max-width:760px) {
-  .brand-wordmark { width:158px; }
   
 
   .hero-engineering {
@@ -1956,7 +1915,7 @@ main { min-height: 60vh; }
     font-size:.92rem;
   }
   .case-dossier__primary {
-    min-height:320px;
+    min-height:0;
   }
   .case-dossier__secondary {
     min-height:230px;
@@ -2000,10 +1959,9 @@ main { min-height: 60vh; }
 }
 
 @media (max-width:360px) {
-  .brand-wordmark { width:148px; }
   .hero-engineering__label small { display:none; }
   .hero-engineering__label--exhaust { top:43px; }
-  .case-dossier__primary { min-height:286px; }
+  .case-dossier__primary { min-height:0; }
   .case-dossier__secondary { min-height:205px; }
   
 }
@@ -2020,29 +1978,8 @@ main { min-height: 60vh; }
 
 
 /* V40 residual — exact locked compact mark + text treatment */
-.brand-mark-locked {
-  display:block;
-  width:31px;
-  height:auto;
-  flex:0 0 31px;
-}
-.brand-mark-locked--footer {
-  width:35px;
-  flex-basis:35px;
-}
-.brand .baseline-wordmark{
-  display:inline-block;
-  color:var(--ink);
-  font-weight:900;
-  letter-spacing:-.055em;
-  line-height:1;
-}
-.brand .baseline-wordmark {
-  font-size:clamp(18.4px,1.8vw,24.8px);
-}
 
 @media (max-width:760px) {
-  .brand-mark-locked { width:27px; flex-basis:27px; }
   .brand { gap:8px; }
 }
 
@@ -2050,35 +1987,6 @@ main { min-height: 60vh; }
 /* V40 residual — locked AEROVENTA 01 integrated wordmark */
 .brand{
   gap:0;
-}
-.brand-mark-locked {
-  width:30px;
-  flex-basis:30px;
-  margin-right:-2px;
-}
-.brand-mark-locked--footer {
-  width:33px;
-  flex-basis:33px;
-  margin-right:-3px;
-}
-.brand .baseline-wordmark{
-  display:inline-flex;
-  align-items:baseline;
-  white-space:nowrap;
-}
-.brand-wordmark-tail {
-  letter-spacing:-.065em;
-}
-.brand-domain {
-  margin-left:.035em;
-  letter-spacing:-.055em;
-}
-@media (max-width:760px) {
-  .brand-mark-locked {
-    width:27px;
-    flex-basis:27px;
-    margin-right:-2px;
-  }
 }
 
 
@@ -2256,80 +2164,6 @@ main { min-height: 60vh; }
    Photo is illustrative: never attribute it to a specific AEROVENTA project.
    Preserve the V42 route/case/interaction contracts. */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-.home-hero--v43 ~ .case-feature { background-color:#243640; color:#f6f8fa; }
-.home-hero--v43 ~ .case-feature .section-index--orange { color:#e4a487; }
-.home-hero--v43 ~ .case-feature .case-dossier__intro h2 { color:#f7f8f9; }
-.home-hero--v43 ~ .case-feature .case-dossier__facts dt { color:#c0d0d7; }
-.home-hero--v43 ~ .case-feature .case-dossier__facts dd { color:#f1f5f6; }
-.home-hero--v43 ~ .case-feature .case-dossier__cta { border-color:#9caeb8; }
-
-@media (max-width:1100px) and (min-width:761px) {
-  
-  
-  
-  
-  
-  
-  
-}
-
-@media (max-width:760px) {
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-}
-@media (max-width:360px) {
-  
-  
-  
-  
-}
-@media (prefers-reduced-motion:reduce) {
-  
-}
-
 /* V43 owner visual-fidelity correction — accepted evidence-first homepage only.
    Keep previously accepted component, routes, and 7 PARK contracts intact. */
 /* A restrained type-only selector, not a numerical KPI or a row of catalog cards. */
@@ -2486,9 +2320,6 @@ main { min-height: 60vh; }
 }
 
 /* V43 browser-verified optical cleanup after independent full-page screenshot review. */
-@media (max-width:760px) {
-  /* The split mobile panels have their own enlarged labels and captions. */
-}
 
 /* V43 Owner assignment: REV2 architectural interior for Home once exact original is available. */
 
@@ -2787,11 +2618,6 @@ html::-webkit-scrollbar-thumb:hover {background:#7c93a2;}
     border-top:1px solid #d7dedf;
   }
 }
-@media(max-width:340px) {
-  
-  
-  
-}
 
 /* Owner-approved original airflow photograph; evidence-first case presentation, 2026-10-12 */
 
@@ -2877,12 +2703,6 @@ html::-webkit-scrollbar-thumb:hover {background:#7c93a2;}
 /* Owner P0: full-height editorial scale for the wide process drawing.
    Keep the original aspect and all baked-in HVAC annotations; fade only the
    illustration perimeter, not the text or the air-flow routes. */
-@media(min-width:1101px){
-  /* The old 520px stage surrounded a naturally shallow 1036:338 scene with
-     empty air; this tighter section visually enlarges the preserved artwork. */
-  /* A soft blend at the left/bottom boundary removes the hard rectangular
-     seam without bleaching the diagram's supply/exhaust callouts at the top. */
-}
 
 /* Gallery image occupies the available plane; side navigation never displaces it. */
 .case-photo-dialog{position:fixed;inset:0;margin:auto;width:min(98vw,1550px);height:min(95dvh,1050px);background:#0b1823}

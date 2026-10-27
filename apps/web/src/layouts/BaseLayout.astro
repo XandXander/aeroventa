@@ -123,7 +123,7 @@ const brandedShareCards: Record<string, string> = {
   '/blog/obzory-i-intervyu/':'project','/blog/detail/novoe-almaznoe-burenie/':'drill-screed',
   '/faq/':'services','/covid-pritochnaya-ventilacia/':'services',
   '/news/':'about','/news/istoriya-kompanii/':'about','/news/korporativnaya-zhizn/':'about',
-  '/news/znachimye-sobytiya/':'project','/vakansii/':'about','/privacy/':'home'
+  '/news/znachimye-sobytiya/':'project','/vakansii/':'about','/privacy/':'brand'
 };
 const brandedShareImage = brandedShareCards[content.path] ? '/share/' + brandedShareCards[content.path] + '.jpg' : null;
 const rejectedServicesImage = content.path === '/services/' &&
@@ -134,7 +134,7 @@ const rejectedServicesImage = content.path === '/services/' &&
 const approvedSocial = releaseMode === 'production' && content.status === 'published' && Boolean(content.owner_approved_at);
 const ogImageSource = rejectedServicesImage
   ? (brandedShareImage || editorialOgFallback['/services/'])
-  : ((approvedSocial && content.og_image) || brandedShareImage || editorialOgFallback[content.path] || '/evidence/hero/services-owner-editorial-1774.webp');
+  : ((approvedSocial && content.og_image) || brandedShareImage || editorialOgFallback[content.path] || '/share/brand.jpg');
 const socialImageUrl = ogImageSource ? new URL(ogImageSource, shareOrigin) : null;
 // Repository-relative approved assets follow the deployment origin. External
 // approved CMS imagery remains an explicit external asset, never a guessed path.
@@ -162,8 +162,11 @@ const googleVerification = (import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION || '
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <meta name="theme-color" content="#ffffff" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#FAFBFA" />
+    <link rel="icon" href="/brand/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/brand/favicon.ico" type="image/x-icon" sizes="any" />
+    <link rel="apple-touch-icon" href="/brand/apple-touch-icon.png" sizes="180x180" />
+    <link rel="manifest" href="/brand/site.webmanifest" />
     <link rel="preload" href="/fonts/onest-variable.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href={globalCssUrl} />
     <link rel="stylesheet" href={experienceCssUrl} />

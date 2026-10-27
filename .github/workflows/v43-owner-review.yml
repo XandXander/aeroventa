@@ -98,6 +98,14 @@ jobs:
           RECOVERY_QA_OWNER_CONTRACT: ${{ steps.scope.outputs.source_closure == 'true' && 'D061_D065' || '' }}
           RECOVERY_QA_OUTPUT: PR12_COVER_QA
         run: node scripts/pr12-recovery-browser-qa.mjs
+      - name: Final six categories, eighteen exact placements and authentic source albums
+        if: ${{ !cancelled() && steps.fixture-build.outcome == 'success' && steps.focused-reflow.outcome == 'success' }}
+        env:
+          RECOVERY_QA_PHASE: covers
+          RECOVERY_QA_OWNER_CONTRACT: D061_D065
+          RECOVERY_QA_OUTPUT: PR12_CATEGORIES_FINAL
+        run: node scripts/pr12-recovery-browser-qa.mjs
+
       - name: Latest Owner first-view, authentic Neva, twelve-object and compact-assistant contract
         if: ${{ !cancelled() && steps.fixture-build.outcome == 'success' && steps.focused-reflow.outcome == 'success' }}
         env:
@@ -125,6 +133,7 @@ jobs:
             PR12_SYSTEMIC_QA/
             PR12_REFLOW_QA/
             PR12_OWNER_CONTRACT/
+            PR12_CATEGORIES_FINAL/
           if-no-files-found: warn
           retention-days: 7
       - name: Emit compact selected real-render previews into CI evidence log

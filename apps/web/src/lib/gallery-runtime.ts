@@ -73,8 +73,16 @@ export function bindPhotoZoom(dialog:HTMLDialogElement|null,stage:HTMLElement|nu
  stage.tabIndex=0;
  stage.setAttribute('role','group');
  stage.setAttribute('aria-label','Фотография. Плюс и минус — масштаб, 0 — вписать. Стрелки перемещают увеличенное изображение.');
- let scale=1,pinchDistance=0,pinchScale=1,start:{x:number;y:number}|null=null;
+ let scale=1,fitWidth=0,pinchDistance=0,pinchScale=1,start:{x:number;y:number}|null=null;
  const set=(value:number)=>{
+   if(scale===1&&value>1){
+     // FIT may already enlarge a small original. Zoom is relative to the
+     // painted FIT photograph, never to a capped intrinsic pixel width or
+     // the stage after its zoomed class changes padding and layout.
+     const box=img.getBoundingClientRect();
+     const ratio=img.naturalWidth&&img.naturalHeight?img.naturalWidth/img.naturalHeight:1.4;
+     fitWidth=Math.min(box.width,box.height*ratio);
+   }
    scale=Math.max(1,Math.min(4,value));
    dialog.dataset.zoom=String(scale);dialog.classList.toggle('is-photo-zoomed',scale>1);
    const zoomButton=dialog.querySelector<HTMLElement>('[data-case-zoom]');
@@ -85,12 +93,7 @@ export function bindPhotoZoom(dialog:HTMLDialogElement|null,stage:HTMLElement|nu
      for(const name of ['display','overflow','align-items','justify-content'])stage.style.removeProperty(name);
      stage.scrollTo({left:0,top:0});return;
    }
-   const css=getComputedStyle(stage);
-   const width=stage.clientWidth-parseFloat(css.paddingLeft)-parseFloat(css.paddingRight);
-   const height=stage.clientHeight-parseFloat(css.paddingTop)-parseFloat(css.paddingBottom);
-   const ratio=img.naturalWidth&&img.naturalHeight?img.naturalWidth/img.naturalHeight:1.4;
-   const fit=Math.min(width,height*ratio,img.naturalWidth||1600);
-   img.style.width=Math.round(Math.max(100,fit)*scale)+'px';
+   img.style.width=Math.round(Math.max(100,fitWidth)*scale)+'px';
    img.style.maxWidth='none';img.style.maxHeight='none';img.style.height='auto';
    stage.style.display='flex';stage.style.overflow='auto';stage.style.alignItems='flex-start';stage.style.justifyContent='flex-start';
  };

@@ -8,6 +8,8 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 import tempfile
+from email import policy
+from email.parser import BytesParser
 
 root=Path(__file__).resolve().parents[1]
 webroot=root/'apps/web/public'
@@ -19,6 +21,8 @@ with socket.socket() as sock:
     port=sock.getsockname()[1]
 env={**os.environ,'AEROVENTA_LEAD_TO':'office@aeroventa.ru','AEROVENTA_LEAD_FROM':'office@aeroventa.ru'}
 test_state=tempfile.TemporaryDirectory(prefix='aeroventa-project-test-')
+failure_flag=Path(test_state.name)/'mail-failure'
+env['AEROVENTA_TEST_MAIL_FAILURE']=str(failure_flag)
 server=subprocess.Popen(['php','-d',f'sys_temp_dir={test_state.name}','-d',f'sendmail_path={stub}','-S',f'127.0.0.1:{port}','-t',str(webroot)],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
 try:
     url=f'http://127.0.0.1:{port}/api/project.php'
@@ -61,17 +65,33 @@ try:
         ('staging-consent',request(origin='https://staging.aeroventa.ru',fields={**fields,'consent':''}),422),
         ('missing-files',request(filename=None),422),
         ('bad-file-signature',request(filedata=b'not a valid PDF'),415),
-        ('valid',request(),200),
-        ('duplicate',request(),409)
     ]
+    failure_flag.touch()
+    cases.append(('mail-failure',request(),503))
+    failure_flag.unlink()
+    cases.extend([
+        ('same-files-retry-after-mail-failure',request(),200),
+        ('duplicate-after-acceptance',request(),409),
+        # A corrected plan must not be discarded merely because its filename is unchanged.
+        ('same-name-different-bytes',request(filedata=b'%PDF-1.4\n% revised plan\n%%EOF\n'),200),
+    ])
     for name,got,expected in cases:
         print(name,'PASS' if got[0]==expected else 'FAIL',got,expected)
     assert all(got[0]==expected for _,got,expected in cases)
     assert capture.exists()
     output=capture.read_text(errors='replace')
-    assert output.count('---END MOCK EMAIL---')==1
+    assert output.count('---END MOCK EMAIL---')==2
     assert 'multipart/mixed' in output and 'project-01.pdf' in output
-    print('PASS: project upload 8/8, captured one private mock message, external mails 0')
+    attachments=[]
+    for raw in capture.read_bytes().split(b'\n---END MOCK EMAIL---\n'):
+        if not raw.strip(): continue
+        message=BytesParser(policy=policy.default).parsebytes(raw.lstrip())
+        attachments.extend(part.get_payload(decode=True) for part in message.iter_attachments())
+    assert attachments==[
+        b'%PDF-1.4\n1 0 obj\n<< /Type /Catalog >>\nendobj\n%%EOF\n',
+        b'%PDF-1.4\n% revised plan\n%%EOF\n',
+    ], 'Email must retain exact attachment bytes across retry and corrected plan'
+    print(f'PASS: project upload {len(cases)}/{len(cases)}, two exact attachments, external mails 0')
 finally:
     server.terminate()
     try:server.wait(timeout=3)

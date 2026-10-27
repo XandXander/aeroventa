@@ -17,6 +17,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Setup Node
         uses: actions/setup-node@v6
@@ -54,43 +56,17 @@ jobs:
           AEROVENTA_RELEASE_MODE: fixture
         run: npm run validate:dist
 
+      - name: Verify final 65-scope source, SEO and original-media contracts
+        run: python3 scripts/validate-final-contract.py
+
       # Artifact delivery only: no changes to the website or deployment.
       - name: Package ready-to-import staging website ZIP
         shell: bash
         env:
           SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
-          python3 - <<'PY'
-          import hashlib, json, os, zipfile
-          from pathlib import Path
-          dist=Path('apps/web/dist')
-          assert (dist/'index.html').is_file()
-          assert (dist/'404.html').is_file()
-          paths=sorted(p for p in dist.rglob('*') if p.is_file() and p.name != '.htaccess')
-          output=Path('release_out')
-          output.mkdir(exist_ok=True)
-          source_sha=os.environ['SOURCE_SHA']
-          name='AEROVENTA_PR12_STAGING_'+source_sha[:8]+'.zip'
-          target=output/name
-          with zipfile.ZipFile(target,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=7,allowZip64=True) as z:
-            for p in paths:
-              z.write(p,p.relative_to(dist).as_posix())
-            z.writestr('aeroventa-build.json',json.dumps({
-              'source_sha':source_sha,
-              'mode':'fixture-staging-only',
-              'release':'HOLD',
-              'installed_staging_sha':'NOT_ASSERTED'
-            },ensure_ascii=False,indent=2)+'\n')
-          with zipfile.ZipFile(target) as z:
-            assert z.testzip() is None
-            assert 'index.html' in z.namelist()
-            assert 'aeroventa-build.json' in z.namelist()
-            assert '.htaccess' not in z.namelist()
-            assert all(not n.startswith('apps/') and not n.startswith('dist/') for n in z.namelist())
-          print('READY_FOR_STAGING_IMPORT',name,'BYTES',target.stat().st_size,
-                'SHA256',hashlib.sha256(target.read_bytes()).hexdigest(),
-                'FILES',len(paths))
-          PY
+          mkdir -p release_out
+          python3 scripts/package-final-staging.py apps/web/dist "release_out/AEROVENTA_PR12_STAGING_${SOURCE_SHA:0:8}.zip" "$SOURCE_SHA" > release_out/manifest.json
 
       - name: Upload ready-to-import staging ZIP
         uses: actions/upload-artifact@v6
