@@ -6,7 +6,7 @@ export function viewerPreviewFor(original:string):string{
   const matches=(img.getAttribute('srcset')||'').split(',').map(candidate=>{
    const parts=candidate.trim().split(/\s+/);
    return {url:parts[0]||'',width:Number((parts[1]||'').replace(/w$/,''))||0};
-  }).filter(entry=>entry.url.startsWith('/media/responsive/')&&entry.url.endsWith('.webp'))
+  }).filter(entry=>entry.width>0&&((entry.url.startsWith('/media/responsive/')&&entry.url.endsWith('.webp'))||entry.url===original))
    .sort((a,b)=>a.width-b.width);
   if(matches.length){
    const needed=Math.min(1400,innerWidth*Math.min(devicePixelRatio||1,2));

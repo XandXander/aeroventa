@@ -495,6 +495,23 @@ try {
           const viewer = page.locator('#case-photo-viewer');
           await viewer.waitFor({state:'visible'});
           const shown = await viewer.locator('[data-photo-large]').getAttribute('src');
+          await viewer.locator('[data-photo-large]').evaluate(async img=>{await img.decode();});
+          const fitOccupancy=await viewer.locator('[data-photo-large]').evaluate(img=>{
+            const figure=img.closest('.case-photo-dialog__figure');
+            const css=getComputedStyle(figure);
+            const fig=figure.getBoundingClientRect();
+            const box=img.getBoundingClientRect();
+            const aspect=img.naturalWidth/img.naturalHeight;
+            const availableW=fig.width-parseFloat(css.paddingLeft)-parseFloat(css.paddingRight);
+            const availableH=fig.height-parseFloat(css.paddingTop)-parseFloat(css.paddingBottom);
+            const paintedW=Math.min(box.width,box.height*aspect);
+            const paintedH=Math.min(box.height,box.width/aspect);
+            const idealW=Math.min(availableW,availableH*aspect);
+            const idealH=Math.min(availableH,availableW/aspect);
+            return {paintedW,paintedH,idealW,idealH};
+          });
+          if(fitOccupancy.paintedW<fitOccupancy.idealW*.9||fitOccupancy.paintedH<fitOccupancy.idealH*.9)
+            report.fail.push({route,view,reason:'Case viewer photo underfills FIT viewport',fitOccupancy});
           if (!(await viewerMatchesSource(firstPhoto,firstSrc,shown))) report.fail.push({route,view,reason:'Case viewer selected image mismatch',firstSrc,shown});
           await viewer.locator('[data-photo-next]').click();
           const secondSrc = await viewer.locator('[data-photo-large]').getAttribute('src');
