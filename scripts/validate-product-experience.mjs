@@ -298,7 +298,7 @@ check(!files.globalCss.includes('.case-gallery__item:nth-child(n+7){display:none
       'ART-DELTA-03B: no hidden verified photographs, balanced final gallery row');
 check(caseSource.includes("'/blog/detail/kafe-rimskogo-korsakova-3/': {gallery:") &&
       !caseSource.includes("'/blog/detail/kafe-na-rimskogo-korsakova/':"), 'ART-DELTA-04: cafe documentary key correct');
-check(portfolioSource.includes("kind:'Сервисно-образовательный центр'") &&
+check(portfolioSource.includes("kind:'Складские объекты'") &&
       !portfolioSource.includes("kind:'География'"), 'ART-DELTA-05: kind means object type');
 check(files.layout.includes("'/services/': '/evidence/hero/project-not-ready-owner-concept-1672.webp'") &&
       files.layout.includes('rejectedServicesImage'), 'ART-DELTA-06: approved services social preview and rejected-cover protection');
