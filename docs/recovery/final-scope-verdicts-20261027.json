@@ -18,8 +18,8 @@
       "section": "Новый знак и wordmark в шапке",
       "candidate_status": "VERIFIED DONE",
       "change_required": true,
-      "correction": "Финальный контурный логотип в шапке; на узких экранах отдельный полный wordmark AEROVENTA.RU",
-      "evidence": "Header.astro; desktop/mobile screenshots",
+      "correction": "Финальный контурный логотип в шапке; на узких экранах отдельный полный wordmark AEROVENTA.RU; flex-сжатие сохраняет меню внутри экрана при 390 px / 125%",
+      "evidence": "Header.astro; desktop/mobile screenshots; existing 400-capture Owner height/zoom gate",
       "initial_status": "OPEN"
     },
     {
