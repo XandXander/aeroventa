@@ -54,6 +54,42 @@ jobs:
           AEROVENTA_RELEASE_MODE: fixture
         run: npm run validate:dist
 
+      # Artifact delivery only: no changes to the website or deployment.
+      - name: Package ready-to-import staging website ZIP
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib, os, zipfile
+          from pathlib import Path
+          dist=Path('apps/web/dist')
+          assert (dist/'index.html').is_file()
+          assert (dist/'404.html').is_file()
+          paths=sorted(p for p in dist.rglob('*') if p.is_file() and p.name != '.htaccess')
+          output=Path('release_out')
+          output.mkdir(exist_ok=True)
+          name='AEROVENTA_PR12_STAGING_'+os.environ['GITHUB_SHA'][:8]+'.zip'
+          target=output/name
+          with zipfile.ZipFile(target,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=7,allowZip64=True) as z:
+            for p in paths:
+              z.write(p,p.relative_to(dist).as_posix())
+          with zipfile.ZipFile(target) as z:
+            assert z.testzip() is None
+            assert 'index.html' in z.namelist()
+            assert '.htaccess' not in z.namelist()
+            assert all(not n.startswith('apps/') and not n.startswith('dist/') for n in z.namelist())
+          print('READY_FOR_STAGING_IMPORT',name,'BYTES',target.stat().st_size,
+                'SHA256',hashlib.sha256(target.read_bytes()).hexdigest(),
+                'FILES',len(paths))
+          PY
+
+      - name: Upload ready-to-import staging ZIP
+        uses: actions/upload-artifact@v6
+        with:
+          name: AEROVENTA_PR12_STAGING_IMPORT_ZIP
+          path: release_out/AEROVENTA_PR12_STAGING_*.zip
+          if-no-files-found: error
+          retention-days: 7
+
       - name: Upload validation artifact
         uses: actions/upload-artifact@v6
         with:
