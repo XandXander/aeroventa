@@ -523,6 +523,7 @@
 }
 .experience-dialog--contact .experience-dialog__shell {padding:clamp(19px,3vw,31px);}
 .experience-dialog--contact .experience-dialog__head {gap:16px;align-items:center;}
+.experience-dialog--contact:not(.experience-dialog--project) .experience-dialog__head{display:flex;justify-content:flex-end;min-height:44px}
 .experience-dialog--contact .experience-dialog__head h2 {font-size:clamp(1.6rem,2.7vw,2.05rem);line-height:1.1;letter-spacing:-.035em;}
 .experience-dialog--contact .premium-contact-form {gap:15px;margin-top:20px;}
 .experience-dialog--contact .premium-contact-form--compact .premium-contact-form__intro {display:none;}

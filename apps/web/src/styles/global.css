@@ -3684,6 +3684,21 @@ dialog.ponsse-letter-dialog.is-document-zoomed .ponsse-letter-dialog__sheet img{
 
 /* Owner photo-viewer contract: FIT uses the available stage, not the intrinsic
    320/480px thumbnail box. Zoomed images keep existing zoom/pan behavior. */
+/* Equal optical stage margins across all four existing viewer types. */
+.case-photo-dialog:not(.is-photo-zoomed) .case-photo-dialog__figure,
+#object-photo-dialog:not(.is-photo-zoomed) .object-photo-dialog__stage,
+#owner-case-viewer:not(.is-photo-zoomed) .owner-case__viewer-stage,
+#portfolio-archive-viewer:not(.is-zoomed) .portfolio-archive-viewer__stage{
+ box-sizing:border-box;padding:60px clamp(50px,4vw,70px) 44px!important;overflow:hidden
+}
+@media(max-width:600px){
+ .case-photo-dialog:not(.is-photo-zoomed) .case-photo-dialog__figure,
+ #object-photo-dialog:not(.is-photo-zoomed) .object-photo-dialog__stage,
+ #owner-case-viewer:not(.is-photo-zoomed) .owner-case__viewer-stage,
+ #portfolio-archive-viewer:not(.is-zoomed) .portfolio-archive-viewer__stage{
+  padding:56px 44px 48px!important
+ }
+}
 .case-photo-dialog:not(.is-photo-zoomed) .case-photo-dialog__figure img,
 #object-photo-dialog:not(.is-photo-zoomed) .object-photo-dialog__stage img,
 #owner-case-viewer:not(.is-photo-zoomed) .owner-case__viewer-stage img,
