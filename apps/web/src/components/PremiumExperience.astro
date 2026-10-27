@@ -22,12 +22,11 @@ const { pagePath = '' } = Astro.props;
     </div>
 
     <section class="consultant-conversation" aria-label="Консультация по монтажу вентиляции">
-      <p class="consultant-conversation__intro">Опишите объект или задайте вопрос о монтаже.</p>
       <ol class="consultant-conversation__history" data-consultant-chat-messages aria-live="polite" aria-relevant="additions"></ol>
       <form class="consultant-conversation__composer" data-consultant-chat-form>
         <label class="consultant-conversation__accessible-label" for="consultant-chat-question">Вопрос о вентиляции</label>
         <div class="consultant-conversation__input">
-          <textarea id="consultant-chat-question" name="question" maxlength="800" rows="2" placeholder="Опишите задачу или задайте вопрос" required></textarea>
+          <textarea id="consultant-chat-question" name="question" maxlength="800" rows="4" placeholder="Ваш вопрос" required></textarea>
           <button type="submit" aria-label="Отправить вопрос">→</button>
         </div>
       </form>
@@ -121,13 +120,9 @@ const { pagePath = '' } = Astro.props;
   </div>
 </dialog>
 
-<dialog class="experience-dialog experience-dialog--contact" data-contact-dialog aria-labelledby="contact-dialog-title">
+<dialog class="experience-dialog experience-dialog--contact" data-contact-dialog aria-label="Связаться по объекту">
   <div class="experience-dialog__shell">
     <div class="experience-dialog__head">
-      <div>
-        <p class="section-index">Связаться по объекту</p>
-        <h2 id="contact-dialog-title">Обсудить монтаж вентиляции</h2>
-      </div>
       <button type="button" class="dialog-close" data-dialog-close aria-label="Закрыть форму">×</button>
     </div>
     <ContactForm idPrefix="contact-drawer" sourcePath={pagePath} compact={true} />

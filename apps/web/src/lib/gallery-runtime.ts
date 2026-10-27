@@ -9,8 +9,11 @@ export function viewerPreviewFor(original:string):string{
   }).filter(entry=>entry.width>0&&((entry.url.startsWith('/media/responsive/')&&entry.url.endsWith('.webp'))||entry.url===original))
    .sort((a,b)=>a.width-b.width);
   if(matches.length){
-   const needed=Math.min(1400,innerWidth*Math.min(devicePixelRatio||1,2));
-   return (matches.find(entry=>entry.width>=needed)||matches[matches.length-1]).url;
+   const needed=Math.min(1600,Math.max(1,innerWidth-96)*Math.min(devicePixelRatio||1,2));
+   const best=matches.find(entry=>entry.width>=needed)||matches[matches.length-1];
+   const originalWidth=img.naturalWidth||Number(img.getAttribute('width'))||0;
+   // A tiny responsive rendition must never replace a larger original in FIT.
+   return best.width<needed&&originalWidth>best.width ? original : best.url;
   }
   return original;
  }

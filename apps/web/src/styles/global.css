@@ -3649,8 +3649,8 @@ dialog.ponsse-letter-dialog.is-document-zoomed .ponsse-letter-dialog__sheet img{
 @media(max-width:760px){.object-grid--editorial{grid-template-columns:1fr;gap:0}.object-grid--editorial .object-link{padding:20px 0 23px}.evidence-case .case-story--editorial .case-story__grid{grid-template-columns:1fr;gap:17px}.evidence-case .case-story--editorial .case-story__grid>div{padding:18px 0 0}}
 
 /* Native scene and verified live legend. Source bytes are retained. */
-.home-solution{padding-block:clamp(42px,5vw,76px);background:#f8fafb}
-.solution-grid{display:grid;grid-template-columns:minmax(0,.66fr) minmax(0,1.85fr);align-items:center;gap:clamp(20px,3vw,46px);min-height:0}
+.home-solution{padding-block:clamp(24px,3vw,44px);background:#f8fafb}
+.solution-grid{display:grid;grid-template-columns:minmax(0,.62fr) minmax(0,1.9fr);align-items:center;gap:clamp(16px,2vw,30px);min-height:0}
 .solution-grid>.section-copy{min-width:0;max-width:37ch}
 .solution-grid .section-copy h2{overflow-wrap:break-word;font-size:clamp(1.85rem,3vw,3.05rem);line-height:1.14;letter-spacing:-.035em;font-weight:580;text-wrap:balance}
 .solution-grid .section-copy>p:not(.section-index){font-size:1.05rem;line-height:1.65;color:#496271}
@@ -3659,7 +3659,7 @@ dialog.ponsse-letter-dialog.is-document-zoomed .ponsse-letter-dialog__sheet img{
 .solution-diagram{position:relative;inset:auto;width:100%;height:auto;min-width:0;margin:0;background:transparent}
 .solution-label-mask{position:absolute;pointer-events:none}
 .solution-diagram img,.solution-mobile-pair__crop img{clip-path:url(#solution-scene-ink)}
-.solution-diagram img{display:block;width:100%;height:auto;max-width:1036px;object-fit:contain}
+.solution-diagram img{display:block;width:100%;height:auto;max-width:none;object-fit:contain}
 .solution-legend{position:absolute;inset:0;margin:0;z-index:1;pointer-events:none}
 .solution-legend p{position:absolute;top:10%;left:14.6%;width:22.4%;margin:0;padding:3px 6px;background:#f8fafb}
 .solution-legend p+p{left:70.6%;width:24.6%}
@@ -3680,4 +3680,29 @@ dialog.ponsse-letter-dialog.is-document-zoomed .ponsse-letter-dialog__sheet img{
  .solution-mobile-pair figcaption{position:absolute;z-index:1;top:10%;left:29.2%;width:44.8%;padding:2px 4px;margin:0;background:#f8fafb}
  .solution-mobile-pair__panel--exhaust figcaption{left:41.2%;width:49.2%}
  .solution-mobile-pair figcaption strong{font-size:.9375rem}
+}
+
+/* Owner photo-viewer contract: FIT uses the available stage, not the intrinsic
+   320/480px thumbnail box. Zoomed images keep existing zoom/pan behavior. */
+.case-photo-dialog:not(.is-photo-zoomed) .case-photo-dialog__figure img,
+#object-photo-dialog:not(.is-photo-zoomed) .object-photo-dialog__stage img,
+#owner-case-viewer:not(.is-photo-zoomed) .owner-case__viewer-stage img,
+#portfolio-archive-viewer:not(.is-zoomed) .portfolio-archive-viewer__stage img{
+ display:block;width:100%!important;height:100%!important;
+ max-width:100%!important;max-height:100%!important;min-width:0;min-height:0;
+ object-fit:contain!important;flex:1 1 auto;margin:auto
+}
+.case-photo-dialog [data-photo-close],
+#object-photo-dialog [data-object-photo-close],
+#owner-case-viewer [data-case-close],
+#portfolio-archive-viewer [data-gallery-close]{
+ position:absolute!important;top:12px!important;right:12px!important;
+ z-index:10;display:grid;place-items:center;box-sizing:border-box;
+ width:44px;min-width:44px;height:44px;min-height:44px
+}
+@media(max-width:600px){
+ .case-photo-dialog [data-photo-close],
+ #object-photo-dialog [data-object-photo-close],
+ #owner-case-viewer [data-case-close],
+ #portfolio-archive-viewer [data-gallery-close]{top:8px!important;right:8px!important}
 }
