@@ -468,6 +468,19 @@ try {
    await opener.click();expect(await page.locator(selector).evaluate(d=>d.open),'Reopen failed');await page.locator(selector+' [data-dialog-close]').click();
    return {keyboard_tabs:16,reopened:true};
   });
+  // Exact-home CTA opens the existing multipart project intake, never contact.
+  for (const width of [390,1440]) await scenario('HOME_ESTIMATE_OPENS_PROJECT_ATTACHMENT','/',width,780,async()=>{
+   const estimate=page.locator('.home-actions [data-project-open][data-source="home_estimate"]');
+   expect(await estimate.count()===1,'Expected one home estimate-to-project CTA');
+   await estimate.click();
+   expect(await page.locator('#aeroventa-project-dialog').evaluate(d=>d.open),'Home estimate did not open project dialog');
+   expect(await page.locator('[data-contact-dialog]').evaluate(d=>!d.open),'Text-only contact dialog opened unexpectedly');
+   const input=page.locator('#aeroventa-project-dialog input[type="file"][name="documents[]"]');
+   expect(await input.count()===1,'Project dialog must retain file attachment');
+   expect(await input.getAttribute('multiple')!==null,'Project multiple files support disappeared');
+   await page.locator('#aeroventa-project-dialog [data-dialog-close]').click();
+   return {fileUpload:true,contactNotOpened:true};
+  });
   for(const width of [390,1440]) {
    await scenario('SPORT_ALL_12_FIRST_CLICK','/portfolio/',width,width>1000?650:844,async()=>{
     const opener=page.locator('[data-archive-open][data-gallery-title="Центр адаптивного спорта"]').first();await opener.click();
