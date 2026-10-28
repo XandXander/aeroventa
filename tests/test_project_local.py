@@ -82,6 +82,10 @@ try:
     output=capture.read_text(errors='replace')
     assert output.count('---END MOCK EMAIL---')==2
     assert 'multipart/mixed' in output and 'project-01.pdf' in output
+    assert output.count('From: AEROVENTA Website <office@aeroventa.ru>') == 2
+    assert output.count('Reply-To: office@aeroventa.ru') == 2
+    assert 'Reply-To: demo@example.com' not in output
+    assert 'Контакт: demo@example.com' in output
     attachments=[]
     for raw in capture.read_bytes().split(b'\n---END MOCK EMAIL---\n'):
         if not raw.strip(): continue

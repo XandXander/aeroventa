@@ -136,7 +136,9 @@ foreach($parts as $part){
 $body.="--$boundary--\r\n";
 $headers=['From: AEROVENTA Website <'.$from.'>','MIME-Version: 1.0',
   'Content-Type: multipart/mixed; boundary="'.$boundary.'"','X-AEROVENTA-Source: project-upload'];
-if($email!==false)$headers[]='Reply-To: '.$email;
+// Beget mail() rewrote external Reply-To and also the legitimate From header.
+// Use a same-domain Reply-To; the visitor's email is preserved in the body.
+$headers[]='Reply-To: '.$from;
 $subject='=?UTF-8?B?'.base64_encode('AEROVENTA: документация проекта').'?=';
 $accepted=@mail($to,$subject,$body,implode("\r\n",$headers));
 if(!$accepted){

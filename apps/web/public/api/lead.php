@@ -127,7 +127,10 @@ $headers = [
     'Content-Transfer-Encoding: 8bit',
     'X-AEROVENTA-Source: web-form',
 ];
-if ($email !== false) $headers[] = 'Reply-To: '.$email;
+// Keep RFC5322 From and Reply-To aligned with Beget-verified domain identity.
+// The visitor's original email remains in the message body under 'Контакт'.
+// External Reply-To previously caused Beget X-Beget-Rewrite on both headers.
+$headers[] = 'Reply-To: '.$sender;
 $subject = '=?UTF-8?B?'.base64_encode('Новая заявка AEROVENTA').'?=';
 $accepted = @mail($destination, $subject, $body, implode("\r\n", $headers));
 if (!$accepted) {

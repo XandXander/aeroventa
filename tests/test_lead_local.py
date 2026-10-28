@@ -61,6 +61,11 @@ try:
         print(name, 'PASS' if got[0] == expected else 'FAIL', got[0], expected)
     assert all(got[0] == expected for _,got,expected in cases)
     assert capture.is_file() and capture.read_text().count('---END MOCK EMAIL---') == 1
+    captured = capture.read_text()
+    assert 'From: AEROVENTA Website <office@aeroventa.ru>' in captured
+    assert 'Reply-To: office@aeroventa.ru' in captured
+    assert 'Reply-To: demo@example.com' not in captured
+    assert 'Контакт: demo@example.com' in captured
     print(f'PASS: {len(cases)}/{len(cases)}, mock captured 1, outbound messages 0')
 finally:
     server.terminate()
