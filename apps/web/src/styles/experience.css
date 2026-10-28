@@ -841,3 +841,16 @@ body{background:#fff}
  
  
 }
+
+/* AUNELA's accepted success transition, adapted to AEROVENTA palette. */
+.av-submission-success{position:fixed;z-index:420;left:50%;top:clamp(100px,17vh,165px);transform:translateX(-50%);width:min(480px,calc(100vw - 32px));min-height:148px;box-sizing:border-box;padding:26px 24px 26px 28px;display:grid;grid-template-columns:minmax(0,1fr) 44px;gap:12px;align-items:start;border:1px solid #c8d2d7;border-radius:7px;background:#fdfefe;color:#22333e;box-shadow:0 24px 64px rgba(14,32,47,.2)}
+.av-submission-success[hidden]{display:none}
+.av-submission-success__eyebrow{margin:0 0 12px;color:#b94720;font-size:.7rem;letter-spacing:.14em;font-weight:700}
+.av-submission-success__title{margin:0;font-size:clamp(1.3rem,2.1vw,1.6rem);line-height:1.2;font-weight:550}
+.av-submission-success__detail{margin:10px 0 0;color:#405664;font-size:.88rem;line-height:1.5}
+.av-submission-success [data-success-dismiss]{width:44px;height:44px;border:1px solid #cad6dc;border-radius:50%;background:transparent;color:#22333e;font-size:1.25rem;cursor:pointer}
+.av-submission-success[data-state="visible"]{animation:av-confirm-show .32s ease-out both}
+.av-submission-success[data-state="leaving"]{animation:av-confirm-hide .22s ease-in both}
+@keyframes av-confirm-show{from{opacity:0;transform:translate(-50%,-9px)}to{opacity:1;transform:translate(-50%,0)}}
+@keyframes av-confirm-hide{from{opacity:1;transform:translate(-50%,0)}to{opacity:0;transform:translate(-50%,-7px)}}
+@media(prefers-reduced-motion:reduce){.av-submission-success[data-state]{animation:none}}

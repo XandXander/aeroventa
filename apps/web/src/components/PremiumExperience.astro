@@ -156,6 +156,15 @@ const { pagePath = '' } = Astro.props;
   </div>
 </dialog>
 
+<div class="av-submission-success" data-submission-success role="status" aria-live="polite" aria-atomic="true" hidden>
+  <div class="av-submission-success__copy">
+    <p class="av-submission-success__eyebrow">СПАСИБО</p>
+    <p class="av-submission-success__title" data-success-title>Заявка отправлена.</p>
+    <p class="av-submission-success__detail">Свяжемся по указанному контакту.</p>
+  </div>
+  <button type="button" data-success-dismiss aria-label="Закрыть уведомление">×</button>
+</div>
+
 <script>
 (() => {
   const consultantDialog = document.querySelector<HTMLDialogElement>('[data-consultant-dialog]');
@@ -214,6 +223,13 @@ const { pagePath = '' } = Astro.props;
 
   const contactDialog = document.querySelector<HTMLDialogElement>('[data-contact-dialog]');
   const projectDialog = document.querySelector<HTMLDialogElement>('[data-project-dialog]');
+  const successToast = document.querySelector<HTMLElement>('[data-submission-success]');
+  const successTitle = successToast?.querySelector<HTMLElement>('[data-success-title]');
+  const successDismiss = successToast?.querySelector<HTMLButtonElement>('[data-success-dismiss]');
+  type SuccessKind = 'contact' | 'project';
+  let pendingSuccess: { dialog: HTMLDialogElement; kind: SuccessKind } | null = null;
+  let successTimer = 0;
+  let successExitTimer = 0;
   const consultantForm = document.querySelector<HTMLFormElement>('[data-consultant-form]');
   const consultantResult = document.querySelector<HTMLElement>('[data-consultant-result]');
   let consultantSummary = '';
@@ -229,6 +245,31 @@ const { pagePath = '' } = Astro.props;
   const sheetTimers = new WeakMap<HTMLDialogElement, number>();
   const activeRequests = new WeakMap<HTMLFormElement, AbortController>();
   const motionDisabled = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const finishSuccessHide = () => {
+    if (!successToast) return;
+    successToast.hidden = true;
+    successToast.dataset.state = 'hidden';
+  };
+  const hideSuccess = (immediate = false) => {
+    window.clearTimeout(successTimer);
+    window.clearTimeout(successExitTimer);
+    if (!successToast) return;
+    if (immediate || motionDisabled() || successToast.hidden) {
+      finishSuccessHide();
+      return;
+    }
+    successToast.dataset.state = 'leaving';
+    successExitTimer = window.setTimeout(finishSuccessHide, 220);
+  };
+  const showSuccess = (kind: SuccessKind) => {
+    if (!successToast) return;
+    hideSuccess(true);
+    if (successTitle) successTitle.textContent = kind === 'project' ? 'Документы отправлены.' : 'Заявка отправлена.';
+    successToast.hidden = false;
+    successToast.dataset.state = 'visible';
+    successTimer = window.setTimeout(() => hideSuccess(), 5500);
+  };
+  successDismiss?.addEventListener('click', () => hideSuccess());
   const clearSheetTimer = (dialog:HTMLDialogElement) => {
     const timer = sheetTimers.get(dialog);
     if (timer) window.clearTimeout(timer);
@@ -236,6 +277,7 @@ const { pagePath = '' } = Astro.props;
   };
   const openDialog = (dialog:HTMLDialogElement|null) => {
     if (!dialog) return;
+    hideSuccess(true);
     clearSheetTimer(dialog);
     // Put the initial visual state in place before showModal paints the dialog.
     dialog.dataset.state = motionDisabled() ? 'open' : 'opening';
@@ -262,6 +304,15 @@ const { pagePath = '' } = Astro.props;
     else {
       dialog.dataset.state = 'closing';
       sheetTimers.set(dialog, window.setTimeout(finish, 220));
+    }
+  };
+
+  const confirmSubmission = (dialog:HTMLDialogElement|null, kind:SuccessKind) => {
+    if (dialog?.open) {
+      pendingSuccess = { dialog, kind };
+      closeDialog(dialog);
+    } else {
+      showSuccess(kind);
     }
   };
 
@@ -320,6 +371,11 @@ const { pagePath = '' } = Astro.props;
     dialog?.addEventListener('close', () => {
       const sendingForm = dialog.querySelector<HTMLFormElement>('form[data-contact-form],form[data-project-form]');
       if (sendingForm) activeRequests.get(sendingForm)?.abort();
+      if (pendingSuccess?.dialog === dialog) {
+        const kind = pendingSuccess.kind;
+        pendingSuccess = null;
+        requestAnimationFrame(() => showSuccess(kind));
+      }
       // A handoff can open another native dialog before this sheet finishes
       // closing. Never return focus behind the new modal.
       if (document.querySelector('dialog[open]')) return;
@@ -367,11 +423,12 @@ const { pagePath = '' } = Astro.props;
         const response=await fetch('/api/project.php',{method:'POST',body:new FormData(uploadForm),credentials:'same-origin',cache:'no-store',signal:controller.signal,headers:{accept:'application/json'}});
         const result=await response.json().catch(()=>null);
         if(!response.ok||result?.ok!==true)throw new Error(result?.error||'request_failed');
-        status.textContent='Сервер принял документы для отправки. Доставку в почтовый ящик подтвердим отдельно.';
+        status.textContent='';
         uploadForm.reset();
         refreshFileSummary();
         if(stamp)stamp.value=String(Date.now());
         track('project_upload_accepted',{source:location.pathname});
+        confirmSubmission(projectDialog,'project');
       }catch{
         status.textContent='Не удалось подтвердить передачу документов. Сохраните файлы и согласуйте отправку по email.';
         track('project_upload_error',{source:location.pathname});
@@ -753,13 +810,14 @@ const { pagePath = '' } = Astro.props;
         const result = await response.json().catch(() => null);
         if (!response.ok || result?.ok !== true) throw new Error('server_rejected');
 
-        status.textContent = 'Запрос принят к отправке. Доставка письма ещё не подтверждена.';
+        status.textContent = '';
         form.reset();
         const stamp=fieldValue(form,'started_at');
         if (stamp) stamp.value = String(Date.now());
         hydrateContactContext(form.closest('dialog') || document);
         track('contact_form_success', { source: location.pathname });
         track('lead_success', { source: location.pathname });
+        confirmSubmission(form.closest<HTMLDialogElement>('dialog'),'contact');
       } catch {
         status.replaceChildren();
         const message = document.createElement('span');
