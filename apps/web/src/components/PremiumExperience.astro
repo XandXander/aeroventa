@@ -415,14 +415,17 @@ const { pagePath = '' } = Astro.props;
       if(!uploadForm.reportValidity())return;
       uploadForm.dataset.submitting='true';
       submit.disabled=true;submit.setAttribute('aria-busy','true');
-      status.textContent='Передаём проект…';
+      status.dataset.state='sending';
+      status.textContent='Отправляем документы… Это может занять несколько минут.';
       const controller=new AbortController();
       activeRequests.set(uploadForm,controller);
-      const timeout=setTimeout(()=>controller.abort(),20000);
+      // Do not abort valid slow mobile uploads after just 20 seconds.
+      const timeout=setTimeout(()=>controller.abort(),300000);
       try {
         const response=await fetch('/api/project.php',{method:'POST',body:new FormData(uploadForm),credentials:'same-origin',cache:'no-store',signal:controller.signal,headers:{accept:'application/json'}});
         const result=await response.json().catch(()=>null);
         if(!response.ok||result?.ok!==true)throw new Error(result?.error||'request_failed');
+        status.dataset.state='';
         status.textContent='';
         uploadForm.reset();
         refreshFileSummary();
@@ -430,6 +433,7 @@ const { pagePath = '' } = Astro.props;
         track('project_upload_accepted',{source:location.pathname});
         confirmSubmission(projectDialog,'project');
       }catch{
+        status.dataset.state='';
         status.textContent='Не удалось подтвердить передачу документов. Сохраните файлы и согласуйте отправку по email.';
         track('project_upload_error',{source:location.pathname});
       }finally{
@@ -793,6 +797,7 @@ const { pagePath = '' } = Astro.props;
       form.dataset.submitting = 'true';
       submit.disabled = true;
       submit.setAttribute('aria-busy', 'true');
+      status.dataset.state = 'sending';
       status.textContent = 'Передаём запрос…';
 
       const controller = new AbortController();
@@ -810,6 +815,7 @@ const { pagePath = '' } = Astro.props;
         const result = await response.json().catch(() => null);
         if (!response.ok || result?.ok !== true) throw new Error('server_rejected');
 
+        status.dataset.state = '';
         status.textContent = '';
         form.reset();
         const stamp=fieldValue(form,'started_at');
@@ -819,6 +825,7 @@ const { pagePath = '' } = Astro.props;
         track('lead_success', { source: location.pathname });
         confirmSubmission(form.closest<HTMLDialogElement>('dialog'),'contact');
       } catch {
+        status.dataset.state = '';
         status.replaceChildren();
         const message = document.createElement('span');
         message.textContent = 'Не удалось подтвердить передачу запроса. Можно написать напрямую: ';

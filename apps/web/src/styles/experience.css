@@ -854,3 +854,43 @@ body{background:#fff}
 @keyframes av-confirm-show{from{opacity:0;transform:translate(-50%,-9px)}to{opacity:1;transform:translate(-50%,0)}}
 @keyframes av-confirm-hide{from{opacity:1;transform:translate(-50%,0)}to{opacity:0;transform:translate(-50%,-7px)}}
 @media(prefers-reduced-motion:reduce){.av-submission-success[data-state]{animation:none}}
+
+/* Premium submit handoff: indeterminate trace, never a fake percentage. */
+:where(.premium-contact-form [data-form-status], .project-upload-form [data-project-status])[data-state="sending"]{
+  position:relative;display:block;min-height:26px;padding-bottom:13px;
+}
+:where(.premium-contact-form [data-form-status], .project-upload-form [data-project-status])[data-state="sending"]::after{
+  content:"";position:absolute;left:0;bottom:2px;width:min(220px,100%);height:2px;
+  background:linear-gradient(90deg,transparent 0%,rgba(53,114,147,.18) 22%,#357293 50%,rgba(190,127,95,.75) 78%,transparent 100%);
+  background-size:240% 100%;animation:av-handoff-trace 1.8s ease-in-out infinite;
+}
+@keyframes av-handoff-trace{from{background-position:100% 0}to{background-position:-140% 0}}
+.av-submission-success{isolation:isolate;overflow:hidden}
+.av-submission-success::after{
+  content:"";position:absolute;left:28px;right:28px;bottom:0;height:2px;
+  background:linear-gradient(90deg,#b66b4e,#327698 62%,rgba(50,118,152,.2));
+  transform-origin:left center;transform:scaleX(0);opacity:0;pointer-events:none;
+}
+.av-submission-success[data-state="visible"]::after{animation:av-confirm-trace 5.5s linear forwards;opacity:.8}
+@keyframes av-confirm-trace{
+  0%{transform:scaleX(0);opacity:0}
+  6%{opacity:.8}
+  100%{transform:scaleX(1);opacity:.8}
+}
+.av-submission-success__eyebrow::before{
+  content:"";display:inline-block;width:5px;height:5px;margin-right:9px;
+  border-radius:50%;vertical-align:middle;background:#b94720;
+}
+.av-submission-success[data-state="visible"] .av-submission-success__eyebrow::before{
+  animation:av-confirm-pulse 1.45s ease-in-out 2;
+}
+@keyframes av-confirm-pulse{
+  0%,100%{opacity:.6;box-shadow:0 0 0 0 rgba(185,71,32,0)}
+  50%{opacity:1;box-shadow:0 0 0 5px rgba(185,71,32,.12)}
+}
+@media(prefers-reduced-motion:reduce){
+  :where(.premium-contact-form [data-form-status], .project-upload-form [data-project-status])[data-state="sending"]::after,
+  .av-submission-success[data-state="visible"]::after,
+  .av-submission-success[data-state="visible"] .av-submission-success__eyebrow::before{animation:none}
+  .av-submission-success[data-state="visible"]::after{transform:scaleX(1);opacity:.65}
+}
