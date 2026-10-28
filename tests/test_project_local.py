@@ -85,7 +85,8 @@ try:
     assert output.count('From: AEROVENTA Website <office@aeroventa.ru>') == 2
     assert output.count('Reply-To: office@aeroventa.ru') == 2
     assert 'Reply-To: demo@example.com' not in output
-    assert 'Контакт: demo@example.com' in output
+    # Multipart text section is base64 encoded, unlike a simple lead message.
+    assert any('Контакт: demo@example.com' in part.get_content() for raw in capture.read_bytes().split(b'\n---END MOCK EMAIL---\n') if raw.strip() for part in BytesParser(policy=policy.default).parsebytes(raw.lstrip()).walk() if part.get_content_type() == 'text/plain')
     attachments=[]
     for raw in capture.read_bytes().split(b'\n---END MOCK EMAIL---\n'):
         if not raw.strip(): continue
