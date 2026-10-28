@@ -4991,9 +4991,10 @@ main .case-feature :is(.case-dossier__primary,.case-dossier__secondary) figcapti
 .home-hero--owner-airflow .hero-engineering__photo{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:contain;object-position:right center;filter:none}
 .home-hero--owner-airflow .hero-engineering__veil{display:block;position:absolute;inset:0;background:linear-gradient(90deg,#FAFBFA 0%,rgba(250,251,250,.99) 30%,rgba(250,251,250,.97) 42%,rgba(250,251,250,.78) 50%,rgba(250,251,250,.08) 67%,transparent 80%)}
 .home-hero--owner-airflow .hero-engineering__frame{display:none}
-.home-hero--owner-airflow .home-hero__copy{grid-area:1/1;z-index:2;position:relative;box-sizing:border-box;width:min(650px,53%);max-width:none;min-height:0;margin:0;padding:clamp(30px,5svh,64px) 0 clamp(30px,5svh,64px) max(32px,calc((100vw - 1360px)/2));align-self:center;background:transparent;color:var(--av-typography)}
+.home-hero--owner-airflow .home-hero__copy{grid-area:1/1;z-index:2;position:relative;box-sizing:border-box;width:min(900px,64%);max-width:none;min-height:0;margin:0;padding:clamp(30px,5svh,64px) 0 clamp(30px,5svh,64px) max(32px,calc((100vw - 1360px)/2));align-self:center;background:transparent;color:var(--av-typography)}
 .home-hero--owner-airflow .home-hero__copy::before{content:none}
-.home-hero--owner-airflow h1{max-width:15ch;margin:0;font-size:clamp(2.6rem,4.25vw,4.4rem);font-weight:500;line-height:1.08;letter-spacing:-.043em;color:var(--av-typography);text-wrap:balance;hyphens:none;overflow-wrap:normal}
+.home-hero--owner-airflow h1{max-width:none;margin:0;font-size:clamp(2.2rem,3.1vw,3.5rem);font-weight:500;line-height:1.08;letter-spacing:-.043em;color:var(--av-typography);text-wrap:wrap;hyphens:none;word-break:normal;overflow-wrap:normal}
+.home-hero--owner-airflow .home-hero__title-line{display:block}
 .home-hero--owner-airflow .home-kicker{color:var(--av-accent-text);font-size:.76rem;margin:0 0 21px;line-height:1.4}
 .home-hero--owner-airflow .home-lede{max-width:47ch;font-size:clamp(.95rem,1.12vw,1.08rem);line-height:1.55;margin:24px 0 0;color:var(--av-secondary)}
 .home-hero--owner-airflow .home-geo{max-width:46ch;font-size:.82rem;line-height:1.5;margin:18px 0 0;color:var(--av-secondary)}
@@ -5009,7 +5010,7 @@ main .case-feature :is(.case-dossier__primary,.case-dossier__secondary) figcapti
  .home-hero.home-hero--owner-airflow{background:#f5f7f7;color:#183944}
  .home-hero--owner-airflow>.home-hero__grid{display:flex;flex-direction:column;justify-content:space-between;min-height:inherit}
  .home-hero--owner-airflow .home-hero__copy{display:flex;position:relative;order:1;grid-area:auto;width:100%;padding:24px 20px 22px;margin:0;background:transparent;color:inherit;min-height:0}
- .home-hero--owner-airflow h1{max-width:18ch;font-size:clamp(2rem,8.25vw,2.9rem);line-height:1.08;color:#183944;letter-spacing:-.037em}
+ .home-hero--owner-airflow h1{max-width:none;font-size:clamp(2rem,8.25vw,2.9rem);line-height:1.08;color:#183944;letter-spacing:-.037em}
  .home-hero--owner-airflow .home-kicker{color:#91482f;font-size:.69rem;margin-bottom:14px}
  .home-hero--owner-airflow .home-lede{color:#294c58;font-size:.92rem;line-height:1.5;margin-top:18px}
  .home-hero--owner-airflow .home-geo{color:#49626d;font-size:.75rem;line-height:1.45;margin-top:14px}
@@ -5098,9 +5099,6 @@ html:has(.mobile-menu[open]) .consultant-launcher,body:has(dialog[open]) .consul
 @media(min-width:761px){.consultant-launcher{right:max(8px,env(safe-area-inset-right))}}
 
 @media(max-width:760px){.home-hero--owner-airflow .home-actions .button--primary:is(:hover,:focus-visible,:active){background:#244f61;border-color:#244f61;color:#fff}.home-hero--owner-airflow .home-actions .button--ghost:is(:hover,:focus-visible,:active){background:#e3ecee;border-color:transparent;color:#183d4e}}
-
-/* Text enlargement preserves the entire headline without creating a wider page. */
-.home-hero--owner-airflow h1{overflow-wrap:anywhere}
 
 /* Portrait photographs remain whole within a deliberate opening measure. */
 @media(max-width:1050px){main .av-type{--av-object-media-max:min(42svh,360px)}}

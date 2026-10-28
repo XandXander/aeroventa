@@ -14,9 +14,11 @@ if (!hasOwnerHeroMedia) throw new Error('Approved Owner HOME HERO original missi
 const content = await getByPath('/');
 if (!content) throw new Error('Home content is missing');
 
+const homeHeroLines = ['Невидимая эстетика.', 'Легкое дыхание.'] as const;
+
 const page = {
   ...content,
-  h1: 'Инженерная вентиляция без лишнего.',
+  h1: homeHeroLines.join(' '),
   seo_title: 'AEROVENTA — инженерные системы вентиляции в СПб и Ленобласти',
   seo_description: 'AEROVENTA — монтаж вентиляции для квартир, домов, ресторанов, коммерческих, производственных и крупных объектов. Санкт-Петербург и Ленинградская область; берём объекты в Москве и Карелии.',
 };
@@ -44,7 +46,7 @@ const questions = [
     <div class="home-shell home-hero__grid">
       <div class="home-hero__copy">
         <p class="home-kicker">Монтаж систем вентиляции</p>
-        <h1 id="home-title">Инженерная вентиляция без лишнего.</h1>
+        <h1 id="home-title"><span class="home-hero__title-line">{homeHeroLines[0]}</span>{" "}<span class="home-hero__title-line">{homeHeroLines[1]}</span></h1>
         <p class="home-lede">
           Монтаж вентиляции в квартирах и домах, ресторанах, коммерческих и производственных зданиях.
           Работаем по проекту; если его нет — уточним задачу и исходные данные.
