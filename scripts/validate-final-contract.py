@@ -69,8 +69,23 @@ def main():
     baseline=json.loads((ROOT/'docs/recovery/baseline-contract-20261027.json').read_text())
     check(baseline['source_sha']==BASE_SHA and len(baseline['pages'])==49,'49-page exact baseline source')
     check(set(docs)==set(baseline['pages']),'49 substantive routes preserved',count=len(docs))
+    # Owner-approved 2026-10-28 HOME H1 exception. Reverse only the exact text
+    # change before comparing to the frozen 49-page content baseline.
+    owner_new_h1='Невидимая эстетика. Легкое дыхание.'
+    owner_old_h1='Инженерная вентиляция без лишнего.'
     for route,d in docs.items():
-        check(d.snapshot()==baseline['pages'].get(route),'SEO/H1/JSON-LD/main copy/photos unchanged: '+route)
+        actual=d.snapshot()
+        if route=='/':
+            check(actual['h1']==[owner_new_h1], 'Owner-approved HOME H1 exact')
+            main_text=norm(' '.join(d.main))
+            check(main_text.count(owner_new_h1)==1, 'Owner HOME H1 occurs once in main')
+            if main_text.count(owner_new_h1)==1:
+                actual['main_text_sha256']=digest(main_text.replace(owner_new_h1,owner_old_h1,1).encode())
+            actual['h1']=[owner_old_h1 if h==owner_new_h1 else h for h in actual['h1']]
+            # Only the H1 copy may differ in structured data; keep its
+            # complete structure and all unrelated entries baseline-locked.
+            actual['json_ld']=json.loads(json.dumps(actual['json_ld'],ensure_ascii=False).replace(owner_new_h1,owner_old_h1))
+        check(actual==baseline['pages'].get(route),'SEO/H1/JSON-LD/main copy/photos unchanged except approved HOME H1: '+route)
         check('noindex' in (d.meta.get('robots') or ''),'Staging noindex: '+route)
         for name in ('og:title','og:description','og:image','og:image:alt','twitter:image','twitter:image:alt'):
             check(bool(d.meta.get(name)),name+': '+route)
