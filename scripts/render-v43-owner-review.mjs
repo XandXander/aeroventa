@@ -1195,7 +1195,7 @@ try {
       await form.locator('input[type="file"]').setInputFiles({name:'offline.pdf',mimeType:'application/pdf',buffer:Buffer.from('%PDF-1.4\nOffline testing only\n%%EOF')});
       let seen=0, release;
       const pending=new Promise(resolve=>release=resolve);
-      await page.route('**/api/project.php',async route=>{
+      await page.route('**/api/project-transfer.php?action=init',async route=>{
         seen++; await pending; await route.fulfill({status:503,contentType:'application/json',body:'{"ok":false,"error":"offline_mock"}'});
       });
       await form.locator('button[type="submit"]').click();
@@ -1208,7 +1208,7 @@ try {
       release();
       await page.waitForFunction(()=>!document.documentElement.hasAttribute('data-airflow-processing'),null,{timeout:4500});
       const status=await form.locator('[data-project-status]').innerText();
-      if(seen!==1||!moving.active||moving.animation==='none'||!/не были приняты|Не удалось подтвердить передачу документов/i.test(status))
+      if(seen!==1||!moving.active||moving.animation==='none'||!/Не удалось завершить передачу|Не удалось подтвердить передачу документов/i.test(status))
         report.fail.push({reason:'True document POST Pulse and honest error outcome',seen,moving,status});
     }catch(error){report.fail.push({reason:'True project POST Pulse test exception',error:String(error)})}
     finally{await ctx.close()}
