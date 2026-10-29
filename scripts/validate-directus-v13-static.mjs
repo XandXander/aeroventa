@@ -23,7 +23,7 @@ const requireText = (text, needle, code) => {
   if (!text.includes(needle)) failures.push(code);
 };
 
-requireText(source, "const allowedReleaseModes = new Set(['fixture', 'preview', 'production']);", 'V13_RELEASE_MODES_MISSING');
+requireText(source, "const allowedReleaseModes = new Set(['fixture', 'preview', 'production', 'incremental']);", 'V13_RELEASE_MODES_MISSING');
 requireText(source, "url.searchParams.set('filter[status][_eq]', 'published');", 'PRODUCTION_STATUS_FILTER_MISSING');
 requireText(source, "url.searchParams.set('filter[owner_approved_at][_nnull]', 'true');", 'PRODUCTION_APPROVAL_FILTER_MISSING');
 requireText(source, "url.searchParams.set('filter[status][_eq]', 'draft');", 'PREVIEW_DRAFT_FILTER_MISSING');
