@@ -1,0 +1,45 @@
+name: PR12 - Directus vs accepted live website (read-only)
+
+on:
+  push:
+    branches: [aeroventa/hiend-seo-owner-recovery-2026-10-13]
+    paths:
+      - .github/workflows/pr12-directus-live-reconcile.yml
+      - scripts/directus-live-editorial-reconcile.mjs
+  workflow_dispatch:
+    inputs:
+      page_path:
+        description: "Optional existing retained route; empty means 29"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout source, no persistent credentials
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+      - name: Compare with live website without modifying it
+        env:
+          DIRECTUS_STATIC_TOKEN: ${{ secrets.DIRECTUS_STATIC_TOKEN }}
+          RECONCILE_PATH: ${{ inputs.page_path || '' }}
+        run: node scripts/directus-live-editorial-reconcile.mjs
+      - name: Save read-only comparison as JSON and CSV
+        uses: actions/upload-artifact@v6
+        with:
+          name: AEROVENTA_DIRECTUS_LIVE_METADATA
+          path: |
+            reports/DIRECTUS_LIVE_METADATA.json
+            reports/DIRECTUS_LIVE_METADATA.csv
+          if-no-files-found: error
+          retention-days: 7
