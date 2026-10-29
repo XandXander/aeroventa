@@ -193,12 +193,16 @@ const legacyArticle = content.path.startsWith('/blog/detail/')
 if (content.path.startsWith('/blog/detail/') && (!legacyArticle?.h1 || !legacyArticle?.title)) {
   throw new Error(`Legacy indexed heading/title evidence missing for ${content.path}`);
 }
+// Approved CMS metadata must not be silently overwritten by historical source
+// overrides. All existing fixture / draft-preview pages keep their locked output.
+const approvedCmsContent = import.meta.env.AEROVENTA_RELEASE_MODE === 'production'
+  && content.status === 'published' && Boolean(content.owner_approved_at);
 const pageContent: ContentRecord = {
   ...content,
-  ...(overrides[content.path] ?? {}),
-  ...(legacyArticle ? { h1: legacyArticle.h1, seo_title: legacyArticle.title } : {}),
+  ...(!approvedCmsContent ? (overrides[content.path] ?? {}) : {}),
+  ...(!approvedCmsContent && legacyArticle ? { h1: legacyArticle.h1, seo_title: legacyArticle.title } : {}),
   // Owner J-07 authorises this public editorial correction; preserve legacy source bytes and URL.
-  ...(content.path === '/blog/detail/ntff-polisan/' ? {
+  ...(!approvedCmsContent && content.path === '/blog/detail/ntff-polisan/' ? {
     h1: 'НТФФ «Полисан»',
     title: 'НТФФ «Полисан» — монтаж вентиляции | AEROVENTA',
     seo_title: 'НТФФ «Полисан» — монтаж вентиляции | AEROVENTA',
