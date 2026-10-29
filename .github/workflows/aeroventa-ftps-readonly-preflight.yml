@@ -1,0 +1,89 @@
+name: AEROVENTA - Beget FTPS connection preflight (READ ONLY)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aeroventa-ftps-preflight
+  cancel-in-progress: false
+
+jobs:
+  verify-beget-scope:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    environment:
+      name: aeroventa-production
+    steps:
+      - name: Verify TLS, FTP login and isolated site root without writing
+        shell: bash
+        env:
+          FTP_HOST: ${{ secrets.BEGET_FTP_HOST }}
+          FTP_PORT: ${{ secrets.BEGET_FTP_PORT }}
+          FTP_USER: ${{ secrets.BEGET_FTP_USER }}
+          FTP_PASS: ${{ secrets.BEGET_FTP_PASSWORD }}
+        run: |
+          python3 - <<'PY'
+          import ftplib
+          import os
+          import ssl
+          import sys
+
+          def report(key, value):
+              print(f'{key}={value}')
+              with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as f:
+                  f.write(f'- **{key}**: {value}\n')
+
+          if any(not os.environ.get(n) for n in ('FTP_HOST','FTP_USER','FTP_PASS')):
+              report('FTPS_PREFLIGHT', 'BLOCKED_MISSING_ENVIRONMENT_SECRETS')
+              sys.exit(1)
+          host=os.environ['FTP_HOST']
+          try:
+              port=int(os.environ.get('FTP_PORT') or '21')
+              if port<1 or port>65535:
+                  raise ValueError('port')
+          except ValueError:
+              report('FTPS_PREFLIGHT', 'BLOCKED_INVALID_PORT')
+              sys.exit(1)
+          ftp=ftplib.FTP_TLS(context=ssl.create_default_context(),timeout=18)
+          try:
+              ftp.connect(host,port)
+              ftp.login(os.environ['FTP_USER'], os.environ['FTP_PASS'])
+              ftp.prot_p()
+              report('FTPS_TLS', 'PASS_CERTIFICATE_VERIFIED_ENCRYPTED_DATA')
+              ftp.cwd('/')
+              try:
+                  ftp.cwd('/public_html')
+                  report('FTP_SITE_LAYOUT', 'SITE_ROOT_CONTAINS_PUBLIC_HTML')
+              except ftplib.error_perm:
+                  ftp.cwd('/')
+                  try:
+                      ftp.cwd('/aeroventa.ru/public_html')
+                      report('FTP_SITE_LAYOUT', 'ACCOUNT_ROOT_EXPOSES_SITE_PATH_STOP_AND_RESTRICT')
+                      report('FTPS_PREFLIGHT', 'BLOCKED_SCOPE_NOT_SITE_ISOLATED')
+                      sys.exit(1)
+                  except ftplib.error_perm:
+                      report('FTP_SITE_LAYOUT', 'UNEXPECTED_ROOT_STOP_AND_INSPECT_ACCOUNT_SCOPE')
+                      report('FTPS_PREFLIGHT', 'BLOCKED_UNEXPECTED_ROOT')
+                      sys.exit(1)
+              try:
+                  ftp.sendcmd('TYPE I')
+                  size=ftp.size('index.html')
+              except (ftplib.error_perm, OSError):
+                  size=None
+              if size is None or size<=100:
+                  report('FTPS_PREFLIGHT', 'BLOCKED_EXPECTED_HOME_INDEX_MISSING')
+                  sys.exit(1)
+              report('BEGET_PUBLIC_HTML_INDEX', 'PASS_PRESENT')
+              report('FTPS_WRITES', 'NONE')
+              report('FTPS_PREFLIGHT', 'PASS_CONNECTION_AND_EXPECTED_LAYOUT')
+              report('PRODUCTION_DEPLOYMENT', 'NOT_RUN')
+          except Exception as e:
+              report('FTPS_PREFLIGHT','FAILED_'+type(e).__name__.upper())
+              sys.exit(1)
+          finally:
+              try: ftp.quit()
+              except Exception: ftp.close()
+          PY
