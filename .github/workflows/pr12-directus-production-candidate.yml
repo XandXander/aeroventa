@@ -1,0 +1,137 @@
+name: PR12 - Directus production candidate (read-only CMS, no deploy)
+
+on:
+  push:
+    branches: [aeroventa/hiend-seo-owner-recovery-2026-10-13]
+    paths: ['.github/workflows/pr12-directus-production-candidate.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  production-candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - name: Checkout exact branch commit
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+      - name: Read-only Directus publication eligibility
+        id: eligibility
+        env:
+          DIRECTUS_STATIC_TOKEN: ${{ secrets.DIRECTUS_STATIC_TOKEN }}
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const token = process.env.DIRECTUS_STATIC_TOKEN;
+          if (!token) throw Error('DIRECTUS_STATIC_TOKEN is unavailable; no production fallback');
+          const required = JSON.parse(fs.readFileSync('apps/web/src/data/expected-retained-paths.json', 'utf8'));
+          const normalized = p => p === '/' ? '/' : p.replace(/\/+$/, '') + '/';
+          const expected = new Set(required.map(normalized));
+          const records = [];
+          for (let offset = 0; offset <= 10000; offset += 100) {
+            const url = new URL('https://cms.aeroventa.ru/items/content');
+            url.searchParams.set('limit', '100');
+            url.searchParams.set('offset', String(offset));
+            url.searchParams.set('fields', 'path,status,owner_approved_at');
+            const res = await fetch(url, {
+              headers: { Accept: 'application/json', Authorization: 'Bearer ' + token },
+              signal: AbortSignal.timeout(20000),
+            });
+            if (!res.ok) throw Error('Directus read-only preflight HTTP ' + res.status);
+            const data = (await res.json()).data;
+            if (!Array.isArray(data)) throw Error('Invalid Directus content response');
+            records.push(...data);
+            if (data.length < 100) break;
+          }
+          if (records.length > 10000) throw Error('Directus pagination safety limit');
+          const approved = records.filter(r => r.status === 'published' && r.owner_approved_at);
+          const approvedPaths = approved.map(r => normalized(String(r.path || '')));
+          const unique = new Set(approvedPaths);
+          const missing = [...expected].filter(p => !unique.has(p));
+          const duplicate = approvedPaths.length - unique.size;
+          const drafts = records.filter(r => r.status === 'draft').length;
+          const pendingApproval = records.filter(r => r.status === 'published' && !r.owner_approved_at).length;
+          const ready = missing.length === 0 && duplicate === 0 && approved.length > 0;
+          console.log('DIRECTUS_PUBLICATION_GATE=' + (ready ? 'READY_FOR_PRODUCTION_BUILD' : 'BLOCKED_NO_PRODUCTION_BUILD'));
+          console.log('CONTENT_COUNTS total=' + records.length + ' draft=' + drafts + ' published_owner_approved=' + approved.length + ' published_without_approval=' + pendingApproval + ' required_routes=' + expected.size + ' missing_approved_routes=' + missing.length + ' duplicate_approved_routes=' + duplicate);
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, 'ready=' + ready + '\n');
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,
+            '### Directus production eligibility (read-only)\n\n' +
+            '| Check | Count |\n|---|---:|\n' +
+            '| Directus content rows | ' + records.length + ' |\n' +
+            '| Drafts | ' + drafts + ' |\n' +
+            '| Published and owner-approved | ' + approved.length + ' |\n' +
+            '| Published without approval | ' + pendingApproval + ' |\n' +
+            '| Required routes | ' + expected.size + ' |\n' +
+            '| Missing approved routes | ' + missing.length + ' |\n' +
+            '| Duplicate approved routes | ' + duplicate + ' |\n\n' +
+            '**Verdict: ' + (ready ? 'READY FOR BUILD (not deployment)' : 'BLOCKED: Directus publication/approval required; existing public site remains unchanged') + '**\n');
+          NODE
+      - name: Install and validate source
+        if: steps.eligibility.outputs.ready == 'true'
+        env:
+          AEROVENTA_REQUIRE_OWNER_TEAM_MEDIA: 'true'
+        run: |
+          npm install --no-audit --no-fund
+          npm run generate:hosting-rules
+          npm run validate
+      - name: Build Directus production content (no deployment)
+        if: steps.eligibility.outputs.ready == 'true'
+        env:
+          AEROVENTA_RELEASE_MODE: production
+          DIRECTUS_URL: https://cms.aeroventa.ru
+          DIRECTUS_STATIC_TOKEN: ${{ secrets.DIRECTUS_STATIC_TOKEN }}
+          AEROVENTA_REQUIRE_OWNER_TEAM_MEDIA: 'true'
+        run: |
+          npm run build:web
+          npm run validate:dist
+      - name: Package static-only production candidate, excluding server configuration
+        if: steps.eligibility.outputs.ready == 'true'
+        env:
+          DIRECTUS_STATIC_TOKEN: ${{ secrets.DIRECTUS_STATIC_TOKEN }}
+          SOURCE_SHA: ${{ github.sha }}
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, os, re, zipfile
+          from pathlib import Path
+          dist = Path('apps/web/dist')
+          state = json.loads(Path('BUILD_VALIDATION_T2.json').read_text())
+          assert state['release_mode'] == 'production' and state['verdict'] == 'PASS' and not state['warnings']
+          assert (dist/'index.html').is_file() and (dist/'sitemap.xml').is_file()
+          assert 'Disallow: /' not in (dist/'robots.txt').read_text().splitlines()
+          token = os.environ['DIRECTUS_STATIC_TOKEN'].encode()
+          assert token
+          files = []
+          for p in sorted(dist.rglob('*')):
+            if not p.is_file(): continue
+            assert not p.is_symlink()
+            rel = p.relative_to(dist).as_posix()
+            if p.suffix.lower() == '.php' or p.name == '.htaccess': continue
+            assert not re.search(r'(^|/)(?:\.env(?:\..*)?|\.git|node_modules|.*\.log|.*\.zip|.*\.dpapi)$', rel, re.I), 'Forbidden artifact path'
+            assert token not in p.read_bytes(), 'Token leakage detected; artifact blocked'
+            files.append(p)
+          Path('release_out').mkdir(exist_ok=True)
+          target = Path('release_out') / ('AEROVENTA_PR12_DIRECTUS_PRODUCTION_CANDIDATE_' + os.environ['SOURCE_SHA'] + '.zip')
+          with zipfile.ZipFile(target, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=7, allowZip64=True) as z:
+            for p in files: z.write(p, p.relative_to(dist).as_posix())
+          with zipfile.ZipFile(target) as z:
+            assert z.testzip() is None
+            assert 'index.html' in z.namelist()
+          print('PRODUCTION_CANDIDATE_ONLY SHA=' + os.environ['SOURCE_SHA'] + ' BYTES=' + str(target.stat().st_size) + ' SHA256=' + hashlib.sha256(target.read_bytes()).hexdigest())
+          PY
+      - name: Save candidate ZIP for separate live-site parity and Owner release gate
+        if: steps.eligibility.outputs.ready == 'true'
+        uses: actions/upload-artifact@v6
+        with:
+          name: PR12-DIRECTUS-PRODUCTION-CANDIDATE-STATIC-ONLY
+          path: release_out/AEROVENTA_PR12_DIRECTUS_PRODUCTION_CANDIDATE_*.zip
+          if-no-files-found: error
+          retention-days: 7
