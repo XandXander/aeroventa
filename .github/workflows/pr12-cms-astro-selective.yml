@@ -8,6 +8,8 @@ on:
       - 'apps/web/src/pages/**'
       - 'apps/web/src/layouts/BaseLayout.astro'
       - 'scripts/pr12-cms-astro-release-package.mjs'
+      - 'scripts/pr12-cms-ftps-transactional-deploy.mjs'
+      - '.github/workflows/pr12-cms-live-publish.yml'
       - '.github/workflows/pr12-cms-astro-selective.yml'
   workflow_dispatch:
     inputs:
@@ -34,6 +36,8 @@ jobs:
         run: |
           node --check scripts/pr12-cms-astro-release-package.mjs
           node scripts/pr12-cms-astro-release-package.mjs --self-test
+          node --check scripts/pr12-cms-ftps-transactional-deploy.mjs
+          node scripts/pr12-cms-ftps-transactional-deploy.mjs --self-test
           npm run check:web
       - name: Build approved routes in real Astro without deploying
         if: github.event_name == 'workflow_dispatch' && inputs.approved_paths != ''
