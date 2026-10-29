@@ -56,6 +56,15 @@ const check = (condition, message) => {
   if (!condition) failures.push(message);
 };
 
+const transferSource=await read('apps/web/public/project-transfer-client.js');
+const transferBackend=await read('apps/web/public/api/project-transfer.php');
+const transferCleaner=await read('apps/web/public/api/project-transfer-gc.php');
+const transferStyles=await read('apps/web/public/project-transfer-client.css');
+check(files.layout.includes('href="/project-transfer-client.css"') && files.layout.includes('src="/project-transfer-client.js"'), '75MiB UI assets wired for every route');
+check(files.premium.includes('суммарно до 75 МБ') && files.premium.includes('.rvt') && files.home.includes('data-project-open data-source="home_estimate"'), 'Owner-accepted file picker and home project CTA preserved');
+check(transferSource.includes('75 * 1024 * 1024') && transferSource.includes('2 * 1024 * 1024') && transferSource.includes("addEventListener('submit'"), 'Accepted 2MiB chunked private upload retained');
+check(/dirname\(__DIR__,\s*2\)/.test(transferBackend) && transferCleaner.includes('dirname(__DIR__,2)') && transferBackend.includes('private_storage'), 'Beget writable private site-parent and GC share same directory');
+check(transferStyles.includes('av-upload-progress__fill'), 'Owner-accepted real percentage UI retained');
 check(publicCopyViolations.length === 0, 'Disallowed public-facing wording removed: '+publicCopyViolations.join(', '));
 for (const [name, marker] of [
   ['Telemetry', '<Telemetry />'],

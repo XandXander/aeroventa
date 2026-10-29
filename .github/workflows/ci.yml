@@ -34,6 +34,9 @@ jobs:
           python3 tests/test_lead_local.py
           php -l apps/web/public/api/project.php
           python3 tests/test_project_local.py
+          php -l apps/web/public/api/project-transfer.php
+          php -l apps/web/public/api/project-transfer-gc.php
+          python3 tests/test_project_transfer.py
 
       - name: Generate route rules
         run: npm run generate:hosting-rules

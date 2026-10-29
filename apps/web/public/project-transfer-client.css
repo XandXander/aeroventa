@@ -1,0 +1,5 @@
+/* AEROVENTA private-transfer UI: retain established art direction and TRACE/PULSE. */
+.av-upload-progress{width:100%;height:3px;background:rgba(50,110,145,.13);border-radius:8px;overflow:hidden;margin-top:9px}
+.av-upload-progress[hidden]{display:none}
+.av-upload-progress__fill{display:block;width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,#9f674e 0%,#376b86 67%,#8aabbd 100%);transition:width .28s ease-out}
+@media(prefers-reduced-motion:reduce){.av-upload-progress__fill{transition:none}}

@@ -136,13 +136,13 @@ const { pagePath = '' } = Astro.props;
       <h2 id="project-dialog-title">Передать проект вентиляции</h2>
       <button type="button" class="dialog-close" data-dialog-close aria-label="Закрыть форму передачи проекта">×</button>
     </div>
-    <p class="project-upload-intro">Приложите чертежи и кратко опишите задачу. Документы передаются непосредственно на корпоративную почту AEROVENTA.</p>
+    <p class="project-upload-intro">Приложите чертежи и кратко опишите задачу. Файлы передаются в закрытое хранилище, а нам поступает уведомление со ссылкой для просмотра.</p>
     <form class="premium-contact-form project-upload-form" data-project-form method="post" action="/api/project.php" enctype="multipart/form-data">
       <label class="field">Ваше имя<input type="text" name="name" autocomplete="name" maxlength="80" required /></label>
       <label class="field">Телефон или email<input type="text" name="contact" maxlength="160" required /></label>
       <label class="field">Объект и задача<textarea name="task" rows="3" maxlength="3000" required placeholder="Тип объекта, город, что требуется смонтировать"></textarea></label>
-      <label class="field project-upload-field">Документация<input type="file" name="documents[]" multiple accept=".pdf,.dwg,.dxf,.zip,.jpg,.jpeg,.png" required data-project-files aria-describedby="project-upload-selection project-upload-limits" /><output class="project-upload-selection" id="project-upload-selection" data-project-file-summary aria-live="polite">Файлы не выбраны</output></label>
-      <p class="project-upload-help" id="project-upload-limits">PDF, DWG, DXF, ZIP, JPG или PNG · до 3 файлов · каждый до 4 МБ · суммарно до 8 МБ. Крупные комплекты передавайте по согласованному защищённому каналу.</p>
+      <label class="field project-upload-field">Документация<input type="file" name="documents[]" multiple accept=".pdf,.dwg,.dxf,.zip,.jpg,.jpeg,.png,.webp,.gif,.bmp,.tif,.tiff,.ifc,.doc,.docx,.xls,.xlsx,.7z,.rar,.rvt" required data-project-files aria-describedby="project-upload-selection project-upload-limits" /><output class="project-upload-selection" id="project-upload-selection" data-project-file-summary aria-live="polite">Файлы не выбраны</output></label>
+      <p class="project-upload-help" id="project-upload-limits">PDF, DWG, DXF, ZIP, IFC, RVT, 7Z, RAR, DOC, XLS и изображения · до 20 файлов · суммарно до 75 МБ. Загрузка защищена, возможна повторная отправка при обрыве связи.</p>
       <label class="consent-check"><input type="checkbox" name="consent" required /> Согласен на обработку персональных данных для ответа на запрос. <a href="/privacy/" target="_blank" rel="noopener">Условия</a></label>
       <input type="hidden" name="source_page" value={pagePath} />
       <input type="hidden" name="started_at" value="" />

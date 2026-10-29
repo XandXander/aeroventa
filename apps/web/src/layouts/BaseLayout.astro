@@ -196,6 +196,7 @@ const googleVerification = (import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION || '
     {ogImage && <meta name="twitter:image" content={ogImage} />}
     {ogImage && <meta name="twitter:image:alt" content={ogImageAlt} />}
     {schema && <script type="application/ld+json" set:html={serializeJsonLd(schema)}></script>}
+    <link rel="stylesheet" href="/project-transfer-client.css" />
   </head>
   <body class={preview ? 'draft-preview' : undefined}>
     <a class="skip-link" href="#main-content">К основному содержанию</a>
@@ -214,6 +215,7 @@ const googleVerification = (import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION || '
     <Footer />
     <PremiumExperience pagePath={content.path} />
     <PonsseDocumentExperience />
+    <script is:inline src="/project-transfer-client.js" defer></script>
     <script>
       // Keep the keyboard cycle inside the active modal, including Chromium's
       // browser-chrome boundary after its last native tabbable control.

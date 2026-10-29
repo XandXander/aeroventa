@@ -589,7 +589,21 @@ try {
    expect((await page.locator('[data-contact-dialog] [name="task"]').inputValue()).includes('Есть проект'),'Question context lost');
    expect((await page.locator('[data-contact-dialog] [name="consultant_summary"]').inputValue()).includes('/montazh-po-proektu/'),'Route context lost');return {mode:'LOCAL_PUBLIC_CONTENT_ROUTING_NOT_LLM'};
   });
-  for(const type of ['lead','project'])await scenario('FORM_'+type.toUpperCase()+'_FAILURE_RETRY',type==='project'?'/montazh-po-proektu/':'/',390,780,async()=>{
+  await scenario('PROJECT_PRIVATE_UPLOAD_20_FILE_LIMIT','/montazh-po-proektu/',390,780,async()=>{
+   await page.locator('[data-project-open]').first().click();
+   const form=page.locator('#aeroventa-project-dialog [data-project-form]');
+   await form.locator('[name="name"]').fill('Проверка комплекта');
+   await form.locator('[name="contact"]').fill('qa@example.com');
+   await form.locator('[name="task"]').fill('Локальная проверка лимита без отправки почты');
+   await form.locator('[name="consent"]').check();
+   const samples=Array.from({length:21},(_,i)=>({name:'sample-'+i+'.pdf',mimeType:'application/pdf',buffer:Buffer.from('%PDF-1.4\\n%%EOF')}));
+   await form.locator('input[type="file"]').setInputFiles(samples);
+   await form.locator('button[type="submit"]').click();
+   expect((await form.locator('[data-project-status]').innerText()).includes('до 20 файлов'),'Upload file limit missing');
+   expect(await page.locator('#aeroventa-project-dialog').evaluate(d=>d.open),'Validation must preserve input');
+   return {local_only:true,external_mail:'NOT_TESTED'};
+  });
+  for(const type of ['lead'])await scenario('FORM_'+type.toUpperCase()+'_FAILURE_RETRY',type==='project'?'/montazh-po-proektu/':'/',390,780,async()=>{
    const project=type==='project';const dialog=project?'#aeroventa-project-dialog':'[data-contact-dialog]';
    await page.locator(project?'[data-project-open]':'.home-actions [data-contact-open]').first().click();
    const form=page.locator(dialog+' form');await form.locator('[name="name"]').fill('Тестовая заявка');await form.locator('[name="contact"]').fill('qa@example.com');await form.locator('[name="task"]').fill('Локальная проверка формы без отправки писем');await form.locator('[name="consent"]').check();
