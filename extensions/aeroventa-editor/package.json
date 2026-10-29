@@ -12,7 +12,7 @@
     "type": "module",
     "path": "dist/index.js",
     "source": "src/index.js",
-    "host": "^11.0.0"
+    "host": "^12.0.0"
   },
   "devDependencies": {
     "@directus/extensions-sdk": "18.0.2",
