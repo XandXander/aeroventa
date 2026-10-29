@@ -16,7 +16,7 @@ if (!content) throw new Error('Home content is missing');
 
 const homeHeroLines = ['Невидимая эстетика.', 'Легкое дыхание.'] as const;
 
-const approvedCmsHome = ['production', 'incremental'].includes(import.meta.env.AEROVENTA_RELEASE_MODE)
+const approvedCmsHome = ['production', 'incremental'].includes(String(import.meta.env.AEROVENTA_RELEASE_MODE || ''))
   && content.status === 'published' && Boolean(content.owner_approved_at);
 const page = {
   ...content,
