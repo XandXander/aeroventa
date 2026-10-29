@@ -16,11 +16,14 @@ if (!content) throw new Error('Home content is missing');
 
 const homeHeroLines = ['Невидимая эстетика.', 'Легкое дыхание.'] as const;
 
+const approvedCmsHome = ['production', 'incremental'].includes(import.meta.env.AEROVENTA_RELEASE_MODE)
+  && content.status === 'published' && Boolean(content.owner_approved_at);
 const page = {
   ...content,
+  // Owner-approved two-line HERO is part of the accepted visual layout.
   h1: homeHeroLines.join(' '),
-  seo_title: 'AEROVENTA — инженерные системы вентиляции в СПб и Ленобласти',
-  seo_description: 'AEROVENTA — монтаж вентиляции для квартир, домов, ресторанов, коммерческих, производственных и крупных объектов. Санкт-Петербург и Ленинградская область; берём объекты в Москве и Карелии.',
+  seo_title: approvedCmsHome ? content.seo_title : 'AEROVENTA — инженерные системы вентиляции в СПб и Ленобласти',
+  seo_description: approvedCmsHome ? content.seo_description : 'AEROVENTA — монтаж вентиляции для квартир, домов, ресторанов, коммерческих, производственных и крупных объектов. Санкт-Петербург и Ленинградская область; берём объекты в Москве и Карелии.',
 };
 
 const objects = [
