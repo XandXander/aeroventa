@@ -11,7 +11,7 @@ const normalizePath = (path: string) => {
 };
 
 const forbiddenPublishedPaths = new Set(['/404.php']);
-const allowedReleaseModes = new Set(['fixture', 'preview', 'production']);
+const allowedReleaseModes = new Set(['fixture', 'preview', 'production', 'incremental']);
 
 function assertSafeHtml(html: string, itemPath: string) {
   if (!html) return;
@@ -115,20 +115,20 @@ function assertExactPreviewRouteSet(items: ContentRecord[]) {
   }
 }
 
-type DirectusMode = 'preview' | 'production';
+type DirectusMode = 'preview' | 'production' | 'incremental';
 
 const directusFields = [
-  'path','title','h1','content_type','business_role','status',
+  'id','path','slug','title','h1','content_type','business_role','status',
   'robots_index','robots_follow','sitemap_include','knowledge_allowed','ai_origin',
   'seo_title','seo_description','canonical_override',
   'og_title','og_description','og_image','schema_type','schema_json_extra',
   'published_at','updated_at_public',
-  'excerpt','body_html','body_html_safety_status','lead_intent','owner_approved_at'
+  'excerpt','body_html','body_html_safety_status','hero_file','lead_intent','owner_approved_at'
 ].join(',');
 
 async function fetchDirectusPage(base: string, offset: number, mode: DirectusMode): Promise<ContentRecord[]> {
   const url = new URL('/items/content', base);
-  if (mode === 'production') {
+  if (mode === 'production' || mode === 'incremental') {
     url.searchParams.set('filter[status][_eq]', 'published');
     url.searchParams.set('filter[owner_approved_at][_nnull]', 'true');
   } else {
@@ -148,7 +148,7 @@ async function fetchDirectusPage(base: string, offset: number, mode: DirectusMod
 
   const payload = await response.json();
   if (!Array.isArray(payload?.data)) throw new Error('Directus payload.data is not an array');
-  return payload.data.map(mode === 'production' ? assertSafePublishedRecord : assertSafePreviewRecord);
+  return payload.data.map(mode !== 'preview' ? assertSafePublishedRecord : assertSafePreviewRecord);
 }
 
 async function fetchDirectusContent(base: string, mode: DirectusMode): Promise<ContentRecord[]> {
@@ -162,7 +162,9 @@ async function fetchDirectusContent(base: string, mode: DirectusMode): Promise<C
 
   if (!items.length) throw new Error(`DIRECTUS_URL is configured but no ${mode} content was returned`);
   if (mode === 'production') assertCompleteRouteSet(items);
-  else assertExactPreviewRouteSet(items);
+  else if (mode === 'preview') assertExactPreviewRouteSet(items);
+  // Incremental releases intentionally do NOT require all 29 legacy records to
+  // be owner-approved. Only the explicit release selection may be emitted.
   return items;
 }
 
@@ -205,6 +207,44 @@ export async function getAllContent(): Promise<ContentRecord[]> {
       throw new Error('Directus draft preview requires a dedicated read-only DIRECTUS_STATIC_TOKEN');
     }
     return fetchDirectusContent(directusUrl, 'preview');
+  }
+
+  if (releaseMode === 'incremental') {
+    if (!directusUrl || !import.meta.env.DIRECTUS_STATIC_TOKEN) {
+      throw new Error('Incremental production requires authenticated read-only Directus');
+    }
+    const exactPathsRaw = String(import.meta.env.AEROVENTA_INCREMENTAL_PATHS || '');
+    const selectedPaths = exactPathsRaw.split(',').map((p) => p.trim()).filter(Boolean);
+    if (!selectedPaths.length || selectedPaths.length > 15 || selectedPaths.some((p) => p !== normalizePath(p))) {
+      throw new Error('Incremental build requires 1-15 explicit, normalized paths');
+    }
+    const selected = new Set(selectedPaths);
+    if (selected.size !== selectedPaths.length) throw new Error('Duplicate incremental paths');
+    const approved = await fetchDirectusContent(directusUrl, 'incremental');
+    const approvedByPath = new Map(approved.map((item) => [item.path, item]));
+    if (selectedPaths.some((p) => !approvedByPath.has(p))) {
+      throw new Error('Selected path is not published + owner approved in Directus');
+    }
+    const base = getFixtureContent();
+    const knownPaths = new Set(base.map((item) => normalizePath(item.path)));
+    const released = base.map((item) => {
+      const change = approvedByPath.get(normalizePath(item.path));
+      return change && selected.has(normalizePath(item.path)) ? {...item, ...change} : item;
+    });
+    for (const path of selectedPaths) {
+      if (knownPaths.has(path)) continue;
+      // New content is only allowed under the established article path family.
+      // Existing static Astro routes cannot be shadowed through CMS input.
+      if (!/^\\/blog\\/detail\\/[a-z0-9-]+\\/$/.test(path)) {
+        throw new Error('A new CMS route must be a /blog/detail/<slug>/ article');
+      }
+      const record = approvedByPath.get(path)!;
+      if (record.content_type !== 'article' && record.content_type !== 'news') {
+        throw new Error('New route must use ArticlePage renderer');
+      }
+      released.push(record);
+    }
+    return released;
   }
 
   if (releaseMode === 'production') {
