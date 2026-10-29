@@ -33,6 +33,10 @@ jobs:
         env:
           CONFIRMED: ${{ inputs.confirm_source_sha }}
         run: |
+          if [ "${GITHUB_REF_NAME}" != "aeroventa/hiend-seo-owner-recovery-2026-10-13" ]; then
+            echo "::error::Publication must use existing reviewed PR #12 branch"
+            exit 1
+          fi
           if [ "$CONFIRMED" != "${GITHUB_SHA}" ]; then
             echo "::error::Owner did not confirm exact source SHA"
             exit 1
