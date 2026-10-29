@@ -20,7 +20,7 @@ const preview = import.meta.env.AEROVENTA_RELEASE_MODE === 'preview';
 const canonical = canonicalUrl(content.path, content.canonical_override);
 const releaseMode = import.meta.env.AEROVENTA_RELEASE_MODE || 'fixture';
 const shareOrigin = new URL(import.meta.env.PUBLIC_SITE_ORIGIN || import.meta.env.PUBLIC_SOCIAL_ORIGIN ||
-  (releaseMode === 'production' ? 'https://aeroventa.ru' : 'https://staging.aeroventa.ru'));
+  (['production', 'incremental'].includes(releaseMode) ? 'https://aeroventa.ru' : 'https://staging.aeroventa.ru'));
 if (shareOrigin.protocol !== 'https:' || !['aeroventa.ru','staging.aeroventa.ru'].includes(shareOrigin.hostname)
     || shareOrigin.username || shareOrigin.password || shareOrigin.port
     || shareOrigin.pathname !== '/' || shareOrigin.search || shareOrigin.hash) {
@@ -131,7 +131,7 @@ const rejectedServicesImage = content.path === '/services/' &&
    'https://aeroventa.ru/evidence/cafe/owner-cover-v43.webp'].includes(content.og_image || '');
 // Publicly approved Directus imagery wins unless it is the explicitly rejected services cover.
 // Static fallback cards are deterministic 1200×630 images generated only from repository media.
-const approvedSocial = releaseMode === 'production' && content.status === 'published' && Boolean(content.owner_approved_at);
+const approvedSocial = ['production', 'incremental'].includes(releaseMode) && content.status === 'published' && Boolean(content.owner_approved_at);
 const ogImageSource = rejectedServicesImage
   ? (brandedShareImage || editorialOgFallback['/services/'])
   : ((approvedSocial && content.og_image) || brandedShareImage || editorialOgFallback[content.path] || '/share/brand.jpg');
