@@ -69,8 +69,8 @@ async function generate() {
    if (original) {
      // Release may update copy/SEO; never silently substitute a different
      // site template or change existing scripts/photos/navigation by mistake.
-     const signature = text => (text.match(/<\\/?[a-z][a-z0-9-]*(?=[\\s/>])/gi)||[]).join('|').toLowerCase();
-     const resources = text => [...text.matchAll(/<(?:img|script|link)\\b[^>]*\\b(?:src|href)\\s*=\\s*["']([^"']+)["']/gi)].map(m=>m[1]).join('|');
+     const signature = text => (text.match(/<[/]?[a-z][a-z0-9-]*(?=[\s/>])/gi)||[]).join('|').toLowerCase();
+     const resources = text => [...text.matchAll(/<(?:img|script|link)\b[^>]*\b(?:src|href)\s*=\s*["']([^"']+)["']/gi)].map(m=>m[1]).join('|');
      if (signature(original.toString('utf8')) !== signature(html)) throw Error('Accepted live DOM structure differs from Astro candidate; cannot overwrite '+p);
      if (resources(original.toString('utf8')) !== resources(html)) throw Error('Resource/photography/script drift in candidate; no live overwrite '+p);
    }
