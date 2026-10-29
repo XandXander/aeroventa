@@ -195,7 +195,7 @@ function getFixtureContent(): ContentRecord[] {
 
 export async function getAllContent(): Promise<ContentRecord[]> {
   const directusUrl = import.meta.env.DIRECTUS_URL;
-  const releaseMode = import.meta.env.AEROVENTA_RELEASE_MODE || 'fixture';
+  const releaseMode: string = String(import.meta.env.AEROVENTA_RELEASE_MODE || 'fixture');
 
   if (!allowedReleaseModes.has(releaseMode)) {
     throw new Error(`Unsupported AEROVENTA_RELEASE_MODE: ${releaseMode}`);
@@ -235,7 +235,35 @@ export async function getAllContent(): Promise<ContentRecord[]> {
       if (knownPaths.has(path)) continue;
       // New content is only allowed under the established article path family.
       // Existing static Astro routes cannot be shadowed through CMS input.
-      if (!/^\\/blog\\/detail\\/[a-z0-9-]+\\/$/.test(path)) {
+      if (!new RegExp('^/blog/detail/[a-z0-9-]+/
+        throw new Error('A new CMS route must be a /blog/detail/<slug>/ article');
+      }
+      const record = approvedByPath.get(path)!;
+      if (record.content_type !== 'article' && record.content_type !== 'news') {
+        throw new Error('New route must use ArticlePage renderer');
+      }
+      released.push(record);
+    }
+    return released;
+  }
+
+  if (releaseMode === 'production') {
+    if (!directusUrl) throw new Error('Production release requires DIRECTUS_URL; fixture content is forbidden');
+    return fetchDirectusContent(directusUrl, 'production');
+  }
+
+  if (directusUrl) {
+    throw new Error('DIRECTUS_URL is set in fixture mode; choose AEROVENTA_RELEASE_MODE=preview or production explicitly');
+  }
+
+  return getFixtureContent();
+}
+
+export async function getByPath(path: string): Promise<ContentRecord | undefined> {
+  const normalized = normalizePath(path);
+  return (await getAllContent()).find((item) => normalizePath(item.path) === normalized);
+}
+).test(path)) {
         throw new Error('A new CMS route must be a /blog/detail/<slug>/ article');
       }
       const record = approvedByPath.get(path)!;
