@@ -4,58 +4,63 @@ on:
   workflow_dispatch:
     inputs:
       approved_paths:
-        description: 'Comma-separated exact paths of already Owner-approved Directus records'
+        description: 'Exact Owner-approved Directus paths; same paths as preview'
         required: true
         type: string
       go_live:
-        description: 'Publish approved pages after build, readback parity and environment approval'
+        description: 'False: build immutable review artifact; true: deploy ONLY that previously reviewed artifact'
         required: true
         type: boolean
         default: false
       confirm_source_sha:
-        description: 'Exact 40-character Git commit SHA approved for publication'
+        description: 'Reviewed PR #12 exact 40-character commit SHA'
         required: true
+        type: string
+      preview_run_id:
+        description: 'Required for live: successful REVIEW-ONLY GitHub run ID; never rebuild at publish'
+        required: false
         type: string
 
 permissions:
   contents: read
+  actions: read
 concurrency:
   group: aeroventa-publication-production
   cancel-in-progress: false
 
 jobs:
-  build-and-verify:
+  preview-build:
+    if: ${{ !inputs.go_live }}
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
-      - name: Validate source SHA approval, refuse edited refs
+      - name: Refuse unreviewed source or branch
         shell: bash
         env:
           CONFIRMED: ${{ inputs.confirm_source_sha }}
         run: |
-          if [ "${GITHUB_REF_NAME}" != "aeroventa/hiend-seo-owner-recovery-2026-10-13" ]; then
-            echo "::error::Publication must use existing reviewed PR #12 branch"
-            exit 1
-          fi
-          if [ "$CONFIRMED" != "${GITHUB_SHA}" ]; then
-            echo "::error::Owner did not confirm exact source SHA"
-            exit 1
-          fi
+          test "$GITHUB_REF_NAME" = 'aeroventa/hiend-seo-owner-recovery-2026-10-13'
+          test "$CONFIRMED" = "$GITHUB_SHA"
       - uses: actions/checkout@v5
         with:
           persist-credentials: false
       - uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
-      - name: Validate source and release scripts
+      - name: Install and validate source
         run: |
           npm ci --ignore-scripts --no-audit --no-fund
-          node --check scripts/pr12-cms-astro-release-package.mjs
+          node --check scripts/pr12-cms-approved-snapshot.mjs
+          node scripts/pr12-cms-approved-snapshot.mjs --self-test
           node scripts/pr12-cms-astro-release-package.mjs --self-test
-          node --check scripts/pr12-cms-ftps-transactional-deploy.mjs
           node scripts/pr12-cms-ftps-transactional-deploy.mjs --self-test
           npm run check:web
-      - name: Build only explicitly approved Directus content in existing Astro
+      - name: Lock exact Directus revision BEFORE static build
+        env:
+          AEROVENTA_INCREMENTAL_PATHS: ${{ inputs.approved_paths }}
+          DIRECTUS_STATIC_TOKEN: ${{ secrets.DIRECTUS_STATIC_TOKEN }}
+        run: node scripts/pr12-cms-approved-snapshot.mjs capture
+      - name: Build existing Astro using only selected approved records
         env:
           AEROVENTA_RELEASE_MODE: incremental
           AEROVENTA_INCREMENTAL_PATHS: ${{ inputs.approved_paths }}
@@ -64,77 +69,126 @@ jobs:
           PUBLIC_SITE_ORIGIN: https://aeroventa.ru
           AEROVENTA_SOURCE_SHA: ${{ github.sha }}
         run: |
-          test -n "$DIRECTUS_STATIC_TOKEN"
           npm run generate:hosting-rules
           npm run build:web
           node scripts/pr12-cms-astro-release-package.mjs
-      - name: Verify file-by-file before and after and create bounded artifact
-        shell: bash
+          node scripts/pr12-cms-approved-snapshot.mjs verify
+      - name: Hash, inspect, package EXACT immutable candidate plus rollback
         run: |
           python3 - <<'PY'
           from pathlib import Path
           import hashlib,json,zipfile
           root=Path('release_out/approved-astro')
           manifest=json.loads((root/'manifest.json').read_text())
-          assert manifest['mode']=='REVIEW_ONLY_NO_DEPLOY'
+          lock=json.loads((root/'cms-approved-lock.json').read_text())
+          assert manifest['source_sha']==lock['source_sha']
+          assert manifest['approved_paths']==[r['path'] for r in lock['records']]
           assert 1<=len(manifest['files'])<=15
-          for x in manifest['files']:
-            original=(root/'__rollback__'/x['path']).read_bytes()
-            proposed=(root/x['path']).read_bytes()
-            assert hashlib.sha256(original).hexdigest()==x['sha256_before']
-            assert hashlib.sha256(proposed).hexdigest()==x['sha256_after']
-            assert proposed!=original
-          with zipfile.ZipFile('AEROVENTA_APPROVED_SOURCE_BACKED_ROLLBACK.zip','w',compression=zipfile.ZIP_DEFLATED) as z:
-            for p in root.rglob('*'):
+          for row in manifest['files']:
+            before=(root/'__rollback__'/row['path']).read_bytes()
+            after=(root/row['path']).read_bytes()
+            assert hashlib.sha256(before).hexdigest()==row['sha256_before']
+            assert hashlib.sha256(after).hexdigest()==row['sha256_after']
+            assert before!=after
+          name='AEROVENTA_REVIEWED_CANDIDATE_AND_ROLLBACK.zip'
+          with zipfile.ZipFile(name,'w',compression=zipfile.ZIP_DEFLATED) as z:
+            for p in sorted(root.rglob('*')):
               if p.is_file():z.write(p,p.relative_to(root).as_posix())
-          assert zipfile.ZipFile('AEROVENTA_APPROVED_SOURCE_BACKED_ROLLBACK.zip').testzip() is None
-          print('RELEASE_CANDIDATE_AND_EXACT_ROLLBACK_PASS')
+          assert zipfile.ZipFile(name).testzip() is None
+          print('IMMUTABLE_REVIEW_CANDIDATE_PASS artifact_sha256='+hashlib.sha256(Path(name).read_bytes()).hexdigest())
           PY
-      - name: Store immutable per-page live baseline for rollback BEFORE any deploy
-        uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v6
         with:
           name: AEROVENTA_PREDEPLOY_VERIFIED_CANDIDATE_AND_ROLLBACK
-          path: AEROVENTA_APPROVED_SOURCE_BACKED_ROLLBACK.zip
+          path: AEROVENTA_REVIEWED_CANDIDATE_AND_ROLLBACK.zip
           if-no-files-found: error
           retention-days: 30
 
   publish-to-beget:
     if: ${{ inputs.go_live }}
-    needs: build-and-verify
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment:
       name: aeroventa-production
       url: https://aeroventa.ru
     steps:
+      - name: Validate exact reviewed preview run, immutable source and input
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PREVIEW_RUN: ${{ inputs.preview_run_id }}
+          SOURCE_SHA: ${{ inputs.confirm_source_sha }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF_NAME" = 'aeroventa/hiend-seo-owner-recovery-2026-10-13'
+          test "$SOURCE_SHA" = "$GITHUB_SHA"
+          [[ "$PREVIEW_RUN" =~ ^[1-9][0-9]{5,14}$ ]]
+          curl -fsS --retry 2 -H "Authorization: Bearer $GH_TOKEN" -H 'Accept: application/vnd.github+json' \
+            "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/actions/runs/$PREVIEW_RUN" > /tmp/aeroventa-preview-run.json
+          jq -e --arg source "$SOURCE_SHA" --arg branch "$GITHUB_REF_NAME" '
+            .event=="workflow_dispatch" and .conclusion=="success" and
+            .head_sha==$source and .head_branch==$branch and
+            .name=="AEROVENTA - manually approved CMS-to-live release"
+          ' /tmp/aeroventa-preview-run.json >/dev/null
+          echo 'OWNER_REVIEW_SOURCE_PIN_PASS'
       - uses: actions/checkout@v5
         with:
           persist-credentials: false
       - uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
-      - uses: actions/download-artifact@v6
+      - name: Download ONLY artifact from the approved successful preview run
+        uses: actions/download-artifact@v6
         with:
           name: AEROVENTA_PREDEPLOY_VERIFIED_CANDIDATE_AND_ROLLBACK
+          run-id: ${{ inputs.preview_run_id }}
+          github-token: ${{ github.token }}
           path: .release
-      - name: Unpack validated candidate; no bulk site overwrite
+      - name: Validate the immutable preview archive, manifest, source, paths, backup
+        shell: bash
+        env:
+          SELECTED: ${{ inputs.approved_paths }}
+          SOURCE_SHA: ${{ inputs.confirm_source_sha }}
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          import zipfile
-          src=Path('.release/AEROVENTA_APPROVED_SOURCE_BACKED_ROLLBACK.zip')
+          import hashlib,json,os,zipfile
+          src=Path('.release/AEROVENTA_REVIEWED_CANDIDATE_AND_ROLLBACK.zip')
           root=Path('release_out/approved-astro').resolve()
+          assert src.exists(),'The exact preview artifact was not found'
           with zipfile.ZipFile(src) as z:
-            for n in z.namelist():
-              p=Path(n)
-              assert not p.is_absolute() and '..' not in p.parts
+            names=z.namelist()
+            assert z.testzip() is None and len(names)==len(set(names))
+            for name in names:
+              p=Path(name)
+              assert not p.is_absolute() and '..' not in p.parts and not name.endswith('/')
             z.extractall(root)
+          manifest=json.loads((root/'manifest.json').read_text())
+          lock=json.loads((root/'cms-approved-lock.json').read_text())
+          selected=[p.strip() for p in os.environ['SELECTED'].split(',') if p.strip()]
+          assert manifest['format']=='aeroventa-astro-selective-approved-release-v1'
+          assert manifest['mode']=='REVIEW_ONLY_NO_DEPLOY'
+          assert manifest['source_sha']==lock['source_sha']==os.environ['SOURCE_SHA']
+          assert manifest['approved_paths']==selected==[r['path'] for r in lock['records']]
+          assert 1<=len(manifest['files'])<=15 and len(manifest['files'])==len(selected)
+          assert len({r['path'] for r in manifest['files']})==len(selected)
+          for row in manifest['files']:
+            before=(root/'__rollback__'/row['path']).read_bytes()
+            after=(root/row['path']).read_bytes()
+            assert hashlib.sha256(before).hexdigest()==row['sha256_before']
+            assert hashlib.sha256(after).hexdigest()==row['sha256_after']
+          print('IMMUTABLE_APPROVED_PREVIEW_ARTIFACT_VERIFIED sha256='+hashlib.sha256(src.read_bytes()).hexdigest())
           PY
-      - name: Install bounded FTPS client, run isolated self-test
+      - name: Verify CMS approval and content unchanged since the exact preview
+        env:
+          AEROVENTA_INCREMENTAL_PATHS: ${{ inputs.approved_paths }}
+          DIRECTUS_STATIC_TOKEN: ${{ secrets.DIRECTUS_STATIC_TOKEN }}
+        run: node scripts/pr12-cms-approved-snapshot.mjs verify
+      - name: Install bounded FTPS client and run isolated test
         run: |
           npm install --no-save --package-lock=false --no-audit --no-fund basic-ftp@5.0.5
           node scripts/pr12-cms-ftps-transactional-deploy.mjs --self-test
-      - name: Publish only exact approved HTML after Owner/environment authorization
+      - name: Publish EXACT reviewed HTML only after Environment review
         env:
           AEROVENTA_LIVE_ARMED: ${{ secrets.AEROVENTA_LIVE_ARMED }}
           BEGET_FTP_SCOPED: aeroventa.ru
@@ -145,7 +199,7 @@ jobs:
           BEGET_FTP_PASSWORD: ${{ secrets.BEGET_FTP_PASSWORD }}
           OWNER_APPROVED_GITHUB_SHA: ${{ inputs.confirm_source_sha }}
         run: node scripts/pr12-cms-ftps-transactional-deploy.mjs
-      - name: Preserve deployment/rollback receipts even after a failed release
+      - name: Store rollback receipt even for failures
         if: always()
         uses: actions/upload-artifact@v6
         with:
