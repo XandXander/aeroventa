@@ -1,0 +1,151 @@
+name: AEROVENTA - manually approved CMS-to-live release
+
+on:
+  workflow_dispatch:
+    inputs:
+      approved_paths:
+        description: 'Comma-separated exact paths of already Owner-approved Directus records'
+        required: true
+        type: string
+      go_live:
+        description: 'Publish approved pages after build, readback parity and environment approval'
+        required: true
+        type: boolean
+        default: false
+      confirm_source_sha:
+        description: 'Exact 40-character Git commit SHA approved for publication'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+concurrency:
+  group: aeroventa-publication-production
+  cancel-in-progress: false
+
+jobs:
+  build-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Validate source SHA approval, refuse edited refs
+        shell: bash
+        env:
+          CONFIRMED: ${{ inputs.confirm_source_sha }}
+        run: |
+          if [ "$CONFIRMED" != "${GITHUB_SHA}" ]; then
+            echo "::error::Owner did not confirm exact source SHA"
+            exit 1
+          fi
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+      - name: Validate source and release scripts
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          node --check scripts/pr12-cms-astro-release-package.mjs
+          node scripts/pr12-cms-astro-release-package.mjs --self-test
+          node --check scripts/pr12-cms-ftps-transactional-deploy.mjs
+          node scripts/pr12-cms-ftps-transactional-deploy.mjs --self-test
+          npm run check:web
+      - name: Build only explicitly approved Directus content in existing Astro
+        env:
+          AEROVENTA_RELEASE_MODE: incremental
+          AEROVENTA_INCREMENTAL_PATHS: ${{ inputs.approved_paths }}
+          DIRECTUS_URL: https://cms.aeroventa.ru
+          DIRECTUS_STATIC_TOKEN: ${{ secrets.DIRECTUS_STATIC_TOKEN }}
+          PUBLIC_SITE_ORIGIN: https://aeroventa.ru
+          AEROVENTA_SOURCE_SHA: ${{ github.sha }}
+        run: |
+          test -n "$DIRECTUS_STATIC_TOKEN"
+          npm run generate:hosting-rules
+          npm run build:web
+          node scripts/pr12-cms-astro-release-package.mjs
+      - name: Verify file-by-file before and after and create bounded artifact
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json,zipfile
+          root=Path('release_out/approved-astro')
+          manifest=json.loads((root/'manifest.json').read_text())
+          assert manifest['mode']=='REVIEW_ONLY_NO_DEPLOY'
+          assert 1<=len(manifest['files'])<=15
+          for x in manifest['files']:
+            original=(root/'__rollback__'/x['path']).read_bytes()
+            proposed=(root/x['path']).read_bytes()
+            assert hashlib.sha256(original).hexdigest()==x['sha256_before']
+            assert hashlib.sha256(proposed).hexdigest()==x['sha256_after']
+            assert proposed!=original
+          with zipfile.ZipFile('AEROVENTA_APPROVED_SOURCE_BACKED_ROLLBACK.zip','w',compression=zipfile.ZIP_DEFLATED) as z:
+            for p in root.rglob('*'):
+              if p.is_file():z.write(p,p.relative_to(root).as_posix())
+          assert zipfile.ZipFile('AEROVENTA_APPROVED_SOURCE_BACKED_ROLLBACK.zip').testzip() is None
+          print('RELEASE_CANDIDATE_AND_EXACT_ROLLBACK_PASS')
+          PY
+      - name: Store immutable per-page live baseline for rollback BEFORE any deploy
+        uses: actions/upload-artifact@v6
+        with:
+          name: AEROVENTA_PREDEPLOY_VERIFIED_CANDIDATE_AND_ROLLBACK
+          path: AEROVENTA_APPROVED_SOURCE_BACKED_ROLLBACK.zip
+          if-no-files-found: error
+          retention-days: 30
+
+  publish-to-beget:
+    if: ${{ inputs.go_live }}
+    needs: build-and-verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: aeroventa-production
+      url: https://aeroventa.ru
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+      - uses: actions/download-artifact@v6
+        with:
+          name: AEROVENTA_PREDEPLOY_VERIFIED_CANDIDATE_AND_ROLLBACK
+          path: .release
+      - name: Unpack validated candidate; no bulk site overwrite
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import zipfile
+          src=Path('.release/AEROVENTA_APPROVED_SOURCE_BACKED_ROLLBACK.zip')
+          root=Path('release_out/approved-astro').resolve()
+          with zipfile.ZipFile(src) as z:
+            for n in z.namelist():
+              p=Path(n)
+              assert not p.is_absolute() and '..' not in p.parts
+            z.extractall(root)
+          PY
+      - name: Install bounded FTPS client, run isolated self-test
+        run: |
+          npm install --no-save --package-lock=false --no-audit --no-fund basic-ftp@5.0.5
+          node scripts/pr12-cms-ftps-transactional-deploy.mjs --self-test
+      - name: Publish only exact approved HTML after Owner/environment authorization
+        env:
+          AEROVENTA_LIVE_ARMED: ${{ secrets.AEROVENTA_LIVE_ARMED }}
+          BEGET_FTP_SCOPED: aeroventa.ru
+          BEGET_FTP_ROOT: /public_html
+          BEGET_FTP_HOST: ${{ secrets.BEGET_FTP_HOST }}
+          BEGET_FTP_PORT: ${{ secrets.BEGET_FTP_PORT }}
+          BEGET_FTP_USER: ${{ secrets.BEGET_FTP_USER }}
+          BEGET_FTP_PASSWORD: ${{ secrets.BEGET_FTP_PASSWORD }}
+          OWNER_APPROVED_GITHUB_SHA: ${{ inputs.confirm_source_sha }}
+        run: node scripts/pr12-cms-ftps-transactional-deploy.mjs
+      - name: Preserve deployment/rollback receipts even after a failed release
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: AEROVENTA_BEGET_DEPLOY_READBACK_RECEIPT
+          path: release_out/approved-astro/deploy-receipt.json
+          if-no-files-found: ignore
+          retention-days: 30
