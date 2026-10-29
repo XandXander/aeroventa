@@ -1,0 +1,73 @@
+name: PR12 CMS incremental candidate - strict no-deploy
+
+on:
+  push:
+    branches: [aeroventa/hiend-seo-owner-recovery-2026-10-13]
+    paths:
+      - scripts/pr12-cms-incremental-candidate.mjs
+      - .github/workflows/pr12-cms-incremental-candidate.yml
+  workflow_dispatch:
+    inputs:
+      approved_paths:
+        description: 'Explicit comma-separated owner-approved existing paths (e.g. /blog/detail/ntff-polisan/)'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  audited-release-candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+      - name: Syntax and fail-closed tests (no credentials, no writes)
+        run: |
+          node --check scripts/pr12-cms-incremental-candidate.mjs
+          node scripts/pr12-cms-incremental-candidate.mjs --self-test
+      - name: Generate actual candidate from live pages and approved CMS values, read-only
+        if: github.event_name == 'workflow_dispatch' && inputs.approved_paths != ''
+        env:
+          DIRECTUS_STATIC_TOKEN: ${{ secrets.DIRECTUS_STATIC_TOKEN }}
+          AEROVENTA_INCREMENTAL_PATHS: ${{ inputs.approved_paths }}
+        run: node scripts/pr12-cms-incremental-candidate.mjs
+      - name: Package only verified changed HTML + matching rollback baseline
+        if: github.event_name == 'workflow_dispatch' && inputs.approved_paths != ''
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import zipfile,json,hashlib
+          from pathlib import Path
+          root=Path('release_out/incremental')
+          manifest=json.loads((root/'manifest.json').read_text())
+          assert manifest['mode']=='read-only-candidate'
+          assert manifest['files'] and all(x['path'].endswith('index.html') for x in manifest['files'])
+          for row in manifest['files']:
+            new=(root/row['path']).read_bytes()
+            old=(root/'__rollback__'/row['path']).read_bytes()
+            assert hashlib.sha256(new).hexdigest()==row['candidate_sha256']
+            assert hashlib.sha256(old).hexdigest()==row['baseline_sha256']
+            assert new!=old
+          with zipfile.ZipFile('AEROVENTA_INCREMENTAL_REVIEW_ONLY.zip','w',zipfile.ZIP_DEFLATED) as z:
+            for p in root.rglob('*'):
+              if p.is_file():z.write(p,p.relative_to(root).as_posix())
+          with zipfile.ZipFile('AEROVENTA_INCREMENTAL_REVIEW_ONLY.zip') as z:
+            assert z.testzip() is None
+          print('REVIEW_ONLY_ZIP_PASS: live deployment deliberately disabled')
+          PY
+      - name: Save candidate for visual, SEO, source parity and explicit release review
+        if: github.event_name == 'workflow_dispatch' && inputs.approved_paths != ''
+        uses: actions/upload-artifact@v6
+        with:
+          name: AEROVENTA-CMS-INCREMENTAL-REVIEW-ONLY
+          path: AEROVENTA_INCREMENTAL_REVIEW_ONLY.zip
+          if-no-files-found: error
+          retention-days: 7
