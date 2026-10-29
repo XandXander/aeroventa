@@ -1,5 +1,6 @@
 ---
 import type { ContentRecord } from '@/lib/types';
+import { createHash } from 'node:crypto';
 import verifiedArchive from '../../../../../migration/bitrix-verified-articles-20260817.json';
 import legacySourceIndex from '../../../../../migration/legacy-page-source-index.json';
 import { existsSync } from 'node:fs';
@@ -11,6 +12,13 @@ const hasLetter = ['apps/web/public/evidence/karelia/ponsse-letter-20220405.png'
 const hasPortrait = import.meta.env.PUBLIC_PONSSE_PORTRAIT_PUBLICATION_APPROVED === 'true' && ['apps/web/public/evidence/karelia/p-teittinen-original.jpg','public/evidence/karelia/p-teittinen-original.jpg'].some(p => existsSync(resolve(p)));
 interface Props { content: ContentRecord; fixture: boolean; }
 const { content } = Astro.props;
+// Opt-in preview only: existing production and fixture output remain unchanged.
+const cmsPilot = import.meta.env.AEROVENTA_RELEASE_MODE === 'preview'
+  && import.meta.env.AEROVENTA_DIRECTUS_PILOT_PATH === '/blog/detail/ntff-polisan/'
+  && content.path === '/blog/detail/ntff-polisan/'
+  && content.status === 'draft' && content.owner_approved_at === null;
+if (cmsPilot && !content.excerpt?.trim()) throw new Error('Directus pilot excerpt is empty');
+const cmsPilotSha = cmsPilot ? createHash('sha256').update(content.excerpt).digest('hex') : null;
 const verifiedOriginal = verifiedArchive.articles.find(item => item.route === content.path);
 const verifiedArchiveHtml = verifiedOriginal
   ? verifiedOriginal.source_article_html_sanitized.replace(/<img\b[^>]*>/gi, '')
@@ -528,7 +536,12 @@ const [heroWidth,heroHeight]=heroDimensions[content.path];
         </button>
         <figcaption>{spec.media[0][2]}</figcaption>
       </figure>
-      <div class="av-case__introduction"><p class="case-detail-hero__lede">{spec.lede}</p><div class="av-case__actions"><button class="button button--primary" type="button" data-contact-open data-source="evidence_case" data-project-status="unknown">Обсудить ваш объект →</button><a class="av-link" href="/portfolio/">Все объекты</a></div></div>
+      <div class="av-case__introduction"><p class="case-detail-hero__lede">{spec.lede}</p>{cmsPilot && (
+        <aside class="case-detail-hero__cms-pilot" role="note" data-directus-pilot-excerpt data-directus-pilot-sha={cmsPilotSha}>
+          <strong>DIRECTUS · РЕДАКТОРСКИЙ ЧЕРНОВИК · НЕ ОПУБЛИКОВАНО</strong>
+          <p>{content.excerpt}</p>
+        </aside>
+      )}<div class="av-case__actions"><button class="button button--primary" type="button" data-contact-open data-source="evidence_case" data-project-status="unknown">Обсудить ваш объект →</button><a class="av-link" href="/portfolio/">Все объекты</a></div></div>
       </div>
       <dl class="av-case__facts" aria-label={documentary.facts}>{spec.facts.map(([label,value])=><div><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
     </div>
