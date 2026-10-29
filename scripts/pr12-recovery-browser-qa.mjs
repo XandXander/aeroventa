@@ -626,7 +626,14 @@ try {
    await context.unroute(url);await context.route(url,route=>{requests++;return route.fulfill({status:200,contentType:'application/json',body:'{"ok":true}'});});
    await form.locator('button[type="submit"]').click();
    await page.waitForFunction(({selector})=>!document.querySelector(selector).hasAttribute('aria-busy'),{selector:dialog+' button[type="submit"]'});
-   expect(requests===2,'Unexpected duplicate requests');expect((await status.innerText()).includes(project?'Сервер принял':'Запрос принят'),'Acceptance response missing');
+   expect(requests===2,'Unexpected duplicate requests');
+   // A confirmed lead closes its sheet and shows the separate Owner-accepted
+   // success notice. The in-form status is intentionally cleared on success.
+   const success=page.locator('[data-submission-success]');
+   await success.waitFor({state:'visible',timeout:5000});
+   expect((await success.locator('[data-success-title]').innerText())==='Заявка отправлена.','Confirmed lead success notice missing');
+   expect(!(await page.locator(dialog).evaluate(d=>d.open)),'Lead sheet not closed after confirmed submission');
+   expect((await form.locator('[name="name"]').inputValue())==='','Successful request fields not reset');
    expect(!(await form.locator('button[type="submit"]').isDisabled()),'Retry remains disabled');
    await page.screenshot({path:path.join(output,type+'-retry-390.jpg'),type:'jpeg',quality:85});
    await context.unroute(url);return {mock_requests:requests,external_delivery:'NOT_TESTED',pulse_while_pending:true};
