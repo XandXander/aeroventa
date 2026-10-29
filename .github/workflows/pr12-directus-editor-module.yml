@@ -1,0 +1,45 @@
+name: PR12 — AEROVENTA CMS editor module source QA (no install)
+on:
+  push:
+    branches: [aeroventa/hiend-seo-owner-recovery-2026-10-13]
+    paths:
+      - 'extensions/aeroventa-editor/**'
+      - '.github/workflows/pr12-directus-editor-module.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: extensions/aeroventa-editor
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+      - name: Install isolated extension dependencies
+        run: npm install --no-audit --no-fund
+      - name: Test pilot write-gate contract
+        run: npm test
+      - name: Build Directus Studio module without installation
+        run: npm run build
+      - name: Verify artifact contains no secrets or deployment scripts
+        shell: bash
+        run: |
+          test -s dist/index.js
+          ! grep -Eiq 'DIRECTUS_STATIC_TOKEN|ssh|scp|Beget' dist/index.js
+          test -f src/module.vue
+          echo 'EDITOR_SOURCE_BUILD_PASS: offline source only, no CMS/website change'
+      - uses: actions/upload-artifact@v6
+        with:
+          name: AEROVENTA_EDITOR_MODULE_SOURCE_QA
+          path: |
+            extensions/aeroventa-editor/package.json
+            extensions/aeroventa-editor/dist/index.js
+            extensions/aeroventa-editor/README.md
+          if-no-files-found: error
+          retention-days: 7

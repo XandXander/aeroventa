@@ -1,0 +1,21 @@
+{
+  "name": "directus-extension-aeroventa-editor",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Owner-gated AEROVENTA editorial module, pilot draft only",
+  "type": "module",
+  "scripts": {
+    "build": "directus-extension build",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "directus:extension": {
+    "type": "module",
+    "path": "dist/index.js",
+    "source": "src/index.js",
+    "host": "^11.0.0"
+  },
+  "devDependencies": {
+    "@directus/extensions-sdk": "18.0.2",
+    "vue": "3.5.24"
+  }
+}
