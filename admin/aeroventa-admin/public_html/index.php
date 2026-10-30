@@ -417,8 +417,11 @@ try {
                         $required=$kind==='text'&&preg_match('~/h1\[[0-9]+\]$~D',(string)($f['node']??''));
                         // Clear optional text/alt without deleting the element.
                         // Never clear a page H1, media URL or navigation link.
+                        $unicodeLength=is_string($value)&&preg_match('//u',$value)
+                            ? (function_exists('mb_strlen')?mb_strlen($value,'UTF-8'):preg_match_all('/./us',$value)) : false;
                         if($copy!=$original||!in_array($kind,['text','alt','media','link'],true)||
-                            !is_string($value)||strlen($value)>$limit||
+                            $unicodeLength===false||$unicodeLength>$limit||
+                            strlen($value)>($limit*4)||
                             (($required||$kind==='media'||$kind==='link')&&trim($value)==='')||
                             preg_match('/[\x00-\x08\x0B\x0C\x0E-\x1F]/',$value)){$ok=false;break;}
                         if(($f['kind']??null)==='media'){
