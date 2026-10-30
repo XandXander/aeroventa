@@ -680,6 +680,25 @@ const { pagePath = '' } = Astro.props;
     while (chatHistory.children.length > 11) chatHistory.children[1]?.remove();
     chatHistory.scrollTop = chatHistory.scrollHeight;
   };
+  // AEROVENTA AIRFLOW TRACE / DUCT PULSE. Runs exclusively during an actual request.
+  const pulse = document.createElement('div');
+  pulse.className='av-consultant-pulse';
+  pulse.hidden=true;
+  pulse.setAttribute('role','status');
+  pulse.setAttribute('aria-live','polite');
+  pulse.innerHTML='<svg aria-hidden="true" viewBox="0 0 240 40" preserveAspectRatio="none"><path class="av-pulse-duct supply" d="M3 12 H64 V21 H130 V12 H237"/><path class="av-pulse-flow supply" d="M3 12 H64 V21 H130 V12 H237"/><path class="av-pulse-duct exhaust" d="M237 31 H173 V24 H102 V31 H3"/><path class="av-pulse-flow exhaust" d="M237 31 H173 V24 H102 V31 H3"/></svg><span>Обрабатываем инженерный вопрос…</span>';
+  chatForm?.append(pulse);
+  const pulseCss = document.createElement('style');
+  pulseCss.textContent='.av-consultant-pulse{display:flex;gap:12px;align-items:center;margin:8px 0;padding:9px 10px;border-top:1px solid #d5e0e5;color:#34586d;font:500 12px/1.45 system-ui,sans-serif}.av-consultant-pulse[hidden]{display:none}.av-consultant-pulse svg{flex:none;width:100px;height:26px;overflow:visible}.av-consultant-pulse path{fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.av-pulse-duct.supply{stroke:#8db4c6;opacity:.8}.av-pulse-duct.exhaust{stroke:#d1a28b;opacity:.8}.av-pulse-flow{stroke-dasharray:16 300;animation:av-duct-request 1.7s linear infinite}.av-pulse-flow.supply{stroke:#357293}.av-pulse-flow.exhaust{stroke:#b46f4f;animation-direction:reverse}@keyframes av-duct-request{from{stroke-dashoffset:0}to{stroke-dashoffset:-300}}@media(prefers-reduced-motion:reduce){.av-pulse-flow{animation:none;stroke-dasharray:none;opacity:.8}}';
+  document.head.append(pulseCss);
+  const setProcessing=(busy:boolean)=>{
+    pulse.hidden=!busy;
+    chatForm?.setAttribute('aria-busy',busy?'true':'false');
+    if(busy)document.documentElement.setAttribute('data-airflow-processing','');
+    else if(!document.querySelector('form[data-contact-form][data-submitting="true"],form[data-project-form][data-submitting="true"]'))
+      document.documentElement.removeAttribute('data-airflow-processing');
+  };
+  consultantDialog?.addEventListener('close',()=>setProcessing(false));
   const privacy = document.createElement('label');
   privacy.className = 'consultant-conversation__privacy';
   privacy.style.cssText = 'display:block;margin:8px 0 0;font-size:12px;line-height:1.4;';
@@ -694,7 +713,7 @@ const { pagePath = '' } = Astro.props;
   privacyLink.textContent = 'Условия';
   privacy.append(privacyLink);
   chatForm?.append(privacy);
-  if(chatInput)chatInput.placeholder = 'Опишите задачу без имён, телефонов, адресов и документов';
+  if(chatInput instanceof HTMLTextAreaElement || chatInput instanceof HTMLInputElement) chatInput.placeholder = 'Опишите задачу без имён, телефонов, адресов и документов';
   type ChatResponse = {ok?:boolean;csrf?:string;reply?:string;error?:string;error_code?:string};
   type ChatError = Error & {status?:number;code?:string};
   const chatFetch = async (payload:Record<string,unknown>|null=null): Promise<ChatResponse> => {
@@ -748,12 +767,18 @@ const { pagePath = '' } = Astro.props;
     }catch{addChatMessage('guide','Консультант AEROVENTA','Не удалось очистить сессию. Повторите попытку.');}
     finally{chatBusy=false;resetChat.disabled=false;}
   });
+  const leadSummary=()=>{
+    const rows=[...(chatHistory?.querySelectorAll<HTMLElement>('li.consultant-message--visitor p')||[])].map(el=>String(el.textContent||'').trim()).filter(Boolean);
+    const summary='Сведения из вопросов посетителя (без ответов AI):\\n'+rows.map((v,i)=>(i+1)+'. '+v).join('\\n');
+    return summary.length>3500?summary.slice(0,3470)+'\\n[Описание сокращено для формы]':summary;
+  };
   chatForm?.addEventListener('submit',async(event)=>{
     event.preventDefault();
     if(chatBusy||!chatForm||!chatForm.reportValidity()||!privacyConsent.checked)return;
     const q=String(chatInput?.value||'').trim().slice(0,800);
     if(!q)return;
     chatBusy=true;
+    setProcessing(true);
     const send=chatForm.querySelector<HTMLButtonElement>('button[type="submit"]');
     if(send)send.disabled=true;
     lastChatQuestion=q;
@@ -782,7 +807,7 @@ const { pagePath = '' } = Astro.props;
       }else
         addChatMessage('guide','Консультант AEROVENTA','Не удалось продолжить консультацию. Вопрос сохранён для повторной отправки.');
       consultantSummary='Вопрос посетителя: '+q;
-    }finally{chatBusy=false;if(send)send.disabled=false;chatInput?.focus();}
+    }finally{chatBusy=false;setProcessing(false);if(send)send.disabled=false;chatInput?.focus();}
   });
   chatInput?.addEventListener('keydown', (event) => {
     if (!(event instanceof KeyboardEvent)) return;
@@ -793,8 +818,9 @@ const { pagePath = '' } = Astro.props;
   });
   consultantDialog?.querySelector('[data-consultant-chat-handoff]')?.addEventListener('click', () => {
     if (!consultantDialog || !contactDialog) return;
+    consultantSummary=leadSummary();
     hydrateContactContext(contactDialog, {
-      consultantSummary: consultantSummary || 'Переход из публичного навигатора AEROVENTA',
+      consultantSummary,
       task: lastChatQuestion,
     });
     const opener=lastDialogTrigger.get(consultantDialog);
