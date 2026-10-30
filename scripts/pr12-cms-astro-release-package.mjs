@@ -104,14 +104,46 @@ async function generate() {
      sha256_before:digest(before),sha256_after:digest(proposed),
      bytes_before:before.length,bytes_after:proposed.length});
  }
- // For new articles preserve the current accepted sitemap; never deploy an
- // incremental Astro sitemap that would remove unrelated indexed pages.
+ // New articles must appear in both the selected linked blog page and
+ // the accepted production sitemap; never overwrite with incremental sitemap.
  const newlyCreated=files.filter(f=>f.is_new===true);
  if(newlyCreated.length){
    const blog=await readFile(path.resolve(root,'blog/index.html'),'utf8');
    for(const row of newlyCreated){
-     const route='/'+row.path.replace(/index\\.html$/,'');
-     const escaped=route.replace(/[.*+?^${}()|[\\]\\\\]/g,'\\\\ const mediaSource=JSON.parse(await readFile(path.resolve(root,'media-registry.json'),'utf8'));');
+     const route='/'+row.path.slice(0,-'index.html'.length);
+     if(!blog.includes('href="'+route+'"') && !blog.includes("href='"+route+"'"))
+       throw Error('Updated /blog/ must link to new article: '+route);
+   }
+   const sitemapRequest=await fetch(new URL('/sitemap.xml',SITE),{
+     redirect:'error',headers:{Accept:'application/xml'},
+     signal:AbortSignal.timeout(25000)});
+   if(sitemapRequest.status!==200)throw Error('Current sitemap is not HTTP 200');
+   const sitemapBefore=Buffer.from(await sitemapRequest.arrayBuffer());
+   if(sitemapBefore.length<30||sitemapBefore.length>2000000)throw Error('Unsafe sitemap length');
+   const originalXml=sitemapBefore.toString('utf8');
+   if(!originalXml.includes('<urlset')||
+      !originalXml.includes('www.sitemaps.org/schemas/sitemap/0.9')||
+      !originalXml.trimEnd().endsWith('</urlset>'))
+       throw Error('Public sitemap XML is not a recognized sitemap urlset');
+   let addition='';
+   for(const row of newlyCreated){
+     const route='/'+row.path.slice(0,-'index.html'.length);
+     const url=new URL(route,SITE).toString();
+     if(originalXml.includes('<loc>'+url+'</loc>'))
+       throw Error('New article already indexed in sitemap: '+url);
+     addition+='<url><loc>'+url+'</loc></url>\n';
+   }
+   const closing=originalXml.lastIndexOf('</urlset>');
+   const updatedXml=originalXml.slice(0,closing)+addition+originalXml.slice(closing);
+   const after=Buffer.from(updatedXml,'utf8');
+   await writeFile(path.resolve(root,'sitemap.xml'),after);
+   await mkdir(path.resolve(root,'__rollback__'),{recursive:true});
+   await writeFile(path.resolve(root,'__rollback__/sitemap.xml'),sitemapBefore);
+   files.push({path:'sitemap.xml',is_sitemap:true,
+     sha256_before:digest(sitemapBefore),sha256_after:digest(after),
+     bytes_before:sitemapBefore.length,bytes_after:after.length});
+ }
+ const mediaSource=JSON.parse(await readFile(path.resolve(root,'media-registry.json'),'utf8'));');
      if(!new RegExp('<a\\\\b[^>]+href=["\\\']'+escaped+'["\\\']','i').test(blog))
        throw Error('Updated /blog/ does not visibly link to new article: '+route);
    }
