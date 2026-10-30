@@ -54,7 +54,7 @@ requireText(builder, "AEROVENTA_RELEASE_MODE: 'preview'", 'PREVIEW_BUILDER_MODE_
 requireText(builder, "DIRECTUS_STATIC_TOKEN is required", 'PREVIEW_BUILDER_TOKEN_GATE_MISSING');
 requireText(builder, "directusUrl.protocol !== 'https:'", 'PREVIEW_BUILDER_HTTPS_GATE_MISSING');
 
-requireText(envTypes, "AEROVENTA_RELEASE_MODE?: 'fixture' | 'preview' | 'production'", 'ENV_PREVIEW_MODE_TYPE_MISSING');
+requireText(envTypes, "AEROVENTA_RELEASE_MODE?: 'fixture' | 'preview' | 'review' | 'production'", 'ENV_PREVIEW_MODE_TYPE_MISSING');
 requireText(contentTypes, 'knowledge_allowed?: boolean;', 'CONTENT_KNOWLEDGE_TYPE_MISSING');
 requireText(contentTypes, 'ai_origin?: boolean;', 'CONTENT_AI_ORIGIN_TYPE_MISSING');
 

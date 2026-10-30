@@ -3,7 +3,7 @@ import expectedRetainedPaths from '@/data/expected-retained-paths.json';
 import coreContentV7 from '@/data/core-content-v7.json';
 import type { ContentRecord } from './types';
 import { normalizeCmsBlocks } from './cms-blocks';
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const normalizePath = (path: string) => {
@@ -139,7 +139,10 @@ const directusFields = [
 // become public image paths. Never render authenticated Directus URLs live.
 function mediaRegistry(): Record<string, {path: string}> {
   if (!['incremental','review'].includes(String(import.meta.env.AEROVENTA_RELEASE_MODE || ''))) return {};
-  const file = resolve('release_out/approved-astro/media-registry.json');
+  // npm workspace scripts execute with cwd=apps/web, while GitHub media stage
+  // writes at repository root; resolve either root deterministically.
+  const candidate=resolve('release_out/approved-astro/media-registry.json');
+  const file=existsSync(candidate) ? candidate : resolve('../../release_out/approved-astro/media-registry.json');
   const registry = JSON.parse(readFileSync(file, 'utf8'));
   if (registry.format !== 'AEROVENTA_CMS_MEDIA_REGISTRY_V1' ||
       registry.source_sha !== process.env.GITHUB_SHA) {
