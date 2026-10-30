@@ -687,14 +687,14 @@ const { pagePath = '' } = Astro.props;
   pulse.setAttribute('role','status');
   pulse.setAttribute('aria-live','polite');
   pulse.innerHTML='<svg aria-hidden="true" viewBox="0 0 240 40" preserveAspectRatio="none"><path class="av-pulse-duct supply" d="M3 12 H64 V21 H130 V12 H237"/><path class="av-pulse-flow supply" d="M3 12 H64 V21 H130 V12 H237"/><path class="av-pulse-duct exhaust" d="M237 31 H173 V24 H102 V31 H3"/><path class="av-pulse-flow exhaust" d="M237 31 H173 V24 H102 V31 H3"/></svg><span>Обрабатываем инженерный вопрос…</span>';
-  chatForm?.append(pulse);
+  if(chatHistory)chatHistory.after(pulse);else chatForm?.prepend(pulse);
   const pulseCss = document.createElement('style');
   pulseCss.textContent='.av-consultant-pulse{display:flex;gap:12px;align-items:center;margin:8px 0;padding:9px 10px;border-top:1px solid #d5e0e5;color:#34586d;font:500 12px/1.45 system-ui,sans-serif}.av-consultant-pulse[hidden]{display:none}.av-consultant-pulse svg{flex:none;width:100px;height:26px;overflow:visible}.av-consultant-pulse path{fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.av-pulse-duct.supply{stroke:#8db4c6;opacity:.8}.av-pulse-duct.exhaust{stroke:#d1a28b;opacity:.8}.av-pulse-flow{stroke-dasharray:16 300;animation:av-duct-request 1.7s linear infinite}.av-pulse-flow.supply{stroke:#357293}.av-pulse-flow.exhaust{stroke:#b46f4f;animation-direction:reverse}@keyframes av-duct-request{from{stroke-dashoffset:0}to{stroke-dashoffset:-300}}@media(prefers-reduced-motion:reduce){.av-pulse-flow{animation:none;stroke-dasharray:none;opacity:.8}}';
   document.head.append(pulseCss);
   const setProcessing=(busy:boolean)=>{
     pulse.hidden=!busy;
     chatForm?.setAttribute('aria-busy',busy?'true':'false');
-    if(busy)document.documentElement.setAttribute('data-airflow-processing','');
+    if(busy){document.documentElement.setAttribute('data-airflow-processing','');chatHistory?.scrollTo({top:chatHistory.scrollHeight,behavior:'auto'});}
     else if(!document.querySelector('form[data-contact-form][data-submitting="true"],form[data-project-form][data-submitting="true"]'))
       document.documentElement.removeAttribute('data-airflow-processing');
   };
