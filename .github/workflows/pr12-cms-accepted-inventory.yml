@@ -1,0 +1,42 @@
+name: PR12 - accepted site CMS coverage (read-only)
+
+on:
+  push:
+    branches:
+      - aeroventa/hiend-seo-owner-recovery-2026-10-13
+    paths:
+      - 'scripts/pr12-cms-accepted-surface-inventory.py'
+      - '.github/workflows/pr12-cms-accepted-inventory.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+      - run: |
+          python3 scripts/pr12-cms-accepted-surface-inventory.py --self-test
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm run generate:hosting-rules
+          npm run build:web
+      - name: Compare all compiled Astro routes with the accepted live site
+        run: |
+          python3 scripts/pr12-cms-accepted-surface-inventory.py \
+            --live --dist apps/web/dist \
+            --source-sha "$GITHUB_SHA" \
+            --output release_out/accepted-site-inventory.json
+      - uses: actions/upload-artifact@v6
+        with:
+          name: AEROVENTA_SOURCE_TO_ACCEPTED_SITE_CMS_COVERAGE
+          path: release_out/accepted-site-inventory.json
+          if-no-files-found: error
+          retention-days: 30
