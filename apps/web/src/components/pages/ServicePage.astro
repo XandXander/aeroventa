@@ -16,7 +16,7 @@ const isDrilling = content.lead_intent === 'DRILLING_PARTNER';
     </div>
   </header>
   <div class="container prose service-body">
-    {content.cms_blocks?.length ? <CmsContentBlocks blocks={content.cms_blocks} /> : <Fragment set:html={content.body_html} />}
+    {content.cms_blocks?.some(block => block.type !== 'dom_fields') ? <CmsContentBlocks blocks={content.cms_blocks.filter(block => block.type !== 'dom_fields')} /> : <Fragment set:html={content.body_html} />}
     <LeadCTA intent={content.lead_intent || 'VENTILATION_PROJECT'} />
   </div>
 </article>
