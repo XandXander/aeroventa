@@ -26,7 +26,7 @@ async function get(url, options={}) {
 }
 async function cmsItem(p) {
  const url=new URL('/items/content',CMS);
- url.searchParams.set('fields','id,path,title,h1,content_type,status,owner_approved_at,robots_index,sitemap_include,knowledge_allowed,excerpt,body_html,body_html_safety_status,seo_title,seo_description');
+ url.searchParams.set('fields','id,path,title,h1,content_type,status,owner_approved_at,robots_index,sitemap_include,knowledge_allowed,excerpt,body_html,body_html_safety_status,seo_title,seo_description,hero_file,body_blocks.block_id.id,body_blocks.block_id.block_type,body_blocks.block_id.fact_checked');
  url.searchParams.set('filter[path][_eq]',p);
  url.searchParams.set('limit','2');
  const data=(await (await get(url,{headers})).json()).data;
@@ -71,7 +71,7 @@ async function generate() {
      // site template or change existing scripts/photos/navigation by mistake.
      const signature = text => (text.match(/<[/]?[a-z][a-z0-9-]*(?=[\s/>])/gi)||[]).join('|').toLowerCase();
      const resources = text => [...text.matchAll(/<(?:img|script|link)\b[^>]*\b(?:src|href)\s*=\s*["']([^"']+)["']/gi)].map(m=>m[1]).join('|');
-     const managed=Array.isArray(item.body_blocks)&&item.body_blocks.length>0;
+     const managed=Boolean(item.hero_file) || (Array.isArray(item.body_blocks) && item.body_blocks.length>0);
      if (managed && item.body_blocks.some(b=>b.block_id?.fact_checked!==true))
        throw Error('Managed CMS block has not been fact-checked: '+p);
      const essential=text=>[...text.matchAll(/<(?:script|link)\b[^>]*\b(?:src|href)\s*=\s*["']([^"']+)["']/gi)].map(m=>m[1]).join('|');
