@@ -15,6 +15,7 @@ import CovidVentilationPage from '@/components/pages/CovidVentilationPage.astro'
 import ArticlePage from '@/components/pages/ArticlePage.astro';
 import ProjectPage from '@/components/pages/ProjectPage.astro';
 import type { ContentRecord } from '@/lib/types';
+import CmsContentBlocks from '@/components/CmsContentBlocks.astro';
 interface Props { content: ContentRecord; }
 const { content } = Astro.props;
 const fixture = content.status === 'fixture_stub';
@@ -74,4 +75,11 @@ const p0LegacyPaths = new Set([
   <ArticlePage content={content} fixture={fixture} />
 ) : (
   <GenericPage content={content} fixture={fixture} />
+)}
+
+{/** Existing special templates keep Owner-approved structure by default.
+    Explicitly CMS-managed additional sections are rendered only when linked;
+    generic article/project/service templates render these blocks internally. */}
+{Boolean(content.cms_blocks?.length) && !['article','news','project','service'].includes(content.content_type) && (
+  <CmsContentBlocks blocks={content.cms_blocks!} />
 )}
