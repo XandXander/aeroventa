@@ -1,6 +1,6 @@
 'use strict';
 const app = document.querySelector('#app');
-const STATE = {session:null, items:[], files:[], active:'overview', selected:null, form:{}, original:{}, editMode:'main', filter:'', statusFilter:'all', page:1, pageSize:7, categories:[], fileOptions:[], showCreateCategory:false, publisher:{configured:false}, releaseRun:null, releaseId:'', previewRunId:'', previewReady:false, saving:false, error:'', notice:'', dirty:false,blocks:[],blockEditing:null,blockDraft:null,blockType:'text',blockBusy:false,baselineRunning:false,baselineDone:0,baselineResult:[]};
+const STATE = {session:null, items:[], files:[], active:'overview', selected:null, form:{}, original:{}, editMode:'main', filter:'', statusFilter:'all', page:1, pageSize:7, categories:[], fileOptions:[], showCreateCategory:false, publisher:{configured:false}, releaseRun:null, releaseId:'', previewRunId:'', previewReady:false, saving:false, error:'', notice:'', dirty:false,blocks:[],blockEditing:null,blockDraft:null,blockType:'text',blockBusy:false,baselineRunning:false,baselineDone:0,baselineResult:[],baselineExportBusy:false,baselineBackupReady:false};
 const E = s => String(s ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const safePath = p => typeof p==='string' && /^\/[a-z0-9/_-]*\/$/i.test(p) ? p : '/';
 const formatDate = s => {if(!s)return '—';const d=new Date(s);return Number.isNaN(d.getTime())?'—':d.toLocaleDateString('ru-RU')};
@@ -154,8 +154,56 @@ function releases(){
 }
 async function loadMedia(){const node=document.querySelector('#media-content');if(!node)return;node.textContent='Загрузка…';try{let data=await api('media');const items=data.items||[];node.innerHTML=items.length?items.map(x=>`<div class="file-row"><span class="file-icon">▧</span><span><strong>${E(x.filename_download||x.id)}</strong><small>${E(x.type||'Файл')} · ${Math.max(0,Math.round((Number(x.filesize)||0)/1024))} КБ</small></span></div>`).join(''):'Файлов пока нет.';}catch(e){node.textContent=e.message;}}
 function baseline(){return topbar('Перенос принятого сайта','Один защищённый перенос существующих страниц Astro в черновики Directus, без публикации.')+
- `<section class="panel baseline-screen"><p class="eyebrow">ИСХОДНЫЙ САЙТ — ЭТАЛОН</p><h2>Перенести существующее содержимое, не создавать его заново.</h2><p>49 канонических страниц · 2342 связуемых поля. Переносятся оригинальные тексты, ссылки, фотографии и подписи в существующие коллекции Directus. Ручные правки черновиков сохраняются. Исторический алиас не импортируется как новая страница.</p><p>Публичный сайт, работающие формы, консультант и FTP не меняются.</p><div class="baseline-progress" role="status">${STATE.baselineRunning?'Обработка страниц: '+STATE.baselineDone+' / 49':STATE.baselineDone?'Проверено страниц: '+STATE.baselineDone+' / 49':'Перенос ещё не запускался.'}</div><a href="/index.php?action=baseline_export" class="secondary" download>Скачать резервную копию Directus ↗</a><button class="primary" type="button" id="baseline-run" ${STATE.baselineRunning?'disabled':''}>${STATE.baselineRunning?'Перенос выполняется…':'Перенести принятый сайт в Directus ↗'}</button><p class="action-note">Повторный запуск безопасно пропускает уже перенесённые страницы и не утверждает черновики.</p></section>`;}
+ `<section class="panel baseline-screen"><p class="eyebrow">ИСХОДНЫЙ САЙТ — ЭТАЛОН</p><h2>Перенести существующее содержимое, не создавать его заново.</h2><p>49 канонических страниц · 2342 связуемых поля. Переносятся оригинальные тексты, ссылки, фотографии и подписи в существующие коллекции Directus. Ручные правки черновиков сохраняются. Исторический алиас не импортируется как новая страница.</p><p>Публичный сайт, работающие формы, консультант и FTP не меняются.</p><div class="baseline-progress" role="status">${STATE.baselineRunning?'Обработка страниц: '+STATE.baselineDone+' / 49':STATE.baselineDone?'Проверено страниц: '+STATE.baselineDone+' / 49':'Перенос ещё не запускался.'}</div><button class="secondary" type="button" id="baseline-export" ${STATE.baselineExportBusy?'disabled':''}>${STATE.baselineExportBusy?'Подготовка копии…':'Скачать резервную копию Directus ↗'}</button><button class="primary" type="button" id="baseline-run" ${(STATE.baselineRunning||!STATE.baselineBackupReady)?'disabled':''}>${STATE.baselineRunning?'Перенос выполняется…':'Перенести принятый сайт в Directus ↗'}</button><p class="action-note">${STATE.baselineBackupReady?'Экспорт получен. Убедитесь, что файл сохранился, прежде чем запускать перенос.':'Перед переносом скачайте резервную копию Directus.'} Повторный запуск переноса сохраняет черновики.</p></section>`;}
+async function exportAcceptedBaseline(){
+ if(STATE.baselineExportBusy||STATE.baselineRunning)return;
+ STATE.baselineExportBusy=true;STATE.baselineBackupReady=false;render();
+ try{
+  // Same authenticated, same-origin request path as the working Directus
+  // dashboard. Never let Chrome download a 401 JSON error as index.json.
+  const response=await fetch('/index.php?action=baseline_export',{
+   method:'GET',credentials:'same-origin',cache:'no-store',redirect:'error',
+   headers:{'Accept':'application/json','X-CSRF-Token':STATE.session?.csrf||''}
+  });
+  if(!response.ok){
+   const failure=await response.json().catch(()=>({}));
+   if(response.status===401){
+    STATE.session={authenticated:false,csrf:STATE.session?.csrf};
+    throw Error('Сессия на сервере недействительна. Войдите в редактор заново.');
+   }
+   throw Error((failure.error||'Сервер отказал в экспорте')+' (HTTP '+response.status+')');
+  }
+  if(!(response.headers.get('Content-Type')||'').toLowerCase().includes('application/json'))
+   throw Error('Сервер вернул не JSON: резервная копия отклонена');
+  const filename=/filename="(AEROVENTA_DIRECTUS_BEFORE_IMPORT_[0-9_]+\.json)"/i.exec(
+    response.headers.get('Content-Disposition')||'')?.[1];
+  if(!filename)throw Error('Сервер не подтвердил имя резервной копии');
+  const expected=(response.headers.get('X-Content-SHA256')||'').toLowerCase();
+  if(!/^[a-f0-9]{64}$/.test(expected))throw Error('Сервер не предоставил контрольную сумму SHA-256');
+  const bytes=await response.arrayBuffer();
+  if(bytes.byteLength<100||bytes.byteLength>12000000)throw Error('Недопустимый размер резервной копии');
+  const actual=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),
+    b=>b.toString(16).padStart(2,'0')).join('');
+  if(actual!==expected)throw Error('Резервная копия повреждена: SHA-256 не совпал');
+  const backup=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));
+  if(backup.format!=='AEROVENTA_DIRECTUS_EDITORIAL_SNAPSHOT_V1'||
+     !backup.read_only||!backup.counts||!Array.isArray(backup.data?.content)||
+     backup.counts.content!==backup.data.content.length)
+    throw Error('Некорректный формат данных Directus');
+  const url=URL.createObjectURL(new Blob([bytes],{type:'application/json'}));
+  try{
+   const link=document.createElement('a');link.href=url;link.download=filename;
+   document.body.appendChild(link);link.click();link.remove();
+  }finally{setTimeout(()=>URL.revokeObjectURL(url),60000);}
+  STATE.baselineBackupReady=true;
+  notify('Резервная копия проверена: '+backup.counts.content+' материалов Directus. Проверьте файл в загрузках Chrome.');
+ }catch(e){
+  STATE.baselineBackupReady=false;
+  notify('Экспорт НЕ выполнен: '+e.message,'error');
+ }finally{STATE.baselineExportBusy=false;render();}
+}
 async function importAcceptedBaseline(){
+ if(!STATE.baselineBackupReady)return notify('Сначала скачайте и сохраните резервную копию Directus','error');
  if(STATE.baselineRunning)return;
  if(!confirm('Перенести принятое содержание 49 страниц в черновики Directus? Существующие редакции не будут перезаписаны. Публичный сайт не изменится.'))return;
  STATE.baselineRunning=true;STATE.baselineResult=[];STATE.baselineDone=0;render();
@@ -173,6 +221,7 @@ async function importAcceptedBaseline(){
 function render(){if(!STATE.session?.authenticated){renderLogin();return;}let content='';if(STATE.active==='overview')content=overview();if(STATE.active==='content')content=contents();if(STATE.active==='sections')content=sections();if(STATE.active==='newArticle')content=newArticle();if(STATE.active==='editor')content=editor();if(STATE.active==='media')content=media();if(STATE.active==='releases')content=releases();if(STATE.active==='baseline')content=baseline();app.innerHTML=`<div class="workspace">${sidebar()}<main class="main">${topHeaderPlaceholder()}<div class="main-content">${content}</div><div class="notice-live" role="status" data-kind="${STATE.error?'error':'notice'}">${E(STATE.error||STATE.notice)}</div></main></div>`;bind();if(STATE.active==='media')loadMedia();if(STATE.active==='sections')loadCategories();if(STATE.active==='editor'&&['images','blocks'].includes(STATE.editMode))loadImageOptions();}
 function topHeaderPlaceholder(){return ''}
 function bind(){
+ document.querySelector('#baseline-export')?.addEventListener('click',exportAcceptedBaseline);
  document.querySelector('#baseline-run')?.addEventListener('click',importAcceptedBaseline);
  document.querySelector('#new-article-form')?.addEventListener('submit',e=>createRecord(e,'create_article'));
  bindBlocks();
