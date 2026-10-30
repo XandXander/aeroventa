@@ -15,7 +15,7 @@ import path from 'node:path';
 const digest = b => createHash('sha256').update(b).digest('hex');
 const env = process.env;
 const HTML_ROOT = '/public_html';
-const fileRe = /^(?:[a-z0-9-]+\/)*index\.html$/;
+const fileRe = /^(?:(?:[a-z0-9-]+\/)*index\.html|sitemap\.xml)$/;
 const mediaRe=/^cms-media\/([a-f0-9]{64})\.(?:png|jpe?g|webp|avif)$/;
 const privateRoot = '/__aeroventa_releases';
 const root = path.resolve('release_out/approved-astro');
@@ -32,8 +32,11 @@ function preflight(m) {
  if(new Set(names).size!==names.length||names.some(x=>typeof x!=='string'||!fileRe.test(x)))throw Error('Unsafe or duplicated release filename');
  const newArticles=m.files.filter(x=>x.is_new===true);
  if(newArticles.length){
-   if(newArticles.some(x=>!/^blog\\/detail\\/[a-z0-9-]+\\/index\\.html$/.test(x.path)||
-       x.bytes_before!==0||x.sha256_before!==digest(Buffer.alloc(0))))
+   if(newArticles.some(x=>!x.path.startsWith('blog/detail/')||
+       !x.path.endsWith('/index.html')||
+       x.path.split('/').length!==4||
+       x.bytes_before!==0||
+       x.sha256_before!==digest(Buffer.alloc(0))))
        throw Error('Unsafe new article rollout');
    if(!m.approved_paths?.includes('/blog/')||!m.files.some(x=>x.path==='blog/index.html')||
       !m.files.some(x=>x.path==='sitemap.xml'&&x.is_sitemap))
