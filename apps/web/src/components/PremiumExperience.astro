@@ -642,34 +642,23 @@ const { pagePath = '' } = Astro.props;
     }
   }
 
-  // Dialogue-first public-content routing. No external inference or simulated model wait state.
+  // AEROVENTA-only live AI integration. Never substitute a canned route for a model answer.
+  // Preserve existing accepted modal / contact form; PHP owns CSRF, privacy and price guards.
   const chatForm = consultantDialog?.querySelector<HTMLFormElement>('[data-consultant-chat-form]');
   const chatHistory = consultantDialog?.querySelector('[data-consultant-chat-messages]');
   const chatInput = chatForm ? fieldValue(chatForm,'question') : null;
   let lastChatQuestion = '';
-  const safeChatRoute = (input:string) => {
-    if (/нет проекта|без проекта|проект(а)? нет|не готов(ый|а)|нет чертеж/i.test(input)) {
-      return ['/obekt-bez-gotovogo-proekta/', 'Какие исходные данные нужны до оценки монтажа',
-        'Начните с имеющихся планов, фото и описания объекта.'];
-    }
-    if (/есть проект|готов(ый|ая|ого) проект|по проекту|рабоч(ая|ий) документац|спецификац/i.test(input)) {
-      return ['/montazh-po-proektu/', 'Монтаж по готовому проекту',
-        'Пришлите рабочую документацию и сформулируйте границы монтажных работ.'];
-    }
-    if (/ресторан|кафе|кухн|вытяжк.*общепит/i.test(input)) {
-      return ['/obekty/restorany-i-kafe/', 'Вентиляция ресторанов и кафе',
-        'Состав монтажа зависит от помещений, трасс, оборудования и стадии отделки.'];
-    }
-    if (/новострой|жил(ой|ого) комплекс|многоквартир|7 park|7 парк/i.test(input)) {
-      return ['/obekty/novostroyki-i-zhilye-kompleksy/', 'Монтаж в новостройках и жилых комплексах',
-        'Посмотрите кейс 7 PARK и особенности повторяемых объёмов.'];
-    }
-    if (/стоимост|сколько стоит|смет|цен|расцен/i.test(input)) {
-      return ['/faq/', 'Что влияет на расчёт стоимости',
-        'Точную цену без проекта и исходных данных не обещаем. Сначала определим состав работ.'];
-    }
-    return ['/montazh-ventiliacii/', 'Монтаж вентиляции — состав работ и примеры',
-      'Если вопрос требует инженерного решения, передайте описание напрямую специалисту.'];
+  let chatBusy = false;
+  let chatCsrf: string | null = null;
+  let pendingQuestion = '';
+  const consultantFallbackRoute = (input: string): [string,string,string] => {
+    if (/нет проекта|без проекта|проект(а)? нет|не готов(ый|а)|нет чертеж/i.test(input))
+      return ['/obekt-bez-gotovogo-proekta/', 'Какие исходные данные нужны до оценки монтажа', 'Начните с имеющихся планов, фото и описания объекта.'];
+    if (/есть проект|готов(ый|ая|ого) проект|по проекту|рабоч(ая|ий) документац|спецификац/i.test(input))
+      return ['/montazh-po-proektu/', 'Монтаж по готовому проекту', 'Пришлите рабочую документацию и сформулируйте границы монтажных работ.'];
+    if (/ресторан|кафе|кухн|вытяжк.*общепит/i.test(input))
+      return ['/obekty/restorany-i-kafe/', 'Вентиляция ресторанов и кафе', 'Состав монтажа зависит от помещений, трасс, оборудования и стадии отделки.'];
+    return ['/montazh-ventiliacii/', 'Монтаж вентиляции — состав работ и примеры', 'Если требуется инженерное решение, можно связаться со специалистом.'];
   };
   const addChatMessage = (role:string, title:string, body:string, route?:string) => {
     if (!chatHistory) return;
@@ -688,25 +677,112 @@ const { pagePath = '' } = Astro.props;
       item.append(link);
     }
     chatHistory.append(item);
-    // Keep bounded recent history without losing the opening explanation.
     while (chatHistory.children.length > 11) chatHistory.children[1]?.remove();
     chatHistory.scrollTop = chatHistory.scrollHeight;
   };
-  chatForm?.addEventListener('submit', (event) => {
+  const privacy = document.createElement('label');
+  privacy.className = 'consultant-conversation__privacy';
+  privacy.style.cssText = 'display:block;margin:8px 0 0;font-size:12px;line-height:1.4;';
+  const privacyConsent = document.createElement('input');
+  privacyConsent.type = 'checkbox';
+  privacyConsent.required = true;
+  privacy.append(privacyConsent, document.createTextNode(
+    ' Согласен на передачу текста моего технического вопроса и истории диалога внешнему AI после серверной проверки. Не указывайте имена, контакты, точные адреса, названия заказчиков и документы. '
+  ));
+  const privacyLink = document.createElement('a');
+  privacyLink.href = '/privacy/';
+  privacyLink.textContent = 'Условия';
+  privacy.append(privacyLink);
+  chatForm?.append(privacy);
+  if(chatInput)chatInput.placeholder = 'Опишите задачу без имён, телефонов, адресов и документов';
+  type ChatResponse = {ok?:boolean;csrf?:string;reply?:string;error?:string;error_code?:string};
+  type ChatError = Error & {status?:number;code?:string};
+  const chatFetch = async (payload:Record<string,unknown>|null=null): Promise<ChatResponse> => {
+    const ctrl=new AbortController();
+    const timer=window.setTimeout(()=>ctrl.abort(),23000);
+    try {
+      const res=await fetch('/api/consultant.php',{
+        method:payload?'POST':'GET',
+        credentials:'same-origin',cache:'no-store',signal:ctrl.signal,
+        headers:payload?{'Content-Type':'application/json','Accept':'application/json'}:{'Accept':'application/json'},
+        ...(payload?{body:JSON.stringify({...payload,csrf:chatCsrf})}:{})
+      });
+      const result=await res.json().catch(()=>null) as ChatResponse|null;
+      if(!res.ok||!result||result.ok!==true){
+        const error=new Error(result?.error||'Консультант временно недоступен.') as ChatError;
+        error.status=res.status;
+        error.code=String(result?.error_code||'');
+        throw error;
+      }
+      return result;
+    } finally {window.clearTimeout(timer);}
+  };
+  const chatMessage = async (question:string): Promise<ChatResponse> => {
+    const payload={action:'message',message:question,privacy_ack:true,context:{}};
+    if(!chatCsrf){const init=await chatFetch();chatCsrf=String(init.csrf||'');}
+    try{return await chatFetch(payload);}
+    catch(cause){
+      const e=cause as ChatError;
+      const stale=e.status===403 &&
+        (e.code==='invalid_session'||e.message==='Недействительная сессия.'||
+         e.message==='Сессия отсутствует. Откройте консультанта повторно.');
+      if(!stale)throw cause;
+      // One CSRF refresh, then one POST. Never retry an upstream error or quota 429.
+      chatCsrf=null;
+      const init=await chatFetch();
+      chatCsrf=String(init.csrf||'');
+      return await chatFetch(payload);
+    }
+  };
+  const resetChat=document.createElement('button');
+  resetChat.type='button';
+  resetChat.className='consultant-conversation__reset';
+  resetChat.textContent='Очистить диалог';
+  consultantDialog?.querySelector('[data-consultant-chat-handoff]')?.after(resetChat);
+  resetChat.addEventListener('click',async()=>{
+    if(chatBusy)return;
+    chatBusy=true;resetChat.disabled=true;
+    try{
+      if(chatCsrf){const d=await chatFetch({action:'reset'});chatCsrf=String(d.csrf||'');}
+      chatHistory?.replaceChildren();consultantSummary='';lastChatQuestion='';pendingQuestion='';
+    }catch{addChatMessage('guide','Консультант AEROVENTA','Не удалось очистить сессию. Повторите попытку.');}
+    finally{chatBusy=false;resetChat.disabled=false;}
+  });
+  chatForm?.addEventListener('submit',async(event)=>{
     event.preventDefault();
-    if (!chatForm || !chatForm.reportValidity()) return;
-    const question = String(chatInput?.value || '').trim().slice(0, 800);
-    if (!question) return;
-    lastChatQuestion = question;
-    const advanced = consultantDialog?.querySelector<HTMLElement>('[data-consultant-structured]');
-    if (advanced && /параметр|анкета|уточн.*объект|заполн.*данн/i.test(question)) advanced.hidden = false;
-    addChatMessage('visitor', 'Ваш вопрос', question);
-    const [route, title, explanation] = safeChatRoute(question);
-    addChatMessage('guide', 'Материалы AEROVENTA', title + '. ' + explanation, route);
-    consultantSummary = 'Вопрос посетителя: ' + question + '\nРекомендованный раздел: ' + route;
-    if (chatInput) chatInput.value = '';
-    chatInput?.focus();
-    track('consultant_relevant_link', { target: route, source: 'public_content_guide' });
+    if(chatBusy||!chatForm||!chatForm.reportValidity()||!privacyConsent.checked)return;
+    const q=String(chatInput?.value||'').trim().slice(0,800);
+    if(!q)return;
+    chatBusy=true;
+    const send=chatForm.querySelector<HTMLButtonElement>('button[type="submit"]');
+    if(send)send.disabled=true;
+    lastChatQuestion=q;
+    if(pendingQuestion!==q)addChatMessage('visitor','Ваш вопрос',q);
+    if(chatInput)chatInput.value='';
+    try{
+      const d=await chatMessage(q);
+      const reply=String(d.reply||'');
+      addChatMessage('guide','Консультант AEROVENTA',reply);
+      consultantSummary='Вопрос посетителя: '+q+'\nОтвет консультанта: '+reply;
+      pendingQuestion='';
+      track('consultant_useful_answer',{source:'protected_api'});
+    }catch(cause){
+      const e=cause as ChatError;
+      pendingQuestion=q;
+      if(chatInput)chatInput.value=q;
+      if(e.status===429)
+        addChatMessage('guide','Консультант AEROVENTA','Достигнуто ограничение обращений. Вопрос сохранён — попробуйте позднее.');
+      else if(e.status===409)
+        addChatMessage('guide','Консультант AEROVENTA','Предыдущее сообщение ещё обрабатывается. Повторите отправку немного позже.');
+      else if(e.status===502)
+        addChatMessage('guide','Консультант AEROVENTA','Не удалось безопасно обработать ответ. Вопрос сохранён; можно повторить отправку позже или обратиться к специалисту.');
+      else if(e.status===503){
+        const [route,title,explanation]=consultantFallbackRoute(q);
+        addChatMessage('guide','Материалы AEROVENTA',title+'. '+explanation,route);
+      }else
+        addChatMessage('guide','Консультант AEROVENTA','Не удалось продолжить консультацию. Вопрос сохранён для повторной отправки.');
+      consultantSummary='Вопрос посетителя: '+q;
+    }finally{chatBusy=false;if(send)send.disabled=false;chatInput?.focus();}
   });
   chatInput?.addEventListener('keydown', (event) => {
     if (!(event instanceof KeyboardEvent)) return;
