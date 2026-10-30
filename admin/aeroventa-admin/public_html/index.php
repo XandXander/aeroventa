@@ -163,6 +163,7 @@ function errorResponse(int $code): never {
 define('AEROVENTA_EDITOR_ENTRY', true);
 require_once __DIR__ . '/release-bridge.php';
 require_once __DIR__ . '/reviewed-preview.php';
+require_once __DIR__ . '/baseline-import.php';
 
 $action = (string)($_GET['action'] ?? '');
 try {
@@ -210,6 +211,7 @@ try {
         }
         if (!logged()) respond(401,['error'=>'Войдите для просмотра данных']);
         if(in_array($action,['reviewed_preview','reviewed_media'],true))reviewedPreview($action,$method);
+        if(in_array($action,['baseline_status','baseline_import_page'],true))baselineImport($action,$method);
         if (in_array($action,['publisher_status','owner_approve','prepare_release','publish_release','release_status'],true)) {
             releaseBridge($action,$method);
         }
@@ -376,7 +378,8 @@ try {
             if($action!=='block_add' && !$existing)respond(404,['error'=>'Секция не найдена на этой странице']);
             if(in_array($action,['block_add','block_update'],true)) {
                 $kind=$action==='block_add'?(string)($input['block_type']??''):(string)($existing['block_id']['block_type']??'');
-                if(!in_array($kind,['text','cards','gallery','cta'],true))respond(400,['error'=>'Недопустимый тип секции']);
+                if(!in_array($kind,['text','cards','gallery','cta','dom_fields'],true))respond(400,['error'=>'Недопустимый тип секции']);
+                if($kind==='dom_fields' && $action==='block_add')respond(403,['error'=>'Импортированные элементы создаются только из принятого сайта']);
                 $data=$input['data']??null;
                 if(!is_array($data)||array_is_list($data))respond(400,['error'=>'Некорректное содержимое секции']);
                 $validText=static fn($v,int $max):bool=>is_string($v)&&trim($v)!==''&&strlen($v)<=$max&&!preg_match('/[\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F]/',$v);
@@ -395,6 +398,31 @@ try {
                         if(!is_array($entry)||!$validText($entry['title']??null,240)||!$validPath($entry['image']??null,true)||
                             (isset($entry['alt'])&&!$validText($entry['alt'],350))||
                             ($kind==='cards'&&(!$validPath($entry['href']??null)||(isset($entry['text'])&&!$validText($entry['text'],1000))))){$ok=false;break;}
+                    }
+                }
+                if($kind==='dom_fields') {
+                    // Immutable Astro baseline/selector may never be edited via UI.
+                    // The only writable property of each element is its value.
+                    $old=$existing['block_id']['data']??null;
+                    $nf=$data['fields']??null;$of=$old['fields']??null;
+                    $ok=is_array($old)&&is_array($of)&&is_array($nf)&&count($of)===count($nf)&&
+                        count($nf)>0&&count($nf)<=20&&($data['page']??null)===($old['page']??null)&&
+                        ($data['version']??null)===1;
+                    if($ok)foreach($nf as $i=>$f){
+                        if(!is_array($f)||!isset($of[$i])||!is_array($of[$i])){$ok=false;break;}
+                        $copy=$f;unset($copy['value']);$original=$of[$i];unset($original['value']);
+                        if($copy!=$original||!is_string($f['value']??null)||trim($f['value'])===''||
+                            strlen($f['value'])>1600||preg_match('/[\x00-\x08\x0B\x0C\x0E-\x1F]/',$f['value'])){$ok=false;break;}
+                        if(($f['kind']??null)==='media'){
+                            $value=$f['value'];
+                            if(preg_match('/^[0-9a-f-]{36}$/iD',$value)){
+                                $file=requestCms('GET','/files/'.rawurlencode($value).'?fields=id,type');
+                                if($file['status']!==200||!in_array($file['data']['data']['type']??null,['image/jpeg','image/png','image/webp','image/avif'],true)){$ok=false;break;}
+                            }elseif(!preg_match('~^/(?:[a-zA-Z0-9/_-]+)\.(?:png|jpe?g|webp|avif)$~iD',$value)||str_contains($value,'..')){$ok=false;break;}
+                        }
+                        if(($f['kind']??null)==='link'&&(!str_starts_with($f['value'],'/')||str_starts_with($f['value'],'//')||
+                           str_contains($f['value'],'..')||str_contains($f['value'],'\\')||
+                           strpbrk($f['value'],"\r\n\"'<>")!==false)){$ok=false;break;}
                     }
                 }
                 if(!$ok)respond(422,['error'=>'Проверьте заполнение и адреса изображений секции']);
@@ -435,12 +463,14 @@ try {
                 respond(200,['ok'=>true,'message'=>'Секция проверена владельцем; сайт не опубликован']);
             }
             if($action==='block_remove') {
+                if(($existing['block_id']['block_type']??'')==='dom_fields')respond(409,['error'=>'Исходные элементы нельзя удалить через отвязку; измените их содержание']);
                 if(($input['owner_confirmation']??'')!=='ОТВЯЗАТЬ СЕКЦИЮ')respond(422,['error'=>'Отсутствует подтверждение удаления секции со страницы']);
                 $result=requestCms('DELETE','/items/content_block_map/'.$mapId);
                 if(!in_array($result['status'],[200,204],true))errorResponse($result['status']);
                 respond(200,['ok'=>true,'message'=>'Секция отвязана от черновика; данные блока не удалены']);
             }
             if($action==='block_move'){
+                if(($existing['block_id']['block_type']??'')==='dom_fields')respond(409,['error'=>'Порядок исходных секций определяется принятым Astro-шаблоном']);
                 $direction=(string)($input['direction']??'');if(!in_array($direction,['up','down'],true))respond(400,['error'=>'Некорректный порядок']);
                 $sorted=$all;usort($sorted,static fn($a,$b)=>(int)$a['sort']<=>(int)$b['sort']);
                 $index=null;foreach($sorted as $i=>$m)if((int)$m['id']===$mapId){$index=$i;break;}
