@@ -894,3 +894,46 @@ body{background:#fff}
   .av-submission-success[data-state="visible"] .av-submission-success__eyebrow::before{animation:none}
   .av-submission-success[data-state="visible"]::after{transform:scaleX(1);opacity:.65}
 }
+
+
+/* AEROVENTA MOBILE CONSULTANT — parity with the accepted contact sheet.
+   Scoped to the AI dialog only; never alter the working contact/project dialogs. */
+@media (max-width:760px), (hover:none) and (pointer:coarse) {
+  dialog.experience-dialog--consultant {
+    box-sizing:border-box;
+    width:calc(100vw - 16px);
+    max-width:calc(100vw - 16px);
+    min-width:0;
+    max-height:calc(100dvh - 16px);
+    margin:auto 8px max(8px,env(safe-area-inset-bottom,8px));
+    overflow-x:hidden;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    scrollbar-width:none;
+  }
+  dialog.experience-dialog--consultant::-webkit-scrollbar { display:none }
+  dialog.experience-dialog--consultant .experience-dialog__shell,
+  dialog.experience-dialog--consultant .consultant-conversation,
+  dialog.experience-dialog--consultant .consultant-conversation__input,
+  dialog.experience-dialog--consultant .consultant-conversation__composer {
+    box-sizing:border-box;min-width:0;max-width:100%;
+  }
+  dialog.experience-dialog--consultant .consultant-conversation__input textarea {
+    font-size:16px;
+    -webkit-text-size-adjust:100%;
+    width:100%;
+    max-width:100%;
+    min-height:64px;
+  }
+  dialog.experience-dialog--consultant .consultant-conversation__history:not(:empty) {
+    max-height:min(29dvh,220px);
+    overflow-y:auto;
+    scrollbar-width:none;
+    overscroll-behavior:contain;
+  }
+  dialog.experience-dialog--consultant .consultant-conversation__history::-webkit-scrollbar {display:none}
+  dialog.experience-dialog--consultant .consultant-conversation__foot {display:flex;flex-wrap:wrap;gap:10px}
+  dialog.experience-dialog--consultant .experience-dialog__head {min-width:0;grid-template-columns:minmax(0,1fr) 44px}
+  dialog.experience-dialog--consultant .experience-dialog__head h2 {min-width:0;overflow-wrap:break-word}
+  dialog.experience-dialog--consultant .dialog-close {min-width:44px;max-width:44px}
+}
