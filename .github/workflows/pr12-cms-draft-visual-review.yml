@@ -78,8 +78,8 @@ jobs:
       - uses: actions/upload-artifact@v6
         with:
           name: AEROVENTA_DRAFT_ASTRO_REVIEW_NOT_FOR_PUBLICATION
-          path: |
-            release_out/draft-render-proof.json
-            apps/web/dist/blog/detail/novoe-almaznoe-burenie/index.html
+          # This is a public repository: NEVER upload unreleased Directus
+          # HTML or private CMS media. Only a non-sensitive hash/route proof.
+          path: release_out/draft-render-proof.json
           retention-days: 7
           if-no-files-found: error
