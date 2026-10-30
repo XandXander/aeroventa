@@ -114,3 +114,17 @@ html::-webkit-scrollbar,body::-webkit-scrollbar,.main::-webkit-scrollbar,.sideba
 @media(max-width:860px){.cms-block-row{align-items:stretch;flex-direction:column}.cms-block-actions{justify-content:flex-start}}
 .cms-media-preview{display:block;width:min(100%,420px);max-height:245px;object-fit:contain;border:1px solid #dbe4e9;border-radius:10px;background:#eff3f5;margin-top:7px}
 .cms-media-preview[hidden]{display:none}
+
+/* Owner-accepted Astro content field editor: existing layout, no parallel CMS. */
+.baseline-screen{max-width:900px;padding:clamp(22px,4vw,46px)}
+.baseline-screen h2{max-width:680px}
+.baseline-progress{margin:20px 0;font-variant-numeric:tabular-nums;font-weight:600}
+.cms-imported-block{border:1px solid rgba(89,111,132,.17);border-radius:7px;margin:12px 0;padding:12px 16px}
+.cms-imported-block summary{display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px;cursor:pointer;line-height:1.5}
+.cms-imported-block summary span{font-size:12px;color:var(--muted,#6e8191)}
+.cms-imported-fields{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-top:20px}
+.dom-field-label small{font-size:12px;white-space:normal;overflow-wrap:anywhere}
+.dom-field-label textarea{min-height:72px}
+.dom-field-label input,.dom-field-label textarea,.dom-field-label select{width:100%;max-width:100%;box-sizing:border-box}
+@media(min-width:1100px){.cms-imported-fields{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:740px){.cms-imported-block summary{display:block}}
