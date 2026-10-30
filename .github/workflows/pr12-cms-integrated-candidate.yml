@@ -3,7 +3,9 @@ name: PR12 - single integrated CMS source and admin candidate
 on:
   push:
     branches: [aeroventa/hiend-seo-owner-recovery-2026-10-13]
-    paths: ['.github/workflows/pr12-cms-integrated-candidate.yml']
+    paths:
+      - '.github/workflows/pr12-cms-integrated-candidate.yml'
+      - 'scripts/pr12-cms-accepted-surface-inventory.py'
   workflow_dispatch:
 
 permissions:
