@@ -14,6 +14,7 @@ import re
 import urllib.error
 import urllib.request
 from html.parser import HTMLParser
+from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import urljoin, urlsplit
 
 BASE='https://aeroventa.ru'
@@ -133,16 +134,22 @@ def main():
         local_items=scan(route,local)
         item={'path':route,'source_html_sha256':digest(local),'source_item_count':len(local_items),
               'source_inventory':local_items,'source_template':'static Astro output','public_http':'NOT_CHECKED','public_match':None}
-        if args.live:
-            actual,error=get(urljoin(BASE,route))
-            if error:item.update(public_http=error,public_match=False,accepted_inventory=[])
-            else:
-                accepted=scan(route,actual)
-                item.update(public_http=200,public_html_sha256=digest(actual),
-                            public_match=digest(actual)==digest(local),
-                            accepted_inventory=accepted,accepted_item_count=len(accepted))
         results.append(item)
     if not results:raise RuntimeError('No static Astro routes found')
+    if args.live:
+        # Bounded parallel read-only requests. Each result has a fixed route key,
+        # preserving deterministic output order independent of response speed.
+        def reconcile(item):
+            actual,error=get(urljoin(BASE,item['path']))
+            if error:item.update(public_http=error,public_match=False,accepted_inventory=[])
+            else:
+                accepted=scan(item['path'],actual)
+                item.update(public_http=200,public_html_sha256=digest(actual),
+                            public_match=digest(actual)==item['source_html_sha256'],
+                            accepted_inventory=accepted,accepted_item_count=len(accepted))
+            return item
+        with ThreadPoolExecutor(max_workers=6) as pool:
+            results=list(pool.map(reconcile,results))
     coverage={'format':'AEROVENTA_CMS_ACCEPTED_SITE_INVENTORY_V1',
       'source_sha':args.source_sha or None,'public_site':BASE,'read_only':True,
       'pages_in_compiled_source':len(results),'pages_checked_live':sum(x['public_http']==200 for x in results),
