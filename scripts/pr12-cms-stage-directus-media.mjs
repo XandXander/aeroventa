@@ -37,7 +37,9 @@ function collect(node,set,key='',depth=0){
   return;
  }
  if(Array.isArray(node)){if(node.length>250)throw Error('CMS media array too large');for(const v of node)collect(v,set,key,depth+1);return}
- if(node&&typeof node==='object'){for(const [k,v] of Object.entries(node)){if(k==='id'||k==='content_id')continue;collect(v,set,k,depth+1)}}
+ if(node&&typeof node==='object'){
+  if(node.kind==='media' && typeof node.value==='string' && uuid.test(node.value))set.add(node.value.toLowerCase());
+  for(const [k,v] of Object.entries(node)){if(k==='id'||k==='content_id')continue;collect(v,set,k,depth+1)}}
 }
 async function cms(endpoint,token,json=true){
  const u=new URL(endpoint,'https://cms.aeroventa.ru');
