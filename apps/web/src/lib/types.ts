@@ -33,6 +33,7 @@ export interface ContentRecord {
   body_blocks?: ContentBlockMap[];
   cms_blocks?: CmsBlock[];
   path: string;
+  hero_file?: string | null;
   title: string;
   h1: string;
   content_type: ContentType;

@@ -52,9 +52,15 @@ jobs:
           npm ci --ignore-scripts --no-audit --no-fund
           node --check scripts/pr12-cms-approved-snapshot.mjs
           node scripts/pr12-cms-approved-snapshot.mjs --self-test
+          node scripts/pr12-cms-stage-directus-media.mjs --self-test
           node scripts/pr12-cms-astro-release-package.mjs --self-test
           node scripts/pr12-cms-ftps-transactional-deploy.mjs --self-test
           npm run check:web
+      - name: Stage SHA-addressed images from existing Directus media library
+        env:
+          AEROVENTA_INCREMENTAL_PATHS: ${{ inputs.approved_paths }}
+          DIRECTUS_STATIC_TOKEN: ${{ secrets.DIRECTUS_STATIC_TOKEN }}
+        run: node scripts/pr12-cms-stage-directus-media.mjs capture
       - name: Lock exact Directus revision BEFORE static build
         env:
           AEROVENTA_INCREMENTAL_PATHS: ${{ inputs.approved_paths }}
@@ -179,6 +185,11 @@ jobs:
             assert hashlib.sha256(after).hexdigest()==row['sha256_after']
           print('IMMUTABLE_APPROVED_PREVIEW_ARTIFACT_VERIFIED sha256='+hashlib.sha256(src.read_bytes()).hexdigest())
           PY
+      - name: Verify original Directus media bytes unchanged
+        env:
+          AEROVENTA_INCREMENTAL_PATHS: ${{ inputs.approved_paths }}
+          DIRECTUS_STATIC_TOKEN: ${{ secrets.DIRECTUS_STATIC_TOKEN }}
+        run: node scripts/pr12-cms-stage-directus-media.mjs verify
       - name: Verify CMS approval and content unchanged since the exact preview
         env:
           AEROVENTA_INCREMENTAL_PATHS: ${{ inputs.approved_paths }}

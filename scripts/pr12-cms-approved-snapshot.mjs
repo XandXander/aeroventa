@@ -14,7 +14,9 @@ const fieldNames = [
  'robots_index','robots_follow','sitemap_include','knowledge_allowed','ai_origin',
  'seo_title','seo_description','canonical_override','og_title','og_description',
  'og_image','schema_type','schema_json_extra','published_at','updated_at_public',
- 'excerpt','body_html','body_html_safety_status','hero_file','lead_intent','owner_approved_at'
+ 'excerpt','body_html','body_html_safety_status','hero_file','lead_intent','owner_approved_at',
+ 'body_blocks.sort','body_blocks.block_id.id','body_blocks.block_id.block_type',
+ 'body_blocks.block_id.data','body_blocks.block_id.fact_checked'
 ];
 const paths = (process.env.AEROVENTA_INCREMENTAL_PATHS||'').split(',').map(s=>s.trim()).filter(Boolean);
 const validPath = p => /^\/(?:[a-z0-9-]+\/)*$/.test(p) && p.length<=220;
@@ -42,7 +44,10 @@ async function current(){
   if(item.status!=='published'||!item.owner_approved_at||item.robots_index!==true||item.sitemap_include!==true)throw Error('Owner approval revoked '+p);
   records.push({path:p,id:item.id,approved_at:item.owner_approved_at,digest:sha(canonical(item))});
  }
- return {format:'AEROVENTA_APPROVED_CMS_SNAPSHOT_V1',source_sha:process.env.GITHUB_SHA||'',records};
+ const media=JSON.parse(await readFile(path.join(root,'media-registry.json'),'utf8'));
+ if(media.format!=='AEROVENTA_CMS_MEDIA_REGISTRY_V1'||media.source_sha!==process.env.GITHUB_SHA)
+   throw Error('Media registry missing or source drift');
+ return {format:'AEROVENTA_APPROVED_CMS_SNAPSHOT_V1',source_sha:process.env.GITHUB_SHA||'',media_sha256:sha(canonical(media)),records};
 }
 async function main(){
  const op=process.argv[2];

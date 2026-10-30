@@ -3,6 +3,8 @@ import expectedRetainedPaths from '@/data/expected-retained-paths.json';
 import coreContentV7 from '@/data/core-content-v7.json';
 import type { ContentRecord } from './types';
 import { normalizeCmsBlocks } from './cms-blocks';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 
 const normalizePath = (path: string) => {
   if (path === '/') return '/';
@@ -133,6 +135,37 @@ const directusFields = [
   'body_blocks.block_id.data','body_blocks.block_id.fact_checked'
 ].join(',');
 
+// Only the exact media captured and SHA-locked for this GitHub review may
+// become public image paths. Never render authenticated Directus URLs live.
+function mediaRegistry(): Record<string, {path: string}> {
+  if (import.meta.env.AEROVENTA_RELEASE_MODE !== 'incremental') return {};
+  const file = resolve('release_out/approved-astro/media-registry.json');
+  const registry = JSON.parse(readFileSync(file, 'utf8'));
+  if (registry.format !== 'AEROVENTA_CMS_MEDIA_REGISTRY_V1' ||
+      registry.source_sha !== process.env.GITHUB_SHA) {
+    throw new Error('CMS media registry not bound to this immutable source');
+  }
+  return registry.files as Record<string,{path:string}>;
+}
+function hydrateReleaseMedia(item: ContentRecord): ContentRecord {
+  const registry = mediaRegistry();
+  const idPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  const imageKeys = new Set(['image','file','cover','photo','hero_file','og_image','thumbnail']);
+  const value = (source: unknown, key = '', depth = 0): unknown => {
+    if(depth > 12)throw new Error('CMS image graph too deep');
+    if(typeof source==='string' && imageKeys.has(key) && idPattern.test(source)) {
+      const found=registry[source.toLowerCase()];
+      if(!found)throw new Error('CMS image not staged for '+item.path);
+      return found.path;
+    }
+    if(Array.isArray(source))return source.map(v=>value(v,key,depth+1));
+    if(source && typeof source==='object')return Object.fromEntries(
+      Object.entries(source).map(([k,v])=>[k,value(v,k,depth+1)]));
+    return source;
+  };
+  return value(item) as ContentRecord;
+}
+
 async function fetchDirectusPage(base: string, offset: number, mode: DirectusMode): Promise<ContentRecord[]> {
   const url = new URL('/items/content', base);
   if (mode === 'production' || mode === 'incremental') {
@@ -155,7 +188,10 @@ async function fetchDirectusPage(base: string, offset: number, mode: DirectusMod
 
   const payload = await response.json();
   if (!Array.isArray(payload?.data)) throw new Error('Directus payload.data is not an array');
-  return payload.data.map(mode !== 'preview' ? assertSafePublishedRecord : assertSafePreviewRecord);
+  return payload.data.map((item: ContentRecord) => {
+    const hydrated = mode === 'incremental' ? hydrateReleaseMedia(item) : item;
+    return mode !== 'preview' ? assertSafePublishedRecord(hydrated) : assertSafePreviewRecord(hydrated);
+  });
 }
 
 async function fetchDirectusContent(base: string, mode: DirectusMode): Promise<ContentRecord[]> {
