@@ -53,7 +53,7 @@ jobs:
           with zipfile.ZipFile(p) as z:
               manifest=json.loads(z.read('MANIFEST_SHA256.json'))
               assert manifest['source_sha'] is not None
-              assert len(manifest['files'])==10
+              assert len(manifest['files'])==11
               for row in manifest['files']:
                   data=z.read(row['path'])
                   assert len(data)==row['bytes']

@@ -164,6 +164,7 @@ define('AEROVENTA_EDITOR_ENTRY', true);
 require_once __DIR__ . '/release-bridge.php';
 require_once __DIR__ . '/reviewed-preview.php';
 require_once __DIR__ . '/baseline-import.php';
+require_once __DIR__ . '/cms-export.php';
 
 $action = (string)($_GET['action'] ?? '');
 try {
@@ -212,6 +213,7 @@ try {
         if (!logged()) respond(401,['error'=>'Войдите для просмотра данных']);
         if(in_array($action,['reviewed_preview','reviewed_media'],true))reviewedPreview($action,$method);
         if(in_array($action,['baseline_status','baseline_import_page'],true))baselineImport($action,$method);
+        if($action==='baseline_export')baselineExport($method);
         if (in_array($action,['publisher_status','owner_approve','prepare_release','publish_release','release_status'],true)) {
             releaseBridge($action,$method);
         }
