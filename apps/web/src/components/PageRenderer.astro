@@ -80,6 +80,11 @@ const p0LegacyPaths = new Set([
 {/** Existing special templates keep Owner-approved structure by default.
     Explicitly CMS-managed additional sections are rendered only when linked;
     generic article/project/service templates render these blocks internally. */}
-{Boolean(content.cms_blocks?.length) && !['article','news','project','service'].includes(content.content_type) && (
+{Boolean(content.cms_blocks?.length) && (
+    supportPaths.has(content.path) || evidenceCasePaths.has(content.path) ||
+    practiceHubPaths.has(content.path) || p0LegacyPaths.has(content.path) ||
+    ['/montazh-ventiliacii/','/services/','/portfolio/','/faq/','/about/','/contact/','/covid-pritochnaya-ventilacia/'].includes(content.path) ||
+    !['article','news','project','service'].includes(content.content_type)
+  ) && (
   <CmsContentBlocks blocks={content.cms_blocks!} />
 )}
