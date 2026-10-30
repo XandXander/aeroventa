@@ -61,6 +61,11 @@ jobs:
           AEROVENTA_INCREMENTAL_PATHS: ${{ inputs.approved_paths }}
           DIRECTUS_STATIC_TOKEN: ${{ secrets.DIRECTUS_STATIC_TOKEN }}
         run: node scripts/pr12-cms-stage-directus-media.mjs capture
+      - name: Lock approved existing Astro editorial fields before build
+        env:
+          AEROVENTA_INCREMENTAL_PATHS: ${{ inputs.approved_paths }}
+          DIRECTUS_STATIC_TOKEN: ${{ secrets.DIRECTUS_STATIC_TOKEN }}
+        run: node scripts/pr12-cms-dom-lock.mjs
       - name: Lock exact Directus revision BEFORE static build
         env:
           AEROVENTA_INCREMENTAL_PATHS: ${{ inputs.approved_paths }}
