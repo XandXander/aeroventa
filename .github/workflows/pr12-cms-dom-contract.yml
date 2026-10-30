@@ -34,6 +34,8 @@ jobs:
           python3 scripts/pr12-cms-dom-apply.py --self-test
           python3 scripts/pr12-cms-baseline-generate.py --self-test
           node scripts/pr12-package-admin.mjs --self-test
+          node --check scripts/pr12-cms-manual-restore.mjs
+          node scripts/pr12-cms-manual-restore.mjs --self-test
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Compile actual approved Astro source in nonproduction fixture
         run: |
