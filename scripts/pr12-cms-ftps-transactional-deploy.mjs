@@ -27,7 +27,7 @@ function preflight(m) {
  if(!env.GITHUB_SHA || env.OWNER_APPROVED_GITHUB_SHA!==env.GITHUB_SHA)throw Error('Owner has not approved the exact GitHub source SHA');
  if(!m || m.mode!=='REVIEW_ONLY_NO_DEPLOY'||m.format!=='aeroventa-astro-selective-approved-release-v1')throw Error('Untrusted release manifest');
  if(m.source_sha!==env.GITHUB_SHA)throw Error('Manifest is not from the approved source SHA');
- if(!Array.isArray(m.files)||m.files.length<1||m.files.length>15)throw Error('Release size blocked');
+ if(!Array.isArray(m.files)||m.files.length<1||m.files.length>16)throw Error('Release size blocked');
  const names=m.files.map(x=>x.path);
  if(new Set(names).size!==names.length||names.some(x=>typeof x!=='string'||!fileRe.test(x)))throw Error('Unsafe or duplicated release filename');
  const newArticles=m.files.filter(x=>x.is_new===true);
