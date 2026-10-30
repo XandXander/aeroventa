@@ -38,6 +38,11 @@ jobs:
           AEROVENTA_INCREMENTAL_PATHS: ${{ inputs.selected_path || '/blog/detail/novoe-almaznoe-burenie/' }}
           DIRECTUS_STATIC_TOKEN: ${{ secrets.DIRECTUS_STATIC_TOKEN }}
         run: node scripts/pr12-cms-stage-directus-media.mjs capture
+      - name: Capture actual unapproved draft fields for isolated HTML render
+        env:
+          AEROVENTA_INCREMENTAL_PATHS: ${{ inputs.selected_path || '/blog/detail/novoe-almaznoe-burenie/' }}
+          DIRECTUS_STATIC_TOKEN: ${{ secrets.DIRECTUS_STATIC_TOKEN }}
+        run: node scripts/pr12-cms-dom-lock.mjs --review
       - name: Build selected draft in isolated Astro review mode
         env:
           AEROVENTA_RELEASE_MODE: review
