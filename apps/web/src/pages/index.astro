@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import CmsContentBlocks from '@/components/CmsContentBlocks.astro';
 import { getByPath } from '@/lib/content-source';
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -278,4 +279,5 @@ const questions = [
     </div>
   </section>
 
+  {Boolean(page.cms_blocks?.length) && <CmsContentBlocks blocks={page.cms_blocks!} />}
 </BaseLayout>
