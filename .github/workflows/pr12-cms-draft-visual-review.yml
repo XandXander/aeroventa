@@ -1,0 +1,73 @@
+name: PR12 - exact Directus draft Astro render (noindex, no deployment)
+on:
+  push:
+    branches: [aeroventa/hiend-seo-owner-recovery-2026-10-13]
+    paths: ['.github/workflows/pr12-cms-draft-visual-review.yml']
+  workflow_dispatch:
+    inputs:
+      selected_path:
+        description: 'Exact one draft path; no production changes'
+        required: true
+        default: /blog/detail/novoe-almaznoe-burenie/
+        type: string
+permissions:
+  contents: read
+jobs:
+  render-draft:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+      - name: Validate reviewed source
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          node --check scripts/pr12-cms-stage-directus-media.mjs
+          node scripts/pr12-cms-stage-directus-media.mjs --self-test
+          npm run check:web
+      - name: Exact SHA media staging from the existing Directus library
+        env:
+          AEROVENTA_INCREMENTAL_PATHS: ${{ inputs.selected_path || '/blog/detail/novoe-almaznoe-burenie/' }}
+          DIRECTUS_STATIC_TOKEN: ${{ secrets.DIRECTUS_STATIC_TOKEN }}
+        run: node scripts/pr12-cms-stage-directus-media.mjs capture
+      - name: Build selected draft in isolated Astro review mode
+        env:
+          AEROVENTA_RELEASE_MODE: review
+          AEROVENTA_INCREMENTAL_PATHS: ${{ inputs.selected_path || '/blog/detail/novoe-almaznoe-burenie/' }}
+          DIRECTUS_URL: https://cms.aeroventa.ru
+          DIRECTUS_STATIC_TOKEN: ${{ secrets.DIRECTUS_STATIC_TOKEN }}
+          PUBLIC_SITE_ORIGIN: https://aeroventa.ru
+        run: |
+          npm run generate:hosting-rules
+          npm run build:web
+      - name: Require real nonindexable Astro page for the selected route
+        env:
+          SELECTED: ${{ inputs.selected_path || '/blog/detail/novoe-almaznoe-burenie/' }}
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,os,re,json
+          selected=os.environ['SELECTED']
+          assert re.fullmatch(r'/(?:[a-z0-9-]+/)+',selected), 'Invalid preview route'
+          rendered=Path('apps/web/dist')/selected.lstrip('/')/'index.html'
+          assert rendered.is_file(), 'Selected draft page not emitted'
+          html=rendered.read_text('utf-8')
+          assert '<html' in html and '<h1' in html and '<main' in html
+          assert re.search(r'<meta[^>]+name=["\']robots["\'][^>]+noindex',html,re.I), 'Draft must remain noindex'
+          report={'format':'AEROVENTA_DRAFT_VISUAL_REVIEW_V1','source_sha':os.environ['GITHUB_SHA'],'path':selected,'html_sha256':hashlib.sha256(rendered.read_bytes()).hexdigest(),'production_mutation':False,'preview_is_not_owner_approval':True}
+          Path('release_out').mkdir(exist_ok=True)
+          Path('release_out/draft-render-proof.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
+          print('DIRECTUS_DRAFT_TO_ASTRO_NONINDEXED_RENDER_PASS')
+          PY
+      - uses: actions/upload-artifact@v6
+        with:
+          name: AEROVENTA_DRAFT_ASTRO_REVIEW_NOT_FOR_PUBLICATION
+          path: |
+            release_out/draft-render-proof.json
+            apps/web/dist/blog/detail/novoe-almaznoe-burenie/index.html
+          retention-days: 7
+          if-no-files-found: error
