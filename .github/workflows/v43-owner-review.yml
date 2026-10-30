@@ -62,7 +62,7 @@ jobs:
           npm run validate:dist
       - name: Install isolated browser test dependency
         run: |
-          npm install --no-save --no-package-lock --no-audit --no-fund playwright@1.56.1
+          npm install --no-save --no-package-lock --no-audit --no-fund playwright@1.56.1 tslib@2.8.1
           npx --no-install playwright install --with-deps chromium
       - name: Launch isolated local HTTP server
         if: steps.scope.outputs.cover_only != 'true'
