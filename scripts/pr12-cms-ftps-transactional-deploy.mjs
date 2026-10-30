@@ -16,7 +16,7 @@ const digest = b => createHash('sha256').update(b).digest('hex');
 const env = process.env;
 const HTML_ROOT = '/public_html';
 const fileRe = /^(?:(?:[a-z0-9-]+\/)*index\.html|sitemap\.xml)$/;
-const mediaRe=/^cms-media\/([a-f0-9]{64})\.(?:png|jpe?g|webp|avif)$/;
+const mediaRe=/^(?:cms-media\/([a-f0-9]{64})\.(?:png|jpe?g|webp|avif)|media\/responsive\/[a-f0-9]{16}-[0-9]{3,4}\.webp)$/;
 const privateRoot = '/__aeroventa_releases';
 const root = path.resolve('release_out/approved-astro');
 function preflight(m) {
@@ -49,7 +49,7 @@ function preflight(m) {
    const names=m.media.map(x=>x.path);
    if(new Set(names).size!==names.length||m.media.some(x=>{
      const match=mediaRe.exec(String(x.path||''));
-     return !match||match[1]!==x.sha256_after||!Number.isSafeInteger(x.bytes_after)||
+     return !match||(x.path.startsWith('cms-media/')&&match[1]!==x.sha256_after)||!Number.isSafeInteger(x.bytes_after)||
        x.bytes_after<100||x.bytes_after>18*1024*1024;
    }))throw Error('Unsafe media or checksum path');
  }
@@ -122,8 +122,11 @@ async function main(){
    // If a later HTML upload fails, unused media may remain; no existing file
    // is deleted or overwritten. Such orphaned files are not publicly linked.
    if((manifest.media||[]).length){
-     await ftp.ensureDir(HTML_ROOT+'/cms-media');
-     const existingNames=new Set((await ftp.list(HTML_ROOT+'/cms-media')).map(x=>x.name));
+     const existingInDir=new Map();
+     for(const dir of [...new Set(manifest.media.map(x=>path.posix.dirname(x.path)))]){
+       await ftp.ensureDir(HTML_ROOT+'/'+dir);
+       existingInDir.set(dir,new Set((await ftp.list(HTML_ROOT+'/'+dir)).map(x=>x.name)));
+     }
      for(const file of manifest.media){
        const remote=HTML_ROOT+'/'+file.path;
        const local=path.join(root,file.path);
@@ -131,7 +134,7 @@ async function main(){
        if(digest(bytes)!==file.sha256_after||bytes.length!==file.bytes_after)
          throw Error('CMS media bytes drift '+file.path);
        const basename=path.posix.basename(file.path);
-       if(existingNames.has(basename)){
+       if(existingInDir.get(path.posix.dirname(file.path))?.has(basename)){
          const present=path.join(tempDir,'present-'+basename);
          await ftp.downloadTo(present,remote);
          if(digest(await readFile(present))!==file.sha256_after)
