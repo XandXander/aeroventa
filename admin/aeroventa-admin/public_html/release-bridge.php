@@ -16,9 +16,22 @@ function releaseConfig(): ?array {
     if (!is_string($token) || strlen($token) < 20 || str_contains($token, 'REPLACE')) return null;
     return $raw;
 }
+/** Directus 11+ stores admin_access on policies, not roles.
+ * Both directly assigned user policies and role policies can grant it.
+ * Explicit strict true is required; inaccessible/unknown policies fail closed.
+ */
 function ownerAdmin(): bool {
-    $r = requestCms('GET', '/users/me?fields=id,role.admin_access');
-    return $r['status'] === 200 && ($r['data']['data']['role']['admin_access'] ?? null) === true;
+    $r = requestCms('GET', '/users/me?fields=id,policies.policy.admin_access,role.policies.policy.admin_access');
+    if ($r['status'] !== 200 || !is_array($r['data']['data'] ?? null)) return false;
+    $user = $r['data']['data'];
+    $linked = array_merge(
+        is_array($user['policies'] ?? null) ? $user['policies'] : [],
+        is_array($user['role']['policies'] ?? null) ? $user['role']['policies'] : []
+    );
+    foreach ($linked as $access) {
+        if (is_array($access) && ($access['policy']['admin_access'] ?? null) === true) return true;
+    }
+    return false;
 }
 function githubCall(string $verb, string $route, ?array $body, array $config): array {
     if (!preg_match('#^/(?:repos/XandXander/aeroventa/(?:pulls/12|actions/workflows/pr12-cms-live-publish.yml/dispatches|actions/runs/[0-9]+(?:/(?:jobs|artifacts))?))$#D', $route)) {
