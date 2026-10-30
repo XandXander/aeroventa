@@ -6,7 +6,7 @@
  */
 import type { CmsBlock, ContentBlockMap } from './types';
 
-const supported = new Set(['text', 'cards', 'gallery', 'cta']);
+const supported = new Set(['text', 'cards', 'gallery', 'cta', 'dom_fields']);
 const safePath = (value: unknown, image = false): value is string => {
   if (typeof value !== 'string' || value.length > 320 || !value.startsWith('/') || value.startsWith('//')) return false;
   if (value.includes('\\') || value.includes('..') || /[?#<>"'\s]/.test(value)) return false;
@@ -18,6 +18,25 @@ const safeText = (value: unknown, max = 3000): value is string =>
 const record = (value: unknown): Record<string, unknown> =>
   value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : {};
 function checkData(type: string, data: Record<string, unknown>, path: string): void {
+  // Accepted Astro elements are edited in-place at compile time; they MUST
+  // NOT be rendered as new sections below the existing page.
+  if (type === 'dom_fields') {
+    const fields=data.fields;
+    if (data.version!==1 || data.page!==path || !Array.isArray(fields) || !fields.length || fields.length>20)
+      throw new Error('Invalid imported Astro field block '+path);
+    const keys=new Set<string>();
+    for (const field of fields) {
+      const f=record(field);
+      if (typeof f.key!=='string'||!/^[a-f0-9]{24}$/.test(f.key)||keys.has(f.key)||
+        typeof f.node!=='string'||!f.node.startsWith('/html[1]/body[1]/main[1]/')||
+        !['text','media','alt','link'].includes(String(f.kind))||
+        typeof f.baseline!=='string'||typeof f.value!=='string'||
+        f.baseline.length>1600||f.value.length>1600||f.value.length<1)
+        throw new Error('Untrusted Astro field selector '+path);
+      keys.add(f.key);
+    }
+    return;
+  }
   if (type === 'text') {
     if (!safeText(data.heading, 240) || !safeText(data.text, 8000)) throw new Error('Invalid text block at ' + path);
     return;
