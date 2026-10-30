@@ -16,6 +16,14 @@ function baselinePlan(): array {
         respond(503,['error'=>'Неверный исходный реестр CMS']);
     return $plan;
 }
+/** Preserve Directus response semantics without exposing records or credentials. */
+function baselineDirectusFailure(string $stage, array $response): never {
+    $http=(int)($response['status']??0);
+    $code=$response['data']['errors'][0]['extensions']['code']??'';
+    if(!is_string($code)||!preg_match('/^[A-Z_]{2,48}$/D',$code))$code='UNKNOWN';
+    error_log('[AEROVENTA baseline import] '. $stage.' HTTP '.$http.' '.$code);
+    respond($http===403?403:502,['error'=>'Directus: '.$stage.' (HTTP '.$http.'; '.$code.'). Черновики сохранены.']);
+}
 function baselineImport(string $action,string $method): never {
     if(!ownerAdmin())respond(403,['error'=>'Импорт разрешён только владельцу-администратору Directus']);
     $plan=baselinePlan();
@@ -33,7 +41,7 @@ function baselineImport(string $action,string $method): never {
     if(!is_string($path)||!preg_match('~^/(?:[a-z0-9-]+/)*$~D',$path))
         respond(409,['error'=>'Недопустимый путь в реестре']);
     $look=requestCms('GET','/items/content?filter%5Bpath%5D%5B_eq%5D='.rawurlencode($path).'&fields=id,path,status,owner_approved_at&limit=2');
-    if($look['status']!==200)errorResponse($look['status']);
+    if($look['status']!==200)baselineDirectusFailure('поиск исходной страницы',$look);
     $matches=$look['data']['data']??[];
     if(!is_array($matches)||count($matches)>1)respond(409,['error'=>'Обнаружен неоднозначный адрес страницы']);
     $created=false;
@@ -50,7 +58,15 @@ function baselineImport(string $action,string $method): never {
         elseif(str_starts_with($path,'/blog/detail/'))$type='article';
         elseif(in_array($path,['/almaznoe-burenie/','/montazh-ventiliacii/'],true))$type='service';
         $parts=explode('/',trim($path,'/'));$slug=end($parts) ?: 'home';
+        // V11/V12 live Directus content.business_role is NOT NULL with no default.
+        // The original 29 drafts already had it; this route is the FIRST new
+        // record (page 22), hence earlier imports passed and POST now 400s.
+        // Reuse only previously installed, source-proven business roles.
+        $businessRole='PRIMARY_COMMERCIAL';
+        if(str_starts_with($path,'/portfolio/obekt/'))$businessRole='CORE_VENTILATION_CASE';
+        elseif($path==='/privacy/')$businessRole='CORE_TRUST';
         $new=['status'=>'draft','content_type'=>$type,'path'=>$path,'slug'=>$slug,
+            'business_role'=>$businessRole,
             'title'=>$title,'h1'=>$h1,'seo_title'=>$title,'seo_description'=>(string)($seo['seo_description']??''),
             'owner_approved_at'=>null,'robots_index'=>false,'robots_follow'=>true,
             'sitemap_include'=>false,'knowledge_allowed'=>false,'ai_origin'=>false,
@@ -58,7 +74,7 @@ function baselineImport(string $action,string $method): never {
             'migration_evidence'=>['origin'=>'OWNER_ACCEPTED_ASTRO_SOURCE_AND_LIVE','source_sha'=>$plan['origin_source_sha'],
                 'review_required'=>true]];
         $create=requestCms('POST','/items/content',$new);
-        if(!in_array($create['status'],[200,201],true))errorResponse($create['status']);
+        if(!in_array($create['status'],[200,201],true))baselineDirectusFailure('создание черновика',$create);
         $record=$create['data']['data']??null;
         if(!is_array($record)||!is_string($record['id']??null))respond(502,['error'=>'Directus не подтвердил создание черновика']);
         $created=true;
@@ -70,7 +86,7 @@ function baselineImport(string $action,string $method): never {
     $id=(string)$record['id'];
     $maps=requestCms('GET','/items/content_block_map?filter%5Bcontent_id%5D%5B_eq%5D='.rawurlencode($id).
         '&fields=id,sort,block_id.id,block_id.block_type,block_id.data,block_id.fact_checked&limit=100&sort=sort');
-    if($maps['status']!==200)errorResponse($maps['status']);
+    if($maps['status']!==200)baselineDirectusFailure('чтение секций',$maps);
     $current=$maps['data']['data']??[];
     if(!is_array($current)||count($current)>=100)respond(409,['error'=>'Слишком много связанных секций']);
     $existing=[];$next=0;
@@ -97,13 +113,13 @@ function baselineImport(string $action,string $method): never {
         }
         $createdBlock=requestCms('POST','/items/content_blocks',[
             'block_type'=>'dom_fields','data'=>$data,'fact_checked'=>true]);
-        if(!in_array($createdBlock['status'],[200,201],true))errorResponse($createdBlock['status']);
+        if(!in_array($createdBlock['status'],[200,201],true))baselineDirectusFailure('создание секции',$createdBlock);
         $blockId=$createdBlock['data']['data']['id']??null;
         if(!is_string($blockId))respond(502,['error'=>'Не подтверждён ID секции']);
         $link=requestCms('POST','/items/content_block_map',['content_id'=>$id,'block_id'=>$blockId,'sort'=>$next++]);
         if(!in_array($link['status'],[200,201],true)){
             requestCms('DELETE','/items/content_blocks/'.rawurlencode($blockId));
-            errorResponse($link['status']);
+            baselineDirectusFailure('привязка секции',$link);
         }
         $added++;
     }
