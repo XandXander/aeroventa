@@ -1,0 +1,40 @@
+name: PR12 - source-only CMS integration workspace export
+
+on:
+  push:
+    branches: [aeroventa/hiend-seo-owner-recovery-2026-10-13]
+    paths: ['.github/workflows/pr12-cms-source-export.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: Collect complete source files and public media checksum inventory
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p release_out
+          git ls-files apps/web/public > release_out/public_media_paths.txt
+          git ls-files -z apps/web/public | xargs -0 -r sha256sum > release_out/public_media_sha256.txt
+          git rev-parse HEAD > release_out/source_sha.txt
+          tar -czf release_out/AEROVENTA_CMS_SOURCE_ONLY.tar.gz \
+            apps/web/src apps/web/astro.config.mjs apps/web/package.json \
+            migration directus scripts admin .github/workflows \
+            package.json package-lock.json .nvmrc \
+            release_out/public_media_paths.txt release_out/public_media_sha256.txt release_out/source_sha.txt
+          tar -tzf release_out/AEROVENTA_CMS_SOURCE_ONLY.tar.gz >/dev/null
+          sha256sum release_out/AEROVENTA_CMS_SOURCE_ONLY.tar.gz
+      - uses: actions/upload-artifact@v6
+        with:
+          name: AEROVENTA_PR12_CMS_SOURCE_SNAPSHOT
+          path: release_out/AEROVENTA_CMS_SOURCE_ONLY.tar.gz
+          if-no-files-found: error
+          retention-days: 7
