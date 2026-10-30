@@ -106,7 +106,7 @@ function requestCms(string $method, string $route, ?array $data = null): array {
 }
 const SAFE_BODY_MARKER = '<!-- AEROVENTA_EDITOR_SAFE_BODY_V1 -->';
 function compiledBody(string $raw): ?string {
-    if (strlen($raw)>20000) respond(400,['error'=>'Текст статьи превышает 20 000 байт']);
+    if (strlen($raw)>60000) respond(400,['error'=>'Текст статьи превышает 60 000 байт']);
     $raw = str_replace(["\r\n","\r"],"\n",$raw);
     $html=[]; $list=false;
     foreach (explode("\n",$raw) as $line) {
@@ -411,8 +411,16 @@ try {
                     if($ok)foreach($nf as $i=>$f){
                         if(!is_array($f)||!isset($of[$i])||!is_array($of[$i])){$ok=false;break;}
                         $copy=$f;unset($copy['value']);$original=$of[$i];unset($original['value']);
-                        if($copy!=$original||!is_string($f['value']??null)||trim($f['value'])===''||
-                            strlen($f['value'])>1600||preg_match('/[\x00-\x08\x0B\x0C\x0E-\x1F]/',$f['value'])){$ok=false;break;}
+                        $value=$f['value']??null;
+                        $kind=(string)($f['kind']??'');
+                        $limit=$kind==='text'?24000:($kind==='alt'?350:2048);
+                        $required=$kind==='text'&&preg_match('~/h1\[[0-9]+\]$~D',(string)($f['node']??''));
+                        // Clear optional text/alt without deleting the element.
+                        // Never clear a page H1, media URL or navigation link.
+                        if($copy!=$original||!in_array($kind,['text','alt','media','link'],true)||
+                            !is_string($value)||strlen($value)>$limit||
+                            (($required||$kind==='media'||$kind==='link')&&trim($value)==='')||
+                            preg_match('/[\x00-\x08\x0B\x0C\x0E-\x1F]/',$value)){$ok=false;break;}
                         if(($f['kind']??null)==='media'){
                             $value=$f['value'];
                             if(preg_match('/^[0-9a-f-]{36}$/iD',$value)){
@@ -493,7 +501,7 @@ try {
             foreach ($changes as $k=>$v) {
                 if(!in_array($k,$allowed,true))respond(400,['error'=>'Недопустимое поле']);
                 if($k==='body_source'){
-                    if(!is_string($v)||strlen($v)>20000)respond(400,['error'=>'Недопустимый текст статьи']);
+                    if(!is_string($v)||strlen($v)>60000)respond(400,['error'=>'Недопустимый текст статьи']);
                 } elseif(in_array($k,['hero_file','og_image'],true)) {
                     if(!is_null($v) && (!is_string($v) || !preg_match('/^[a-f0-9-]{36}$/i',$v)))
                         respond(400,['error'=>'Недопустимый файл']);
