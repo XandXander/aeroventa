@@ -54,20 +54,25 @@ async function resolveRegistry(write){
  for(const route of selected){
   const u=new URL('https://cms.aeroventa.ru/items/content');
   u.searchParams.set('filter[path][_eq]',route);
-  u.searchParams.set('fields','id,path,hero_file,og_image,body_blocks.block_id.data');
+  u.searchParams.set('fields','id,path,content_type,hero_file,og_image,body_blocks.block_id.data');
   u.searchParams.set('limit','2');
   const r=await cms(u.toString(),token);
   if(!Array.isArray(r.data)||r.data.length!==1)throw Error('Missing or duplicate content for media '+route);
   const item=r.data[0];
   if(item.path!==route)throw Error('CMS media path drift');
   collect({hero_file:item.hero_file,og_image:item.og_image,body_blocks:item.body_blocks},ids);
-  const p=new URL('https://cms.aeroventa.ru/items/project_details');
-  p.searchParams.set('filter[content_id][_eq]',item.id);
-  p.searchParams.set('fields','gallery');
-  p.searchParams.set('limit','2');
-  const pr=await cms(p.toString(),token);
-  if(!Array.isArray(pr.data)||pr.data.length>1)throw Error('Ambiguous project details '+route);
-  if(pr.data.length)collect({gallery:pr.data[0].gallery},ids);
+  // The published Build Reader is not authorized for project detail rows
+  // when preparing an ordinary article. Never broaden its permissions just
+  // to get a preview: query details ONLY for actual project content.
+  if(item.content_type==='project'){
+    const p=new URL('https://cms.aeroventa.ru/items/project_details');
+    p.searchParams.set('filter[content_id][_eq]',item.id);
+    p.searchParams.set('fields','gallery');
+    p.searchParams.set('limit','2');
+    const pr=await cms(p.toString(),token);
+    if(!Array.isArray(pr.data)||pr.data.length>1)throw Error('Ambiguous project details '+route);
+    if(pr.data.length)collect({gallery:pr.data[0].gallery},ids);
+  }
  }
  if(ids.size>100)throw Error('Too many images in bounded release');
  const files={};

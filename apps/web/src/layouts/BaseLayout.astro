@@ -16,7 +16,7 @@ import sharp from 'sharp';
 
 interface Props { content: ContentRecord; }
 const { content } = Astro.props;
-const preview = import.meta.env.AEROVENTA_RELEASE_MODE === 'preview';
+const preview = ['preview','review'].includes(String(import.meta.env.AEROVENTA_RELEASE_MODE || ''));
 const canonical = canonicalUrl(content.path, content.canonical_override);
 const releaseMode = import.meta.env.AEROVENTA_RELEASE_MODE || 'fixture';
 const shareOrigin = new URL(import.meta.env.PUBLIC_SITE_ORIGIN || import.meta.env.PUBLIC_SOCIAL_ORIGIN ||
