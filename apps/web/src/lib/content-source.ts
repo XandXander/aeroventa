@@ -14,7 +14,7 @@ const normalizePath = (path: string) => {
 };
 
 const forbiddenPublishedPaths = new Set(['/404.php']);
-const allowedReleaseModes = new Set(['fixture', 'preview', 'production', 'incremental']);
+const allowedReleaseModes = new Set(['fixture', 'preview', 'review', 'production', 'incremental']);
 
 function assertSafeHtml(html: string, itemPath: string) {
   if (!html) return;
@@ -122,7 +122,7 @@ function assertExactPreviewRouteSet(items: ContentRecord[]) {
   }
 }
 
-type DirectusMode = 'preview' | 'production' | 'incremental';
+type DirectusMode = 'preview' | 'review' | 'production' | 'incremental';
 
 const directusFields = [
   'id','path','slug','title','h1','content_type','business_role','status',
@@ -138,7 +138,7 @@ const directusFields = [
 // Only the exact media captured and SHA-locked for this GitHub review may
 // become public image paths. Never render authenticated Directus URLs live.
 function mediaRegistry(): Record<string, {path: string}> {
-  if (import.meta.env.AEROVENTA_RELEASE_MODE !== 'incremental') return {};
+  if (!['incremental','review'].includes(String(import.meta.env.AEROVENTA_RELEASE_MODE || ''))) return {};
   const file = resolve('release_out/approved-astro/media-registry.json');
   const registry = JSON.parse(readFileSync(file, 'utf8'));
   if (registry.format !== 'AEROVENTA_CMS_MEDIA_REGISTRY_V1' ||
@@ -189,7 +189,7 @@ async function fetchDirectusPage(base: string, offset: number, mode: DirectusMod
   const payload = await response.json();
   if (!Array.isArray(payload?.data)) throw new Error('Directus payload.data is not an array');
   return payload.data.map((item: ContentRecord) => {
-    const hydrated = mode === 'incremental' ? hydrateReleaseMedia(item) : item;
+    const hydrated = ['incremental','review'].includes(mode) ? hydrateReleaseMedia(item) : item;
     return mode !== 'preview' ? assertSafePublishedRecord(hydrated) : assertSafePreviewRecord(hydrated);
   });
 }
@@ -250,6 +250,32 @@ export async function getAllContent(): Promise<ContentRecord[]> {
       throw new Error('Directus draft preview requires a dedicated read-only DIRECTUS_STATIC_TOKEN');
     }
     return fetchDirectusContent(directusUrl, 'preview');
+  }
+
+  if (releaseMode === 'review') {
+    if (!directusUrl || !import.meta.env.DIRECTUS_STATIC_TOKEN) {
+      throw new Error('Exact draft visual review requires authenticated read-only Directus');
+    }
+    const selectedPaths = String(import.meta.env.AEROVENTA_INCREMENTAL_PATHS || '')
+      .split(',').map(p=>p.trim()).filter(Boolean);
+    if (selectedPaths.length<1 || selectedPaths.length>15 ||
+        new Set(selectedPaths).size!==selectedPaths.length ||
+        selectedPaths.some(p=>p!==normalizePath(p))) {
+      throw new Error('Visual review must select 1-15 exact normalized draft routes');
+    }
+    const selected = new Set(selectedPaths);
+    const drafts = await fetchDirectusContent(directusUrl, 'review');
+    const byPath = new Map(drafts.map(x=>[x.path,x]));
+    if (selectedPaths.some(p=>!byPath.has(p))) throw new Error('Selected draft is unavailable');
+    const existing = getFixtureContent();
+    const known = new Set(existing.map(x=>x.path));
+    const composed = existing.map(row=>selected.has(row.path)?{...row,...byPath.get(row.path)!}:row);
+    for(const p of selectedPaths) {
+      if(known.has(p))continue;
+      if(!/^\/blog\/detail\/[a-z0-9-]+\/$/.test(p))throw new Error('New visual review route not allowed');
+      composed.push(byPath.get(p)!);
+    }
+    return composed;
   }
 
   if (releaseMode === 'incremental') {

@@ -16,8 +16,10 @@ if (!content) throw new Error('Home content is missing');
 
 const acceptedHeroLines = ['Невидимая эстетика.', 'Легкое дыхание.'] as const;
 
-const approvedCmsHome = ['production', 'incremental'].includes(String(import.meta.env.AEROVENTA_RELEASE_MODE || ''))
-  && content.status === 'published' && Boolean(content.owner_approved_at);
+const mode = String(import.meta.env.AEROVENTA_RELEASE_MODE || '');
+const approvedCmsHome = (['production','incremental'].includes(mode)
+  && content.status === 'published' && Boolean(content.owner_approved_at))
+  || (mode === 'review' && content.status === 'draft' && content.owner_approved_at === null);
 // Approved CMS may replace editorial values, but not the two-line HI-END
 // composition. The accepted default remains untouched in fixture mode.
 const cmsHeroLines = approvedCmsHome

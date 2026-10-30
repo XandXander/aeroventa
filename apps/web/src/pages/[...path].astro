@@ -195,8 +195,10 @@ if (content.path.startsWith('/blog/detail/') && (!legacyArticle?.h1 || !legacyAr
 }
 // Approved CMS metadata must not be silently overwritten by historical source
 // overrides. All existing fixture / draft-preview pages keep their locked output.
-const approvedCmsContent = ['production', 'incremental'].includes(String(import.meta.env.AEROVENTA_RELEASE_MODE || ''))
-  && content.status === 'published' && Boolean(content.owner_approved_at);
+const mode = String(import.meta.env.AEROVENTA_RELEASE_MODE || '');
+const approvedCmsContent = (['production','incremental'].includes(mode)
+  && content.status === 'published' && Boolean(content.owner_approved_at))
+  || (mode === 'review' && content.status === 'draft' && content.owner_approved_at === null);
 const pageContent: ContentRecord = {
   ...content,
   ...(!approvedCmsContent ? (overrides[content.path] ?? {}) : {}),
