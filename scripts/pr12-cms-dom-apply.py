@@ -36,7 +36,7 @@ class EditTokens(HTMLParser):
         super().__init__(convert_charrefs=False)
         self.body=body
         self.items={(o['node'],o['kind'],o.get('attribute')):o for o in items}
-        self.seen=set();self.edits=[];self.stack=[];self.children=[{}]
+        self.seen=set();self.edits=[];self.stack=[];self.children=[{}];self.text_fragments={}
         self.line_offsets=[0]
         for m in re.finditer('\n',body):self.line_offsets.append(m.end())
     def char_offset(self):
@@ -73,21 +73,60 @@ class EditTokens(HTMLParser):
         for i in range(len(self.stack)-1,-1,-1):
             if self.stack[i]['tag']==tag:
                 del self.stack[i:];del self.children[i+1:];break
-    def handle_data(self,data):
+    def _text_fragment(self,raw):
+        """Capture raw direct text, including entity tokens, with exact byte offsets."""
         if not self.stack:return
-        key=(self.stack[-1]['path'],'text',None)
+        node=self.stack[-1]['path']
+        key=(node,'text',None)
         if key not in self.items:return
-        if key in self.seen:raise ValueError('Repeated text node '+key[0])
-        record=self.items[key];safe_changed(record)
-        # Entity-split text isn't safe for token-level edits, fail closed.
-        if norm(data)!=norm(record['baseline']):raise ValueError('DOM text baseline drift at '+key[0])
         pos=self.char_offset()
-        if self.body[pos:pos+len(data)]!=data:raise ValueError('Text token offset drift')
-        prefix=re.match(r'^\s*',data).group(0);suffix=re.search(r'\s*$',data).group(0)
-        self.edits.append((pos,pos+len(data),prefix+html.escape(record['value'],quote=False)+suffix))
-        self.seen.add(key)
+        if not raw or self.body[pos:pos+len(raw)]!=raw:
+            raise ValueError('Text token offset drift at '+node)
+        self.text_fragments.setdefault(key,[]).append((pos,pos+len(raw),raw))
+
+    def handle_data(self,data):
+        self._text_fragment(data)
+
+    def handle_entityref(self,name):
+        pos=self.char_offset()
+        match=re.match(r'&[A-Za-z][A-Za-z0-9]+;?',self.body[pos:])
+        if not match or match.group(0)[1:].rstrip(';')!=name:
+            raise ValueError('HTML entity offset drift')
+        self._text_fragment(match.group(0))
+
+    def handle_charref(self,name):
+        pos=self.char_offset()
+        match=re.match(r'&#(?:[xX][0-9a-fA-F]+|[0-9]+);?',self.body[pos:])
+        if not match or match.group(0)[2:].rstrip(';')!=name:
+            raise ValueError('HTML character reference offset drift')
+        self._text_fragment(match.group(0))
+
+    def _resolve_text(self):
+        for key,record in self.items.items():
+            if key[1]!='text':continue
+            safe_changed(record)
+            pieces=self.text_fragments.get(key,[])
+            # Coalesce only adjacent direct text and references. Crossing an
+            # inline element would replace markup and is deliberately forbidden.
+            groups=[]
+            for start,end,raw in pieces:
+                if groups and groups[-1][1]==start:
+                    old=groups[-1]
+                    groups[-1]=(old[0],end,old[2]+raw)
+                else:
+                    groups.append((start,end,raw))
+            matches=[g for g in groups if norm(g[2])==norm(record['baseline'])]
+            if len(matches)!=1:
+                reason='Ambiguous repeated text baseline' if len(matches)>1 else 'DOM text baseline drift'
+                raise ValueError(reason+' at '+key[0])
+            start,end,raw=matches[0]
+            prefix=re.match(r'^\\s*',raw).group(0)
+            suffix=re.search(r'\\s*$',raw).group(0)
+            replacement=prefix+html.escape(record['value'],quote=False)+suffix
+            self.edits.append((start,end,replacement))
+            self.seen.add(key)
     def rewrite(self):
-        self.feed(self.body);self.close()
+        self.feed(self.body);self.close();self._resolve_text()
         missing=set(self.items)-self.seen
         if missing:raise ValueError('Unmapped DOM fields: '+str(sorted(missing)[:3]))
         output=self.body
@@ -119,6 +158,28 @@ def main():
         assert n==2 and '<h1>New title</h1>' in out and 'alt="New alt"' in out and '/evidence/old.jpg' in out
         try:patch(src,[{'block_type':'dom_fields','data':{'fields':[{'node':mainpath+'/h1[1]','kind':'text','attribute':None,'baseline':'WRONG','value':'New title'}]}}]);raise AssertionError('Expected drift failure')
         except ValueError:pass
+        # Entity-split text must be editable without consuming neighboring markup.
+        entity='<html><body><main><h3>Цена&nbsp;бурения</h3><p>Сначала <strong>проверка</strong> потом.</p></main></body></html>'
+        target='/html[1]/body[1]/main[1]'
+        def trial(node,baseline,value):
+            return [{'block_type':'dom_fields','data':{'fields':[{
+                'node':target+'/'+node,'kind':'text','attribute':None,
+                'baseline':baseline,'value':value}]}}]
+        revised,n=patch(entity,trial('h3[1]','Цена бурения','Стоимость бурения'))
+        assert n==1 and '<h3>Стоимость бурения</h3>' in revised and '<strong>проверка</strong>' in revised
+        revised,n=patch(entity,trial('p[1]','Сначала','Перед началом'))
+        assert n==1 and '<p>Перед началом <strong>проверка</strong> потом.</p>' in revised
+        try:
+            patch('<html><body><main><p>Да <b>текст</b> Да</p></main></body></html>',
+                  trial('p[1]','Да','Нет'))
+            raise AssertionError('Ambiguous duplicate text was accepted')
+        except ValueError as ex:
+            assert 'Ambiguous repeated text' in str(ex)
+        try:
+            patch(entity,trial('h3[1]','Неверная исходная строка','Подмена'))
+            raise AssertionError('Unapproved baseline drift was accepted')
+        except ValueError as ex:
+            assert 'baseline drift' in str(ex)
         print('CMS_DOM_EDITOR_SELF_TEST_PASS');return
     if args.contract_test:
         if not args.blueprint or not args.dist or not args.report:p.error('Contract-test requires --blueprint --dist --report')
