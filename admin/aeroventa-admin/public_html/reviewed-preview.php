@@ -139,6 +139,29 @@ function reviewedPreview(string $action,string $method): never {
         // origin; only new SHA-addressed media are served from this verified ZIP.
         $pattern="~\\b(src|href)=([\"'])/(?!/)([^\"']+)\\2~i";
         $html=preg_replace_callback($pattern,$rewrite,$html)??$html;
+        // Responsive <img>/<source> srcset is independently resolved by
+        // browsers; rewriting only src would load broken admin-origin images.
+        // Preserve descriptors and send unchanged accepted assets to the
+        // public origin. New CMS images remain bound to this exact artifact.
+        $html=preg_replace_callback('~\bsrcset=(["\x27])([^\x22\x27]*)\1~i',
+            static function(array $m)use($runId,$id):string {
+                $list=[];
+                foreach(explode(',',$m[2]) as $part) {
+                    $part=trim($part);
+                    if(!preg_match('~^/(?!/)([a-zA-Z0-9/_?.=&%-]+)(?:\s+([1-9][0-9]{0,4}(?:w|x)))?$~D',$part,$match))
+                        return $m[0]; // fail unchanged on unknown syntax
+                    $asset=$match[1];
+                    if(str_starts_with($asset,'cms-media/')) {
+                        $url='/index.php?action=reviewed_media&amp;run_id='.$runId.
+                            '&amp;id='.rawurlencode($id).'&amp;file='.rawurlencode($asset);
+                    } else {
+                        $url='https://aeroventa.ru/'.$asset;
+                    }
+                    $list[]=$url.(isset($match[2])?' '.$match[2]:'');
+                }
+                return 'srcset='.$m[1].implode(', ',$list).$m[1];
+            },$html)??$html;
+
         header('Content-Type: text/html; charset=UTF-8');
         header("Content-Security-Policy: default-src 'none'; style-src 'self' 'unsafe-inline' https://aeroventa.ru; img-src 'self' data: https://aeroventa.ru; font-src 'self' https://aeroventa.ru; script-src 'self' https://aeroventa.ru; connect-src 'none'; form-action 'none'; frame-ancestors 'none'; base-uri 'none'");
         header('X-Robots-Tag: noindex, nofollow, noarchive');
