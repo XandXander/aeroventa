@@ -201,8 +201,10 @@ async function main(){
          if(digest(await readFile(confirm))!==entry.row.sha256_before)
            throw Error('Rollback checksum mismatch');
          report.paths.push({path:entry.row.path,status:'ROLLBACK_VERIFIED'});
+       }
        // FTP readback alone is not proof of public restoration.
-       const restorePath='/'+entry.row.path.replace(/index\\.html$/,'');
+       const restorePath='/'+(entry.row.path.endsWith('index.html')
+         ?entry.row.path.slice(0,-'index.html'.length):entry.row.path);
        const restoredUrl=new URL(restorePath,'https://aeroventa.ru');
        restoredUrl.searchParams.set('_avrollback',releaseId);
        let recovered=false;
@@ -217,7 +219,6 @@ async function main(){
          await new Promise(resolve=>setTimeout(resolve,1200));
        }
        if(!recovered)throw Error('Public HTTP rollback readback mismatch '+entry.row.path);
-       }
      }catch(rollbackError){
        report.paths.push({path:entry.row.path,status:'CRITICAL_ROLLBACK_UNVERIFIED',error:String(rollbackError.message)});
        report.status='CRITICAL_MANUAL_RESTORE_REQUIRED';
