@@ -1,0 +1,68 @@
+name: PR12 - canonical branded admin installer (no production writes)
+
+on:
+  push:
+    branches:
+      - aeroventa/hiend-seo-owner-recovery-2026-10-13
+    paths:
+      - 'admin/aeroventa-admin/**'
+      - 'scripts/pr12-package-admin.mjs'
+      - '.github/workflows/pr12-admin-installer.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package-admin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22.19.0'
+      - name: Validate actual PHP admin and browser UI sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in admin/aeroventa-admin/public_html/*.php; do php -l "$f"; done
+          node --check admin/aeroventa-admin/public_html/assets/app.js
+          node --check scripts/pr12-package-admin.mjs
+          node scripts/pr12-package-admin.mjs --self-test
+          test -f admin/aeroventa-admin/private/aeroventa-release-config.php.example
+          test ! -f admin/aeroventa-admin/private/aeroventa-release-config.php
+      - name: Build allowlisted release ZIP from exactly this PR SHA
+        run: node scripts/pr12-package-admin.mjs
+      - name: Verify immutable package and no secret leakage
+        shell: bash
+        run: |
+          set -euo pipefail
+          ZIP=release_out/AEROVENTA_ADMIN_CANONICAL_INSTALL.zip
+          test -f "$ZIP"
+          unzip -tqq "$ZIP"
+          if unzip -Z1 "$ZIP" | grep -E '(^private/|\.env|\.user\.ini|\.php\.example|\.git/)'; then
+            echo "PRIVATE_DATA_IN_PUBLIC_INSTALL_PACKAGE" >&2
+            exit 1
+          fi
+          python3 - <<'PY'
+          import hashlib,json,zipfile
+          p='release_out/AEROVENTA_ADMIN_CANONICAL_INSTALL.zip'
+          with zipfile.ZipFile(p) as z:
+              manifest=json.loads(z.read('MANIFEST_SHA256.json'))
+              assert manifest['source_sha'] is not None
+              assert len(manifest['files'])==8
+              for row in manifest['files']:
+                  data=z.read(row['path'])
+                  assert len(data)==row['bytes']
+                  assert hashlib.sha256(data).hexdigest()==row['sha256']
+              print('ADMIN_INSTALLER_CONTENT_SHA_PASS',hashlib.sha256(open(p,'rb').read()).hexdigest())
+          PY
+      - uses: actions/upload-artifact@v6
+        with:
+          name: AEROVENTA_PR12_ADMIN_VERSIONED_INSTALLER
+          path: release_out/AEROVENTA_ADMIN_CANONICAL_INSTALL.zip
+          if-no-files-found: error
+          retention-days: 30
