@@ -18,7 +18,7 @@ export type BusinessRole =
 export type LeadIntent = 'VENTILATION_PROJECT' | 'DRILLING_PARTNER' | string;
 
 // Reuses existing Directus content_blocks + content_block_map (no duplicate collections).
-export type CmsBlockType = 'text' | 'cards' | 'gallery' | 'cta';
+export type CmsBlockType = 'text' | 'cards' | 'gallery' | 'cta' | 'dom_fields';
 export interface CmsBlock {
   id: string;
   type: CmsBlockType;
