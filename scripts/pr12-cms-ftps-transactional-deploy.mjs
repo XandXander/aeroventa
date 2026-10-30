@@ -4,7 +4,8 @@
  * Must be run ONLY in a manually approved GitHub Environment after passing
  * source/HTML/visual and owner gates. Never run against the account-wide FTP.
  * Backups/staging sit OUTSIDE public_html on the same site-scoped FTP account.
- * No deletions or bulk overwrites. No .php, .htaccess, media or other projects.
+ * No PHP/.htaccess, deletions or other projects. New SHA-addressed CMS images
+ * are uploaded BEFORE HTML; old media is never overwritten.
  */
 import { createHash, randomUUID } from 'node:crypto';
 import { readFile, writeFile, mkdtemp, rm } from 'node:fs/promises';
@@ -15,6 +16,7 @@ const digest = b => createHash('sha256').update(b).digest('hex');
 const env = process.env;
 const HTML_ROOT = '/public_html';
 const fileRe = /^(?:[a-z0-9-]+\/)*index\.html$/;
+const mediaRe=/^cms-media\/([a-f0-9]{64})\.(?:png|jpe?g|webp|avif)$/;
 const privateRoot = '/__aeroventa_releases';
 const root = path.resolve('release_out/approved-astro');
 function preflight(m) {
@@ -29,6 +31,16 @@ function preflight(m) {
  const names=m.files.map(x=>x.path);
  if(new Set(names).size!==names.length||names.some(x=>typeof x!=='string'||!fileRe.test(x)))throw Error('Unsafe or duplicated release filename');
  if(m.files.some(x=>![x.sha256_before,x.sha256_after].every(y=>/^[a-f0-9]{64}$/.test(String(y||'')))))throw Error('Invalid SHA256 manifest');
+ if(m.media!==undefined){
+   if(!Array.isArray(m.media)||m.media.length>100)throw Error('Invalid CMS media array');
+   const names=m.media.map(x=>x.path);
+   if(new Set(names).size!==names.length||m.media.some(x=>{
+     const match=mediaRe.exec(String(x.path||''));
+     return !match||match[1]!==x.sha256_after||!Number.isSafeInteger(x.bytes_after)||
+       x.bytes_after<100||x.bytes_after>18*1024*1024;
+   }))throw Error('Unsafe media or checksum path');
+ }
+
  return m;
 }
 async function main(){
@@ -84,6 +96,49 @@ async function main(){
      await ftp.downloadTo(probeCheck,probeDir+'/to.txt');
      if((await readFile(probeCheck,'utf8'))!=='AEROVENTA_RENAME_PROBE_A')throw Error('FTP rename did not overwrite atomically');
    }catch(e){throw Error('Atomic FTP rename-overwrite not proven: '+e.message);}
+   // Immutable new media files are verified BEFORE any HTML change.
+   // If a later HTML upload fails, unused media may remain; no existing file
+   // is deleted or overwritten. Such orphaned files are not publicly linked.
+   if((manifest.media||[]).length){
+     await ftp.ensureDir(HTML_ROOT+'/cms-media');
+     const existingNames=new Set((await ftp.list(HTML_ROOT+'/cms-media')).map(x=>x.name));
+     for(const file of manifest.media){
+       const remote=HTML_ROOT+'/'+file.path;
+       const local=path.join(root,file.path);
+       const bytes=await readFile(local);
+       if(digest(bytes)!==file.sha256_after||bytes.length!==file.bytes_after)
+         throw Error('CMS media bytes drift '+file.path);
+       const basename=path.posix.basename(file.path);
+       if(existingNames.has(basename)){
+         const present=path.join(tempDir,'present-'+basename);
+         await ftp.downloadTo(present,remote);
+         if(digest(await readFile(present))!==file.sha256_after)
+           throw Error('SHA-addressed CMS image collision '+file.path);
+         report.paths.push({path:file.path,status:'MEDIA_ALREADY_PRESENT_HASH_VERIFIED'});
+         continue;
+       }
+       const stagedMedia=staging+'/candidate/'+file.path;
+       await ftp.ensureDir(path.posix.dirname(stagedMedia));
+       await ftp.uploadFrom(local,stagedMedia);
+       const checkMedia=path.join(tempDir,'staged-'+basename);
+       await ftp.downloadTo(checkMedia,stagedMedia);
+       if(digest(await readFile(checkMedia))!==file.sha256_after)
+         throw Error('Private staged image checksum failed '+file.path);
+       await ftp.rename(stagedMedia,remote);
+       const imageUrl=new URL('/'+file.path,'https://aeroventa.ru');
+       imageUrl.searchParams.set('_avrelease',releaseId);
+       let readback=false;
+       for(let i=0;i<4;i++){
+         try{
+           const res=await fetch(imageUrl,{cache:'no-store',redirect:'error',signal:AbortSignal.timeout(15000)});
+           if(res.status===200&&digest(Buffer.from(await res.arrayBuffer()))===file.sha256_after){readback=true;break}
+         }catch{}
+         await new Promise(resolve=>setTimeout(resolve,1200));
+       }
+       if(!readback)throw Error('Public image readback mismatch: '+file.path);
+       report.paths.push({path:file.path,sha256:file.sha256_after,status:'NEW_MEDIA_VERIFIED'});
+     }
+   }
    // Every write is single-file atomic rename, never bulk directory upload.
    for(const entry of staged){
      await ftp.rename(entry.remoteStage,entry.remote);

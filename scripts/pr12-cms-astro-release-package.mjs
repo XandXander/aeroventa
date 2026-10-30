@@ -71,8 +71,22 @@ async function generate() {
      // site template or change existing scripts/photos/navigation by mistake.
      const signature = text => (text.match(/<[/]?[a-z][a-z0-9-]*(?=[\s/>])/gi)||[]).join('|').toLowerCase();
      const resources = text => [...text.matchAll(/<(?:img|script|link)\b[^>]*\b(?:src|href)\s*=\s*["']([^"']+)["']/gi)].map(m=>m[1]).join('|');
-     if (signature(original.toString('utf8')) !== signature(html)) throw Error('Accepted live DOM structure differs from Astro candidate; cannot overwrite '+p);
-     if (resources(original.toString('utf8')) !== resources(html)) throw Error('Resource/photography/script drift in candidate; no live overwrite '+p);
+     const managed=Array.isArray(item.body_blocks)&&item.body_blocks.length>0;
+     if (managed && item.body_blocks.some(b=>b.block_id?.fact_checked!==true))
+       throw Error('Managed CMS block has not been fact-checked: '+p);
+     const essential=text=>[...text.matchAll(/<(?:script|link)\b[^>]*\b(?:src|href)\s*=\s*["']([^"']+)["']/gi)].map(m=>m[1]).join('|');
+     if (essential(original.toString('utf8')) !== essential(html))
+       throw Error('Scripts/styles changed unexpectedly: '+p);
+     if (!managed && signature(original.toString('utf8')) !== signature(html))
+       throw Error('Accepted live DOM structure differs from Astro candidate: '+p);
+     const oldImages=[...original.toString('utf8').matchAll(/<img\b[^>]*\bsrc\s*=\s*["']([^"']+)["']/gi)].map(m=>m[1]);
+     const newImages=[...html.matchAll(/<img\b[^>]*\bsrc\s*=\s*["']([^"']+)["']/gi)].map(m=>m[1]);
+     for (const ref of newImages) {
+       if (!oldImages.includes(ref) && !/^\/cms-media\/[a-f0-9]{64}\.(?:png|jpe?g|webp|avif)$/.test(ref))
+         throw Error('Changed image not in immutable CMS media namespace: '+p);
+     }
+     if (!managed && resources(original.toString('utf8')) !== resources(html))
+       throw Error('Resource drift outside managed CMS blocks: '+p);
    }
    if(original?.equals(proposed))throw Error('No difference from currently accepted public page: '+p);
    // New article also needs a verified internal link and sitemap update before
@@ -85,7 +99,25 @@ async function generate() {
    await mkdir(path.dirname(rollback),{recursive:true});await writeFile(rollback,original);
    files.push({path:rel,cms_id:item.id,cms_approved_at:item.owner_approved_at,sha256_before:digest(original),sha256_after:digest(proposed),bytes_before:original.length,bytes_after:proposed.length});
  }
- const manifest={format:'aeroventa-astro-selective-approved-release-v1',mode:'REVIEW_ONLY_NO_DEPLOY',source_sha:process.env.GITHUB_SHA||null,approved_paths:requiredPaths,files};
+ const mediaSource=JSON.parse(await readFile(path.resolve(root,'media-registry.json'),'utf8'));
+ if(mediaSource.format!=='AEROVENTA_CMS_MEDIA_REGISTRY_V1'||mediaSource.source_sha!==process.env.GITHUB_SHA)
+   throw Error('Untrusted media manifest');
+ const media=[];
+ const emittedHtml=(await Promise.all(files.map(f=>readFile(path.resolve(root,f.path),'utf8')))).join('\n');
+ for(const file of Object.values(mediaSource.files||{})){
+   if(!emittedHtml.includes(file.path))continue;
+   const rel=file.path.replace(/^\//,'');
+   if(!/^cms-media\/[a-f0-9]{64}\.(?:png|jpe?g|webp|avif)$/.test(rel))throw Error('Unsafe media pathname');
+   const bytes=await readFile(path.resolve(dist,rel));
+   if(digest(bytes)!==file.sha256||bytes.length!==file.bytes||!rel.includes(file.sha256))
+     throw Error('Media file drift at '+rel);
+   const target=path.resolve(root,rel);
+   await mkdir(path.dirname(target),{recursive:true});await writeFile(target,bytes);
+   if(!media.some(m=>m.path===rel))media.push({path:rel,sha256_after:file.sha256,bytes_after:file.bytes});
+ }
+ const referenced=[...new Set([...emittedHtml.matchAll(/\/cms-media\/[a-f0-9]{64}\.(?:png|jpe?g|webp|avif)/g)].map(m=>m[0].slice(1)))];
+ if(referenced.some(p=>!media.some(m=>m.path===p)))throw Error('Missing CMS media dependency');
+ const manifest={format:'aeroventa-astro-selective-approved-release-v1',mode:'REVIEW_ONLY_NO_DEPLOY',source_sha:process.env.GITHUB_SHA||null,approved_paths:requiredPaths,files,media};
  await writeFile(path.resolve(root,'manifest.json'),JSON.stringify(manifest,null,2)+'\n');
  console.log('ASTRO_SELECTIVE_CANDIDATE_PASS files='+files.length+' paths='+requiredPaths.join(','));
 }
