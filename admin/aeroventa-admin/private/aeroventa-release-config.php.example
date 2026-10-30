@@ -1,0 +1,6 @@
+<?php
+// Save AS: aeroventa-admin/private/aeroventa-release-config.php
+// Outside public_html. Never paste the real token into chat, GitHub or ZIP.
+return [
+    'github_actions_token' => 'REPLACE_WITH_GITHUB_FINE_GRAINED_ACTIONS_WRITE_TOKEN',
+];
