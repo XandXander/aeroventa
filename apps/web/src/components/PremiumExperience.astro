@@ -771,7 +771,7 @@ const { pagePath = '' } = Astro.props;
       pendingQuestion=q;
       if(chatInput)chatInput.value=q;
       if(e.status===429)
-        addChatMessage('guide','Консультант AEROVENTA','Достигнуто ограничение обращений. Вопрос сохранён — попробуйте позднее.');
+        addChatMessage('guide','Консультант AEROVENTA','Сейчас отправить новый вопрос не получается. Вопрос сохранён — попробуйте позднее.');
       else if(e.status===409)
         addChatMessage('guide','Консультант AEROVENTA','Предыдущее сообщение ещё обрабатывается. Повторите отправку немного позже.');
       else if(e.status===502)
