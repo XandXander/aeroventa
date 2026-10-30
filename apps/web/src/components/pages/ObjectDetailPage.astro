@@ -1,5 +1,6 @@
 ---
 import type { ContentRecord } from '@/lib/types';
+import CmsContentBlocks from '@/components/CmsContentBlocks.astro';
 
 interface EvidenceItem {
   title: string;
@@ -25,7 +26,14 @@ interface Props {
   secondaryMedia?: { src: string; alt: string; caption: string };
 }
 
-const { content, eyebrow, lede, constraints, drivers, evidence, questions, proofTitle, visualVariant, heroMedia, secondaryMedia } = Astro.props;
+const { content, eyebrow, lede, constraints, drivers, evidence, questions, proofTitle, visualVariant,
+  heroMedia: acceptedHero, secondaryMedia } = Astro.props;
+const selectedMedia = String(content.hero_file || '');
+if (selectedMedia && !/^\/cms-media\/[a-f0-9]{64}\.(?:png|jpe?g|webp|avif)$/.test(selectedMedia))
+  throw new Error('CMS HERO image is not immutable staged media: ' + content.path);
+const heroMedia = selectedMedia ? (acceptedHero ? {...acceptedHero,src:selectedMedia} : undefined) : acceptedHero;
+if (selectedMedia && !heroMedia)throw new Error('Cannot replace non-existent accepted HERO: ' + content.path);
+
 // Card placement is explicit Owner content. HERO never silently removes a card;
 // the approved cafe uses distinct photographs of the same object in both slots.
 const hasPhotoViewer=Boolean(heroMedia?.editorialSplit||heroMedia?.gallery?.length||evidence.some(item=>item.gallery?.length));
@@ -95,6 +103,7 @@ const hasPhotoViewer=Boolean(heroMedia?.editorialSplit||heroMedia?.gallery?.leng
   <section class="av-section av-type-considerations" aria-labelledby="object-drivers-title"><div class="av-shell"><div class="av-heading"><div><p class="av-kicker">Объём и условия</p><h2 id="object-drivers-title">Для расчёта монтажа</h2></div><p>По чертежам и условиям площадки определяем перечень работ, оборудование и доступ к монтажным зонам.</p></div><div class="av-type-considerations__grid"><div><h3>Что влияет на состав работ</h3><ul class="av-type-drivers">{drivers.map(item=><li>{item}</li>)}</ul></div><div><h3>Что уточняем до начала</h3><ul class="av-type-questions">{questions.map(question=><li>{question}</li>)}</ul><a class="av-link" href="/faq/">Ответы на вопросы о монтаже →</a>{content.path==='/obekty/magaziny-i-sklady/' && <p><a class="av-link" href="/obekty/sklady/">Складские объекты: фотографии монтажа →</a></p>}{content.path==='/obekty/sklady/' && <p><a class="av-link" href="/obekty/magaziny-i-sklady/">Торговые помещения и склады →</a></p>}{content.path==='/obekty/ofisy-i-kommerciya/' && <p><a class="av-link" href="/obekty/ofisy-i-kommercheskie-pomeshcheniya/">Коммерческие помещения: особенности и примеры →</a></p>}</div></div></div></section>
   <nav class="av-type-stages" aria-label="Стадия вашего объекта"><div class="av-shell"><a href="/montazh-po-proektu/"><span>Документация готова</span><strong>Монтаж по проекту</strong><b aria-hidden="true">↗</b></a><a href="/obekt-bez-gotovogo-proekta/"><span>Пока есть задача</span><strong>Объект без проекта</strong><b aria-hidden="true">↗</b></a></div></nav>
 </article>
+{Boolean(content.cms_blocks?.length) && <CmsContentBlocks blocks={content.cms_blocks!} />}
 
 {hasPhotoViewer && <dialog id="object-photo-dialog" class="object-photo-dialog" aria-labelledby="object-photo-title">
  <div class="object-photo-dialog__heading"><strong id="object-photo-title" data-object-photo-title>Фотография объекта</strong><button type="button" data-object-photo-close aria-label="Закрыть фотографию">×</button></div>

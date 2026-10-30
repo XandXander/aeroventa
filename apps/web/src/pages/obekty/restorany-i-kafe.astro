@@ -1,9 +1,10 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getStaticPageContent } from '@/lib/content-source';
 import ObjectDetailPage from '@/components/pages/ObjectDetailPage.astro';
 import type { ContentRecord } from '@/lib/types';
 
-const content: ContentRecord = {
+const baselineContent: ContentRecord = {
   path:'/obekty/restorany-i-kafe/',
   title:'Вентиляция ресторанов и кафе — AEROVENTA',
   h1:'Монтаж вентиляции в ресторанах и кафе',
@@ -53,6 +54,7 @@ const questions = [
   'Что делать, если проект конфликтует с реальным объектом?',
   'Что меняется, если отделка уже началась?',
 ];
+const content = await getStaticPageContent(baselineContent.path, baselineContent);
 ---
 
 <BaseLayout content={content}>

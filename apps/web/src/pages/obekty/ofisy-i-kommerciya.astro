@@ -1,9 +1,10 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getStaticPageContent } from '@/lib/content-source';
 import ObjectDetailPage from '@/components/pages/ObjectDetailPage.astro';
 import sourcePhotos from '../../../../../migration/owner-category-source-media-2026-10-26.json';
 import type { ContentRecord } from '@/lib/types';
-const content: ContentRecord = {
+const baselineContent: ContentRecord = {
  path:'/obekty/ofisy-i-kommerciya/',title:'Монтаж вентиляции офисов и коммерческих помещений — AEROVENTA',h1:'Монтаж вентиляции офисов и коммерческих помещений',
  content_type:'landing',business_role:'CORE_SERVICE_HUB',status:'fixture_stub',
  robots_index:false,robots_follow:true,sitemap_include:false,knowledge_allowed:true,ai_origin:false,
@@ -19,6 +20,7 @@ const evidence = [
 ];
 const drivers = ['Рабочая проектная документация и спецификация','Монтажные зоны и условия доступа','Стадия объекта и смежные инженерные системы','Оборудование, трассы и рабочие сроки'];
 const questions = ['Какие документы передать для расчёта монтажа?','Что согласовать до начала работ?','Какие ограничения объекта влияют на организацию монтажа?'];
+const content = await getStaticPageContent(baselineContent.path, baselineContent);
 ---
 <BaseLayout content={content}>
  <ObjectDetailPage content={content} eyebrow="Офисы и коммерция"

@@ -1,8 +1,9 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getStaticPageContent } from '@/lib/content-source';
 import ObjectEditorialPage from '@/components/pages/ObjectEditorialPage.astro';
 import type { ContentRecord } from '@/lib/types';
-const content: ContentRecord = {
+const baselineContent: ContentRecord = {
   path: "/obekty/ofisy-i-kommercheskie-pomeshcheniya/",title: "Монтаж вентиляции офисов и коммерческих помещений — AEROVENTA",h1:"Монтаж вентиляции офисов и коммерческих помещений",
   content_type:'landing',business_role:'CORE_SERVICE_HUB',status:'fixture_stub',
   robots_index:false,robots_follow:true,sitemap_include:false,knowledge_allowed:true,ai_origin:false,
@@ -21,5 +22,6 @@ const detail={
   "linkLabel": "Смотреть объект",
   "description": "Пришлите проект, спецификацию и планы помещений. Уточним, можно ли вести работы в действующем помещении и какие ограничения необходимо учитывать."
 };
+const content = await getStaticPageContent(baselineContent.path, baselineContent);
 ---
 <BaseLayout content={content}><ObjectEditorialPage content={content} {...detail}/></BaseLayout>

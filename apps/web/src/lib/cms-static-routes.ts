@@ -1,0 +1,1 @@
+export const EXTRA_ASTRO_STATIC_ROUTES = new Set(["/obekty/", "/obekty/kvartiry-i-doma/", "/obekty/magaziny-i-sklady/", "/obekty/novostroyki/", "/obekty/ofisy-i-kommerciya/", "/obekty/proizvodstvo/", "/obekty/restorany-i-kafe/", "/obekty/sklady/", "/obekty/ofisy-i-kommercheskie-pomeshcheniya/", "/montazh-po-proektu/", "/obekt-bez-gotovogo-proekta/"]);
