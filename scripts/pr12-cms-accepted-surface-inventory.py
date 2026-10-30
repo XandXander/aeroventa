@@ -102,8 +102,11 @@ def get(url):
     try:
         with urllib.request.urlopen(req,timeout=18) as response:
             final=urlsplit(response.url)
-            if final.hostname!='aeroventa.ru' or response.status!=200 or 'text/html' not in response.headers.get('Content-Type',''):
-                return None, 'HTTP_OR_REDIRECT_NOT_ACCEPTED'
+            requested=urlsplit(url)
+            if final.hostname!='aeroventa.ru' or final.path!=requested.path:
+                return None, 'REDIRECT_OR_NONCANONICAL_ROUTE'
+            if response.status!=200 or 'text/html' not in response.headers.get('Content-Type',''):
+                return None, 'HTTP_OR_UNEXPECTED_MIME'
             raw=response.read(MAX_BYTES+1)
             if len(raw)>MAX_BYTES:return None,'HTML_EXCEEDS_LIMIT'
             return raw,None
