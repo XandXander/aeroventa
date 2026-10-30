@@ -1,0 +1,60 @@
+---
+import type { CmsBlock } from '@/lib/types';
+interface Props { blocks: CmsBlock[]; }
+const { blocks } = Astro.props;
+---
+{blocks.map(block => (
+  block.type === 'text' ? (
+    <section class="av-cms-section av-cms-section--text">
+      <div class="container prose">
+        <h2>{String(block.data.heading)}</h2>
+        <p>{String(block.data.text)}</p>
+      </div>
+    </section>
+  ) : block.type === 'cta' ? (
+    <section class="av-cms-section av-cms-section--cta">
+      <div class="container prose">
+        {block.data.heading && <h2>{String(block.data.heading)}</h2>}
+        <a class="av-cms-link" href={String(block.data.href)}>{String(block.data.label)}</a>
+      </div>
+    </section>
+  ) : block.type === 'cards' ? (
+    <section class="av-cms-section av-cms-section--cards">
+      <div class="container">
+        {block.data.heading && <h2>{String(block.data.heading)}</h2>}
+        <div class="av-cms-grid">
+          {(block.data.items as Record<string,unknown>[]).map(item => (
+            <a class="av-cms-tile" href={String(item.href)}>
+              <img src={String(item.image)} alt={String(item.alt || item.title)} loading="lazy" decoding="async" />
+              <strong>{String(item.title)}</strong>
+              {item.text && <p>{String(item.text)}</p>}
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  ) : block.type === 'gallery' ? (
+    <section class="av-cms-section av-cms-section--gallery">
+      <div class="container">
+        {block.data.heading && <h2>{String(block.data.heading)}</h2>}
+        <div class="av-cms-grid">
+          {(block.data.items as Record<string,unknown>[]).map(item => (
+            <figure>
+              <img src={String(item.image)} alt={String(item.alt || item.title)} loading="lazy" decoding="async" />
+              <figcaption>{String(item.title)}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  ) : null
+))}
+<style>
+  .av-cms-section{padding:clamp(32px,5vw,72px) 0}
+  .av-cms-section--text p{white-space:pre-line;max-width:78ch;line-height:1.75}
+  .av-cms-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:clamp(14px,2vw,28px)}
+  .av-cms-tile{display:grid;gap:12px;text-decoration:none;color:inherit}
+  .av-cms-grid img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover}
+  .av-cms-grid figure{margin:0}
+  .av-cms-link{display:inline-block;padding:12px 22px;border:1px solid currentColor;text-underline-offset:4px}
+</style>

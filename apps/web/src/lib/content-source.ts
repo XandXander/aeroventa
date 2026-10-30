@@ -2,6 +2,7 @@ import fixtures from '@/data/content-fixtures.json';
 import expectedRetainedPaths from '@/data/expected-retained-paths.json';
 import coreContentV7 from '@/data/core-content-v7.json';
 import type { ContentRecord } from './types';
+import { normalizeCmsBlocks } from './cms-blocks';
 
 const normalizePath = (path: string) => {
   if (path === '/') return '/';
@@ -53,7 +54,10 @@ function assertSafePublishedRecord(item: ContentRecord): ContentRecord {
     assertSafeHtml(body, normalizedPath);
   }
 
-  return { ...item, path: normalizedPath };
+  return {
+    ...item, path: normalizedPath,
+    cms_blocks: normalizeCmsBlocks(item.body_blocks, normalizedPath, true),
+  };
 }
 
 function assertSafePreviewRecord(item: ContentRecord): ContentRecord {
@@ -82,6 +86,7 @@ function assertSafePreviewRecord(item: ContentRecord): ContentRecord {
   return {
     ...item,
     path: normalizedPath,
+    cms_blocks: normalizeCmsBlocks(item.body_blocks, normalizedPath, false),
     robots_index: false,
     sitemap_include: false,
     owner_approved_at: null,
@@ -123,7 +128,9 @@ const directusFields = [
   'seo_title','seo_description','canonical_override',
   'og_title','og_description','og_image','schema_type','schema_json_extra',
   'published_at','updated_at_public',
-  'excerpt','body_html','body_html_safety_status','hero_file','lead_intent','owner_approved_at'
+  'excerpt','body_html','body_html_safety_status','hero_file','lead_intent','owner_approved_at',
+  'body_blocks.sort','body_blocks.block_id.id','body_blocks.block_id.block_type',
+  'body_blocks.block_id.data','body_blocks.block_id.fact_checked'
 ].join(',');
 
 async function fetchDirectusPage(base: string, offset: number, mode: DirectusMode): Promise<ContentRecord[]> {
