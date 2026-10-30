@@ -2,7 +2,11 @@ name: PR12 - exact Directus draft Astro render (noindex, no deployment)
 on:
   push:
     branches: [aeroventa/hiend-seo-owner-recovery-2026-10-13]
-    paths: ['.github/workflows/pr12-cms-draft-visual-review.yml']
+    paths:
+      - '.github/workflows/pr12-cms-draft-visual-review.yml'
+      - 'apps/web/src/lib/content-source.ts'
+      - 'apps/web/src/layouts/BaseLayout.astro'
+      - 'scripts/pr12-cms-stage-directus-media.mjs'
   workflow_dispatch:
     inputs:
       selected_path:
