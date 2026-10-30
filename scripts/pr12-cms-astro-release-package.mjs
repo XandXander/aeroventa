@@ -158,6 +158,20 @@ async function generate() {
    const target=path.resolve(root,rel);
    await mkdir(path.dirname(target),{recursive:true});await writeFile(target,bytes);
    if(!media.some(m=>m.path===rel))media.push({path:rel,sha256_after:file.sha256,bytes_after:file.bytes});
+   // Astro's responsive optimizer adds image-set URLs. Deliver exactly the
+   // derivatives of the new SHA-addressed source, never orphan srcset URLs.
+   const delivery=JSON.parse(await readFile(path.resolve('reports/WEB_IMAGE_DELIVERY_AUDIT.json'),'utf8'));
+   const image=delivery.items.find(entry=>entry.asset===file.path);
+   for(const variant of image?.variants||[]){
+     if(!emittedHtml.includes(variant.url))continue;
+     const derived=variant.url.replace(/^\//,'');
+     if(!/^media\/responsive\/[a-f0-9]{16}-[0-9]{3,4}\.webp$/.test(derived))throw Error('Unsafe responsive media path');
+     const payload=await readFile(path.resolve(dist,derived));
+     if(payload.length<100||payload.length>18*1024*1024)throw Error('Oversized responsive media');
+     const target2=path.resolve(root,derived);
+     await mkdir(path.dirname(target2),{recursive:true});await writeFile(target2,payload);
+     if(!media.some(m=>m.path===derived))media.push({path:derived,sha256_after:digest(payload),bytes_after:payload.length});
+   }
  }
  const referenced=[...new Set([...emittedHtml.matchAll(/\/cms-media\/[a-f0-9]{64}\.(?:png|jpe?g|webp|avif)/g)].map(m=>m[0].slice(1)))];
  if(referenced.some(p=>!media.some(m=>m.path===p)))throw Error('Missing CMS media dependency');
