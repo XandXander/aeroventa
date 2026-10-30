@@ -19,6 +19,18 @@ if (releaseMode === 'preview' || releaseMode === 'review' || releaseMode === 'fi
   console.log('Applied non-production robots.txt: Disallow: /');
 }
 
+// Apply only baseline-bound, owner-approved editorial tokens. This keeps the
+// original Astro DOM, classes, forms, styles and scripts byte-for-byte intact.
+if (['incremental','review'].includes(releaseMode)) {
+  const manifest=path.join(root,'release_out/approved-astro/cms-dom-overrides.json');
+  await fs.access(manifest);
+  await new Promise((resolve,reject)=>{
+    const child=spawn('python3',[path.join(root,'scripts/pr12-cms-dom-apply.py'),
+      '--manifest',manifest,'--dist',dist],{stdio:'inherit',env:process.env});
+    child.once('error',reject);
+    child.once('exit',code=>code===0?resolve():reject(new Error('Unapproved CMS DOM patch rejected')));
+  });
+}
 // Deliver responsive, traceable copies before validating the generated HTML.
 await import('./optimize-public-web-images.mjs');
 
