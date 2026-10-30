@@ -121,7 +121,7 @@ class EditTokens(HTMLParser):
                 raise ValueError(reason+' at '+key[0])
             start,end,raw=matches[0]
             prefix=re.match(r'^\s*',raw).group(0)
-            suffix=re.search(r'\s*,raw).group(0)
+            suffix=re.search(r'\s*$',raw).group(0)
             replacement=prefix+html.escape(record['value'],quote=False)+suffix
             self.edits.append((start,end,replacement))
             self.seen.add(key)
