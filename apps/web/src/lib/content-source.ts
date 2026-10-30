@@ -193,7 +193,7 @@ async function fetchDirectusPage(base: string, offset: number, mode: DirectusMod
   if (!Array.isArray(payload?.data)) throw new Error('Directus payload.data is not an array');
   return payload.data.map((item: ContentRecord) => {
     const hydrated = ['incremental','review'].includes(mode) ? hydrateReleaseMedia(item) : item;
-    return mode !== 'preview' ? assertSafePublishedRecord(hydrated) : assertSafePreviewRecord(hydrated);
+    return ['preview','review'].includes(mode) ? assertSafePreviewRecord(hydrated) : assertSafePublishedRecord(hydrated);
   });
 }
 
