@@ -30,6 +30,16 @@ function preflight(m) {
  if(!Array.isArray(m.files)||m.files.length<1||m.files.length>15)throw Error('Release size blocked');
  const names=m.files.map(x=>x.path);
  if(new Set(names).size!==names.length||names.some(x=>typeof x!=='string'||!fileRe.test(x)))throw Error('Unsafe or duplicated release filename');
+ const newArticles=m.files.filter(x=>x.is_new===true);
+ if(newArticles.length){
+   if(newArticles.some(x=>!/^blog\\/detail\\/[a-z0-9-]+\\/index\\.html$/.test(x.path)||
+       x.bytes_before!==0||x.sha256_before!==digest(Buffer.alloc(0))))
+       throw Error('Unsafe new article rollout');
+   if(!m.approved_paths?.includes('/blog/')||!m.files.some(x=>x.path==='blog/index.html')||
+      !m.files.some(x=>x.path==='sitemap.xml'&&x.is_sitemap))
+       throw Error('New route requires linked blog and exact sitemap in same release');
+ }
+
  if(m.files.some(x=>![x.sha256_before,x.sha256_after].every(y=>/^[a-f0-9]{64}$/.test(String(y||'')))))throw Error('Invalid SHA256 manifest');
  if(m.media!==undefined){
    if(!Array.isArray(m.media)||m.media.length>100)throw Error('Invalid CMS media array');
@@ -62,11 +72,20 @@ async function main(){
    for(const row of manifest.files){
      const existing=path.join(tempDir,'old-'+digest(row.path).slice(0,12)+'.html');
      const remote=HTML_ROOT+'/'+row.path;
-     await ftp.downloadTo(existing,remote);
+     if(row.is_new===true){
+       try{await ftp.downloadTo(existing,remote);throw Error('New article already exists on FTP: '+row.path)}
+       catch(e){
+         if(String(e?.code)!=='550')throw e; // A missing file only. All other FTP faults abort.
+       }
+       await writeFile(existing,Buffer.alloc(0));
+     }else{
+       await ftp.downloadTo(existing,remote);
+     }
      const original=await readFile(existing);
      if(digest(original)!==row.sha256_before)throw Error('Live FTP baseline drift; safe abort for '+row.path);
      const proposed=await readFile(path.join(root,row.path));
-     if(digest(proposed)!==row.sha256_after || proposed.equals(original))throw Error('Candidate verification failed '+row.path);
+     if(digest(proposed)!==row.sha256_after || proposed.equals(original))
+       throw Error('Candidate verification failed '+row.path);
      // Backups and candidate staged under a site-private directory, not webroot.
      const remoteBackup=staging+'/backup/'+row.path;
      const remoteStage=staging+'/candidate/'+row.path;
@@ -141,6 +160,7 @@ async function main(){
    }
    // Every write is single-file atomic rename, never bulk directory upload.
    for(const entry of staged){
+     if(entry.row.is_new===true)await ftp.ensureDir(path.posix.dirname(entry.remote));
      await ftp.rename(entry.remoteStage,entry.remote);
      published.push(entry);
      const url=new URL('/'+entry.row.path.replace(/index\.html$/,''),'https://aeroventa.ru');
@@ -164,11 +184,21 @@ async function main(){
    // already verified site-private backup. Never delete the live destination.
    for(const entry of published.reverse()){
      try{
-       await ftp.rename(entry.remoteBackup,entry.remote);
-       const confirm=path.join(tempDir,'rollback-'+digest(entry.row.path).slice(0,12));
-       await ftp.downloadTo(confirm,entry.remote);
-       if(digest(await readFile(confirm))!==entry.row.sha256_before)throw Error('Rollback checksum mismatch');
-       report.paths.push({path:entry.row.path,status:'ROLLBACK_VERIFIED'});
+       if(entry.row.is_new===true){
+         const current=path.join(tempDir,'current-new-'+digest(entry.row.path).slice(0,12));
+         await ftp.downloadTo(current,entry.remote);
+         if(digest(await readFile(current))!==entry.row.sha256_after)
+           throw Error('New article changed since release; deletion blocked');
+         await ftp.remove(entry.remote);
+         report.paths.push({path:entry.row.path,status:'NEW_ARTICLE_ROLLBACK_REMOVED'});
+       }else{
+         await ftp.rename(entry.remoteBackup,entry.remote);
+         const confirm=path.join(tempDir,'rollback-'+digest(entry.row.path).slice(0,12));
+         await ftp.downloadTo(confirm,entry.remote);
+         if(digest(await readFile(confirm))!==entry.row.sha256_before)
+           throw Error('Rollback checksum mismatch');
+         report.paths.push({path:entry.row.path,status:'ROLLBACK_VERIFIED'});
+       }
      }catch(rollbackError){
        report.paths.push({path:entry.row.path,status:'CRITICAL_ROLLBACK_UNVERIFIED',error:String(rollbackError.message)});
        report.status='CRITICAL_MANUAL_RESTORE_REQUIRED';

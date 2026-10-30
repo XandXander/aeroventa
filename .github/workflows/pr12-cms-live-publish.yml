@@ -89,7 +89,7 @@ jobs:
           lock=json.loads((root/'cms-approved-lock.json').read_text())
           assert manifest['source_sha']==lock['source_sha']
           assert manifest['approved_paths']==[r['path'] for r in lock['records']]
-          assert 1<=len(manifest['files'])<=15
+          assert 1<=len(manifest['files'])<=16
           assert len(manifest.get('media',[]))<=100
           for asset in manifest.get('media',[]):
             payload=(root/asset['path']).read_bytes()

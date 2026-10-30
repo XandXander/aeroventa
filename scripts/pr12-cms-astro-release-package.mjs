@@ -89,15 +89,53 @@ async function generate() {
        throw Error('Resource drift outside managed CMS blocks: '+p);
    }
    if(original?.equals(proposed))throw Error('No difference from currently accepted public page: '+p);
-   // New article also needs a verified internal link and sitemap update before
-   // production. The job refuses to package unlinked new pages as "complete".
-   if(!existed)throw Error('New article lacks separately verified navigation+sitemap contract: '+p);
+   // A new article cannot be silently orphaned. The same approved change
+   // batch must include /blog/ with a visible HTML link to the new URL.
+   if(!existed && !requiredPaths.includes('/blog/'))
+     throw Error('New article requires approved /blog/ update in the same release: '+p);
    const target=path.resolve(root,rel);
    if(!target.startsWith(root+path.sep))throw Error('Unsafe path');
    await mkdir(path.dirname(target),{recursive:true});await writeFile(target,proposed);
    const rollback=path.resolve(root,'__rollback__',rel);
-   await mkdir(path.dirname(rollback),{recursive:true});await writeFile(rollback,original);
-   files.push({path:rel,cms_id:item.id,cms_approved_at:item.owner_approved_at,sha256_before:digest(original),sha256_after:digest(proposed),bytes_before:original.length,bytes_after:proposed.length});
+   await mkdir(path.dirname(rollback),{recursive:true});
+   await writeFile(rollback,original||Buffer.alloc(0));
+   const before=original||Buffer.alloc(0);
+   files.push({path:rel,cms_id:item.id,cms_approved_at:item.owner_approved_at,is_new:!existed,
+     sha256_before:digest(before),sha256_after:digest(proposed),
+     bytes_before:before.length,bytes_after:proposed.length});
+ }
+ // For new articles preserve the current accepted sitemap; never deploy an
+ // incremental Astro sitemap that would remove unrelated indexed pages.
+ const newlyCreated=files.filter(f=>f.is_new===true);
+ if(newlyCreated.length){
+   const blog=await readFile(path.resolve(root,'blog/index.html'),'utf8');
+   for(const row of newlyCreated){
+     const route='/'+row.path.replace(/index\\.html$/,'');
+     const escaped=route.replace(/[.*+?^${}()|[\\]\\\\]/g,'\\\\ const mediaSource=JSON.parse(await readFile(path.resolve(root,'media-registry.json'),'utf8'));');
+     if(!new RegExp('<a\\\\b[^>]+href=["\\\']'+escaped+'["\\\']','i').test(blog))
+       throw Error('Updated /blog/ does not visibly link to new article: '+route);
+   }
+   const sitemapRequest=await fetch(new URL('/sitemap.xml',SITE),{
+     redirect:'error',headers:{Accept:'application/xml'},
+     signal:AbortSignal.timeout(25000)});
+   if(sitemapRequest.status!==200)throw Error('Current public sitemap is not HTTP 200');
+   const sitemapBefore=Buffer.from(await sitemapRequest.arrayBuffer());
+   if(sitemapBefore.length<30||sitemapBefore.length>2000000)throw Error('Unsafe existing sitemap length');
+   let xml=sitemapBefore.toString('utf8');
+   if(!/<urlset\\b[^>]*xmlns=["']http:\\/\\/www\\.sitemaps\\.org\\/schemas\\/sitemap\\/0\\.9["']/i.test(xml)||
+     !/<\\/urlset>\\s*$/i.test(xml))throw Error('Public sitemap XML contract not recognized');
+   for(const row of newlyCreated){
+     const route='/'+row.path.replace(/index\\.html$/,'');
+     const url=new URL(route,SITE).toString();
+     if(xml.includes('<loc>'+url+'</loc>'))throw Error('New article is already in sitemap: '+url);
+     xml=xml.replace(/<\\/urlset>\\s*$/i,'<url><loc>'+url+'</loc></url>\\n</urlset>');
+   }
+   const after=Buffer.from(xml,'utf8');
+   await writeFile(path.resolve(root,'sitemap.xml'),after);
+   await mkdir(path.resolve(root,'__rollback__'),{recursive:true});
+   await writeFile(path.resolve(root,'__rollback__/sitemap.xml'),sitemapBefore);
+   files.push({path:'sitemap.xml',is_sitemap:true,sha256_before:digest(sitemapBefore),
+     sha256_after:digest(after),bytes_before:sitemapBefore.length,bytes_after:after.length});
  }
  const mediaSource=JSON.parse(await readFile(path.resolve(root,'media-registry.json'),'utf8'));
  if(mediaSource.format!=='AEROVENTA_CMS_MEDIA_REGISTRY_V1'||mediaSource.source_sha!==process.env.GITHUB_SHA)
