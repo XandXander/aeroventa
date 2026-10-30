@@ -47,6 +47,7 @@ jobs:
       - name: Require real nonindexable Astro page for the selected route
         env:
           SELECTED: ${{ inputs.selected_path || '/blog/detail/novoe-almaznoe-burenie/' }}
+          DIRECTUS_STATIC_TOKEN: ${{ secrets.DIRECTUS_STATIC_TOKEN }}
         run: |
           python3 - <<'PY'
           from pathlib import Path
@@ -58,6 +59,17 @@ jobs:
           html=rendered.read_text('utf-8')
           assert '<html' in html and '<h1' in html and '<main' in html
           assert re.search(r'<meta[^>]+name=["\']robots["\'][^>]+noindex',html,re.I), 'Draft must remain noindex'
+          # A mock preview that fails to display the actual CMS H1 is rejected.
+          from urllib.request import Request,urlopen
+          from urllib.parse import urlencode
+          from html import unescape
+          url='https://cms.aeroventa.ru/items/content?'+urlencode({'filter[path][_eq]':selected,'fields':'h1,path','limit':'2'})
+          request=Request(url,headers={'Authorization':'Bearer '+os.environ['DIRECTUS_STATIC_TOKEN'],'Accept':'application/json'})
+          with urlopen(request,timeout=20) as response: records=json.load(response)['data']
+          assert len(records)==1 and records[0]['path']==selected
+          def clean(value):return re.sub(r'\\s+',' ',unescape(re.sub(r'<[^>]+>',' ',value))).strip()
+          headings=re.findall(r'<h1\\b[^>]*>(.*?)</h1>',html,re.S|re.I)
+          assert len(headings)==1 and clean(headings[0])==clean(records[0]['h1']), 'Rendered H1 differs from actual Directus draft'
           report={'format':'AEROVENTA_DRAFT_VISUAL_REVIEW_V1','source_sha':os.environ['GITHUB_SHA'],'path':selected,'html_sha256':hashlib.sha256(rendered.read_bytes()).hexdigest(),'production_mutation':False,'preview_is_not_owner_approval':True}
           Path('release_out').mkdir(exist_ok=True)
           Path('release_out/draft-render-proof.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
