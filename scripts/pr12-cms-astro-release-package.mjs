@@ -143,32 +143,6 @@ async function generate() {
      sha256_before:digest(sitemapBefore),sha256_after:digest(after),
      bytes_before:sitemapBefore.length,bytes_after:after.length});
  }
- const mediaSource=JSON.parse(await readFile(path.resolve(root,'media-registry.json'),'utf8'));');
-     if(!new RegExp('<a\\\\b[^>]+href=["\\\']'+escaped+'["\\\']','i').test(blog))
-       throw Error('Updated /blog/ does not visibly link to new article: '+route);
-   }
-   const sitemapRequest=await fetch(new URL('/sitemap.xml',SITE),{
-     redirect:'error',headers:{Accept:'application/xml'},
-     signal:AbortSignal.timeout(25000)});
-   if(sitemapRequest.status!==200)throw Error('Current public sitemap is not HTTP 200');
-   const sitemapBefore=Buffer.from(await sitemapRequest.arrayBuffer());
-   if(sitemapBefore.length<30||sitemapBefore.length>2000000)throw Error('Unsafe existing sitemap length');
-   let xml=sitemapBefore.toString('utf8');
-   if(!/<urlset\\b[^>]*xmlns=["']http:\\/\\/www\\.sitemaps\\.org\\/schemas\\/sitemap\\/0\\.9["']/i.test(xml)||
-     !/<\\/urlset>\\s*$/i.test(xml))throw Error('Public sitemap XML contract not recognized');
-   for(const row of newlyCreated){
-     const route='/'+row.path.replace(/index\\.html$/,'');
-     const url=new URL(route,SITE).toString();
-     if(xml.includes('<loc>'+url+'</loc>'))throw Error('New article is already in sitemap: '+url);
-     xml=xml.replace(/<\\/urlset>\\s*$/i,'<url><loc>'+url+'</loc></url>\\n</urlset>');
-   }
-   const after=Buffer.from(xml,'utf8');
-   await writeFile(path.resolve(root,'sitemap.xml'),after);
-   await mkdir(path.resolve(root,'__rollback__'),{recursive:true});
-   await writeFile(path.resolve(root,'__rollback__/sitemap.xml'),sitemapBefore);
-   files.push({path:'sitemap.xml',is_sitemap:true,sha256_before:digest(sitemapBefore),
-     sha256_after:digest(after),bytes_before:sitemapBefore.length,bytes_after:after.length});
- }
  const mediaSource=JSON.parse(await readFile(path.resolve(root,'media-registry.json'),'utf8'));
  if(mediaSource.format!=='AEROVENTA_CMS_MEDIA_REGISTRY_V1'||mediaSource.source_sha!==process.env.GITHUB_SHA)
    throw Error('Untrusted media manifest');
