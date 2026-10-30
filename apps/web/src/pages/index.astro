@@ -14,10 +14,29 @@ if (!hasOwnerHeroMedia) throw new Error('Approved Owner HOME HERO original missi
 const content = await getByPath('/');
 if (!content) throw new Error('Home content is missing');
 
-const homeHeroLines = ['Невидимая эстетика.', 'Легкое дыхание.'] as const;
+const acceptedHeroLines = ['Невидимая эстетика.', 'Легкое дыхание.'] as const;
 
 const approvedCmsHome = ['production', 'incremental'].includes(String(import.meta.env.AEROVENTA_RELEASE_MODE || ''))
   && content.status === 'published' && Boolean(content.owner_approved_at);
+// Approved CMS may replace editorial values, but not the two-line HI-END
+// composition. The accepted default remains untouched in fixture mode.
+const cmsHeroLines = approvedCmsHome
+  ? String(content.h1 || '').trim().split(/\r?\n|(?<=\.)\s+/).filter(Boolean)
+  : [];
+if (approvedCmsHome && (cmsHeroLines.length !== 2 || cmsHeroLines.some(s=>s.length<5||s.length>64))) {
+  throw new Error('Approved HOME H1 must preserve a two-line editorial composition');
+}
+const homeHeroLines = approvedCmsHome ? cmsHeroLines : [...acceptedHeroLines];
+if (approvedCmsHome && !content.excerpt?.trim()) {
+  throw new Error('Approved HOME needs its complete editorial lead');
+}
+const cmsHeroMedia = approvedCmsHome && typeof content.hero_file === 'string' &&
+  /^\/cms-media\/[a-f0-9]{64}\.(?:png|jpe?g|webp|avif)$/.test(content.hero_file)
+    ? content.hero_file : null;
+if (approvedCmsHome && content.hero_file && !cmsHeroMedia) {
+  throw new Error('Approved HOME image must be staged as immutable CMS media');
+}
+const renderedHeroMedia = cmsHeroMedia || ownerHeroMedia;
 const page = {
   ...content,
   // Owner-approved two-line HERO is part of the accepted visual layout.
@@ -51,8 +70,7 @@ const questions = [
         <p class="home-kicker">Монтаж систем вентиляции</p>
         <h1 id="home-title"><span class="home-hero__title-line">{homeHeroLines[0]}</span>{" "}<span class="home-hero__title-line">{homeHeroLines[1]}</span></h1>
         <p class="home-lede">
-          Монтаж вентиляции в квартирах и домах, ресторанах, коммерческих и производственных зданиях.
-          Работаем по проекту; если его нет — уточним задачу и исходные данные.
+          {approvedCmsHome ? content.excerpt : 'Монтаж вентиляции в квартирах и домах, ресторанах, коммерческих и производственных зданиях. Работаем по проекту; если его нет — уточним задачу и исходные данные.'}
         </p>
         <p class="home-geo">Санкт-Петербург · Ленинградская область · Москва · Карелия</p>
         <div class="home-actions" aria-label="Основные действия">
@@ -64,7 +82,7 @@ const questions = [
       <figure class="hero-engineering">
         <img
           class="hero-engineering__photo"
-          src={ownerHeroMedia}
+          src={renderedHeroMedia}
           width={hasOwnerHeroMedia ? 1774 : 800}
           height={hasOwnerHeroMedia ? 887 : 600}
           alt="Архитектурная визуализация интерьера с синими воздушными потоками"
