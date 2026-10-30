@@ -240,6 +240,17 @@ function getFixtureContent(): ContentRecord[] {
   });
 }
 
+/** Preserve Owner-accepted original markup whenever the Directus record has
+ * no replacement body. A DOM field block edits the compiled Astro element
+ * itself, never removes the original article body or gallery. */
+function mergeSelectedContent(base: ContentRecord, changed: ContentRecord): ContentRecord {
+  const merged={...base,...changed};
+  const hasReplacement=changed.body_html_safety_status==='reviewed_safe' && Boolean(changed.body_html?.trim());
+  if(!hasReplacement) merged.body_html=base.body_html;
+  if(!changed.excerpt?.trim()) merged.excerpt=base.excerpt;
+  return merged;
+}
+
 export async function getAllContent(): Promise<ContentRecord[]> {
   const directusUrl = import.meta.env.DIRECTUS_URL;
   const releaseMode: string = String(import.meta.env.AEROVENTA_RELEASE_MODE || 'fixture');
@@ -273,7 +284,7 @@ export async function getAllContent(): Promise<ContentRecord[]> {
     if (selectedPaths.some(p=>!byPath.has(p))) throw new Error('Selected draft is unavailable');
     const existing = getFixtureContent();
     const known = new Set(existing.map(x=>x.path));
-    const composed = existing.map(row=>selected.has(row.path)?{...row,...byPath.get(row.path)!}:row);
+    const composed = existing.map(row=>selected.has(row.path)?mergeSelectedContent(row,byPath.get(row.path)!):row);
     for(const p of selectedPaths) {
       if(known.has(p) || EXTRA_ASTRO_STATIC_ROUTES.has(p))continue;
       if(!/^\/blog\/detail\/[a-z0-9-]+\/$/.test(p))throw new Error('New visual review route not allowed');
@@ -302,7 +313,7 @@ export async function getAllContent(): Promise<ContentRecord[]> {
     const knownPaths = new Set(base.map((item) => normalizePath(item.path)));
     const released = base.map((item) => {
       const change = approvedByPath.get(normalizePath(item.path));
-      return change && selected.has(normalizePath(item.path)) ? {...item, ...change} : item;
+      return change && selected.has(normalizePath(item.path)) ? mergeSelectedContent(item,change) : item;
     });
     for (const path of selectedPaths) {
       if (knownPaths.has(path) || EXTRA_ASTRO_STATIC_ROUTES.has(path)) continue;
