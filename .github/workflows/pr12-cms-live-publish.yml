@@ -226,7 +226,7 @@ jobs:
         run: node scripts/pr12-cms-approved-snapshot.mjs verify
       - name: Install bounded FTPS client and run isolated test
         run: |
-          npm install --no-save --package-lock=false --no-audit --no-fund basic-ftp@5.0.5
+          npm install --no-save --package-lock=false --no-audit --no-fund basic-ftp@5.0.5 tslib@2.8.1
           node scripts/pr12-cms-ftps-transactional-deploy.mjs --self-test
       - name: Publish EXACT reviewed HTML only after Environment review
         env:
@@ -332,7 +332,7 @@ jobs:
           PY
       - name: Install FTPS client and run offline restore self-tests
         run: |
-          npm install --no-save --package-lock=false --no-audit --no-fund basic-ftp@5.0.5
+          npm install --no-save --package-lock=false --no-audit --no-fund basic-ftp@5.0.5 tslib@2.8.1
           node --check scripts/pr12-cms-manual-restore.mjs
           node scripts/pr12-cms-manual-restore.mjs --self-test
       - name: Restore exact selected site files and verify actual public HTTP hashes
