@@ -9,11 +9,14 @@ if (!defined('AEROVENTA_EDITOR_ENTRY')) {http_response_code(404);exit;}
 function baselineExport(string $method): never {
     if($method!=='GET')respond(405,['error'=>'Экспорт только для чтения']);
     if(!logged()||!ownerAdmin())respond(403,['error'=>'Только администратор может скачать резервную копию']);
+    // Directus exposes the actual installed schema; a guessed optional
+    // field must not make the owner's pre-import backup fail with HTTP 400.
+    // Only these four editorial collections are ever requested.
     $collections=[
-        'content'=>'id,path,slug,title,h1,excerpt,status,owner_approved_at,published_at,updated_at_public,content_type,seo_title,seo_description,og_title,og_description,og_image,canonical_override,schema_type,schema_json_extra,hero_file,body_html,body_html_safety_status,robots_index,robots_follow,sitemap_include,knowledge_allowed,ai_origin,lead_intent,knowledge_summary,migration_evidence',
-        'content_blocks'=>'id,block_type,data,fact_checked',
-        'content_block_map'=>'id,content_id,block_id,sort',
-        'content_categories'=>'id,name,slug,path,description,status,category_type,seo_title,seo_description,robots_index'
+        'content'=>'*',
+        'content_blocks'=>'*',
+        'content_block_map'=>'*',
+        'content_categories'=>'*'
     ];
     $result=[];$counts=[];
     foreach($collections as $collection=>$fields){
