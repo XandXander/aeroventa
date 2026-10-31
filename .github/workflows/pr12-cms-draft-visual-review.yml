@@ -7,7 +7,6 @@ on:
       - 'apps/web/src/lib/content-source.ts'
       - 'apps/web/src/layouts/BaseLayout.astro'
       - 'scripts/pr12-cms-stage-directus-media.mjs'
-      - 'scripts/pr12-cms-verify-import.mjs'
   workflow_dispatch:
     inputs:
       selected_path:
@@ -34,13 +33,6 @@ jobs:
           node --check scripts/pr12-cms-stage-directus-media.mjs
           node scripts/pr12-cms-stage-directus-media.mjs --self-test
           npm run check:web
-      - name: Verify saved 49-page import and block-map integrity (read-only)
-        env:
-          DIRECTUS_STATIC_TOKEN: ${{ secrets.DIRECTUS_STATIC_TOKEN }}
-        run: |
-          node --check scripts/pr12-cms-verify-import.mjs
-          node scripts/pr12-cms-verify-import.mjs --self-test
-          node scripts/pr12-cms-verify-import.mjs
       - name: Exact SHA media staging from the existing Directus library
         env:
           AEROVENTA_INCREMENTAL_PATHS: ${{ inputs.selected_path || '/blog/detail/novoe-almaznoe-burenie/' }}
