@@ -10,7 +10,7 @@ async function readCms(token){
   const url=new URL('https://cms.aeroventa.ru/items/content');
   url.searchParams.set('limit','100');
   url.searchParams.set('offset',String(offset));
-  url.searchParams.set('fields','id,path,status,owner_approved_at,robots_index,sitemap_include,body_blocks.block_id.id,body_blocks.block_id.block_type,body_blocks.block_id.data');
+  url.searchParams.set('fields','id,path,status,owner_approved_at,robots_index,sitemap_include');
   const res=await fetch(url,{redirect:'error',signal:AbortSignal.timeout(25000),headers:{Accept:'application/json',Authorization:'Bearer '+token}});
   ok(res.ok,'Directus readback HTTP '+res.status);
   const data=(await res.json()).data;
@@ -20,7 +20,23 @@ async function readCms(token){
  }
  throw Error('Directus pagination exceeded bounded limit');
 }
-function verify(plan,retained,rows){
+async function readMaps(token){
+ const links=[];
+ for(let offset=0;offset<=5000;offset+=100){
+  const url=new URL('https://cms.aeroventa.ru/items/content_block_map');
+  url.searchParams.set('limit','100');
+  url.searchParams.set('offset',String(offset));
+  url.searchParams.set('fields','id,content_id,sort,block_id.id,block_id.block_type,block_id.data');
+  const res=await fetch(url,{redirect:'error',signal:AbortSignal.timeout(25000),headers:{Accept:'application/json',Authorization:'Bearer '+token}});
+  ok(res.ok,'Directus block map readback HTTP '+res.status);
+  const data=(await res.json()).data;
+  ok(Array.isArray(data),'Invalid Directus map payload');
+  links.push(...data);
+  if(data.length<100)return links;
+ }
+ throw Error('Directus content_block_map pagination exceeded bounded limit');
+}
+function verify(plan,retained,rows,maps){
  ok(plan.format==='AEROVENTA_OWNER_ACCEPTED_CMS_BASELINE_V1'&&plan.pages?.length===49&&plan.summary.fields===2342,'Pinned baseline mismatch');
  ok(retained.length===29&&new Set(retained).size===29,'Retained-route manifest mismatch');
  const byPath=new Map();
@@ -29,14 +45,22 @@ function verify(plan,retained,rows){
   ok(!byPath.has(row.path),'Duplicate Directus path '+row.path);
   byPath.set(row.path,row);
  }
+ const linksByContent=new Map();
+ for(const rel of maps){
+  const id=typeof rel.content_id==='object'?rel.content_id?.id:rel.content_id;
+  if(typeof id!=='string')continue;
+  if(!linksByContent.has(id))linksByContent.set(id,[]);
+  linksByContent.get(id).push(rel);
+ }
  let blocks=0,fields=0,extraBlocks=0;
  for(const page of plan.pages){
   const r=byPath.get(page.path);
   ok(r,'Missing imported page '+page.path);
   ok(r.status==='draft'&&r.owner_approved_at==null&&r.robots_index===false&&r.sitemap_include===false,'Draft protection mismatch '+page.path);
-  ok(Array.isArray(r.body_blocks),'No block relations '+page.path);
+  const linked=linksByContent.get(r.id)||[];
+  ok(linked.length>0,'No content_block_map links '+page.path);
   const found=new Map();
-  for(const relation of r.body_blocks){
+  for(const relation of linked){
    const b=relation?.block_id;
    ok(typeof b?.id==='string','Broken content_block_map '+page.path);
    if(b.block_type!=='dom_fields'){extraBlocks++;continue}
@@ -62,7 +86,8 @@ async function main(){
  ok(token,'Directus read-only token unavailable');
  const plan=JSON.parse((await readAcceptedBlueprint()).toString('utf8'));
  const retained=JSON.parse(await readFile('apps/web/src/data/expected-retained-paths.json','utf8'));
- const result=verify(plan,retained,await readCms(token));
+ const [rows,maps]=await Promise.all([readCms(token),readMaps(token)]);
+ const result=verify(plan,retained,rows,maps);
  console.log('CMS_IMPORT_READBACK '+JSON.stringify(result));
 }
 main().catch(e=>{console.error('CMS_IMPORT_READBACK_BLOCKED '+e.message);process.exitCode=1});
