@@ -1,129 +1,49 @@
-name: PR12 — verified Directus preview ZIP (build only, no deployment)
-
+name: PR12 — private Directus draft inventory QA (no draft HTML artifact)
 on:
   pull_request:
     branches: [aeroventa/hiend-audit-av-correction-2026-10-12]
-    paths: ['.github/workflows/pr12-preview-zip.yml', 'apps/web/**', 'scripts/**', 'migration/**']
+    paths: ['.github/workflows/pr12-preview-zip.yml', 'apps/web/**', 'scripts/**', 'migration/**', 'admin/aeroventa-admin/**']
 permissions:
   contents: read
-
 jobs:
-  preview-zip:
+  verify-private-drafts:
     if: github.event.pull_request.number == 12
     runs-on: ubuntu-latest
-    timeout-minutes: 12
-    env:
-      SOURCE_SHA: ${{ github.event.pull_request.head.sha }}
+    timeout-minutes: 15
     steps:
-      - name: Checkout exact PR12 source (no production checkout)
-        uses: actions/checkout@v5
+      - uses: actions/checkout@v5
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           persist-credentials: false
-      - name: Set up Node
-        uses: actions/setup-node@v6
+      - uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
-      - name: Confirm read-only Build Reader is already configured
+      - name: Read-only reconciliation of 49 retained Directus draft paths
         env:
           DIRECTUS_STATIC_TOKEN: ${{ secrets.DIRECTUS_STATIC_TOKEN }}
-        shell: bash
         run: |
-          if [ -z "$DIRECTUS_STATIC_TOKEN" ]; then
-            echo "::error::The existing DIRECTUS_STATIC_TOKEN is not available as an Actions secret. No fixture fallback is permitted."
-            exit 1
-          fi
-      - name: Install and validate immutable source
-        env:
-          AEROVENTA_REQUIRE_OWNER_TEAM_MEDIA: "true"
-        run: |
-          npm install --no-audit --no-fund
-          npm run generate:hosting-rules
-          npm run validate
-      - name: Build REAL Directus draft-preview only
-        env:
-          DIRECTUS_URL: https://cms.aeroventa.ru
-          DIRECTUS_STATIC_TOKEN: ${{ secrets.DIRECTUS_STATIC_TOKEN }}
-          AEROVENTA_RELEASE_MODE: preview
-          AEROVENTA_REQUIRE_OWNER_TEAM_MEDIA: "true"
-        run: |
-          node scripts/build-directus-v13-preview.mjs
-          npm run validate:dist
-      - name: Validate preview, five originals, archive root and noindex; create ZIP outside dist
-        env:
-          AEROVENTA_RELEASE_MODE: preview
-          SOURCE_SHA: ${{ github.event.pull_request.head.sha }}
-          DIRECTUS_STATIC_TOKEN: ${{ secrets.DIRECTUS_STATIC_TOKEN }}
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          import json, hashlib, re, os, zipfile
-          from pathlib import Path
-          from urllib.parse import urlsplit, unquote
-          dist=Path('apps/web/dist')
-          state=json.loads(Path('BUILD_VALIDATION_T2.json').read_text())
-          assert state['release_mode']=='preview', 'Fixture is forbidden'
-          assert state['verdict']=='PASS' and not state['warnings'], 'Unresolved assets or validation warnings'
-          assert (dist/'index.html').is_file() and (dist/'404.html').is_file()
-          assert (dist/'.htaccess').is_file(), 'Generated hosting reference required, but must not ship'
-          rule=(dist/'.htaccess').read_text()
-          assert len(re.findall(r'^RedirectMatch 301 ',rule,re.M))==13
-          assert len(re.findall(r'^RedirectMatch gone ',rule,re.M))==54
-          assert (dist/'robots.txt').read_text().strip()=='User-agent: *\nDisallow: /'
-          htmls=list(dist.rglob('*.html'))
-          assert len(htmls)==51, f'Expected exactly 51 HTML routes with 8 direct case pages; got {len(htmls)}'
-          for h in htmls:
-            body=h.read_text()
-            assert re.search(r'<meta[^>]+name=["\']robots["\'][^>]*noindex',body,re.I), f'Not noindex: {h}'
-            assert 'Implementation fixture' not in body, f'Fixture leak: {h}'
-          names={
-            'owner-team-group-20261015.webp':'0a507849d6d8b54688779af5fab086e228272908310ff1c408b93c6afdaebb3a',
-            'owner-evgeniy-panov-20261015.webp':'6227996e36b7c4b0a9cfb889f447b9dba6569a5d6a4154e628cf323aefec2f09',
-            'owner-aleksandr-tarasov-20261013.webp':'9215087532eef31a03f3af4bc35ef062855ab0a22ac003b5e5bd4fdbf29e2a4a',
-            'owner-denis-ivanov-20261013.webp':'c72222ae1090d94955e2d6824a125f7adffd8bfead4e6d050903c369b2e93362',
-            'owner-aleksandr-shalamov-20261013.webp':'c2057be1490d987b82b237c1f728093831e8afe87b2b634da22a8257a1a0817a'
+          node --input-type=module <<'NODE'
+          import { readAcceptedBlueprint } from './scripts/pr12-cms-blueprint-decode.mjs';
+          const token=process.env.DIRECTUS_STATIC_TOKEN;
+          if(!token)throw Error('Existing read-only Build Reader token unavailable');
+          const plan=JSON.parse((await readAcceptedBlueprint()).toString('utf8'));
+          if(plan.pages.length!==49||plan.summary.fields!==2342)throw Error('Pinned blueprint mismatch');
+          const expected=new Set(plan.pages.map(r=>r.path));
+          if(expected.size!==49)throw Error('Duplicate blueprint route');
+          const url=new URL('https://cms.aeroventa.ru/items/content');
+          url.searchParams.set('fields','id,path,status,owner_approved_at,robots_index,sitemap_include');
+          url.searchParams.set('limit','100');
+          const response=await fetch(url,{redirect:'error',signal:AbortSignal.timeout(25000),
+            headers:{Accept:'application/json',Authorization:'Bearer '+token}});
+          if(!response.ok)throw Error('Directus draft QA HTTP '+response.status);
+          const rows=(await response.json()).data;
+          if(!Array.isArray(rows)||rows.length!==49)throw Error('Expected 49 CMS records, got '+(rows?.length??'invalid'));
+          const actual=new Set(rows.map(r=>r.path));
+          if(actual.size!==49||[...expected].some(p=>!actual.has(p)))throw Error('CMS routes do not equal 49 accepted canonical paths');
+          for(const row of rows){
+            if(row.status!=='draft'||row.owner_approved_at!==null||row.robots_index!==false||row.sitemap_include!==false)
+              throw Error('Unapproved route isolation mismatch '+row.path);
           }
-          about=(dist/'about/index.html').read_text()
-          for name,expect in names.items():
-            path=dist/'evidence/team'/name
-            assert path.is_file() and hashlib.sha256(path.read_bytes()).hexdigest()==expect, name
-            assert name in about, f'About HTML missing media: {name}'
-          assert all(s in about for s in ['Евгений Панов','Александр Тарасов','Денис Иванов','Александр Шаламов'])
-          forbidden=re.compile(r'(^|/)(?:\.env(?:\..*)?|\.git|node_modules|\.htaccess|.*\.log|.*\.zip|.*\.dpapi)$',re.I)
-          files=[p for p in dist.rglob('*') if p.is_file()]
-          assert all(not p.is_symlink() for p in files)
-          for path in files:
-            rel=path.relative_to(dist).as_posix()
-            if rel=='.htaccess': continue
-            assert not forbidden.search(rel), f'Forbidden release file: {rel}'
-            content=path.read_bytes()
-            token=os.environ['DIRECTUS_STATIC_TOKEN'].encode()
-            assert token and token not in content, f'Secret leakage: {rel}'
-          for h in htmls:
-            for raw in re.findall(r'(?:src|href)=["\'](/[^"\']+)["\']',h.read_text()):
-              route=urlsplit(raw).path
-              if not route or route=='/': continue
-              probe=dist/unquote(route).lstrip('/')
-              valid=(probe/'index.html').is_file() if route.endswith('/') else (probe.is_file() or (probe/'index.html').is_file())
-              assert valid, f'Broken internal asset or page link: {h}: {route}'
-          Path('release_out').mkdir(exist_ok=True)
-          name='AEROVENTA_PR12_STAGING_READY_'+os.environ['SOURCE_SHA']+'.zip'
-          target=Path('release_out')/name
-          with zipfile.ZipFile(target,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=7,allowZip64=True) as z:
-            for p in sorted(files):
-              rel=p.relative_to(dist).as_posix()
-              if rel=='.htaccess': continue # leave existing server-side Basic Auth and 301/410/404 in place
-              z.write(p,rel)
-          with zipfile.ZipFile(target) as z:
-            assert z.testzip() is None
-            assert 'index.html' in z.namelist() and '.htaccess' not in z.namelist()
-            assert all(not x.startswith('dist/') and not x.startswith('apps/') for x in z.namelist())
-          print('PREVIEW_RELEASE_ZIP_PASS SHA='+os.environ['SOURCE_SHA']+' BYTES='+str(target.stat().st_size)+' SHA256='+hashlib.sha256(target.read_bytes()).hexdigest())
-          PY
-      - name: Upload one exact static website ZIP (NO staging/production deploy)
-        uses: actions/upload-artifact@v6
-        with:
-          name: PR12-DIRECTUS-PREVIEW-ZIP
-          path: release_out/AEROVENTA_PR12_STAGING_READY_*.zip
-          if-no-files-found: error
-          retention-days: 7
+          console.log('DIRECTUS_PRIVATE_DRAFT_INVENTORY_PASS routes=49 drafts=49 approved=0');
+          console.log('NO_PRIVATE_DRAFT_HTML_WRITTEN_OR_UPLOADED');
+          NODE

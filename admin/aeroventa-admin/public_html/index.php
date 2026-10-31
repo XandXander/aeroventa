@@ -212,7 +212,7 @@ try {
         }
         if (!logged()) respond(401,['error'=>'Войдите для просмотра данных']);
         if(in_array($action,['reviewed_preview','reviewed_media'],true))reviewedPreview($action,$method);
-        if(in_array($action,['baseline_status','baseline_import_page'],true))baselineImport($action,$method);
+        if(in_array($action,['baseline_status','baseline_verify','baseline_import_page'],true))baselineImport($action,$method);
         if($action==='baseline_export')baselineExport($method);
         if (in_array($action,['publisher_status','owner_approve','prepare_release','publish_release','release_status'],true)) {
             releaseBridge($action,$method);
@@ -570,6 +570,6 @@ header('Content-Type: text/html; charset=UTF-8');
 ?><!doctype html>
 <html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow"><meta name="color-scheme" content="light">
-<title>AEROVENTA — управление содержимым</title><link rel="icon" type="image/svg+xml" href="/assets/symbol-color.svg"><link rel="stylesheet" href="/assets/app.css"></head>
+<title>AEROVENTA — управление содержимым</title><link rel="icon" type="image/svg+xml" href="/assets/symbol-color.svg"><link rel="stylesheet" href="/assets/app.css?v=<?=substr(hash_file('sha256', __DIR__.'/assets/app.css'),0,12)?>"></head>
 <body><div id="app" aria-live="polite"><div class="boot"><img class="boot-logo" src="/assets/logo-header-color.svg" alt="AEROVENTA.RU"><p>Загрузка AEROVENTA Editor</p></div></div>
-<script src="/assets/app.js" defer></script></body></html>
+<script src="/assets/app.js?v=<?=substr(hash_file('sha256', __DIR__.'/assets/app.js'),0,12)?>" defer></script></body></html>

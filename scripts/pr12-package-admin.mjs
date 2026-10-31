@@ -52,7 +52,19 @@ try{
     target:'Beget isolated aeroventa-admin, allowed public_html and one nonsecret private blueprint',does_not_modify:['aeroventa.ru','n8n','Directus schema','private/aeroventa-release-config.php'],
     files:rows};
   await writeFile(path.join(work,'MANIFEST_SHA256.json'),JSON.stringify(manifest,null,2)+'\n');
-  const instructions=`AEROVENTA — УСТАНОВКА ЕДИНОГО КОМПЛЕКТА АДМИНКИ\n\n1. Создайте резервную копию ВСЕЙ существующей папки aeroventa-admin, включая private и public_html.\n2. Распакуйте ZIP в существующую папку aeroventa-admin, заменяя только public_html/* и добавляя private/accepted-site-cms-blueprint-v1.json из манифеста.\n3. НЕ удаляйте и НЕ заменяйте aeroventa-admin/private/aeroventa-release-config.php; новый токен, FTP, CMS не создаются.\n3а. До первого импорта войдите в админку и скачайте локальную резервную копию исходных черновиков.\n4. Откройте https://admin.aeroventa.ru/, войдите, выберите Перенос сайта и выполните единую пакетную миграцию 49 страниц.\n5. Первый выпуск — только после просмотра именно утверждённого Astro-кандидата и подтверждения владельца.\n6. При проблеме восстановите только сохранённую папку aeroventa-admin из резервной копии; не меняйте aeroventa.ru.\n\nВНИМАНИЕ: импорт запускается явной кнопкой владельца, при установке файлов он НЕ происходит и не является подтверждением публикации на Beget.\n`;
+  const instructions=`AEROVENTA — ЕДИНЫЙ КОМПЛЕКТ ОБНОВЛЕНИЯ СУЩЕСТВУЮЩЕЙ АДМИНКИ
+GitHub source SHA: ${source||'not-set'}
+
+1. Сохраните текущую папку aeroventa-admin целиком для отката; НЕ затрагивайте aeroventa.ru.
+2. Распакуйте ZIP в СУЩЕСТВУЮЩУЮ папку aeroventa-admin, заменяя разрешённые файлы public_html; private/accepted-site-cms-blueprint-v1.json сохраните из пакета.
+3. НЕ трогайте private/aeroventa-release-config.php, токены, Directus, FTP, формы и AI-консультанта.
+4. Откройте https://admin.aeroventa.ru/ и нажмите «Перенос сайта» → «Проверить полноту переноса без изменений».
+5. При PASS 49/49 и 2342/2342 НЕ запускайте импорт повторно. При расхождении сохраните результат проверки — автоматических правок нет.
+6. Отдельно проверяйте конкретный утверждённый Astro preview до выпуска. Этот комплект НЕ публикует сайт и НЕ даёт разрешение на боевой выпуск.
+7. При ошибке восстановите ТОЛЬКО папку aeroventa-admin из резервной копии.
+
+Никакой повторной миграции, создания FTP/Directus, установки расширений или публикации при распаковке не происходит.
+`;
   await writeFile(path.join(work,'INSTALL_ADMIN_RU.txt'),instructions);
   await mkdir(path.dirname(out),{recursive:true});
   // Explicit list, fixed order, normalized timestamps for repeatable byte-level artifact.

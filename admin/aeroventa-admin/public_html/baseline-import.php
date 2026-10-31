@@ -24,9 +24,121 @@ function baselineDirectusFailure(string $stage, array $response): never {
     error_log('[AEROVENTA baseline import] '. $stage.' HTTP '.$http.' '.$code);
     respond($http===403?403:502,['error'=>'Directus: '.$stage.' (HTTP '.$http.'; '.$code.'). Черновики сохранены.']);
 }
+
+/**
+ * Read-only full post-import reconciliation. Requires the ALREADY EXISTING
+ * owner Directus session, never the deliberately limited Actions Build Reader.
+ * Compares structural keys only; preserves and counts manual text changes.
+ */
+function baselineVerify(array $plan): never {
+    if(!ownerAdmin()) respond(403,['error'=>'Проверка доступна только владельцу']);
+    $r=requestCms('GET','/items/content?fields=id,path,status,owner_approved_at,robots_index,sitemap_include&limit=100&sort=path');
+    if($r['status']!==200)baselineDirectusFailure('проверка сохранённых страниц',$r);
+    $records=$r['data']['data']??null;
+    if(!is_array($records)||count($records)>=100)respond(409,['error'=>'Неполный список материалов Directus']);
+    $byPath=[];$ids=[];$issues=[];
+    foreach($records as $row){
+        $p=$row['path']??null;$id=$row['id']??null;
+        if(!is_string($p)||!is_string($id)||isset($byPath[$p])||isset($ids[$id])){
+            $issues[]='Некорректный или повторяющийся адрес/ID записи';
+            continue;
+        }
+        $byPath[$p]=$row;$ids[$id]=true;
+    }
+    $links=[];$seenLinks=[];
+    // Existing relation collection, already used by the installed editor.
+    // Bounded read-only pagination; stable sort avoids page overlap.
+    for($offset=0;$offset<2000;$offset+=100){
+        $r=requestCms('GET','/items/content_block_map?fields=id,content_id,sort,block_id.id,block_id.block_type,block_id.data,block_id.fact_checked&limit=100&sort=id&offset='.$offset);
+        if($r['status']!==200)baselineDirectusFailure('проверка связей секций',$r);
+        $part=$r['data']['data']??null;
+        if(!is_array($part)||count($part)>100)respond(502,['error'=>'Неверная страница связей Directus']);
+        foreach($part as $link){
+            $linkId=$link['id']??null;
+            if(!is_scalar($linkId)||isset($seenLinks[(string)$linkId])){ $issues[]='Повторяющаяся связь секции';continue; }
+            $seenLinks[(string)$linkId]=true;
+            $contentId=$link['content_id']??null;
+            if(is_array($contentId))$contentId=$contentId['id']??null;
+            if(!is_string($contentId)){$issues[]='Связь без ID материала';continue;}
+            $links[$contentId][]=$link;
+        }
+        if(count($part)<100)break;
+        if($offset===1900)respond(409,['error'=>'Превышен безопасный лимит секций']);
+    }
+    $verifiedPages=0;$verifiedBlocks=0;$verifiedFields=0;$editedFields=0;$otherBlocks=0;
+    $expectedPaths=[];
+    foreach($plan['pages'] as $page){
+        $path=$page['path']??null;
+        if(!is_string($path)){ $issues[]='Исходный реестр повреждён';continue; }
+        $expectedPaths[$path]=true;
+        $item=$byPath[$path]??null;
+        if(!is_array($item)){ $issues[]='Нет страницы: '.$path;continue;}
+        if(($item['status']??null)!=='draft'||($item['owner_approved_at']??null)!==null||
+           ($item['robots_index']??null)!==false||($item['sitemap_include']??null)!==false){
+            $issues[]='Нарушена защита черновика: '.$path;continue;
+        }
+        $actual=$links[$item['id']]??[];
+        $sections=[];$invalid=false;
+        foreach($actual as $row){
+            $block=$row['block_id']??null;
+            if(!is_array($block)||!is_string($block['id']??null)){$invalid=true;break;}
+            if(($block['block_type']??null)!=='dom_fields'){$otherBlocks++;continue;}
+            $data=$block['data']??null;
+            $fields=$data['fields']??null;
+            $key=is_array($fields)?($fields[0]['key']??null):null;
+            if(!is_array($data)||($data['version']??null)!==1||($data['page']??null)!==$path||
+               !is_string($key)||isset($sections[$key])){$invalid=true;break;}
+            $sections[$key]=$fields;
+        }
+        if($invalid){$issues[]='Повреждена или дублирована секция: '.$path;continue;}
+        $pageBlocks=0;$pageFields=0;
+        foreach(($page['blocks']??[]) as $original){
+            $expected=$original['data']['fields']??null;
+            $first=is_array($expected)?($expected[0]['key']??null):null;
+            if(!is_string($first)||!array_key_exists($first,$sections)){
+                $issues[]='Нет исходной секции: '.$path;$invalid=true;break;
+            }
+            $now=$sections[$first];
+            if(!is_array($now)||count($now)!==count($expected)){
+                $issues[]='Состав секции отличается: '.$path;$invalid=true;break;
+            }
+            foreach($expected as $i=>$field){
+                if(($now[$i]['key']??null)!==($field['key']??null)||
+                   ($now[$i]['node']??null)!==($field['node']??null)||
+                   ($now[$i]['kind']??null)!==($field['kind']??null)||
+                   ($now[$i]['attribute']??null)!==($field['attribute']??null)||
+                   ($now[$i]['source_sha256']??null)!==($field['source_sha256']??null)){
+                    $issues[]='Исходный DOM-контракт изменён: '.$path;$invalid=true;break;
+                }
+                if(($now[$i]['value']??null)!==($field['value']??null))$editedFields++;
+                $pageFields++;
+            }
+            if($invalid)break;
+            $pageBlocks++;
+        }
+        if($invalid)continue;
+        if(count($sections)!==$pageBlocks){
+            $issues[]='Лишние исходные секции: '.$path;continue;
+        }
+        $verifiedPages++;$verifiedBlocks+=$pageBlocks;$verifiedFields+=$pageFields;
+    }
+    foreach($byPath as $path=>$item)if(!isset($expectedPaths[$path]))$issues[]='Дополнительный CMS-маршрут: '.$path;
+    if($verifiedPages!==49||$verifiedFields!==(int)$plan['summary']['fields'])$issues[]='Неполный перенос 49 страниц / 2342 полей';
+    $complete=count($issues)===0;
+    respond(200,[
+        'complete'=>$complete,'canonical_pages'=>49,'verified_pages'=>$verifiedPages,
+        'expected_fields'=>(int)$plan['summary']['fields'],'verified_fields'=>$verifiedFields,
+        'verified_sections'=>$verifiedBlocks,'preserved_editor_changes'=>$editedFields,
+        'additional_editor_blocks'=>$otherBlocks,'directus_records'=>count($byPath),
+        'issues'=>array_slice(array_values(array_unique($issues)),0,12),
+        'read_only'=>true,'public_site_changed'=>false
+    ]);
+}
+
 function baselineImport(string $action,string $method): never {
     if(!ownerAdmin())respond(403,['error'=>'Импорт разрешён только владельцу-администратору Directus']);
     $plan=baselinePlan();
+    if($action==='baseline_verify' && $method==='GET')baselineVerify($plan);
     if($action==='baseline_status' && $method==='GET'){
         respond(200,['available'=>true,'pages'=>49,'fields'=>$plan['summary']['fields'],
             'unchanged_public_site'=>true,'reimport'=>'resume_safe','source_sha'=>$plan['origin_source_sha']]);
