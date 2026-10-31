@@ -580,14 +580,40 @@ try {
    return {};
   });
   await scenario('CONSULTANT_QUESTION_AND_CONTEXT','/',390,844,async()=>{
-   await page.locator('.consultant-launcher').click();await page.locator('#consultant-chat-question').fill('Есть проект вентиляции ресторана, нужен монтаж');
-   await page.locator('#consultant-chat-question').press('Enter');
-   expect(await page.locator('[data-consultant-chat-messages] a[href="/montazh-po-proektu/"]').count()===1,'Relevant route not returned');
-   expect(!(await page.locator('html').evaluate(e=>e.hasAttribute('data-airflow-processing'))),'Synchronous guide must not simulate request pulse');
-   await page.locator('[data-consultant-chat-handoff]').click();
-   expect(await page.locator('[data-contact-dialog]').evaluate(e=>e.open),'Handoff not open');
-   expect((await page.locator('[data-contact-dialog] [name="task"]').inputValue()).includes('Есть проект'),'Question context lost');
-   expect((await page.locator('[data-contact-dialog] [name="consultant_summary"]').inputValue()).includes('/montazh-po-proektu/'),'Route context lost');return {mode:'LOCAL_PUBLIC_CONTENT_ROUTING_NOT_LLM'};
+   // Local fixture MUST NOT contact Groq or Beget. Mock the current protected PHP contract.
+   let modelCalls=0;
+   const endpoint='**/api/consultant.php';
+   await page.route(endpoint,async route=>{
+     if(route.request().method()==='GET'){
+       return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({ok:true,csrf:'qa-only-csrf'})});
+     }
+     const input=route.request().postDataJSON();
+     if(input.action==='message'){
+       modelCalls++;
+       await new Promise(resolve=>setTimeout(resolve,350)); // visible real in-flight TRACE, no synthetic answer delay in production
+       return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({ok:true,reply:'Да, по готовому проекту можно обсудить монтаж вентиляции ресторана. Сначала проверяют рабочие чертежи, трассы и доступ к обслуживаемым узлам.'})});
+     }
+     return route.fulfill({status:422,contentType:'application/json',body:JSON.stringify({ok:false,error_code:'unsupported_mock_action'})});
+   });
+   try{
+     await page.locator('.consultant-launcher').click();
+     await page.locator('.consultant-conversation__privacy input[type="checkbox"]').check();
+     await page.locator('#consultant-chat-question').fill('Есть проект вентиляции ресторана, нужен монтаж');
+     await page.locator('#consultant-chat-question').press('Enter');
+     await page.locator('.av-consultant-pulse').waitFor({state:'visible',timeout:2500});
+     expect(await page.locator('html').evaluate(e=>e.hasAttribute('data-airflow-processing')),'Actual API POST must activate TRACE');
+     await page.locator('[data-consultant-chat-messages] .consultant-message--guide').waitFor({state:'visible',timeout:5000});
+     expect((await page.locator('[data-consultant-chat-messages] .consultant-message--guide').innerText()).includes('рабочие чертежи'),'Mocked API reply not displayed');
+     expect(modelCalls===1,'Model request must be sent exactly once');
+     expect(await page.locator('.av-consultant-pulse').isHidden(),'TRACE remained active after answer');
+     await page.locator('[data-consultant-chat-handoff]').click();
+     expect(await page.locator('[data-contact-dialog]').evaluate(e=>e.open),'Handoff not open');
+     const task=await page.locator('[data-contact-dialog] [name="task"]').inputValue();
+     const summary=await page.locator('[data-contact-dialog] [name="consultant_summary"]').inputValue();
+     expect(task.includes('Есть проект'),'Question context lost');
+     expect(summary.includes('Есть проект')&&!summary.includes('рабочие чертежи'),'Handoff must contain bounded visitor-only context');
+     return {mode:'MOCKED_PROTECTED_AI_API',external_model_calls:0,modelCalls,trace_during_request:true};
+   }finally{await page.unroute(endpoint);}
   });
   await scenario('PROJECT_PRIVATE_UPLOAD_20_FILE_LIMIT','/montazh-po-proektu/',390,780,async()=>{
    await page.locator('[data-project-open]').first().click();
