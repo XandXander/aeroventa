@@ -1,0 +1,60 @@
+name: PR12 - source-approved complete CMS DOM editability contract
+on:
+  push:
+    branches:
+      - aeroventa/hiend-seo-owner-recovery-2026-10-13
+    paths:
+      - 'scripts/pr12-cms-dom-*'
+      - 'scripts/pr12-cms-blueprint-decode.mjs'
+      - 'migration/accepted-site-cms-blueprint-v1.json.gz.b64'
+      - 'apps/web/src/lib/cms-blocks.ts'
+      - 'scripts/postbuild.mjs'
+      - 'admin/aeroventa-admin/**'
+      - '.github/workflows/pr12-cms-dom-contract.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v5
+        with: {persist-credentials: false}
+      - uses: actions/setup-node@v6
+        with: {node-version-file: .nvmrc}
+      - name: Validate PHP, JS and migration safeguards
+        run: |
+          set -euo pipefail
+          for f in admin/aeroventa-admin/public_html/*.php; do php -l "$f"; done
+          node --check admin/aeroventa-admin/public_html/assets/app.js
+          node scripts/pr12-cms-dom-lock.mjs --self-test
+          node scripts/pr12-cms-stage-directus-media.mjs --self-test
+          node scripts/pr12-cms-blueprint-decode.mjs
+          python3 scripts/pr12-cms-dom-apply.py --self-test
+          python3 scripts/pr12-cms-baseline-generate.py --self-test
+          node scripts/pr12-package-admin.mjs --self-test
+          node --check scripts/pr12-cms-manual-restore.mjs
+          node scripts/pr12-cms-manual-restore.mjs --self-test
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Compile actual approved Astro source in nonproduction fixture
+        run: |
+          npm run generate:hosting-rules
+          npm run build:web
+      - name: Prove every accepted CMS field selector targets real Astro DOM
+        run: |
+          python3 scripts/pr12-cms-dom-apply.py --contract-test \
+            --blueprint release_out/accepted-site-cms-blueprint-v1.json \
+            --dist apps/web/dist --report release_out/cms-dom-selector-proof.json
+      - name: Package public editor and nonsecret private baseline
+        run: |
+          node scripts/pr12-package-admin.mjs
+          unzip -tqq release_out/AEROVENTA_ADMIN_CANONICAL_INSTALL.zip
+      - uses: actions/upload-artifact@v6
+        with:
+          name: AEROVENTA_PR12_CMS_SINGLE_PASS_DOM_PROOF_AND_INSTALLER
+          path: |
+            release_out/cms-dom-selector-proof.json
+            release_out/AEROVENTA_ADMIN_CANONICAL_INSTALL.zip
+          if-no-files-found: error
+          retention-days: 30

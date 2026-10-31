@@ -3,6 +3,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import PageRenderer from '@/components/PageRenderer.astro';
 import { getAllContent } from '@/lib/content-source';
 import type { ContentRecord } from '@/lib/types';
+import legacySources from '../../../../migration/legacy-page-source-index.json';
 
 export async function getStaticPaths() {
   const all = await getAllContent();
@@ -31,12 +32,12 @@ const overrides: Record<string, Partial<ContentRecord>> = {
   '/portfolio/': {
     h1: 'Реальные объекты и выполненные работы',
     seo_title: 'Объекты и проекты AEROVENTA — монтаж вентиляции',
-    seo_description: 'Реальные объекты AEROVENTA: жилые комплексы, рестораны, производство, квартиры и работа в Карелии. Задачи, состав работ и подтверждённые исторические факты.',
+    seo_description: 'Реальные объекты AEROVENTA: жилые комплексы, рестораны, производство, квартиры и работа в Карелии. Фотографии, задачи и состав выполненных работ.',
   },
   '/faq/': {
     h1: 'Что важно решить до монтажа вентиляции',
     seo_title: 'Что важно решить до монтажа вентиляции — AEROVENTA',
-    seo_description: 'Инженерные вопросы до расчёта, выбора системы, начала монтажа, сравнения смет и приёмки вентиляции. Конкретные ответы без шаблонного FAQ.',
+    seo_description: 'Инженерные вопросы до расчёта, выбора системы, начала монтажа, сравнения смет и приёмки вентиляции. Подготовка проекта, условия монтажа и проверка выполненных работ.',
   },
   '/about/': {
     h1: 'AEROVENTA — команда по монтажу вентиляции',
@@ -65,31 +66,31 @@ const overrides: Record<string, Partial<ContentRecord>> = {
   '/vakansii/': {
     h1: 'Работа и сотрудничество с AEROVENTA',
     seo_title: 'Работа и сотрудничество — AEROVENTA',
-    seo_description: 'Страница для актуальных вакансий и предложений о профессиональном сотрудничестве в монтаже вентиляции. Старые условия и объявления не выдаются за текущие.',
+    seo_description: 'Страница для актуальных вакансий и предложений о профессиональном сотрудничестве в монтаже вентиляции. Условия сотрудничества уточняйте при обращении.',
     schema_type: 'WebPage',
   },
   '/news/': {
-    h1: 'Архив AEROVENTA',
-    seo_title: 'Архив и история AEROVENTA',
-    seo_description: 'Архив AEROVENTA: история компании, реальные объекты и практические материалы. Без искусственного новостного потока и неподтверждённых событий.',
+    h1: 'История и проекты AEROVENTA',
+    seo_title: 'История и проекты AEROVENTA',
+    seo_description: 'Проекты и история AEROVENTA: монтаж вентиляции, команда и практические материалы.',
     schema_type: 'WebPage',
   },
   '/news/korporativnaya-zhizn/': {
-    h1: 'Корпоративная жизнь — архивный маршрут',
-    seo_title: 'Корпоративная жизнь AEROVENTA — архив',
-    seo_description: 'Архивный маршрут AEROVENTA. Реальный способ работы компании показан через командную модель, объекты и практические материалы без выдуманного корпоративного контента.',
+    h1: 'Команда и проекты AEROVENTA',
+    seo_title: 'Команда и проекты AEROVENTA',
+    seo_description: 'Команда AEROVENTA и выполненные проекты: фотографии объектов, организация работ и практика монтажа вентиляции.',
     schema_type: 'WebPage',
   },
   '/news/istoriya-kompanii/': {
     h1: 'История AEROVENTA через реальные объекты',
     seo_title: 'История компании AEROVENTA — реальные объекты',
-    seo_description: 'Фактическая история AEROVENTA через подтверждённые объекты: производство, жилые дома, ресторан, квартира и работа в Карелии.',
+    seo_description: 'История AEROVENTA через выполненные проекты: производство, жилые дома, ресторан, квартира и работа в Карелии.',
     schema_type: 'AboutPage',
   },
   '/news/znachimye-sobytiya/': {
-    h1: 'Значимые события AEROVENTA — только подтверждённые факты',
-    seo_title: 'Значимые события AEROVENTA — архив',
-    seo_description: 'Архив значимых событий AEROVENTA, основанный на подтверждённых объектах и датах. Без переноса устаревших health/news утверждений.',
+    h1: 'Проекты AEROVENTA разных лет',
+    seo_title: 'Проекты AEROVENTA разных лет',
+    seo_description: 'Проекты AEROVENTA разных лет: монтаж вентиляции на производстве, в жилых зданиях, ресторанах и коммерческих помещениях.',
     schema_type: 'WebPage',
   },
   '/covid-pritochnaya-ventilacia/': {
@@ -99,39 +100,39 @@ const overrides: Record<string, Partial<ContentRecord>> = {
     schema_type: 'Article',
   },
   '/blog/obzory-i-intervyu/': {
-    h1: 'Практические материалы из архивного раздела',
-    seo_title: 'Практические материалы AEROVENTA — архивный раздел',
-    seo_description: 'Сильные практические статьи AEROVENTA из старого раздела обзоров и интервью: полевой опыт, стоимость и проходки под вентиляцию.',
+    h1: 'Технические статьи',
+    seo_title: 'Технические статьи AEROVENTA',
+    seo_description: 'Технические статьи AEROVENTA: полевой опыт, стоимость и проходки под вентиляцию.',
     schema_type: 'WebPage',
   },
   '/blog/detail/kak-my-sdali-7-domov/': {
     h1: 'Монтаж вентиляции в 7 домах жилого квартала в Павловске',
     seo_title: 'Монтаж вентиляции в 7 домах в Павловске — кейс AEROVENTA',
-    seo_description: 'Исторический объект AEROVENTA: монтаж приточно-вытяжной вентиляции в семи домах жилого квартала в Павловске. Период интенсивных работ — 18 ноября–10 декабря 2020 года по исходной публикации.',
+    seo_description: 'Объект AEROVENTA: монтаж приточно-вытяжной вентиляции в семи домах жилого квартала в Павловске. Период интенсивных работ — 18 ноября–10 декабря 2020 года по материалам объекта.',
     schema_type: 'WebPage',
   },
   '/blog/detail/restoran-v-zhk-leontevskiy-mys/': {
     h1: 'Приточно-вытяжная вентиляция ресторана в ЖК «Леонтьевский Мыс»',
     seo_title: 'Вентиляция ресторана в ЖК «Леонтьевский Мыс» — кейс AEROVENTA',
-    seo_description: 'Исторический кейс AEROVENTA в Санкт-Петербурге: монтаж приточно-вытяжной вентиляции и вентиляционного оборудования в ресторане ЖК «Леонтьевский Мыс».',
+    seo_description: 'Ресторанный объект AEROVENTA в Санкт-Петербурге: монтаж приточно-вытяжной вентиляции и вентиляционного оборудования в ресторане ЖК «Леонтьевский Мыс».',
     schema_type: 'WebPage',
   },
   '/blog/detail/ntff-polisan/': {
     h1: 'Монтаж вентиляции на объекте НТФФ «Полисан»',
     seo_title: 'Монтаж вентиляции НТФФ «Полисан» — кейс AEROVENTA',
-    seo_description: 'Исторический объект AEROVENTA в Санкт-Петербурге: монтаж приточно-вытяжной вентиляции и оборудования на объекте НТФФ «Полисан», ул. Салова, 72.',
+    seo_description: 'Объект AEROVENTA в Санкт-Петербурге: монтаж приточно-вытяжной вентиляции и оборудования на объекте НТФФ «Полисан», ул. Салова, 72.',
     schema_type: 'WebPage',
   },
   '/blog/detail/kvartira-na-zhukova/': {
     h1: 'Приточно-вытяжная вентиляция в квартире на Маршала Жукова',
     seo_title: 'Вентиляция квартиры на Маршала Жукова — кейс AEROVENTA',
-    seo_description: 'Исторический квартирный объект AEROVENTA в Санкт-Петербурге: приточно-вытяжная вентиляция, около 100 погонных метров с оборудованием и срок 5 дней по исходной публикации.',
+    seo_description: 'Вентиляция квартиры в Санкт-Петербурге: приточно-вытяжная вентиляция, около 100 погонных метров с оборудованием и срок 5 дней по материалам объекта.',
     schema_type: 'WebPage',
   },
   '/blog/detail/montazh-ventilyatsii-v-karelii/': {
     h1: 'Монтаж вентиляции на объекте PONSSE в Питкяранте',
     seo_title: 'Монтаж вентиляции в Карелии — кейс AEROVENTA, Питкяранта',
-    seo_description: 'Исторический объект AEROVENTA в Питкяранте: монтаж приточно-вытяжной вентиляции и оборудования в сервисно-образовательном центре.',
+    seo_description: 'Объект AEROVENTA в Питкяранте: монтаж приточно-вытяжной вентиляции и оборудования в сервисно-образовательном центре.',
     schema_type: 'WebPage',
   },
   '/blog/detail/kafe-rimskogo-korsakova-3/': {
@@ -143,19 +144,19 @@ const overrides: Record<string, Partial<ContentRecord>> = {
   '/blog/': {
     h1: 'Практика',
     seo_title: 'Практика AEROVENTA — инженерные материалы и реальные объекты',
-    seo_description: 'Практические материалы AEROVENTA: инженерные вопросы, опыт с площадки и реальные объекты. Конкретные задачи вместо корпоративного блога.',
+    seo_description: 'Практические материалы AEROVENTA: инженерные вопросы, опыт с площадки и реальные объекты. Монтаж вентиляции и технические статьи из практики.',
     schema_type: 'WebPage',
   },
   '/blog/poleznye-stati/': {
     h1: 'Практические материалы',
     seo_title: 'Практические материалы по вентиляции и смежным работам — AEROVENTA',
-    seo_description: 'Практические разборы AEROVENTA: реальные полевые задачи, факторы стоимости, подготовка исходных данных и инженерные решения без SEO-шаблонов.',
+    seo_description: 'Практические разборы AEROVENTA: реальные полевые задачи, факторы стоимости, подготовка исходных данных и инженерные решения.',
     schema_type: 'WebPage',
   },
   '/blog/istorii-proektov/': {
     h1: 'Истории объектов',
     seo_title: 'Истории объектов AEROVENTA — реальные проекты вентиляции',
-    seo_description: 'Истории реальных объектов AEROVENTA: жилые комплексы, ресторан, производство, квартира, кафе и работа в Карелии. Ссылки на канонические кейсы.',
+    seo_description: 'Истории реальных объектов AEROVENTA: жилые комплексы, ресторан, производство, квартира, кафе и работа в Карелии. Фотографии и состав выполненных работ.',
     schema_type: 'WebPage',
   },
   '/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/': {
@@ -184,9 +185,31 @@ const overrides: Record<string, Partial<ContentRecord>> = {
   },
 };
 
+// SEO source lock: the retained article URL, H1 and title remain linked to the legacy primary index.
+// Historical on-page procedures and prices are NOT restored by this metadata-only safeguard.
+const legacyArticle = content.path.startsWith('/blog/detail/')
+  ? legacySources.find(row => row.path === content.path && row.status === 200)
+  : undefined;
+if (content.path.startsWith('/blog/detail/') && (!legacyArticle?.h1 || !legacyArticle?.title)) {
+  throw new Error(`Legacy indexed heading/title evidence missing for ${content.path}`);
+}
+// Approved CMS metadata must not be silently overwritten by historical source
+// overrides. All existing fixture / draft-preview pages keep their locked output.
+const mode = String(import.meta.env.AEROVENTA_RELEASE_MODE || '');
+const approvedCmsContent = (['production','incremental'].includes(mode)
+  && content.status === 'published' && Boolean(content.owner_approved_at))
+  || (mode === 'review' && content.status === 'draft' && content.owner_approved_at === null);
 const pageContent: ContentRecord = {
   ...content,
-  ...(overrides[content.path] ?? {}),
+  ...(!approvedCmsContent ? (overrides[content.path] ?? {}) : {}),
+  ...(!approvedCmsContent && legacyArticle ? { h1: legacyArticle.h1, seo_title: legacyArticle.title } : {}),
+  // Owner J-07 authorises this public editorial correction; preserve legacy source bytes and URL.
+  ...(!approvedCmsContent && content.path === '/blog/detail/ntff-polisan/' ? {
+    h1: 'НТФФ «Полисан»',
+    title: 'НТФФ «Полисан» — монтаж вентиляции | AEROVENTA',
+    seo_title: 'НТФФ «Полисан» — монтаж вентиляции | AEROVENTA',
+    og_title: 'НТФФ «Полисан» — монтаж вентиляции | AEROVENTA',
+  } : {}),
 };
 ---
 <BaseLayout content={pageContent}>

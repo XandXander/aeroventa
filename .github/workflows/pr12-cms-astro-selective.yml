@@ -1,0 +1,85 @@
+name: PR12 - selective approved Astro release (read-only, no deploy)
+
+on:
+  push:
+    branches: [aeroventa/hiend-seo-owner-recovery-2026-10-13]
+    paths:
+      - 'apps/web/src/lib/content-source.ts'
+      - 'apps/web/src/pages/**'
+      - 'apps/web/src/layouts/BaseLayout.astro'
+      - 'scripts/pr12-cms-astro-release-package.mjs'
+      - 'scripts/pr12-cms-ftps-transactional-deploy.mjs'
+      - '.github/workflows/pr12-cms-live-publish.yml'
+      - '.github/workflows/pr12-cms-astro-selective.yml'
+  workflow_dispatch:
+    inputs:
+      approved_paths:
+        description: 'Specific owner-approved Directus paths only. Unapproved paths MUST fail closed.'
+        type: string
+        required: false
+permissions:
+  contents: read
+jobs:
+  selective-candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+      - name: Install locked source dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Test approved-path guard and Astro typecheck
+        run: |
+          node --check scripts/pr12-cms-astro-release-package.mjs
+          node scripts/pr12-cms-astro-release-package.mjs --self-test
+          node --check scripts/pr12-cms-ftps-transactional-deploy.mjs
+          node scripts/pr12-cms-ftps-transactional-deploy.mjs --self-test
+          npm run check:web
+      - name: Build approved routes in real Astro without deploying
+        if: github.event_name == 'workflow_dispatch' && inputs.approved_paths != ''
+        env:
+          AEROVENTA_RELEASE_MODE: incremental
+          AEROVENTA_INCREMENTAL_PATHS: ${{ inputs.approved_paths }}
+          DIRECTUS_URL: https://cms.aeroventa.ru
+          DIRECTUS_STATIC_TOKEN: ${{ secrets.DIRECTUS_STATIC_TOKEN }}
+          PUBLIC_SITE_ORIGIN: https://aeroventa.ru
+          AEROVENTA_SOURCE_SHA: ${{ github.sha }}
+        run: |
+          test -n "$DIRECTUS_STATIC_TOKEN"
+          npm run generate:hosting-rules
+          npm run build:web
+          node scripts/pr12-cms-astro-release-package.mjs
+      - name: Validate and package only selected HTML, exclude server-side secrets
+        if: github.event_name == 'workflow_dispatch' && inputs.approved_paths != ''
+        run: |
+          python3 - <<'PY'
+          import zipfile,hashlib,json
+          from pathlib import Path
+          root=Path('release_out/approved-astro')
+          m=json.loads((root/'manifest.json').read_text())
+          assert m['mode']=='REVIEW_ONLY_NO_DEPLOY'
+          assert m['files'] and len(m['files'])<=15
+          for x in m['files']:
+            p=root/x['path'];b=root/'__rollback__'/x['path']
+            assert p.is_file() and b.is_file()
+            assert hashlib.sha256(p.read_bytes()).hexdigest()==x['sha256_after']
+            assert hashlib.sha256(b.read_bytes()).hexdigest()==x['sha256_before']
+          out=Path('AEROVENTA_APPROVED_ASTRO_REVIEW_ONLY.zip')
+          with zipfile.ZipFile(out,'w',zipfile.ZIP_DEFLATED) as z:
+            for x in root.rglob('*'):
+              if x.is_file(): z.write(x,x.relative_to(root).as_posix())
+          assert zipfile.ZipFile(out).testzip() is None
+          print('ASTRO_RELEASE_REVIEW_PACKAGE_PASS',len(m['files']),'paths; PRODUCTION UNTOUCHED')
+          PY
+      - name: Preserve signed-off source-backed review candidate
+        if: github.event_name == 'workflow_dispatch' && inputs.approved_paths != ''
+        uses: actions/upload-artifact@v6
+        with:
+          name: AEROVENTA_APPROVED_ASTRO_REVIEW_ONLY
+          path: AEROVENTA_APPROVED_ASTRO_REVIEW_ONLY.zip
+          if-no-files-found: error
+          retention-days: 7

@@ -21,7 +21,7 @@ if ($origin === '' && $referer === '') answer(403, 'origin_required');
 foreach ([$origin, $referer] as $url) {
     if ($url === '') continue;
     $parsed = parse_url($url);
-    if ($parsed === false || !in_array(strtolower((string)($parsed['host'] ?? '')), ['aeroventa.ru', 'www.aeroventa.ru'], true)
+    if ($parsed === false || !in_array(strtolower((string)($parsed['host'] ?? '')), ['aeroventa.ru', 'www.aeroventa.ru', 'staging.aeroventa.ru'], true)
         || strtolower((string)($parsed['scheme'] ?? '')) !== 'https'
         || (isset($parsed['port']) && $parsed['port'] !== 443)) answer(403, 'origin_rejected');
 }
@@ -50,7 +50,7 @@ $source = field($data, 'source_page', 300);
 $service = field($data, 'object_service', 120);
 $project = field($data, 'project_status', 30);
 $case = field($data, 'case_context', 300);
-$context = field($data, 'consultant_summary', 800, false, true);
+$context = field($data, 'consultant_summary', 4000, false, true);
 $campaign = field($data, 'campaign_context', 400);
 $intent = field($data, 'lead_intent', 120);
 $honeypot = field($data, 'website', 200);
@@ -78,7 +78,7 @@ $validDomain = static function (string $addr): bool {
 // Recipient may be the Owner's already-public AEROVENTA Yandex mailbox.
 // This is an exact allowlisted address, never an arbitrary third-party destination.
 // Sender must still be a verified aeroventa.ru domain mailbox to preserve transport identity.
-$recipientAllowed = $validDomain($destination) || strcasecmp($destination, 'aeroventaspb@yandex.ru') === 0;
+$recipientAllowed = strcasecmp($destination, 'office@aeroventa.ru') === 0;
 if (!$recipientAllowed || !$validDomain($sender)) answer(503, 'mailbox_unconfigured');
 // Fail closed when rate limiting is unavailable. Atomic per-IP rolling 10m window.
 $ip = (string)($_SERVER['REMOTE_ADDR'] ?? '');
@@ -101,8 +101,11 @@ $events[] = ['t' => time(), 'h' => $fingerprint];
 rewind($handle); ftruncate($handle, 0);
 $written = fwrite($handle, json_encode($events));
 $flushed = fflush($handle);
-flock($handle, LOCK_UN); fclose($handle);
-if ($written === false || !$flushed) answer(503, 'temporarily_unavailable');
+if ($written === false || !$flushed) {
+    flock($handle, LOCK_UN); fclose($handle); answer(503, 'temporarily_unavailable');
+}
+// Keep the per-IP lock until the MTA answers. Concurrent retries cannot send
+// twice, and a definite transport rejection must not poison the retry window.
 $body = implode("\n", [
     'Заявка с сайта AEROVENTA', '',
     'Имя: '.$name,
@@ -124,8 +127,18 @@ $headers = [
     'Content-Transfer-Encoding: 8bit',
     'X-AEROVENTA-Source: web-form',
 ];
-if ($email !== false) $headers[] = 'Reply-To: '.$email;
+// Keep RFC5322 From and Reply-To aligned with Beget-verified domain identity.
+// The visitor's original email remains in the message body under 'Контакт'.
+// External Reply-To previously caused Beget X-Beget-Rewrite on both headers.
+$headers[] = 'Reply-To: '.$sender;
 $subject = '=?UTF-8?B?'.base64_encode('Новая заявка AEROVENTA').'?=';
-if (!@mail($destination, $subject, $body, implode("\r\n", $headers))) answer(503, 'delivery_unavailable');
+$accepted = @mail($destination, $subject, $body, implode("\r\n", $headers));
+if (!$accepted) {
+    array_pop($events);
+    rewind($handle); ftruncate($handle, 0);
+    fwrite($handle, json_encode($events)); fflush($handle);
+}
+flock($handle, LOCK_UN); fclose($handle);
+if (!$accepted) answer(503, 'delivery_unavailable');
 // mail() reports local MTA acceptance, not recipient inbox delivery.
 answer(200);

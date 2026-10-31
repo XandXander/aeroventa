@@ -1,5 +1,6 @@
 ---
 import LeadCTA from '@/components/LeadCTA.astro';
+import CmsContentBlocks from '@/components/CmsContentBlocks.astro';
 import type { ContentRecord } from '@/lib/types';
 interface Props { content: ContentRecord; fixture: boolean; }
 const { content, fixture } = Astro.props;
@@ -14,7 +15,7 @@ const { content, fixture } = Astro.props;
     </div>
   </header>
   <div class="container prose article-body">
-    <Fragment set:html={content.body_html} />
+    {content.cms_blocks?.some(block => block.type !== 'dom_fields') ? <CmsContentBlocks blocks={content.cms_blocks.filter(block => block.type !== 'dom_fields')} /> : <Fragment set:html={content.body_html} />}
     <LeadCTA intent={content.lead_intent || 'VENTILATION_PROJECT'} />
   </div>
 </article>

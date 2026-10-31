@@ -1,0 +1,30 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getStaticPageContent } from '@/lib/content-source';
+import ObjectDetailPage from '@/components/pages/ObjectDetailPage.astro';
+import type { ContentRecord } from '@/lib/types';
+import photos from '../../../../../migration/owner-warehouse-photo-provenance-2026-10-22.json';
+const baselineContent: ContentRecord = {
+ path:'/obekty/sklady/',title:'Монтаж вентиляции складов — AEROVENTA',h1:'Монтаж вентиляции складов',
+ content_type:'landing',business_role:'CORE_SERVICE_HUB',status:'fixture_stub',
+ robots_index:false,robots_follow:true,sitemap_include:false,knowledge_allowed:true,ai_origin:false,
+ seo_title:'Монтаж вентиляции складов — AEROVENTA',seo_description:'Особенности вентиляции складских комплексов: высота, доступ и условия проведения монтажных работ.',
+ excerpt:'',body_html:'',body_html_safety_status:'not_applicable',owner_approved_at:null
+};
+const constraints:[string,string,string][] = [["01","Высота","Технология доступа к верхним монтажным зонам."],["02","Логистика","Места хранения и перемещение материалов."],["03","Режим площадки","Монтаж согласуется с условиями эксплуатации."],["04","Рабочие трассы","Соответствие проекту и доступ для обслуживания."]];
+const galleryFor=(slug:string)=>photos.filter(item=>item.path.includes('/warehouses/'+slug+'/')).map(item=>item.path.replace('apps/web/public',''));
+const avers=galleryFor('avers-razbegaevo'),farm=galleryFor('farm-spb');
+if(avers.length!==5||farm.length!==7)throw new Error('Warehouse source albums must contain five Avers and seven Farm originals');
+const evidence = [
+ {title:'Фарм · Санкт-Петербург',meta:'Промышленная площадка · Санкт-Петербург',detail:'Общий вид здания и фотодокументация инженерных трасс.',href:'#object-photo-dialog',image:farm[0],imageAlt:'Здание объекта Фарм в Санкт-Петербурге',gallery:farm}
+];
+const drivers = ['Рабочая проектная документация и спецификация','Монтажные зоны и условия доступа','Стадия объекта и смежные инженерные системы','Оборудование, трассы и рабочие сроки'];
+const questions = ['Какие документы передать для расчёта монтажа?','Что согласовать до начала работ?','Какие ограничения объекта влияют на организацию монтажа?'];
+const content = await getStaticPageContent(baselineContent.path, baselineContent);
+---
+<BaseLayout content={content}>
+ <ObjectDetailPage content={content} eyebrow="Склады"
+  lede="Высота помещений, оборудование и доступ к монтажным зонам определяют порядок работ. Показываем монтажные фотографии объектов в Разбегаево и Санкт-Петербурге." constraints={constraints} drivers={drivers} evidence={evidence} questions={questions}
+  proofTitle="Объекты и монтажные работы"
+  heroMedia={{src:'/evidence/warehouses/avers-razbegaevo/01.webp',alt:'Здание складского объекта в Разбегаево',caption:'Разбегаево · Аверс Тверь · складской объект',gallery:avers,nativeWidth:1024,nativeHeight:768}}/>
+</BaseLayout>

@@ -1,0 +1,56 @@
+name: PR12 - single integrated CMS source and admin candidate
+
+on:
+  push:
+    branches: [aeroventa/hiend-seo-owner-recovery-2026-10-13]
+    paths:
+      - '.github/workflows/pr12-cms-integrated-candidate.yml'
+      - 'scripts/pr12-cms-accepted-surface-inventory.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+      - name: Validate admin and source release gates
+        shell: bash
+        run: |
+          set -euo pipefail
+          for file in admin/aeroventa-admin/public_html/*.php; do php -l "$file"; done
+          node --check admin/aeroventa-admin/public_html/assets/app.js
+          node scripts/pr12-package-admin.mjs --self-test
+          python3 scripts/pr12-cms-accepted-surface-inventory.py --self-test
+          python3 scripts/pr12-build-integrated-cms-bundle.py --self-test
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm run check:web
+      - name: Compile accepted Astro source without production changes
+        run: |
+          npm run generate:hosting-rules
+          npm run build:web
+      - name: Inventory all public source pages against accepted live website
+        run: |
+          python3 scripts/pr12-cms-accepted-surface-inventory.py --live \
+            --dist apps/web/dist --source-sha "$GITHUB_SHA" \
+            --output release_out/accepted-site-inventory.json
+      - name: Build exact source-derived site-scoped admin installer
+        run: node scripts/pr12-package-admin.mjs
+      - name: Produce single checksummed CMS/installer package with honest gates
+        run: |
+          python3 scripts/pr12-build-integrated-cms-bundle.py
+          unzip -tqq release_out/AEROVENTA_PR12_CMS_INTEGRATED_SOURCE_CANDIDATE.zip
+      - uses: actions/upload-artifact@v6
+        with:
+          name: AEROVENTA_PR12_INTEGRATED_SOURCE_CANDIDATE_NO_PRODUCTION
+          path: release_out/AEROVENTA_PR12_CMS_INTEGRATED_SOURCE_CANDIDATE.zip
+          if-no-files-found: error
+          retention-days: 30

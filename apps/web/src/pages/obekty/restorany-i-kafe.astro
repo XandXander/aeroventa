@@ -1,9 +1,10 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getStaticPageContent } from '@/lib/content-source';
 import ObjectDetailPage from '@/components/pages/ObjectDetailPage.astro';
 import type { ContentRecord } from '@/lib/types';
 
-const content: ContentRecord = {
+const baselineContent: ContentRecord = {
   path:'/obekty/restorany-i-kafe/',
   title:'Вентиляция ресторанов и кафе — AEROVENTA',
   h1:'Монтаж вентиляции в ресторанах и кафе',
@@ -23,7 +24,7 @@ const content: ContentRecord = {
   owner_approved_at:null,
 };
 
-const constraints = [
+const constraints:[string,string,string][] = [
   ['01','Назначение помещений','Состав монтажа определяется проектными решениями для кухни, зала и вспомогательных помещений.'],
   ['02','Трассы и потолки','Размещение оборудования и воздуховодов согласуют с потолками, конструкциями и другими инженерными системами.'],
   ['03','Стадия отделки','Стадию отделки учитываем при выборе порядка монтажа, согласовании проходок и доступа к трассам.'],
@@ -32,7 +33,7 @@ const constraints = [
 
 const drivers = [
   'Наличие и полнота проекта / спецификации',
-  'Состав и количество вентиляционного оборудования',
+  'Места установки, масса и способы крепления оборудования',
   'Длины, сечения и фактические трассы',
   'Высота, потолки и доступ к месту монтажа',
   'Текущая стадия отделки',
@@ -42,8 +43,8 @@ const drivers = [
 ];
 
 const evidence = [
-  {title:'Ресторан в ЖК «Леонтьевский Мыс»',meta:'Санкт-Петербург',detail:'Приточно-вытяжная вентиляция + оборудование. Исторический источник: 2 недели.',href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/',image:'/evidence/leont/duct-installation-01.jpg',imageAlt:'Ресторан Леонтьевский Мыс — фрагмент монтажа вентиляции'},
-  {title:'Кафе на Римского-Корсакова, 3',meta:'Санкт-Петербург',detail:'Приточно-вытяжная вентиляция + оборудование. Исторический источник: 200 м², 5 дней.',href:'/blog/detail/kafe-rimskogo-korsakova-3/',image:'/evidence/cafe/duct-installation-01.jpg',imageAlt:'Кафе на Римского-Корсакова — фрагмент вентиляционной трассы'},
+  {title:'Ресторан в ЖК «Леонтьевский Мыс»',meta:'Санкт-Петербург',detail:'Приточно-вытяжная вентиляция + оборудование. Монтаж · 2 недели.',href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/',image:'/evidence/leont/owner-cover-v43.webp',imageAlt:'Монтаж воздуховодов на объекте ресторана в ЖК «Леонтьевский Мыс»'},
+  {title:'Кафе на Римского-Корсакова, 3',meta:'Санкт-Петербург',detail:'Приточно-вытяжная вентиляция + оборудование. Площадь · 200 м², монтаж · 5 дней.',href:'/blog/detail/kafe-rimskogo-korsakova-3/',image:'/evidence/cafe/owner-cover-v43.webp',imageAlt:'Кафе на Римского-Корсакова, 3 — фотография объекта'},
 ];
 
 const questions = [
@@ -53,19 +54,20 @@ const questions = [
   'Что делать, если проект конфликтует с реальным объектом?',
   'Что меняется, если отделка уже началась?',
 ];
+const content = await getStaticPageContent(baselineContent.path, baselineContent);
 ---
 
 <BaseLayout content={content}>
   <ObjectDetailPage
     content={content}
     eyebrow="Рестораны и кафе"
-    lede="Сначала разбираем помещения, трассы, существующий проект и особенности объекта. Затем определяем реальный состав монтажных работ — без универсальной схемы «для общепита»."
+    lede="Для ресторана или кафе учитываем планировку кухни и зала, оборудование, проект и стадию отделки. По этим данным определяем состав монтажных работ."
     constraints={constraints}
     drivers={drivers}
     evidence={evidence}
     questions={questions}
-    proofTitle="Два реальных ресторанных объекта — вместо типовой картинки."
+    proofTitle="Вентиляция ресторанов и кафе: выполненные работы"
     visualVariant="restaurants"
-    heroMedia={{ src:'/evidence/leont/owner-cover-v43.webp', alt:'Архитектурный вид ЖК «Леонтьевский Мыс», где расположен ресторан из портфолио AEROVENTA', caption:'ЖК «Леонтьевский Мыс» · архитектурный контекст ресторана' }}
+    heroMedia={{ src:'/evidence/cafe/owner-interior-v43.webp', alt:'Интерьер кафе на Римского-Корсакова, 3', caption:'Кафе на Римского-Корсакова, 3 · интерьер объекта',href:'/blog/detail/kafe-rimskogo-korsakova-3/' }}
   />
 </BaseLayout>

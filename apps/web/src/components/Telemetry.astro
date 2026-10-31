@@ -24,7 +24,7 @@ const traceEndpoint = (import.meta.env.PUBLIC_TRACE_ENDPOINT || '').trim();
 
 <script>
 (() => {
-  const config = document.querySelector('[data-telemetry-config]');
+  const config = document.querySelector<HTMLElement>('[data-telemetry-config]');
   if (!config) return;
 
   const metricaId = config.dataset.metricaId || '';
@@ -60,7 +60,7 @@ const traceEndpoint = (import.meta.env.PUBLIC_TRACE_ENDPOINT || '').trim();
     'intent',
   ]);
 
-  const safePayload = (input = {}) => Object.fromEntries(
+  const safePayload = (input:Record<string,unknown> = {}) => Object.fromEntries(
     Object.entries(input).filter(([key, value]) =>
       safeKeys.has(key) && ['string', 'number', 'boolean'].includes(typeof value)
     )
@@ -79,7 +79,7 @@ const traceEndpoint = (import.meta.env.PUBLIC_TRACE_ENDPOINT || '').trim();
     }
   };
 
-  const emitTrace = (name, payload) => {
+  const emitTrace = (name:string, payload:Record<string,unknown>) => {
     if (!traceEndpoint) return;
     const body = JSON.stringify({
       event: name,
@@ -103,8 +103,9 @@ const traceEndpoint = (import.meta.env.PUBLIC_TRACE_ENDPOINT || '').trim();
     const id = Number(metricaId);
     if (!Number.isFinite(id)) return;
 
-    window.ym = window.ym || function(...args) {
-      (window.ym.a = window.ym.a || []).push(args);
+    window.ym = window.ym || function(...args:unknown[]) {
+      const queue=window.ym;
+      if (queue) (queue.a ||= []).push(args);
     };
     window.ym.l = Date.now();
 
@@ -112,7 +113,7 @@ const traceEndpoint = (import.meta.env.PUBLIC_TRACE_ENDPOINT || '').trim();
     script.async = true;
     script.src = 'https://mc.yandex.ru/metrika/tag.js';
     script.addEventListener('load', () => {
-      window.ym(id, 'init', {
+      window.ym?.(id, 'init', {
         clickmap: true,
         trackLinks: true,
         accurateTrackBounce: true,
@@ -127,7 +128,7 @@ const traceEndpoint = (import.meta.env.PUBLIC_TRACE_ENDPOINT || '').trim();
     try { return localStorage.getItem(consentKey) || ''; } catch { return ''; }
   })();
 
-  const panel = document.querySelector('[data-analytics-consent]');
+  const panel = document.querySelector<HTMLElement>('[data-analytics-consent]');
   if (metricaId && !consent && panel) panel.hidden = false;
   if (consent === 'allow') loadMetrica();
 
@@ -142,7 +143,7 @@ const traceEndpoint = (import.meta.env.PUBLIC_TRACE_ENDPOINT || '').trim();
     panel.hidden = true;
   });
 
-  window.aeroventaTrack = (name, input = {}) => {
+  window.aeroventaTrack = (name:string, input:Record<string,unknown> = {}) => {
     if (!safeEvents.has(name)) return;
     const payload = safePayload({
       page: location.pathname,
@@ -163,23 +164,24 @@ const traceEndpoint = (import.meta.env.PUBLIC_TRACE_ENDPOINT || '').trim();
   };
 
   document.addEventListener('click', (event) => {
-    const link = event.target.closest('a[href]');
+    if (!(event.target instanceof Element)) return;
+    const link = event.target.closest<HTMLAnchorElement>('a[href]');
     if (!link) return;
     const href = link.getAttribute('href') || '';
     const target = href.startsWith('http') ? href : href.split('?')[0];
 
-    if (href.startsWith('tel:')) window.aeroventaTrack('phone_click', { target: 'phone' });
-    else if (href.startsWith('mailto:')) window.aeroventaTrack('email_click', { target: 'email' });
-    else if (target.startsWith('/blog/detail/')) window.aeroventaTrack('case_view', { target });
+    if (href.startsWith('tel:')) window.aeroventaTrack?.('phone_click', { target: 'phone' });
+    else if (href.startsWith('mailto:')) window.aeroventaTrack?.('email_click', { target: 'email' });
+    else if (target.startsWith('/blog/detail/')) window.aeroventaTrack?.('case_view', { target });
     else if (['/montazh-po-proektu/', '/obekt-bez-gotovogo-proekta/'].includes(target)) {
-      window.aeroventaTrack('project_route', {
+      window.aeroventaTrack?.('project_route', {
         target,
         project_status: target.includes('montazh-po-proektu') ? 'ready' : 'not_ready',
       });
     }
 
     const explicit = link.dataset.aeroventaEvent;
-    if (explicit) window.aeroventaTrack(explicit, { target });
+    if (explicit) window.aeroventaTrack?.(explicit, { target });
   });
 })();
 </script>

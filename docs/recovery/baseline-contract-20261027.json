@@ -1,0 +1,4043 @@
+{
+  "source_sha": "a10c14f86d5cc0b046226e530b5cb46ca030ca17",
+  "pages": {
+    "/about/": {
+      "title": "О компании AEROVENTA — монтаж вентиляции",
+      "description": "AEROVENTA — команда по монтажу вентиляции: личный контроль, усиление профильными специалистами под масштаб объекта, реальные проекты в Санкт-Петербурге, Ленобласти и Карелии.",
+      "canonical": "https://aeroventa.ru/about/",
+      "h1": [
+        "Команда, которая ведёт ваш объект"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "AboutPage",
+              "@id": "https://aeroventa.ru/about/#page",
+              "name": "AEROVENTA — команда по монтажу вентиляции",
+              "url": "https://aeroventa.ru/about/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/about/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "AEROVENTA — команда по монтажу вентиляции",
+                  "item": "https://aeroventa.ru/about/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "ed5df213145cfd2d58fd056e3f1b78001d558b7fadd2a6b1a7630f70bfa82584",
+      "main_image_paths": [
+        "/evidence/karelia/owner-cover-v43.webp",
+        "/evidence/team/owner-aleksandr-shalamov-20261013.webp",
+        "/evidence/team/owner-aleksandr-tarasov-20261013.webp",
+        "/evidence/team/owner-denis-ivanov-20261013.webp",
+        "/evidence/team/owner-evgeniy-panov-20261015.webp",
+        "/evidence/team/owner-team-group-20261015.webp"
+      ]
+    },
+    "/almaznoe-burenie/": {
+      "title": "Алмазное бурение для вентиляции — текущая модель AEROVENTA",
+      "description": "Алмазное бурение в контексте вентиляции: какие исходные данные нужны, как увязать отверстие с трассой и как AEROVENTA работает со смежной буровой задачей сегодня.",
+      "canonical": "https://aeroventa.ru/almaznoe-burenie/",
+      "h1": [
+        "Алмазное бурение — смежная работа к вентиляции"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "Service",
+              "@id": "https://aeroventa.ru/almaznoe-burenie/#page",
+              "name": "Алмазное бурение — смежная работа к вентиляции",
+              "url": "https://aeroventa.ru/almaznoe-burenie/",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ],
+              "provider": {
+                "@id": "https://aeroventa.ru/#organization"
+              }
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/almaznoe-burenie/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Алмазное бурение — смежная работа к вентиляции",
+                  "item": "https://aeroventa.ru/almaznoe-burenie/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "3a583ad1cce4a824bb022a2ee1af4f282457140cea14f4905c591f5798d20c02",
+      "main_image_paths": [
+        "/upload/medialibrary/0a2/0a2f0d1be2900e0a1fe74bcd9604e3f8.jpg",
+        "/upload/medialibrary/548/5488fb415056eee52ac63ff9d4850c63.jpg",
+        "/upload/medialibrary/e1c/e1cd51110183f9c6b2e704b70664eba1.jpg",
+        "/upload/medialibrary/fb3/fb3d693282a8085971dd4e2fe87bf28e.jpg"
+      ]
+    },
+    "/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/": {
+      "title": "Алмазное бурение в стяжке под стояки отопления - как это делается",
+      "description": "Как выполнялись отверстия под стояки отопления через стяжку, утепляющий слой и перекрытие на реальном объекте: разметка, крепление установки, защита отделки и работа с армирующей сеткой.",
+      "canonical": "https://aeroventa.ru/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/",
+      "h1": [
+        "Алмазное бурение в стяжке под стояки отопления"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "Article",
+              "@id": "https://aeroventa.ru/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/#page",
+              "name": "Алмазное бурение в стяжке под стояки отопления",
+              "url": "https://aeroventa.ru/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/",
+              "headline": "Алмазное бурение в стяжке под стояки отопления",
+              "publisher": {
+                "@id": "https://aeroventa.ru/#organization"
+              }
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Статьи",
+                  "item": "https://aeroventa.ru/blog/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "Алмазное бурение в стяжке под стояки отопления",
+                  "item": "https://aeroventa.ru/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "0191253db780dddb96ea7392c779e5f6cf35375badb6acb2e44dac26fefbbeea",
+      "main_image_paths": [
+        "/upload/medialibrary/07d/07dab8725035e20b104e104c7b3b37b2.jpg",
+        "/upload/medialibrary/0a2/0a2f0d1be2900e0a1fe74bcd9604e3f8.jpg",
+        "/upload/medialibrary/0b1/0b179fd0f98600b91f2e1595aadfa748.jpg",
+        "/upload/medialibrary/126/126dbf656f5d925c23164e4ef4600f6b.jpg",
+        "/upload/medialibrary/1d3/1d3938a85f360d4f0e3ac7746cb42ba1.jpg",
+        "/upload/medialibrary/1da/1da12c830b41f8fff873c8afdb3d928e.jpg",
+        "/upload/medialibrary/20b/20bb4a86399fb1854922de9a0b4d9240.jpg",
+        "/upload/medialibrary/307/307eb21fdefd84f96f7fc9344e42f695.jpg",
+        "/upload/medialibrary/432/432b5ce416eed1135275119a2991f0b6.jpg",
+        "/upload/medialibrary/4c7/4c7e532fbd9c0274db2bb099145e568e.jpg",
+        "/upload/medialibrary/5cc/5cc1c29462c608c53de529866fd85fca.jpg",
+        "/upload/medialibrary/9bc/9bc4d4ae81da7d02ae71f42609d43dc2.jpg",
+        "/upload/medialibrary/9c2/9c22c2ace717a1539e2a13f2f1770c0f.jpg",
+        "/upload/medialibrary/a77/a7779372c7693cc34ec77da5ce346c53.jpg",
+        "/upload/medialibrary/ac0/ac0b42411c8f84c5a9f713f44d893c79.jpg",
+        "/upload/medialibrary/bd8/bd87200ccd38e345e80d1feaaef37614.jpg",
+        "/upload/medialibrary/c59/c595f0bf5ad0aea7d396730b5b6fb5ae.jpg",
+        "/upload/medialibrary/d30/d30112825cf5f9fe364aae3db2dc1b41.jpg",
+        "/upload/medialibrary/da7/da7a30342e85cf4800bd992fd24414e0.jpg",
+        "/upload/medialibrary/e2c/e2c7facc6758721367de23928e63070b.jpg",
+        "/upload/medialibrary/fd2/fd2953fec958061835c03d607edb21d9.jpg"
+      ]
+    },
+    "/blog/detail/gorizontalnoe-almaznoe-burenie/": {
+      "title": "Горизонтальное алмазное бурение в стене под вентиляцию",
+      "description": "Что нужно проверить перед отверстием под воздуховод: диаметр, толщина и материал стены, трасса, коммуникации, доступ и защита отделки. Реальный исторический пример AEROVENTA.",
+      "canonical": "https://aeroventa.ru/blog/detail/gorizontalnoe-almaznoe-burenie/",
+      "h1": [
+        "Горизонтальное алмазное бурение под вентиляцию"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "Article",
+              "@id": "https://aeroventa.ru/blog/detail/gorizontalnoe-almaznoe-burenie/#page",
+              "name": "Горизонтальное алмазное бурение под вентиляцию",
+              "url": "https://aeroventa.ru/blog/detail/gorizontalnoe-almaznoe-burenie/",
+              "headline": "Горизонтальное алмазное бурение под вентиляцию",
+              "publisher": {
+                "@id": "https://aeroventa.ru/#organization"
+              }
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/blog/detail/gorizontalnoe-almaznoe-burenie/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Статьи",
+                  "item": "https://aeroventa.ru/blog/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "Горизонтальное алмазное бурение под вентиляцию",
+                  "item": "https://aeroventa.ru/blog/detail/gorizontalnoe-almaznoe-burenie/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "5169c85c17825115fed6c65746680679b0bcc0730c03a709b8d3624ee8aab1d8",
+      "main_image_paths": [
+        "/upload/medialibrary/084/084533eb2e5ce81f91cf56e338038bab.jpg",
+        "/upload/medialibrary/1ef/1efe7cf2275d5b26a51a91b28295597c.jpg",
+        "/upload/medialibrary/218/2189ce14a21559c1cdc0fd7c47db8e77.jpg",
+        "/upload/medialibrary/273/27382a426bb837fa3b9c19be8234ba61.jpg",
+        "/upload/medialibrary/2f6/2f68dc55aadc443de99749db95db9d80.jpg",
+        "/upload/medialibrary/31a/31ace19e2c25737245a3f9e96df0b58a.jpg",
+        "/upload/medialibrary/4e0/4e07f1978ab03efbb4a2db4bad4f7025.jpg",
+        "/upload/medialibrary/510/510822b015d1714b42846934757e2f42.jpg",
+        "/upload/medialibrary/551/5515ca1f4b5fdbf29b1142172ad8ce0e.jpg",
+        "/upload/medialibrary/5fa/5faf932c65944a1460e7475bb775797a.jpg",
+        "/upload/medialibrary/623/6230fc70c2422decdbf7fc50ff4909ef.jpg",
+        "/upload/medialibrary/66e/66ed8c036d19ab8c6e99923f67b8968b.jpg",
+        "/upload/medialibrary/67e/67ea69ba858b92b4f57429c3e106111b.jpg",
+        "/upload/medialibrary/72e/72ee2919019f2652e33a538a6ee031d6.jpg",
+        "/upload/medialibrary/791/791927ae4c2e14ba1085651828ba1f3e.jpg",
+        "/upload/medialibrary/824/8244e7abcb8eae9d30a0960524aa778c.jpg",
+        "/upload/medialibrary/943/9432660ae5d6625e79e955fd9f97df81.jpg",
+        "/upload/medialibrary/974/9747264ad971d84ee8513b2a00d01106.jpg",
+        "/upload/medialibrary/9fa/9fa25d11eb64ca676034be5d3e30547d.jpg",
+        "/upload/medialibrary/a91/a9130257f9065ba97af74770f9a7fd4b.jpg",
+        "/upload/medialibrary/ab2/ab2ffa14904a3a2cc57858ad780957b4.jpg",
+        "/upload/medialibrary/d44/d445b0bec3b32bfb6a0adccf33f2e1e2.jpg",
+        "/upload/medialibrary/d7d/d7d7b30b0798d54c03ec59e0e2e8fbc4.jpg",
+        "/upload/medialibrary/db2/db21e829c8cc19d2cfe72ac44b2f48e8.jpg",
+        "/upload/medialibrary/dba/dba444c8e4e095a54a8c76d508eec13b.jpg",
+        "/upload/medialibrary/e1c/e1cd51110183f9c6b2e704b70664eba1.jpg",
+        "/upload/medialibrary/e3c/e3cfc791af1bce9c45075b586ff07ad8.jpg",
+        "/upload/medialibrary/ef3/ef356cb140039ed6a9554bb7b435f2af.jpg",
+        "/upload/medialibrary/ff5/ff5881c320a172b7c1650a145aac978c.jpg"
+      ]
+    },
+    "/blog/detail/kafe-rimskogo-korsakova-3/": {
+      "title": "Кафе на Римского-Корсакова объект AEROVENTA.RU",
+      "description": "Исторический кейс AEROVENTA: монтаж приточно-вытяжной вентиляции и вентиляционного оборудования в кафе на проспекте Римского-Корсакова, 3 в Санкт-Петербурге.",
+      "canonical": "https://aeroventa.ru/blog/detail/kafe-rimskogo-korsakova-3/",
+      "h1": [
+        "Кафе на Римского-Корсакова Дом 3"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/blog/detail/kafe-rimskogo-korsakova-3/#page",
+              "name": "Кафе на Римского-Корсакова Дом 3",
+              "url": "https://aeroventa.ru/blog/detail/kafe-rimskogo-korsakova-3/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/blog/detail/kafe-rimskogo-korsakova-3/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Статьи",
+                  "item": "https://aeroventa.ru/blog/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "Кафе на Римского-Корсакова Дом 3",
+                  "item": "https://aeroventa.ru/blog/detail/kafe-rimskogo-korsakova-3/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "8efc6b87aaad7098c3fb3b0c59f15422e76935138d2ca037eb68d5ef0ce743ad",
+      "main_image_paths": [
+        "/evidence/cafe/archive/img-20200925-173755.webp",
+        "/evidence/cafe/archive/img-20201008-165514.webp",
+        "/evidence/cafe/archive/img-20201008-165522.webp",
+        "/evidence/cafe/archive/img-20201008-165533.webp",
+        "/evidence/cafe/archive/img-20201008-165543.webp",
+        "/evidence/cafe/archive/img-20201008-165554.webp",
+        "/evidence/cafe/archive/img-20201008-165609.webp",
+        "/evidence/cafe/archive/img-20201008-165614.webp",
+        "/evidence/cafe/archive/img-20201008-165628.webp",
+        "/evidence/cafe/archive/img-20201008-165637.webp",
+        "/evidence/cafe/owner-cover-v43.webp",
+        "/evidence/cafe/owner-interior-v43.webp"
+      ]
+    },
+    "/blog/detail/kak-my-sdali-7-domov/": {
+      "title": "Как мы выполнили и сдали 7 домов за 3 недели небольшим составом",
+      "description": "Объект AEROVENTA: монтаж приточно-вытяжной вентиляции в семи домах жилого квартала в Павловске. Период интенсивных работ — 18 ноября–10 декабря 2020 года по материалам объекта.",
+      "canonical": "https://aeroventa.ru/blog/detail/kak-my-sdali-7-domov/",
+      "h1": [
+        "Как мы выполнили и сдали 7 домов за 3 недели"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/blog/detail/kak-my-sdali-7-domov/#page",
+              "name": "Как мы выполнили и сдали 7 домов за 3 недели",
+              "url": "https://aeroventa.ru/blog/detail/kak-my-sdali-7-domov/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/blog/detail/kak-my-sdali-7-domov/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Статьи",
+                  "item": "https://aeroventa.ru/blog/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "Как мы выполнили и сдали 7 домов за 3 недели",
+                  "item": "https://aeroventa.ru/blog/detail/kak-my-sdali-7-domov/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "898476ae6df3881991036b31657f42eaad52147b093515dadb990e2e736cfd2c",
+      "main_image_paths": [
+        "/evidence/7park/archive/img_4291.webp",
+        "/evidence/7park/archive/img_4292.webp",
+        "/evidence/7park/archive/img_4295.webp",
+        "/evidence/7park/archive/img_4297.webp",
+        "/evidence/7park/archive/img_4299.webp",
+        "/evidence/7park/archive/img_4300.webp",
+        "/evidence/7park/archive/img_4301.webp",
+        "/evidence/7park/archive/img_4316.webp",
+        "/evidence/7park/archive/img_4322.webp",
+        "/evidence/7park/archive/img_6653.webp",
+        "/evidence/7park/archive/img_6654.webp",
+        "/evidence/7park/archive/img_6656.webp",
+        "/evidence/7park/object-exterior-day.jpg",
+        "/upload/iblock/51f/51f907939051c5ea1db9900b1de2c775.JPG",
+        "/upload/iblock/72e/72ec7962deb98397e2309d2ce374a4e9.JPG",
+        "/upload/iblock/754/754a6d238c57a326e16f6be65bd32495.JPG",
+        "/upload/iblock/7a2/7a2bf4a29f13c0d08cc92959c8e718d9.JPG",
+        "/upload/iblock/7ab/7ab5325bf6d569f4fd799666c1e95a84.JPG",
+        "/upload/iblock/81b/81bf6495dc9604adb0e71b361528c0aa.JPG",
+        "/upload/iblock/9d9/9d92bf7885378506773140903de6b8b9.JPG",
+        "/upload/iblock/a30/a30a05f14ce26ed9bd70fbf020f2dc28.JPG",
+        "/upload/iblock/af5/af57aadf310877d8dbcd8d7633c6a15d.JPG",
+        "/upload/iblock/e71/e7188afce5ef00cb8019652aa918a5ff.JPG",
+        "/upload/iblock/f6d/f6d4a95ea736bf087ddf663d21701d16.JPG",
+        "/upload/iblock/f73/f73c298dc0ba46861663895556125251.JPG"
+      ]
+    },
+    "/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/": {
+      "title": "Как вытащить алмазную коронку из бетона подручными средствами",
+      "description": "Почему алмазная коронка заклинивает в бетоне, что делать сначала, когда нужен штатный съёмник или обратный молоток и какие ошибки могут повредить оборудование. Практический опыт AEROVENTA.",
+      "canonical": "https://aeroventa.ru/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/",
+      "h1": [
+        "Вытаскиваем застрявшую алмазную коронку из бетона"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "Article",
+              "@id": "https://aeroventa.ru/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/#page",
+              "name": "Вытаскиваем застрявшую алмазную коронку из бетона",
+              "url": "https://aeroventa.ru/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/",
+              "headline": "Вытаскиваем застрявшую алмазную коронку из бетона",
+              "publisher": {
+                "@id": "https://aeroventa.ru/#organization"
+              }
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Статьи",
+                  "item": "https://aeroventa.ru/blog/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "Вытаскиваем застрявшую алмазную коронку из бетона",
+                  "item": "https://aeroventa.ru/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "f38bd5cae7df4ad1900758e3b10aa5a15d7d8004d26d16bd6b5a24e4eb36359b",
+      "main_image_paths": [
+        "/upload/medialibrary/2f5/2f52bfa95edec270426f31c22d61c1e4.jpg",
+        "/upload/medialibrary/434/434110bac1f0059ba57dfe4c5621251e.jpg",
+        "/upload/medialibrary/4f3/4f34b29726b3866596e4c65b472646d4.jpg",
+        "/upload/medialibrary/548/5488fb415056eee52ac63ff9d4850c63.jpg",
+        "/upload/medialibrary/935/935bf64b726fad1bb5d94f54bf308111.png",
+        "/upload/medialibrary/97d/97d8044a26c395e5bac48c95f2beb697.jpg",
+        "/upload/medialibrary/9c5/9c5cced342ee32161fa7d7869cdf57d6.png",
+        "/upload/medialibrary/cdc/cdc67a61f0a10cababb07858755c561f.png",
+        "/upload/medialibrary/cf3/cf33390c3bd00726751d56f811056692.png",
+        "/upload/medialibrary/d4c/d4c2aca7c78bbcc6626bfee9bfd3dff2.jpg"
+      ]
+    },
+    "/blog/detail/kvartira-na-zhukova/": {
+      "title": "Квартира на Жукова СПб",
+      "description": "Вентиляция квартиры в Санкт-Петербурге: приточно-вытяжная вентиляция, около 100 погонных метров с оборудованием и срок 5 дней по материалам объекта.",
+      "canonical": "https://aeroventa.ru/blog/detail/kvartira-na-zhukova/",
+      "h1": [
+        "Квартира на Жукова"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/blog/detail/kvartira-na-zhukova/#page",
+              "name": "Квартира на Жукова",
+              "url": "https://aeroventa.ru/blog/detail/kvartira-na-zhukova/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/blog/detail/kvartira-na-zhukova/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Статьи",
+                  "item": "https://aeroventa.ru/blog/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "Квартира на Жукова",
+                  "item": "https://aeroventa.ru/blog/detail/kvartira-na-zhukova/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "29cbf0361722adcb62542a338f937adcdf0801a24a37c66730390cfb46b67d17",
+      "main_image_paths": [
+        "/evidence/zhukov/archive/img-20200422-165107.webp",
+        "/evidence/zhukov/archive/img-20200422-165118.webp",
+        "/evidence/zhukov/archive/img-20200422-165138.webp",
+        "/evidence/zhukov/archive/img-20200504-113239.webp",
+        "/evidence/zhukov/archive/img-20200504-113302.webp",
+        "/evidence/zhukov/owner-cover-v43.webp",
+        "/upload/iblock/885/885714afc2007d69e27ab6eec877fe0c.jpg",
+        "/upload/iblock/af0/af03e6ec811a6ed30e2e15a623c93e61.jpg",
+        "/upload/iblock/bd0/bd056f493f7769f37e9e8be7268672b2.jpg",
+        "/upload/iblock/c13/c13e2e0bb9c1466bdd36d8d2d42fde93.jpg",
+        "/upload/iblock/d32/d3210a90f6d08d581263f04aace25965.jpg"
+      ]
+    },
+    "/blog/detail/montazh-ventilyatsii-v-karelii/": {
+      "title": "Монтаж вентиляции в Республике Карелия",
+      "description": "Объект AEROVENTA в Питкяранте: монтаж приточно-вытяжной вентиляции и оборудования в сервисно-образовательном центре.",
+      "canonical": "https://aeroventa.ru/blog/detail/montazh-ventilyatsii-v-karelii/",
+      "h1": [
+        "Монтаж вентиляции в Карелии"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/blog/detail/montazh-ventilyatsii-v-karelii/#page",
+              "name": "Монтаж вентиляции в Карелии",
+              "url": "https://aeroventa.ru/blog/detail/montazh-ventilyatsii-v-karelii/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/blog/detail/montazh-ventilyatsii-v-karelii/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Статьи",
+                  "item": "https://aeroventa.ru/blog/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "Монтаж вентиляции в Карелии",
+                  "item": "https://aeroventa.ru/blog/detail/montazh-ventilyatsii-v-karelii/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "a33bb217bab8fe12a644a566bfb9a5c7e31017c0a899c8fcfc36bb68f3b85a7a",
+      "main_image_paths": [
+        "/evidence/karelia/archive/img-8007.webp",
+        "/evidence/karelia/archive/img-8009.webp",
+        "/evidence/karelia/archive/img-8090.webp",
+        "/evidence/karelia/archive/img-8096.webp",
+        "/evidence/karelia/archive/img-8110.webp",
+        "/evidence/karelia/archive/img-8179.webp",
+        "/evidence/karelia/archive/img-8181.webp",
+        "/evidence/karelia/archive/img-8193.webp",
+        "/evidence/karelia/archive/img-8196.webp",
+        "/evidence/karelia/archive/img-8199.webp",
+        "/evidence/karelia/archive/img-8306.webp",
+        "/evidence/karelia/archive/img-8307.webp",
+        "/evidence/karelia/owner-cover-v43.webp",
+        "/evidence/karelia/ponsse-letter-20220405.png",
+        "/upload/iblock/030/030b028e323d5ec2255b2e29f01cc61a.jpg",
+        "/upload/iblock/083/0831fb32b94a187fc0748e8d24ce9ff2.jpg",
+        "/upload/iblock/0c2/0c26ded76ca40c3e1a972ee3cb6f0b00.jpg",
+        "/upload/iblock/0c2/0c28f5687dda9c72745a30567053d144.jpg",
+        "/upload/iblock/0e8/0e8ba3de01bb235cc77382ed725e6b5d.jpg",
+        "/upload/iblock/10b/10b280b0d9751528d75c165058d6a193.jpg",
+        "/upload/iblock/131/1310cb1a57243a3fd552c6c5f6c8afbd.jpg",
+        "/upload/iblock/16d/16d5a00cc83a1dc755eaceb51da5ede9.jpg",
+        "/upload/iblock/1e1/1e1b49ea84164a8f49ff009201007994.jpg",
+        "/upload/iblock/1f0/1f04c67fc1d3cae1a81d992e24b5188d.jpg",
+        "/upload/iblock/287/287dbe2060186ddd5be8403677be6aa2.jpg",
+        "/upload/iblock/2d3/2d3428bc1c22c44f750b78c5bef4858c.jpg",
+        "/upload/iblock/333/3331f34f0aca21a9a229d658c5572647.jpg",
+        "/upload/iblock/3bb/3bb5ecd825749a7f105375d5c8f61a51.jpg",
+        "/upload/iblock/409/40940fe08a2623af47b065c86be3eb03.jpg",
+        "/upload/iblock/4a4/4a481640a7dcc2f7ae0c51cf9a40097a.jpg",
+        "/upload/iblock/4b8/4b8588e79c3eda1530974b29b1978b65.jpg",
+        "/upload/iblock/4fb/4fbfc524ecdddb5510252700b30ec02d.jpg",
+        "/upload/iblock/56b/56b410825d3a6929b52b922ce936a024.jpg",
+        "/upload/iblock/56d/56d9524df99e47521ffc8807893f22fb.jpg",
+        "/upload/iblock/5be/5bec9948fcac367ddf33a2b9eeb008a6.jpg",
+        "/upload/iblock/605/605b1553a6d75d85e1830d74a4ce4fc6.jpg",
+        "/upload/iblock/60d/60d495e0f614756aaad199975b39960f.jpg",
+        "/upload/iblock/642/6427152f9b62e70c25ab70fefb347e52.jpg",
+        "/upload/iblock/698/69857f25a64f17b9e22105264fdf527c.jpg",
+        "/upload/iblock/6a6/6a6239b4e33b37411c1b8aff97343029.jpg",
+        "/upload/iblock/6ae/6ae960e77ad09a0aca3b96cb6a83c52c.jpg",
+        "/upload/iblock/73e/73ee5e2b64fde57ab428671c32c61493.jpg",
+        "/upload/iblock/746/746dadbdf49f8a0cce1879d9b7ab919d.jpg",
+        "/upload/iblock/767/767769a90139b5fe452252021bdbe05c.jpg",
+        "/upload/iblock/773/7739aa1385a0e2fffa65d5704889e70c.jpg",
+        "/upload/iblock/77e/77e10fdfa4feac69d14d68ecba919311.jpg",
+        "/upload/iblock/83e/83edf3e5ec8ab168e1d2ffd4955b2681.jpg",
+        "/upload/iblock/8a1/8a1759012689446e02fbb023a2ab5bdb.jpg",
+        "/upload/iblock/8a9/8a950e27c4107ab95aad531eb32517e0.jpg",
+        "/upload/iblock/998/99875d7db0753ad9ebf8e91e4ea27c7f.jpg",
+        "/upload/iblock/9c0/9c051f4d0f3429dffa34792ad138fc61.jpg",
+        "/upload/iblock/a4b/a4b9525884d4babd84c1ca47ce9c94d3.jpg",
+        "/upload/iblock/a64/a64a033b354a9e9a83cf128aa51a83ff.jpg",
+        "/upload/iblock/a9f/a9f552fdf949ed15892d969ee5d9b5b0.jpg",
+        "/upload/iblock/aac/aac7ad90a871aff6824dbeb3b64f6df2.jpg",
+        "/upload/iblock/b67/b67be0ee59e87182397c202628a8f978.jpg",
+        "/upload/iblock/c29/c29c36ceaa46205f251b52ba798bc635.jpg",
+        "/upload/iblock/c8c/c8c8d424c33069d87ff66eb0c85b755b.jpg",
+        "/upload/iblock/c95/c95c991e4e933e69acfab7b1dc457be7.jpg",
+        "/upload/iblock/c9e/c9ef589ba8ccf8b7406d31bac1c6bf25.jpg",
+        "/upload/iblock/cb4/cb43cdc6307ae7dc4a83dc48e8d33eb9.jpg",
+        "/upload/iblock/d44/d442a5b1dc2d81d5be67a9488faf15be.jpg",
+        "/upload/iblock/d75/d75596e219c62242d7dac9806e75a276.jpg",
+        "/upload/iblock/ded/ded65b35b25be4e24bd592bef965df7b.jpg",
+        "/upload/iblock/dfe/dfe5256cb31cb1479769636945397d6a.jpg",
+        "/upload/iblock/e34/e340202b3d844b81a05788c5518fa27c.jpg",
+        "/upload/iblock/e4a/e4a0b7b7d7c811129f36dfca04c5cdde.jpg",
+        "/upload/iblock/ea5/ea514f42462cc7cb186056ccb24b4830.jpg",
+        "/upload/iblock/f60/f609d9316b0a40960e904f69bdc22387.jpg",
+        "/upload/iblock/fa9/fa9210218bb59b6aae75706bb8d306c2.jpg",
+        "/upload/iblock/fc7/fc753663918c145a14bc8665c578eb41.jpg",
+        "/upload/iblock/fcd/fcd8ada9aa91e920c3a2c91c663e548c.jpg",
+        "/upload/iblock/feb/feb264251c547012a784ebcf2075d4b5.jpg"
+      ]
+    },
+    "/blog/detail/novoe-almaznoe-burenie/": {
+      "title": "Алмазное бурение в Санкт-Петербурге - новое направление AEROVENTA.RU",
+      "description": "Исторический контекст собственного алмазного бурения AEROVENTA и практические материалы, которые сохранили ценность. Текущая модель услуги отделена от старого направления.",
+      "canonical": "https://aeroventa.ru/blog/detail/novoe-almaznoe-burenie/",
+      "h1": [
+        "Новое направление - алмазное бурение"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "Article",
+              "@id": "https://aeroventa.ru/blog/detail/novoe-almaznoe-burenie/#page",
+              "name": "Новое направление - алмазное бурение",
+              "url": "https://aeroventa.ru/blog/detail/novoe-almaznoe-burenie/",
+              "headline": "Новое направление - алмазное бурение",
+              "publisher": {
+                "@id": "https://aeroventa.ru/#organization"
+              }
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/blog/detail/novoe-almaznoe-burenie/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Статьи",
+                  "item": "https://aeroventa.ru/blog/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "Новое направление - алмазное бурение",
+                  "item": "https://aeroventa.ru/blog/detail/novoe-almaznoe-burenie/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "7eda661871517dd9c7c75dd0f18314fff6cfcf24ca382f08a88b524f006eacb7",
+      "main_image_paths": [
+        "/upload/medialibrary/0a2/0a2f0d1be2900e0a1fe74bcd9604e3f8.jpg",
+        "/upload/medialibrary/548/5488fb415056eee52ac63ff9d4850c63.jpg",
+        "/upload/medialibrary/e1c/e1cd51110183f9c6b2e704b70664eba1.jpg",
+        "/upload/medialibrary/fb3/fb3d693282a8085971dd4e2fe87bf28e.jpg"
+      ]
+    },
+    "/blog/detail/ntff-polisan/": {
+      "title": "НТФФ «Полисан» — монтаж вентиляции | AEROVENTA",
+      "description": "Объект AEROVENTA в Санкт-Петербурге: монтаж приточно-вытяжной вентиляции и оборудования на объекте НТФФ «Полисан», ул. Салова, 72.",
+      "canonical": "https://aeroventa.ru/blog/detail/ntff-polisan/",
+      "h1": [
+        "НТФФ «Полисан»"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/blog/detail/ntff-polisan/#page",
+              "name": "НТФФ «Полисан»",
+              "url": "https://aeroventa.ru/blog/detail/ntff-polisan/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/blog/detail/ntff-polisan/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Статьи",
+                  "item": "https://aeroventa.ru/blog/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "НТФФ «Полисан»",
+                  "item": "https://aeroventa.ru/blog/detail/ntff-polisan/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "8160c7faf6bd981395eb23b5b8387452e23f86e7c6550ec54555a0d69f4887c3",
+      "main_image_paths": [
+        "/evidence/polisan/archive/20180508-113510-1.webp",
+        "/evidence/polisan/archive/20180508-113558.webp",
+        "/evidence/polisan/archive/20180508-144933.webp",
+        "/evidence/polisan/archive/20180508-145055.webp",
+        "/evidence/polisan/archive/20180510-173851.webp",
+        "/evidence/polisan/archive/20180510-173901.webp",
+        "/evidence/polisan/archive/20180510-173909.webp",
+        "/evidence/polisan/archive/20180601-114227.webp",
+        "/evidence/polisan/archive/20180601-114505.webp",
+        "/evidence/polisan/archive/20180601-133711.webp",
+        "/evidence/polisan/archive/20180601-133720.webp",
+        "/evidence/polisan/archive/20180601-164403.webp",
+        "/evidence/polisan/owner-cover-v43.webp"
+      ]
+    },
+    "/blog/detail/restoran-v-zhk-leontevskiy-mys/": {
+      "title": "Ресторан в ЖК Леонтьевский Мыс, Ждановская 45 ПС СПб",
+      "description": "Ресторанный объект AEROVENTA в Санкт-Петербурге: монтаж приточно-вытяжной вентиляции и вентиляционного оборудования в ресторане ЖК «Леонтьевский Мыс».",
+      "canonical": "https://aeroventa.ru/blog/detail/restoran-v-zhk-leontevskiy-mys/",
+      "h1": [
+        "Ресторан в ЖК Леонтьевский Мыс"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/blog/detail/restoran-v-zhk-leontevskiy-mys/#page",
+              "name": "Ресторан в ЖК Леонтьевский Мыс",
+              "url": "https://aeroventa.ru/blog/detail/restoran-v-zhk-leontevskiy-mys/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/blog/detail/restoran-v-zhk-leontevskiy-mys/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Статьи",
+                  "item": "https://aeroventa.ru/blog/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "Ресторан в ЖК Леонтьевский Мыс",
+                  "item": "https://aeroventa.ru/blog/detail/restoran-v-zhk-leontevskiy-mys/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "e080636a541ca1f0e6f5e1f97b19861cee1c3c6b0522d2867e9bf6ab257f0543",
+      "main_image_paths": [
+        "/evidence/leont/archive/img-4998.webp",
+        "/evidence/leont/archive/img-4999.webp",
+        "/evidence/leont/archive/img-5001.webp",
+        "/evidence/leont/archive/img-5003.webp",
+        "/evidence/leont/archive/img-5004.webp",
+        "/evidence/leont/archive/img-5005.webp",
+        "/evidence/leont/archive/img-5006.webp",
+        "/evidence/leont/archive/img-5007.webp",
+        "/evidence/leont/archive/img-5008.webp",
+        "/evidence/leont/archive/img-5009.webp",
+        "/evidence/leont/archive/img-5010.webp",
+        "/evidence/leont/archive/img-5029.webp",
+        "/evidence/leont/archive/img-5236.webp",
+        "/evidence/leont/archive/img-5237.webp",
+        "/evidence/leont/archive/img-5238.webp",
+        "/evidence/leont/archive/img-5239.webp",
+        "/evidence/leont/archive/img-5240.webp",
+        "/evidence/leont/archive/img-5241.webp",
+        "/evidence/leont/archive/img-5242.webp",
+        "/evidence/leont/archive/img-5243.webp",
+        "/evidence/leont/archive/img-5244.webp",
+        "/evidence/leont/archive/img-5245.webp",
+        "/evidence/leont/archive/img-5250.webp",
+        "/evidence/leont/archive/img-5251.webp",
+        "/evidence/leont/archive/img-5253.webp",
+        "/evidence/leont/archive/img-5256.webp",
+        "/evidence/leont/owner-cover-v43.webp"
+      ]
+    },
+    "/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/": {
+      "title": "Стоимость алмазного бурения - как рассчитать цену за работы",
+      "description": "Диаметр, глубина, материал, армирование, доступ, высота, защита отделки и объём работ: какие данные реально влияют на стоимость алмазного бурения и что прислать для расчёта.",
+      "canonical": "https://aeroventa.ru/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/",
+      "h1": [
+        "Стоимость алмазного бурения - как рассчитать цену"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "Article",
+              "@id": "https://aeroventa.ru/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/#page",
+              "name": "Стоимость алмазного бурения - как рассчитать цену",
+              "url": "https://aeroventa.ru/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/",
+              "headline": "Стоимость алмазного бурения - как рассчитать цену",
+              "publisher": {
+                "@id": "https://aeroventa.ru/#organization"
+              }
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Статьи",
+                  "item": "https://aeroventa.ru/blog/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "Стоимость алмазного бурения - как рассчитать цену",
+                  "item": "https://aeroventa.ru/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "83102e1d819ac6bc1b5dac3185e60b041bdf9cadf152fd550287e39e8c6955ca",
+      "main_image_paths": [
+        "/upload/medialibrary/346/346344bd3df8280d9543bf0472921fd1.jpg",
+        "/upload/medialibrary/777/7772e433df1bc83f0071327fcb7cdc72.jpg",
+        "/upload/medialibrary/860/86045342cb806bd8ff510e61cd24d4e8.jpg",
+        "/upload/medialibrary/fb3/fb3d693282a8085971dd4e2fe87bf28e.jpg"
+      ]
+    },
+    "/blog/": {
+      "title": "Практика AEROVENTA — инженерные материалы и реальные объекты",
+      "description": "Практические материалы AEROVENTA: инженерные вопросы, опыт с площадки и реальные объекты. Монтаж вентиляции и технические статьи из практики.",
+      "canonical": "https://aeroventa.ru/blog/",
+      "h1": [
+        "Статьи"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/blog/#page",
+              "name": "Практика",
+              "url": "https://aeroventa.ru/blog/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/blog/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Практика",
+                  "item": "https://aeroventa.ru/blog/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "57887ada9bee2f5c45cc84c143d3292dc303aa9965f60b9b0f335124e4f4bf99",
+      "main_image_paths": [
+        "/evidence/karelia/owner-cover-v43.webp",
+        "/evidence/leont/owner-cover-v43.webp",
+        "/evidence/owner-portfolio/akvilon-yanino/cover.webp",
+        "/evidence/polisan/owner-cover-v43.webp",
+        "/evidence/zhukov/owner-cover-v43.webp",
+        "/upload/medialibrary/0a2/0a2f0d1be2900e0a1fe74bcd9604e3f8.jpg",
+        "/upload/medialibrary/548/5488fb415056eee52ac63ff9d4850c63.jpg",
+        "/upload/medialibrary/e1c/e1cd51110183f9c6b2e704b70664eba1.jpg",
+        "/upload/medialibrary/fb3/fb3d693282a8085971dd4e2fe87bf28e.jpg"
+      ]
+    },
+    "/blog/istorii-proektov/": {
+      "title": "Истории объектов AEROVENTA — реальные проекты вентиляции",
+      "description": "Истории реальных объектов AEROVENTA: жилые комплексы, ресторан, производство, квартира, кафе и работа в Карелии. Фотографии и состав выполненных работ.",
+      "canonical": "https://aeroventa.ru/blog/istorii-proektov/",
+      "h1": [
+        "Истории объектов"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/blog/istorii-proektov/#page",
+              "name": "Истории объектов",
+              "url": "https://aeroventa.ru/blog/istorii-proektov/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/blog/istorii-proektov/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Статьи",
+                  "item": "https://aeroventa.ru/blog/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "Истории объектов",
+                  "item": "https://aeroventa.ru/blog/istorii-proektov/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "15f953c321b0577adcb7b1e358d9b7bc303ce0af127b58268c02d19aab1e2dcd",
+      "main_image_paths": [
+        "/evidence/cafe/owner-cover-v43.webp",
+        "/evidence/karelia/owner-cover-v43.webp",
+        "/evidence/leont/owner-cover-v43.webp",
+        "/evidence/owner-portfolio/akvilon-yanino/cover.webp",
+        "/evidence/polisan/owner-cover-v43.webp",
+        "/evidence/zhukov/owner-cover-v43.webp"
+      ]
+    },
+    "/blog/obzory-i-intervyu/": {
+      "title": "Технические статьи AEROVENTA",
+      "description": "Технические статьи AEROVENTA: полевой опыт, стоимость и проходки под вентиляцию.",
+      "canonical": "https://aeroventa.ru/blog/obzory-i-intervyu/",
+      "h1": [
+        "Технические статьи"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/blog/obzory-i-intervyu/#page",
+              "name": "Технические статьи",
+              "url": "https://aeroventa.ru/blog/obzory-i-intervyu/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/blog/obzory-i-intervyu/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Статьи",
+                  "item": "https://aeroventa.ru/blog/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "Технические статьи",
+                  "item": "https://aeroventa.ru/blog/obzory-i-intervyu/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "66be657fffd766bbe8b3e35444f9ce447bdbc153d97366ab5f3100096d204814",
+      "main_image_paths": [
+        "/upload/medialibrary/0a2/0a2f0d1be2900e0a1fe74bcd9604e3f8.jpg",
+        "/upload/medialibrary/548/5488fb415056eee52ac63ff9d4850c63.jpg",
+        "/upload/medialibrary/e1c/e1cd51110183f9c6b2e704b70664eba1.jpg",
+        "/upload/medialibrary/fb3/fb3d693282a8085971dd4e2fe87bf28e.jpg"
+      ]
+    },
+    "/blog/poleznye-stati/": {
+      "title": "Практические материалы по вентиляции и смежным работам — AEROVENTA",
+      "description": "Практические разборы AEROVENTA: реальные полевые задачи, факторы стоимости, подготовка исходных данных и инженерные решения.",
+      "canonical": "https://aeroventa.ru/blog/poleznye-stati/",
+      "h1": [
+        "Практические материалы"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/blog/poleznye-stati/#page",
+              "name": "Практические материалы",
+              "url": "https://aeroventa.ru/blog/poleznye-stati/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/blog/poleznye-stati/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Статьи",
+                  "item": "https://aeroventa.ru/blog/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "Практические материалы",
+                  "item": "https://aeroventa.ru/blog/poleznye-stati/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "252754a3cf1025ae2fae0bfe5694bb5749169f6828a6f96156606a2d58d0745e",
+      "main_image_paths": [
+        "/upload/medialibrary/0a2/0a2f0d1be2900e0a1fe74bcd9604e3f8.jpg",
+        "/upload/medialibrary/548/5488fb415056eee52ac63ff9d4850c63.jpg",
+        "/upload/medialibrary/e1c/e1cd51110183f9c6b2e704b70664eba1.jpg",
+        "/upload/medialibrary/fb3/fb3d693282a8085971dd4e2fe87bf28e.jpg"
+      ]
+    },
+    "/contact/": {
+      "title": "Контакты AEROVENTA — монтаж вентиляции",
+      "description": "Связаться с AEROVENTA по монтажу вентиляции. Санкт-Петербург и Ленинградская область — основная зона работы; берём объекты в Москве и Карелии. Отправить проект или описать задачу.",
+      "canonical": "https://aeroventa.ru/contact/",
+      "h1": [
+        "Обсудим ваш объект"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "ContactPage",
+              "@id": "https://aeroventa.ru/contact/#page",
+              "name": "Связаться с AEROVENTA",
+              "url": "https://aeroventa.ru/contact/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/contact/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Связаться с AEROVENTA",
+                  "item": "https://aeroventa.ru/contact/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "0cd6144b11162030d23ba9af39be7b199131a924a4f25d1ef50a82baec851d58",
+      "main_image_paths": []
+    },
+    "/covid-pritochnaya-ventilacia/": {
+      "title": "COVID-19 и вентиляция: что осталось актуальным — AEROVENTA",
+      "description": "Обновлённый материал AEROVENTA: исторические рекомендации REHVA 2020 года и современный контекст вентиляции, качества воздуха и контроля инфекционных аэрозолей по CDC, ASHRAE и REHVA.",
+      "canonical": "https://aeroventa.ru/covid-pritochnaya-ventilacia/",
+      "h1": [
+        "COVID-19 и вентиляция: что из рекомендаций осталось актуальным"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "Article",
+              "@id": "https://aeroventa.ru/covid-pritochnaya-ventilacia/#page",
+              "name": "COVID-19 и вентиляция: что из рекомендаций осталось актуальным",
+              "url": "https://aeroventa.ru/covid-pritochnaya-ventilacia/",
+              "headline": "COVID-19 и вентиляция: что из рекомендаций осталось актуальным",
+              "publisher": {
+                "@id": "https://aeroventa.ru/#organization"
+              }
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/covid-pritochnaya-ventilacia/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "COVID-19 и вентиляция: что из рекомендаций осталось актуальным",
+                  "item": "https://aeroventa.ru/covid-pritochnaya-ventilacia/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "f3d025340d887b62c8335f26e84086da77095b3eef77cc25d878448fa93cc63c",
+      "main_image_paths": [
+        "/upload/medialibrary/1e0/1e03a5c54309ab78f133df9068a70b33.jpg"
+      ]
+    },
+    "/faq/": {
+      "title": "Что важно решить до монтажа вентиляции — AEROVENTA",
+      "description": "Инженерные вопросы до расчёта, выбора системы, начала монтажа, сравнения смет и приёмки вентиляции. Подготовка проекта, условия монтажа и проверка выполненных работ.",
+      "canonical": "https://aeroventa.ru/faq/",
+      "h1": [
+        "Что важно решить до монтажа вентиляции"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/faq/#page",
+              "name": "Что важно решить до монтажа вентиляции",
+              "url": "https://aeroventa.ru/faq/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/faq/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Что важно решить до монтажа вентиляции",
+                  "item": "https://aeroventa.ru/faq/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "fee3df7cd9ca3acff49f1a79e7228e845b45d3642e6966635c7fd4acb9a7f849",
+      "main_image_paths": []
+    },
+    "/": {
+      "title": "AEROVENTA — инженерные системы вентиляции в СПб и Ленобласти",
+      "description": "AEROVENTA — монтаж вентиляции для квартир, домов, ресторанов, коммерческих, производственных и крупных объектов. Санкт-Петербург и Ленинградская область; берём объекты в Москве и Карелии.",
+      "canonical": "https://aeroventa.ru/",
+      "h1": [
+        "Инженерная вентиляция без лишнего."
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/#page",
+              "name": "Инженерная вентиляция без лишнего.",
+              "url": "https://aeroventa.ru/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "72878ec8d092f36a222c7426c5d5ab8c9dc9041c294628dad83640120887fd56",
+      "main_image_paths": [
+        "/evidence/7park/duct-route.jpg",
+        "/evidence/7park/object-exterior-day.jpg",
+        "/evidence/hero/engineering-scene-accepted-v43.webp",
+        "/evidence/hero/owner-luxury-airflow-20261010.png",
+        "/evidence/karelia/ponsse-letter-20220405.png"
+      ]
+    },
+    "/montazh-po-proektu/": {
+      "title": "Монтаж вентиляции по готовому проекту — AEROVENTA",
+      "description": "Работа AEROVENTA по готовой проектной документации: исходные данные, состав монтажных работ, вопросы к проекту и следующий коммерческий шаг.",
+      "canonical": "https://aeroventa.ru/montazh-po-proektu/",
+      "h1": [
+        "Монтаж вентиляции по вашему проекту"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "Service",
+              "@id": "https://aeroventa.ru/montazh-po-proektu/#page",
+              "name": "Монтаж вентиляции по готовой проектной документации",
+              "url": "https://aeroventa.ru/montazh-po-proektu/",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ],
+              "provider": {
+                "@id": "https://aeroventa.ru/#organization"
+              }
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/montazh-po-proektu/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Монтаж вентиляции по готовой проектной документации",
+                  "item": "https://aeroventa.ru/montazh-po-proektu/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "186aed9c9701aae28b97dbe6e0986907e89e611b34f3804dcd5161b130797fb6",
+      "main_image_paths": [
+        "/evidence/karelia/owner-cover-v43.webp",
+        "/evidence/leont/owner-cover-v43.webp",
+        "/evidence/polisan/archive/20180601-133720.webp",
+        "/evidence/polisan/owner-cover-v43.webp"
+      ]
+    },
+    "/montazh-ventiliacii/": {
+      "title": "Монтаж вентиляции в Санкт-Петербурге и Ленинградской области — AEROVENTA",
+      "description": "Монтаж систем вентиляции для квартир, домов, ресторанов, коммерческих, производственных и крупных объектов. Работа по проекту или первичная оценка исходных данных, реальные кейсы AEROVENTA.",
+      "canonical": "https://aeroventa.ru/montazh-ventiliacii/",
+      "h1": [
+        "Монтаж вентиляции"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "Service",
+              "@id": "https://aeroventa.ru/montazh-ventiliacii/#page",
+              "name": "Монтаж вентиляции в Санкт-Петербурге и Ленинградской области",
+              "url": "https://aeroventa.ru/montazh-ventiliacii/",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ],
+              "provider": {
+                "@id": "https://aeroventa.ru/#organization"
+              }
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/montazh-ventiliacii/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Монтаж вентиляции в Санкт-Петербурге и Ленинградской области",
+                  "item": "https://aeroventa.ru/montazh-ventiliacii/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "4a449973604b4e8d37f7e153ec88adc2de246afaaab1a353a6c5419d571145ba",
+      "main_image_paths": [
+        "/evidence/hero/hiend-engineering-visual-owner-v43.webp",
+        "/evidence/karelia/owner-cover-v43.webp",
+        "/evidence/leont/owner-cover-v43.webp",
+        "/evidence/polisan/owner-cover-v43.webp",
+        "/evidence/zhukov/owner-cover-v43.webp"
+      ]
+    },
+    "/news/": {
+      "title": "История и проекты AEROVENTA",
+      "description": "Проекты и история AEROVENTA: монтаж вентиляции, команда и практические материалы.",
+      "canonical": "https://aeroventa.ru/news/",
+      "h1": [
+        "История и проекты AEROVENTA"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/news/#page",
+              "name": "История и проекты AEROVENTA",
+              "url": "https://aeroventa.ru/news/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/news/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "История и проекты AEROVENTA",
+                  "item": "https://aeroventa.ru/news/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "ab4229a64cfa63a30453c58da1ae83f960ed2769d87b0b548a8fd2e8ca0ca688",
+      "main_image_paths": [
+        "/evidence/karelia/owner-cover-v43.webp"
+      ]
+    },
+    "/news/istoriya-kompanii/": {
+      "title": "История компании AEROVENTA — реальные объекты",
+      "description": "История AEROVENTA через выполненные проекты: производство, жилые дома, ресторан, квартира и работа в Карелии.",
+      "canonical": "https://aeroventa.ru/news/istoriya-kompanii/",
+      "h1": [
+        "История AEROVENTA через реальные объекты"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "AboutPage",
+              "@id": "https://aeroventa.ru/news/istoriya-kompanii/#page",
+              "name": "История AEROVENTA через реальные объекты",
+              "url": "https://aeroventa.ru/news/istoriya-kompanii/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/news/istoriya-kompanii/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Новости",
+                  "item": "https://aeroventa.ru/news/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "История AEROVENTA через реальные объекты",
+                  "item": "https://aeroventa.ru/news/istoriya-kompanii/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "240098019e5fd19c5c49a9ce1228781996f5ecbd59ec04e56b365003a55159b4",
+      "main_image_paths": [
+        "/evidence/7park/object-exterior-day.jpg",
+        "/evidence/karelia/owner-cover-v43.webp",
+        "/evidence/leont/owner-cover-v43.webp",
+        "/evidence/polisan/owner-cover-v43.webp",
+        "/evidence/zhukov/owner-cover-v43.webp"
+      ]
+    },
+    "/news/korporativnaya-zhizn/": {
+      "title": "Команда и проекты AEROVENTA",
+      "description": "Команда AEROVENTA и выполненные проекты: фотографии объектов, организация работ и практика монтажа вентиляции.",
+      "canonical": "https://aeroventa.ru/news/korporativnaya-zhizn/",
+      "h1": [
+        "Команда и проекты AEROVENTA"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/news/korporativnaya-zhizn/#page",
+              "name": "Команда и проекты AEROVENTA",
+              "url": "https://aeroventa.ru/news/korporativnaya-zhizn/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/news/korporativnaya-zhizn/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Новости",
+                  "item": "https://aeroventa.ru/news/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "Команда и проекты AEROVENTA",
+                  "item": "https://aeroventa.ru/news/korporativnaya-zhizn/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "011c3302e144ec06d07b03b22477f3645405071533dcf16543e5b64dbdadaa94",
+      "main_image_paths": []
+    },
+    "/news/znachimye-sobytiya/": {
+      "title": "Проекты AEROVENTA разных лет",
+      "description": "Проекты AEROVENTA разных лет: монтаж вентиляции на производстве, в жилых зданиях, ресторанах и коммерческих помещениях.",
+      "canonical": "https://aeroventa.ru/news/znachimye-sobytiya/",
+      "h1": [
+        "Проекты AEROVENTA разных лет"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/news/znachimye-sobytiya/#page",
+              "name": "Проекты AEROVENTA разных лет",
+              "url": "https://aeroventa.ru/news/znachimye-sobytiya/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/news/znachimye-sobytiya/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Новости",
+                  "item": "https://aeroventa.ru/news/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "Проекты AEROVENTA разных лет",
+                  "item": "https://aeroventa.ru/news/znachimye-sobytiya/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "5753fd715acf96019b0b7c3a834777f2e7a6975ecb1d0eb4dbb67b87ca9384e0",
+      "main_image_paths": [
+        "/evidence/7park/object-exterior-day.jpg",
+        "/evidence/karelia/owner-cover-v43.webp",
+        "/evidence/leont/owner-cover-v43.webp",
+        "/evidence/polisan/owner-cover-v43.webp"
+      ]
+    },
+    "/obekt-bez-gotovogo-proekta/": {
+      "title": "Объект без готового проекта — следующий шаг по вентиляции | AEROVENTA",
+      "description": "Что нужно определить до сметы на монтаж вентиляции, если готовой проектной документации ещё нет: исходные данные, границы задачи и следующий технический шаг.",
+      "canonical": "https://aeroventa.ru/obekt-bez-gotovogo-proekta/",
+      "h1": [
+        "Начнём с вашей задачи"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "Service",
+              "@id": "https://aeroventa.ru/obekt-bez-gotovogo-proekta/#page",
+              "name": "Подготовка исходных данных до оценки монтажа вентиляции",
+              "url": "https://aeroventa.ru/obekt-bez-gotovogo-proekta/",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ],
+              "provider": {
+                "@id": "https://aeroventa.ru/#organization"
+              }
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/obekt-bez-gotovogo-proekta/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Подготовка исходных данных до оценки монтажа вентиляции",
+                  "item": "https://aeroventa.ru/obekt-bez-gotovogo-proekta/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "c31f78918574754b9a102596fdf5cc9dff88f3531fb0bc7b8a77fd84f888771b",
+      "main_image_paths": [
+        "/evidence/cafe/owner-cover-v43.webp",
+        "/evidence/karelia/owner-cover-v43.webp",
+        "/evidence/owner-portfolio/apart-hotel/cover.webp",
+        "/evidence/zhukov/owner-cover-v43.webp"
+      ]
+    },
+    "/obekty/": {
+      "title": "Монтаж вентиляции по типу объекта — AEROVENTA",
+      "description": "Монтаж вентиляции для ресторанов и кафе, новостроек, производства, квартир, домов, складов и коммерческих помещений. Особенности объектов, фотографии и выполненные работы AEROVENTA.",
+      "canonical": "https://aeroventa.ru/obekty/",
+      "h1": [
+        "Вентиляция под конкретный объект"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/obekty/#page",
+              "name": "Вентиляция под конкретный объект",
+              "url": "https://aeroventa.ru/obekty/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/obekty/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Вентиляция под конкретный объект",
+                  "item": "https://aeroventa.ru/obekty/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "669c2d4d696b1e64c8c568d8fa50618cddf1f567548c032f99d739b017862f58",
+      "main_image_paths": [
+        "/evidence/leont/owner-cover-v43.webp",
+        "/evidence/owner-portfolio/akvilon-yanino/cover.webp",
+        "/evidence/owner-portfolio/apart-hotel/cover.webp",
+        "/evidence/polisan/owner-cover-v43.webp",
+        "/evidence/warehouses/avers-razbegaevo/01.webp",
+        "/evidence/zhukov/owner-cover-v43.webp"
+      ]
+    },
+    "/obekty/kvartiry-i-doma/": {
+      "title": "Монтаж вентиляции квартир и домов — AEROVENTA",
+      "description": "Монтаж вентиляции в жилых помещениях с учётом архитектуры, шума, потолков и эксплуатации.",
+      "canonical": "https://aeroventa.ru/obekty/kvartiry-i-doma/",
+      "h1": [
+        "Монтаж вентиляции квартир и домов"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/obekty/kvartiry-i-doma/#page",
+              "name": "Монтаж вентиляции квартир и домов",
+              "url": "https://aeroventa.ru/obekty/kvartiry-i-doma/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/obekty/kvartiry-i-doma/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Объекты",
+                  "item": "https://aeroventa.ru/obekty/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "Монтаж вентиляции квартир и домов",
+                  "item": "https://aeroventa.ru/obekty/kvartiry-i-doma/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "f4d20fdab6d2166d62e9e7b2e8a4fc8ee7eb56b5bfee526e35f2bcb8c97f73b2",
+      "main_image_paths": [
+        "/evidence/owner-source-20261026/mitrofanievskoe/photo_5226735321473556570_y.png",
+        "/evidence/residential/neva/IMG_7571.JPG",
+        "/evidence/zhukov/owner-cover-v43.webp"
+      ]
+    },
+    "/obekty/magaziny-i-sklady/": {
+      "title": "Монтаж вентиляции магазинов и складов в СПб и Ленобласти — AEROVENTA",
+      "description": "При оценке монтажа на торговых и складских объектах важны высота помещений, условия доступа, график работы площадки и проектные решения.",
+      "canonical": "https://aeroventa.ru/obekty/magaziny-i-sklady/",
+      "h1": [
+        "Монтаж вентиляции магазинов и складов"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/obekty/magaziny-i-sklady/#page",
+              "name": "Монтаж вентиляции магазинов и складов",
+              "url": "https://aeroventa.ru/obekty/magaziny-i-sklady/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/obekty/magaziny-i-sklady/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Объекты",
+                  "item": "https://aeroventa.ru/obekty/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "Монтаж вентиляции магазинов и складов",
+                  "item": "https://aeroventa.ru/obekty/magaziny-i-sklady/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "3c333defb3608d1bc929d3c879c3256d56c486b0a7936fa1a6030987540101d9",
+      "main_image_paths": [
+        "/evidence/owner-portfolio/eurospar-vo/cover.webp",
+        "/evidence/warehouses/avers-razbegaevo/01.webp",
+        "/evidence/warehouses/farm-spb/01.webp"
+      ]
+    },
+    "/obekty/novostroyki/": {
+      "title": "Монтаж вентиляции в новостройках и жилых комплексах — AEROVENTA",
+      "description": "Вентиляция жилых комплексов: монтаж, инженерные трассы и фотографии жилого комплекса «Аквилон» в Янино.",
+      "canonical": "https://aeroventa.ru/obekty/novostroyki/",
+      "h1": [
+        "Монтаж вентиляции в новостройках и жилых комплексах"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/obekty/novostroyki/#page",
+              "name": "Монтаж вентиляции в новостройках и жилых комплексах",
+              "url": "https://aeroventa.ru/obekty/novostroyki/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/obekty/novostroyki/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Объекты",
+                  "item": "https://aeroventa.ru/obekty/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "Монтаж вентиляции в новостройках и жилых комплексах",
+                  "item": "https://aeroventa.ru/obekty/novostroyki/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "e02d95fd08a8cb1b4ea74098938aed889e92ded311c9637a84a73884e20fb288",
+      "main_image_paths": [
+        "/evidence/7park/object-exterior-day.jpg",
+        "/evidence/owner-portfolio/akvilon-yanino/cover.webp",
+        "/evidence/residential/neva/IMG_7571.JPG"
+      ]
+    },
+    "/obekty/ofisy-i-kommercheskie-pomeshcheniya/": {
+      "title": "Монтаж вентиляции офисов и коммерческих помещений в СПб и Ленобласти — AEROVENTA",
+      "description": "Для рабочего офиса, магазина и других коммерческих пространств уточняем проект, доступ к монтажным зонам и время выполнения работ. Состав системы определяется документацией.",
+      "canonical": "https://aeroventa.ru/obekty/ofisy-i-kommercheskie-pomeshcheniya/",
+      "h1": [
+        "Монтаж вентиляции офисов и коммерческих помещений"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/obekty/ofisy-i-kommercheskie-pomeshcheniya/#page",
+              "name": "Монтаж вентиляции офисов и коммерческих помещений",
+              "url": "https://aeroventa.ru/obekty/ofisy-i-kommercheskie-pomeshcheniya/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/obekty/ofisy-i-kommercheskie-pomeshcheniya/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Объекты",
+                  "item": "https://aeroventa.ru/obekty/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "Монтаж вентиляции офисов и коммерческих помещений",
+                  "item": "https://aeroventa.ru/obekty/ofisy-i-kommercheskie-pomeshcheniya/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "2bc25896c33da9f71f2f11756405ff84c5d0b64814429cc49d6c3b6833d8796c",
+      "main_image_paths": [
+        "/evidence/owner-portfolio/apart-hotel/cover.webp",
+        "/evidence/owner-portfolio/eurospar-sestroretsk/03.webp",
+        "/evidence/owner-portfolio/eurospar-vo/cover.webp"
+      ]
+    },
+    "/obekty/ofisy-i-kommerciya/": {
+      "title": "Монтаж вентиляции офисов и коммерческих помещений — AEROVENTA",
+      "description": "Офисы, коворкинги и коммерческие объекты. Реальные фотографии выполненных объектов AEROVENTA.",
+      "canonical": "https://aeroventa.ru/obekty/ofisy-i-kommerciya/",
+      "h1": [
+        "Монтаж вентиляции офисов и коммерческих помещений"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/obekty/ofisy-i-kommerciya/#page",
+              "name": "Монтаж вентиляции офисов и коммерческих помещений",
+              "url": "https://aeroventa.ru/obekty/ofisy-i-kommerciya/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/obekty/ofisy-i-kommerciya/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Объекты",
+                  "item": "https://aeroventa.ru/obekty/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "Монтаж вентиляции офисов и коммерческих помещений",
+                  "item": "https://aeroventa.ru/obekty/ofisy-i-kommerciya/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "3bdaf7b2ebbd6d2ec8331edf0b2fafeaa8081cdacdd090ba28a2ea7eaf64eacb",
+      "main_image_paths": [
+        "/evidence/owner-portfolio/apart-hotel/cover.webp",
+        "/evidence/owner-source-20261026/fitness-spb/photo_5226735321473556539_y.jpg",
+        "/evidence/owner-source-20261026/leont-office/IMG_6686.JPG"
+      ]
+    },
+    "/obekty/proizvodstvo/": {
+      "title": "Монтаж вентиляции на производственных объектах — AEROVENTA",
+      "description": "Производственные системы вентиляции. Полисан и промышленный объект «Химпром».",
+      "canonical": "https://aeroventa.ru/obekty/proizvodstvo/",
+      "h1": [
+        "Монтаж вентиляции на производственных объектах"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/obekty/proizvodstvo/#page",
+              "name": "Монтаж вентиляции на производственных объектах",
+              "url": "https://aeroventa.ru/obekty/proizvodstvo/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/obekty/proizvodstvo/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Объекты",
+                  "item": "https://aeroventa.ru/obekty/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "Монтаж вентиляции на производственных объектах",
+                  "item": "https://aeroventa.ru/obekty/proizvodstvo/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "fdd1ac2a5059024db4a1bad7feb3c8b6fd07a0e53a12124a524d42296e11747b",
+      "main_image_paths": [
+        "/evidence/owner-portfolio/himprom/03.webp",
+        "/evidence/owner-portfolio/novatech/cover.webp",
+        "/evidence/polisan/owner-cover-v43.webp"
+      ]
+    },
+    "/obekty/restorany-i-kafe/": {
+      "title": "Монтаж вентиляции ресторанов и кафе в СПб — AEROVENTA",
+      "description": "Монтаж систем вентиляции в ресторанах и кафе: работа по проекту, координация трасс и оборудования, реальные объекты AEROVENTA в Санкт-Петербурге.",
+      "canonical": "https://aeroventa.ru/obekty/restorany-i-kafe/",
+      "h1": [
+        "Монтаж вентиляции в ресторанах и кафе"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/obekty/restorany-i-kafe/#page",
+              "name": "Монтаж вентиляции в ресторанах и кафе",
+              "url": "https://aeroventa.ru/obekty/restorany-i-kafe/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/obekty/restorany-i-kafe/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Объекты",
+                  "item": "https://aeroventa.ru/obekty/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "Монтаж вентиляции в ресторанах и кафе",
+                  "item": "https://aeroventa.ru/obekty/restorany-i-kafe/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "987b660f5d4d4846fe6b9704c4f6eb674be7761dea801773ac57bb19c0c9e4d6",
+      "main_image_paths": [
+        "/evidence/cafe/owner-cover-v43.webp",
+        "/evidence/cafe/owner-interior-v43.webp",
+        "/evidence/leont/owner-cover-v43.webp"
+      ]
+    },
+    "/obekty/sklady/": {
+      "title": "Монтаж вентиляции складов — AEROVENTA",
+      "description": "Особенности вентиляции складских комплексов: высота, доступ и условия проведения монтажных работ.",
+      "canonical": "https://aeroventa.ru/obekty/sklady/",
+      "h1": [
+        "Монтаж вентиляции складов"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/obekty/sklady/#page",
+              "name": "Монтаж вентиляции складов",
+              "url": "https://aeroventa.ru/obekty/sklady/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/obekty/sklady/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Объекты",
+                  "item": "https://aeroventa.ru/obekty/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "Монтаж вентиляции складов",
+                  "item": "https://aeroventa.ru/obekty/sklady/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "3cf9cca84cadfb32d06cc668bc76f64361061f5ad3335d61c087d1b64ca7be8e",
+      "main_image_paths": [
+        "/evidence/warehouses/avers-razbegaevo/01.webp",
+        "/evidence/warehouses/farm-spb/01.webp"
+      ]
+    },
+    "/portfolio/": {
+      "title": "Объекты и проекты AEROVENTA — монтаж вентиляции",
+      "description": "Реальные объекты AEROVENTA: жилые комплексы, рестораны, производство, квартиры и работа в Карелии. Фотографии, задачи и состав выполненных работ.",
+      "canonical": "https://aeroventa.ru/portfolio/",
+      "h1": [
+        "Наши работы"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/portfolio/#page",
+              "name": "Реальные объекты и выполненные работы",
+              "url": "https://aeroventa.ru/portfolio/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/portfolio/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Реальные объекты и выполненные работы",
+                  "item": "https://aeroventa.ru/portfolio/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "afb93127067af34f02f6d0da1b894412f8841e9dc4f5ae9a4ef83049a5cf36c6",
+      "main_image_paths": [
+        "/evidence/cafe/owner-cover-v43.webp",
+        "/evidence/leont/owner-cover-v43.webp",
+        "/evidence/owner-portfolio/akvilon-yanino/cover.webp",
+        "/evidence/owner-portfolio/apart-hotel/cover.webp",
+        "/evidence/owner-portfolio/college-obvodny/gallery-09.webp",
+        "/evidence/owner-portfolio/eurospar-sestroretsk/03.webp",
+        "/evidence/owner-portfolio/eurospar-vo/cover.webp",
+        "/evidence/owner-portfolio/himprom/03.webp",
+        "/evidence/owner-portfolio/novatech/cover.webp",
+        "/evidence/owner-portfolio/sport-komendantskiy/gallery-01.webp",
+        "/evidence/owner-portfolio/sport-komendantskiy/owner-selected-aerial.webp",
+        "/evidence/polisan/owner-cover-v43.webp",
+        "/evidence/residential/neva/IMG_7571.JPG",
+        "/evidence/residential/neva/curated-01.webp",
+        "/evidence/warehouses/farm-spb/01.webp",
+        "/evidence/zhukov/owner-cover-v43.webp"
+      ]
+    },
+    "/portfolio/obekt/akvilon-yanino/": {
+      "title": "ЖК «Аквилон» · Янино — AEROVENTA",
+      "description": "ЖК «Аквилон» · Янино · Янино, Ленинградская область. Жилой комплекс в Янино. Виды здания и монтаж вентиляционных трасс.",
+      "canonical": "https://aeroventa.ru/portfolio/obekt/akvilon-yanino/",
+      "h1": [
+        "ЖК «Аквилон» · Янино"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/portfolio/obekt/akvilon-yanino/#page",
+              "name": "ЖК «Аквилон» · Янино",
+              "url": "https://aeroventa.ru/portfolio/obekt/akvilon-yanino/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/portfolio/obekt/akvilon-yanino/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "ЖК «Аквилон» · Янино",
+                  "item": "https://aeroventa.ru/portfolio/obekt/akvilon-yanino/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "aeda7e1fd0a3f327e3f8ba4f95803c37d549d15266f9128775d07d40401d1361",
+      "main_image_paths": [
+        "/evidence/owner-portfolio/akvilon-yanino/02.webp",
+        "/evidence/owner-portfolio/akvilon-yanino/03.webp",
+        "/evidence/owner-portfolio/akvilon-yanino/cover.webp",
+        "/evidence/owner-portfolio/akvilon-yanino/gallery-01.webp",
+        "/evidence/owner-portfolio/akvilon-yanino/gallery-02.webp",
+        "/evidence/owner-portfolio/akvilon-yanino/gallery-03.webp",
+        "/evidence/owner-portfolio/akvilon-yanino/gallery-04.webp",
+        "/evidence/owner-portfolio/akvilon-yanino/gallery-05.webp",
+        "/evidence/owner-portfolio/akvilon-yanino/gallery-06.webp",
+        "/evidence/owner-portfolio/akvilon-yanino/gallery-07.webp",
+        "/evidence/owner-portfolio/akvilon-yanino/gallery-08.webp",
+        "/evidence/owner-portfolio/akvilon-yanino/gallery-09.webp",
+        "/evidence/owner-portfolio/akvilon-yanino/gallery-10.webp",
+        "/evidence/owner-portfolio/akvilon-yanino/gallery-11.webp",
+        "/evidence/owner-portfolio/akvilon-yanino/gallery-13.webp",
+        "/evidence/owner-portfolio/akvilon-yanino/gallery-14.webp",
+        "/evidence/owner-portfolio/akvilon-yanino/gallery-15.webp",
+        "/evidence/owner-portfolio/akvilon-yanino/gallery-16.webp"
+      ]
+    },
+    "/portfolio/obekt/apart-hotel/": {
+      "title": "Апарт-отель и коворкинг на Бумажном — AEROVENTA",
+      "description": "Апарт-отель и коворкинг на Бумажном · Санкт-Петербург. Апарт-отель и коворкинг на Бумажном: инженерные трассы и интерьеры объекта.",
+      "canonical": "https://aeroventa.ru/portfolio/obekt/apart-hotel/",
+      "h1": [
+        "Апарт-отель и коворкинг на Бумажном"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/portfolio/obekt/apart-hotel/#page",
+              "name": "Апарт-отель и коворкинг на Бумажном",
+              "url": "https://aeroventa.ru/portfolio/obekt/apart-hotel/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/portfolio/obekt/apart-hotel/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Апарт-отель и коворкинг на Бумажном",
+                  "item": "https://aeroventa.ru/portfolio/obekt/apart-hotel/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "f8eb6beab36ce8b92303e69b83bdaad6e7f3b73cd8e737edb3d77922edbf8feb",
+      "main_image_paths": [
+        "/evidence/owner-portfolio/apart-hotel/02.webp",
+        "/evidence/owner-portfolio/apart-hotel/03.webp",
+        "/evidence/owner-portfolio/apart-hotel/cover.webp",
+        "/evidence/owner-portfolio/apart-hotel/gallery-01.webp",
+        "/evidence/owner-portfolio/apart-hotel/gallery-02.webp",
+        "/evidence/owner-portfolio/apart-hotel/gallery-03.webp",
+        "/evidence/owner-portfolio/apart-hotel/gallery-04.webp",
+        "/evidence/owner-portfolio/apart-hotel/gallery-05.webp",
+        "/evidence/owner-portfolio/apart-hotel/gallery-06.webp",
+        "/evidence/owner-portfolio/apart-hotel/gallery-07.webp",
+        "/evidence/owner-portfolio/apart-hotel/gallery-08.webp",
+        "/evidence/owner-portfolio/apart-hotel/gallery-09.webp",
+        "/evidence/owner-portfolio/apart-hotel/gallery-10.webp"
+      ]
+    },
+    "/portfolio/obekt/college-obvodny/": {
+      "title": "Колледж туризма и гостиничного сервиса — AEROVENTA",
+      "description": "Колледж туризма и гостиничного сервиса · Санкт-Петербург. Колледж туризма и гостиничного сервиса в Санкт-Петербурге. Фотографии площадки и инженерных систем.",
+      "canonical": "https://aeroventa.ru/portfolio/obekt/college-obvodny/",
+      "h1": [
+        "Колледж туризма и гостиничного сервиса"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/portfolio/obekt/college-obvodny/#page",
+              "name": "Колледж туризма и гостиничного сервиса",
+              "url": "https://aeroventa.ru/portfolio/obekt/college-obvodny/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/portfolio/obekt/college-obvodny/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Колледж туризма и гостиничного сервиса",
+                  "item": "https://aeroventa.ru/portfolio/obekt/college-obvodny/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "153d547de340d3585466ba57f6e8d02dd236b518cf30ddca32f2dd238d075c00",
+      "main_image_paths": [
+        "/evidence/owner-portfolio/college-obvodny/02.webp",
+        "/evidence/owner-portfolio/college-obvodny/03.webp",
+        "/evidence/owner-portfolio/college-obvodny/cover.webp",
+        "/evidence/owner-portfolio/college-obvodny/gallery-01.webp",
+        "/evidence/owner-portfolio/college-obvodny/gallery-02.webp",
+        "/evidence/owner-portfolio/college-obvodny/gallery-03.webp",
+        "/evidence/owner-portfolio/college-obvodny/gallery-04.webp",
+        "/evidence/owner-portfolio/college-obvodny/gallery-05.webp",
+        "/evidence/owner-portfolio/college-obvodny/gallery-06.webp",
+        "/evidence/owner-portfolio/college-obvodny/gallery-07.webp",
+        "/evidence/owner-portfolio/college-obvodny/gallery-08.webp",
+        "/evidence/owner-portfolio/college-obvodny/gallery-09.webp",
+        "/evidence/owner-portfolio/college-obvodny/gallery-10.webp",
+        "/evidence/owner-portfolio/college-obvodny/gallery-11.webp",
+        "/evidence/owner-portfolio/college-obvodny/gallery-12.webp"
+      ]
+    },
+    "/portfolio/obekt/eurospar-sestroretsk/": {
+      "title": "EUROSPAR · Сестрорецк — AEROVENTA",
+      "description": "EUROSPAR · Сестрорецк · Сестрорецк. Магазин EUROSPAR в Сестрорецке. Фотографии объекта и инженерных коммуникаций.",
+      "canonical": "https://aeroventa.ru/portfolio/obekt/eurospar-sestroretsk/",
+      "h1": [
+        "EUROSPAR · Сестрорецк"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/portfolio/obekt/eurospar-sestroretsk/#page",
+              "name": "EUROSPAR · Сестрорецк",
+              "url": "https://aeroventa.ru/portfolio/obekt/eurospar-sestroretsk/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/portfolio/obekt/eurospar-sestroretsk/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "EUROSPAR · Сестрорецк",
+                  "item": "https://aeroventa.ru/portfolio/obekt/eurospar-sestroretsk/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "bd21d0db82d4ddad6c98a75426b4ff31c4f46f4ef304e9437c0f866f61d70d9a",
+      "main_image_paths": [
+        "/evidence/owner-portfolio/eurospar-sestroretsk/02.webp",
+        "/evidence/owner-portfolio/eurospar-sestroretsk/03.webp",
+        "/evidence/owner-portfolio/eurospar-sestroretsk/cover.webp",
+        "/evidence/owner-portfolio/eurospar-sestroretsk/gallery-01.webp",
+        "/evidence/owner-portfolio/eurospar-sestroretsk/gallery-02.webp",
+        "/evidence/owner-portfolio/eurospar-sestroretsk/gallery-03.webp",
+        "/evidence/owner-portfolio/eurospar-sestroretsk/gallery-04.webp",
+        "/evidence/owner-portfolio/eurospar-sestroretsk/gallery-05.webp",
+        "/evidence/owner-portfolio/eurospar-sestroretsk/gallery-06.webp",
+        "/evidence/owner-portfolio/eurospar-sestroretsk/gallery-07.webp",
+        "/evidence/owner-portfolio/eurospar-sestroretsk/gallery-08.webp"
+      ]
+    },
+    "/portfolio/obekt/eurospar-vo/": {
+      "title": "EUROSPAR · Васильевский остров — AEROVENTA",
+      "description": "EUROSPAR · Васильевский остров · Санкт-Петербург. Интерьеры магазина и виды здания на Васильевском острове.",
+      "canonical": "https://aeroventa.ru/portfolio/obekt/eurospar-vo/",
+      "h1": [
+        "EUROSPAR · Васильевский остров"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/portfolio/obekt/eurospar-vo/#page",
+              "name": "EUROSPAR · Васильевский остров",
+              "url": "https://aeroventa.ru/portfolio/obekt/eurospar-vo/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/portfolio/obekt/eurospar-vo/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "EUROSPAR · Васильевский остров",
+                  "item": "https://aeroventa.ru/portfolio/obekt/eurospar-vo/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "2bf1b3673be19d118d42b5aabc410f6a65a0993fd1bb1e244994a1cfc5f2e213",
+      "main_image_paths": [
+        "/evidence/owner-portfolio/eurospar-vo/02.webp",
+        "/evidence/owner-portfolio/eurospar-vo/03.webp",
+        "/evidence/owner-portfolio/eurospar-vo/cover.webp",
+        "/evidence/owner-portfolio/eurospar-vo/gallery-01.webp",
+        "/evidence/owner-portfolio/eurospar-vo/gallery-02.webp",
+        "/evidence/owner-portfolio/eurospar-vo/gallery-03.webp",
+        "/evidence/owner-portfolio/eurospar-vo/gallery-04.webp",
+        "/evidence/owner-portfolio/eurospar-vo/gallery-05.webp",
+        "/evidence/owner-portfolio/eurospar-vo/gallery-06.webp"
+      ]
+    },
+    "/portfolio/obekt/himprom/": {
+      "title": "Химпром — AEROVENTA",
+      "description": "Химпром · Санкт-Петербург. Промышленный объект в Санкт-Петербурге. Фотографии площадки и инженерных коммуникаций.",
+      "canonical": "https://aeroventa.ru/portfolio/obekt/himprom/",
+      "h1": [
+        "Химпром"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/portfolio/obekt/himprom/#page",
+              "name": "Химпром",
+              "url": "https://aeroventa.ru/portfolio/obekt/himprom/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/portfolio/obekt/himprom/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Химпром",
+                  "item": "https://aeroventa.ru/portfolio/obekt/himprom/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "23cf671f720f0a624608d39116a368ccabbf587fc1cc50b31125c000c4a0d873",
+      "main_image_paths": [
+        "/evidence/owner-portfolio/himprom/02.webp",
+        "/evidence/owner-portfolio/himprom/03.webp",
+        "/evidence/owner-portfolio/himprom/cover.webp",
+        "/evidence/owner-portfolio/himprom/gallery-01.webp",
+        "/evidence/owner-portfolio/himprom/gallery-02.webp",
+        "/evidence/owner-portfolio/himprom/gallery-03.webp",
+        "/evidence/owner-portfolio/himprom/gallery-04.webp",
+        "/evidence/owner-portfolio/himprom/gallery-05.webp",
+        "/evidence/owner-portfolio/himprom/gallery-06.webp",
+        "/evidence/owner-portfolio/himprom/gallery-07.webp",
+        "/evidence/owner-portfolio/himprom/gallery-08.webp"
+      ]
+    },
+    "/portfolio/obekt/na-izluchine-nevy/": {
+      "title": "На излучине Невы — AEROVENTA",
+      "description": "На излучине Невы · Санкт-Петербург. Жилой объект в Санкт-Петербурге: вентиляционные трассы и монтажные узлы в помещениях.",
+      "canonical": "https://aeroventa.ru/portfolio/obekt/na-izluchine-nevy/",
+      "h1": [
+        "На излучине Невы"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/portfolio/obekt/na-izluchine-nevy/#page",
+              "name": "На излучине Невы",
+              "url": "https://aeroventa.ru/portfolio/obekt/na-izluchine-nevy/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/portfolio/obekt/na-izluchine-nevy/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "На излучине Невы",
+                  "item": "https://aeroventa.ru/portfolio/obekt/na-izluchine-nevy/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "584fcf2efa29dac5a8ded32f17dd865939bc37585a446109c774e16fb2639ca2",
+      "main_image_paths": [
+        "/evidence/residential/neva/IMG_7571.JPG",
+        "/evidence/residential/neva/curated-01.webp",
+        "/evidence/residential/neva/curated-02.webp",
+        "/evidence/residential/neva/curated-03.webp",
+        "/evidence/residential/neva/curated-04.webp",
+        "/evidence/residential/neva/curated-05.webp",
+        "/evidence/residential/neva/curated-06.webp"
+      ]
+    },
+    "/portfolio/obekt/novatech/": {
+      "title": "Новатех — AEROVENTA",
+      "description": "Новатех · Московская область. Производственная площадка в Московской области. Оборудование и монтажные узлы — в фотогалерее.",
+      "canonical": "https://aeroventa.ru/portfolio/obekt/novatech/",
+      "h1": [
+        "Новатех"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/portfolio/obekt/novatech/#page",
+              "name": "Новатех",
+              "url": "https://aeroventa.ru/portfolio/obekt/novatech/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/portfolio/obekt/novatech/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Новатех",
+                  "item": "https://aeroventa.ru/portfolio/obekt/novatech/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "6cd06391f8af90abb81d3ac662f30fb5f133527661dceed8eff7ef52c4150691",
+      "main_image_paths": [
+        "/evidence/owner-portfolio/novatech/02.webp",
+        "/evidence/owner-portfolio/novatech/03.webp",
+        "/evidence/owner-portfolio/novatech/cover.webp",
+        "/evidence/owner-portfolio/novatech/gallery-01.webp",
+        "/evidence/owner-portfolio/novatech/gallery-02.webp",
+        "/evidence/owner-portfolio/novatech/gallery-03.webp",
+        "/evidence/owner-portfolio/novatech/gallery-04.webp",
+        "/evidence/owner-portfolio/novatech/gallery-05.webp",
+        "/evidence/owner-portfolio/novatech/gallery-06.webp",
+        "/evidence/owner-portfolio/novatech/gallery-07.webp"
+      ]
+    },
+    "/privacy/": {
+      "title": "Обработка персональных данных — AEROVENTA",
+      "description": "Как обрабатываются данные, добровольно переданные через форму обращения AEROVENTA.",
+      "canonical": "https://aeroventa.ru/privacy/",
+      "h1": [
+        "Политика обработки персональных данных"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/privacy/#page",
+              "name": "Политика обработки персональных данных",
+              "url": "https://aeroventa.ru/privacy/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/privacy/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Политика обработки персональных данных",
+                  "item": "https://aeroventa.ru/privacy/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "c4239dd5adebc9b603333c2cf3c015a5e74c34ccfbf7d593c5e28dc5a7cf8c87",
+      "main_image_paths": []
+    },
+    "/services/": {
+      "title": "Работы по вентиляции — AEROVENTA",
+      "description": "Монтаж вентиляции по готовому проекту, монтаж воздуховодов и оборудования, работа с объектами без проекта и координация смежных проходок.",
+      "canonical": "https://aeroventa.ru/services/",
+      "h1": [
+        "Что мы делаем по вентиляции"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "Service",
+              "@id": "https://aeroventa.ru/services/#page",
+              "name": "Что мы делаем по вентиляции",
+              "url": "https://aeroventa.ru/services/",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ],
+              "provider": {
+                "@id": "https://aeroventa.ru/#organization"
+              }
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/services/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Что мы делаем по вентиляции",
+                  "item": "https://aeroventa.ru/services/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "498538dba0a5b91838e2352c7307560f253b1e0c14d7814380c05a8e8340b29a",
+      "main_image_paths": [
+        "/evidence/cafe/owner-interior-v43.webp",
+        "/evidence/hero/project-not-ready-owner-concept-1672.webp",
+        "/evidence/owner-portfolio/akvilon-yanino/cover.webp",
+        "/evidence/owner-portfolio/apart-hotel/cover.webp",
+        "/evidence/owner-portfolio/eurospar-vo/cover.webp",
+        "/evidence/polisan/owner-cover-v43.webp",
+        "/evidence/warehouses/farm-spb/01.webp",
+        "/evidence/zhukov/owner-cover-v43.webp"
+      ]
+    },
+    "/vakansii/": {
+      "title": "Работа и сотрудничество — AEROVENTA",
+      "description": "Страница для актуальных вакансий и предложений о профессиональном сотрудничестве в монтаже вентиляции. Условия сотрудничества уточняйте при обращении.",
+      "canonical": "https://aeroventa.ru/vakansii/",
+      "h1": [
+        "Работа и сотрудничество с AEROVENTA"
+      ],
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://aeroventa.ru/#organization",
+              "name": "AEROVENTA",
+              "url": "https://aeroventa.ru",
+              "telephone": "+7 922 640 99 22",
+              "email": "office@aeroventa.ru",
+              "areaServed": [
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Санкт-Петербург"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Ленинградская область"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Москва"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "Республика Карелия"
+                }
+              ]
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://aeroventa.ru/vakansii/#page",
+              "name": "Работа и сотрудничество с AEROVENTA",
+              "url": "https://aeroventa.ru/vakansii/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": "https://aeroventa.ru/vakansii/#breadcrumbs",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Главная",
+                  "item": "https://aeroventa.ru"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Работа и сотрудничество с AEROVENTA",
+                  "item": "https://aeroventa.ru/vakansii/"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "main_text_sha256": "49be7c95050bacedb19254714f8b909a92f69846752d08f1ca2b2f5e2144482c",
+      "main_image_paths": []
+    }
+  }
+}

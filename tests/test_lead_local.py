@@ -1,6 +1,7 @@
 """Test PHP handler against a local fake sendmail binary; never sends external mail."""
 import subprocess, urllib.request, urllib.error, json, time, os, socket
 from pathlib import Path
+import tempfile
 root = Path(__file__).resolve().parents[1]
 webroot = root / 'apps/web/public'
 stub = root / 'tests/sendmail_stub.sh'
@@ -9,9 +10,12 @@ capture.unlink(missing_ok=True)
 with socket.socket() as sock:
     sock.bind(('127.0.0.1', 0))
     port = sock.getsockname()[1]
-env = {**os.environ, 'AEROVENTA_LEAD_TO':'aeroventaspb@yandex.ru',
+env = {**os.environ, 'AEROVENTA_LEAD_TO':'office@aeroventa.ru',
        'AEROVENTA_LEAD_FROM':'office@aeroventa.ru'}  # MOCK ONLY
-server = subprocess.Popen(['php', '-d', f'sendmail_path={stub}',
+test_state = tempfile.TemporaryDirectory(prefix='aeroventa-lead-test-')
+failure_flag = Path(test_state.name) / 'mail-failure'
+env['AEROVENTA_TEST_MAIL_FAILURE'] = str(failure_flag)
+server = subprocess.Popen(['php', '-d', f'sys_temp_dir={test_state.name}', '-d', f'sendmail_path={stub}',
                            '-S', f'127.0.0.1:{port}', '-t', str(webroot)],
                           env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 try:
@@ -41,20 +45,32 @@ try:
         ('method',request(method='GET'),405),
         ('cross-origin',request(origin='https://evil.example'),403),
         ('consent',request({**payload,'consent':False}),422),
+        ('staging-consent',request({**payload,'consent':False},origin='https://staging.aeroventa.ru'),422),
         ('contact',request({**payload,'contact':'bad-contact'}),422),
         ('too-fast',request({**payload,'started_at':int(time.time()*1000)}),422),
         ('honeypot',request({**payload,'website':'spam.com'}),200),
-        ('valid',request(),200),
-        ('duplicate',request(),409),
     ]
+    failure_flag.touch()
+    cases.append(('mail-failure',request(),503))
+    failure_flag.unlink()
+    cases.extend([
+        ('same-request-retry-after-mail-failure',request(),200),
+        ('duplicate-after-acceptance',request(),409),
+    ])
     for name, got, expected in cases:
         print(name, 'PASS' if got[0] == expected else 'FAIL', got[0], expected)
     assert all(got[0] == expected for _,got,expected in cases)
     assert capture.is_file() and capture.read_text().count('---END MOCK EMAIL---') == 1
-    print('PASS: 8/8, mock captured 1, outbound messages 0')
+    captured = capture.read_text()
+    assert 'From: AEROVENTA Website <office@aeroventa.ru>' in captured
+    assert 'Reply-To: office@aeroventa.ru' in captured
+    assert 'Reply-To: demo@example.com' not in captured
+    assert 'Контакт: demo@example.com' in captured
+    print(f'PASS: {len(cases)}/{len(cases)}, mock captured 1, outbound messages 0')
 finally:
     server.terminate()
     try: server.wait(timeout=3)
     except subprocess.TimeoutExpired:
         server.kill()
         server.wait()
+    test_state.cleanup()

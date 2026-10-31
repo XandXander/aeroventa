@@ -1,8 +1,12 @@
 ---
 import { SITE } from '@/lib/site';
+import verifiedArchive from '../../../../../migration/bitrix-verified-articles-20260817.json';
 import type { ContentRecord } from '@/lib/types';
 interface Props { content: ContentRecord; fixture: boolean; }
 const { content } = Astro.props;
+const originalArticle=content.path==='/blog/detail/novoe-almaznoe-burenie/'
+ ? verifiedArchive.articles.find(article=>article.route===content.path) : undefined;
+if(content.path==='/blog/detail/novoe-almaznoe-burenie/'&&!originalArticle)throw new Error('Verified historical article source is required');
 
 type Card = { tag:string; title:string; text:string; href:string };
 type Spec = {
@@ -19,9 +23,9 @@ type Spec = {
 };
 
 const p0Cards: Card[] = [
-  {tag:'Полевой опыт',title:'Застрявшая алмазная коронка',text:'Причины заклинивания, безопасная последовательность и исторический field note.',href:'/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/'},
+  {tag:'Полевой опыт',title:'Застрявшая алмазная коронка',text:'Причины заклинивания, безопасная последовательность действий.',href:'/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/'},
   {tag:'Реальный объект',title:'Бурение в стяжке под стояки',text:'Слоистое перекрытие, крепление, отделка и исходные данные.',href:'/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/'},
-  {tag:'Стоимость',title:'От чего зависит цена бурения',text:'Геометрия, материал, доступ, защита и состав работ — без старого прайса.',href:'/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/'},
+  {tag:'Стоимость',title:'От чего зависит цена бурения',text:'Геометрия, материал, доступ, защита и состав работ — с учётом условий объекта.',href:'/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/'},
   {tag:'Вентиляция',title:'Проходка стены под вентиляцию',text:'Почему сначала определяют трассу и узел, а уже потом отверстие.',href:'/blog/detail/gorizontalnoe-almaznoe-burenie/'},
 ];
 
@@ -31,18 +35,18 @@ const caseCards: Card[] = [
   {tag:'2017–2018',title:'НТФФ «Полисан»',text:'Фармацевтический объект · вентиляция + оборудование.',href:'/blog/detail/ntff-polisan/'},
   {tag:'2019',title:'Квартира на Маршала Жукова',text:'Жилой объект · приточно-вытяжная вентиляция.',href:'/blog/detail/kvartira-na-zhukova/'},
   {tag:'2022',title:'Питкяранта / Карелия',text:'Сервисно-образовательный центр · вентиляция + оборудование.',href:'/blog/detail/montazh-ventilyatsii-v-karelii/'},
-];
+].sort((a,b)=>Number.parseInt(a.tag)-Number.parseInt(b.tag));
 
 const specs: Record<string, Spec> = {
   '/almaznoe-burenie/': {
-    eyebrow:'Смежная работа / практический архив',
+    eyebrow:'Алмазное бурение / смежные работы',
     lede:'Алмазное бурение остаётся частью инженерной базы AEROVENTA, но сегодня это не основное направление собственной монтажной команды. Отдельные буровые задачи рассматриваем как смежные и при необходимости координируем с профильными исполнителями.',
-    state:'Текущая модель',
+    state:'Смежные работы',
     stateText:'Основная собственная услуга AEROVENTA — монтаж вентиляции. Алмазное бурение рассматриваем как смежную работу и при необходимости координируем с профильным исполнителем.',
     sections:[
       {index:'01',title:'Когда проходка связана с вентиляцией',text:'Если отверстие нужно под воздуховод, оборудование или вентиляционный узел, сначала определяем трассу и геометрию системы. Иначе можно качественно пробурить отверстие, которое окажется не там или не того размера.',items:['Проект / узел вентиляции, если есть.','Материал и толщина конструкции.','Требуемый диаметр / габарит соединения.','Фото обеих сторон, высота и доступ.']},
-      {index:'02',title:'Когда задача только про бурение',text:'Такую заявку не выдаём за собственный основной сервис. Можно передать исходные данные, после чего определим, можем ли скоординировать профильного исполнителя.',items:['Количество отверстий.','Диаметры и глубина.','Материал конструкции.','Локация и условия доступа.']},
-      {index:'03',title:'Почему старые статьи остаются',text:'В истории AEROVENTA был период собственного алмазного бурения. Поэтому сохранился реальный полевой материал — он полезен и сейчас, если отделить практическую механику от старых цен и коммерческих заявлений.'}
+      {index:'02',title:'Когда задача только про бурение',text:'Пришлите исходные данные по проходкам — уточним объём и возможность подключения профильного исполнителя.',items:['Количество отверстий.','Диаметры и глубина.','Материал конструкции.','Локация и условия доступа.']},
+      {index:'03',title:'Практический опыт',text:'Ранее AEROVENTA выполняла алмазное бурение собственными силами. Технические материалы по оборудованию и проходкам помогают оценивать смежные работы при монтаже вентиляции.'}
     ],
     cards:p0Cards,
     closeTitle:'Нужна проходка именно под вентиляцию?',
@@ -53,11 +57,11 @@ const specs: Record<string, Spec> = {
   '/blog/detail/novoe-almaznoe-burenie/': {
     eyebrow:'История AEROVENTA / алмазное бурение',
     lede:'В прошлом AEROVENTA выполняла алмазное бурение собственными силами. Сегодня основное направление команды — монтаж вентиляции; необходимые проходки рассматриваем как смежную задачу с профильным исполнителем.',
-    state:'Исторический материал',
-    stateText:'Старое утверждение “новое направление” больше не описывает текущую структуру бизнеса. Сегодня основное собственное направление — монтаж вентиляции; отдельное бурение относится к смежным работам с профильным исполнителем.',
+    state:'Из практики компании',
+    stateText:'Алмазное бурение ранее выполняли собственными силами. Сегодня основная работа команды — монтаж вентиляции; проходки при необходимости согласуем с профильным исполнителем.',
     sections:[
-      {index:'01',title:'Что сохраняем',text:'Сам факт исторического собственного опыта и практическую базу, которая дала сильные практические статьи о конкретных проблемах.',items:['Полевой опыт с коронками и установками.','Понимание факторов стоимости и условий объекта.','Связь проходок с вентиляционными трассами.']},
-      {index:'02',title:'Что не переносим',text:'Не возвращаем старые цены, старый продающий призыв и формулировку, будто алмазное бурение сейчас является приоритетным прямым направлением AEROVENTA.'},
+      {index:'01',title:'Практический опыт алмазного бурения',text:'Работа с алмазными коронками и буровыми установками дала практический опыт проходок в конструкциях здания.',items:['Полевой опыт с коронками и установками.','Понимание факторов стоимости и условий объекта.','Связь проходок с вентиляционными трассами.']},
+      {index:'02',title:'Направление работы сегодня',text:'Основная услуга AEROVENTA — монтаж вентиляции. Отдельные буровые работы согласуем индивидуально с учётом возможностей профильного исполнителя.'},
       {index:'03',title:'Что полезно сегодня',text:'Исторический опыт остаётся полезным там, где бурение является частью вентиляционной задачи: сначала трасса и узел, затем проходка.'}
     ],
     cards:p0Cards,
@@ -68,28 +72,28 @@ const specs: Record<string, Spec> = {
   },
   '/vakansii/': {
     eyebrow:'Работа / сотрудничество',
-    lede:'Актуальные вакансии публикуем только тогда, когда конкретная позиция действительно открыта. Не сохраняем старые объявления как будто они всё ещё действуют.',
+    lede:'Рассматриваем предложения о сотрудничестве от специалистов и монтажных бригад с опытом работы на вентиляционных объектах.',
     state:'Только актуальная информация',
-    stateText:'Сейчас эта страница не подтверждает наличие открытой штатной вакансии. Она остаётся retained route для актуальных предложений о работе и сотрудничестве.',
+    stateText:'Открытые штатные вакансии сейчас не заявлены. Специалисты и монтажные бригады могут направить предложение о сотрудничестве.',
     sections:[
-      {index:'01',title:'Кого имеет смысл писать',text:'Если вы работаете с монтажом вентиляции и хотите предложить сотрудничество, можно коротко прислать опыт и географию работы.',items:['Какие системы и объекты монтировали.','Опыт с воздуховодами / оборудованием / крупными объектами.','Город и готовность к выездам.','Контакт для связи.']},
-      {index:'02',title:'Чего мы не обещаем на этой странице',text:'Не публикуем неактуальные зарплаты, графики и условия из старого Bitrix. Конкретные условия обсуждаются только под реально открытую роль или задачу.'}
+      {index:'01',title:'Что рассказать о себе',text:'Если вы работаете с монтажом вентиляции и хотите предложить сотрудничество, коротко опишите опыт и географию работы.',items:['Какие системы и объекты монтировали.','Опыт с воздуховодами, оборудованием и крупными объектами.','Город и готовность к выездам.','Контакт для связи.']},
+      {index:'02',title:'Формат сотрудничества',text:'Открытые задачи и условия сотрудничества обсуждаем с учётом вида работ, сроков и объёма.'}
     ],
     closeTitle:'Хотите предложить сотрудничество?',
-    closeText:'Отправьте краткое описание опыта на общий e-mail AEROVENTA. Это не обещание открытой вакансии, а нормальный канал для профессионального контакта.',
+    closeText:'Напишите на корпоративную почту: ваш опыт, примеры выполненных работ, город и контакт для ответа.',
     closeHref:`mailto:${SITE.email}?subject=${encodeURIComponent('AEROVENTA — предложение о сотрудничестве')}`,
     closeLabel:'Написать на e-mail →'
   },
   '/news/': {
-    eyebrow:'Архив / история компании',
-    lede:'Сохранённый URL старого раздела новостей. Новый сайт не будет имитировать постоянный “новостной поток” ради активности: сюда попадают только проверяемые материалы о компании и объектах.',
-    state:'Тихий архив',
-    stateText:'Главные текущие источники — Практика, реальные объекты и страницы услуг. Маршрут /news/ сохраняется как архив старого URL.',
+    eyebrow:'AEROVENTA / история компании',
+    lede:'История AEROVENTA через выполненные проекты, инженерные задачи и развитие направления монтажа вентиляции.',
+    state:'История компании',
+    stateText:'Посмотрите выполненные проекты, принципы нашей работы и технические статьи.',
     cards:[
-      {tag:'История',title:'История компании',text:'Фактическая линия через подтверждённые объекты, без рекламных счётчиков.',href:'/news/istoriya-kompanii/'},
-      {tag:'Объекты',title:'Истории объектов',text:'Канонические кейсы AEROVENTA без дублирования страниц.',href:'/blog/istorii-proektov/'},
+      {tag:'История',title:'История компании',text:'Проекты компании и основные этапы работы.',href:'/news/istoriya-kompanii/'},
+      {tag:'Объекты',title:'Истории объектов',text:'Объекты, монтажные задачи и фотографии.',href:'/blog/istorii-proektov/'},
       {tag:'Практика',title:'Практические материалы',text:'Инженерные вопросы и практический опыт решения задач.',href:'/blog/'},
-      {tag:'Архив',title:'Значимые события',text:'Только то, что можно связать с подтверждённым фактом или объектом.',href:'/news/znachimye-sobytiya/'}
+      {tag:'История',title:'Значимые события',text:'Работы и события в разные годы.',href:'/news/znachimye-sobytiya/'}
     ],
     closeTitle:'Нужна текущая информация?',
     closeText:'Для текущего состава работ и объектов используйте Услуги, Практику и Портфолио.',
@@ -97,73 +101,94 @@ const specs: Record<string, Spec> = {
     closeLabel:'Текущие услуги →'
   },
   '/news/korporativnaya-zhizn/': {
-    eyebrow:'Архив компании',
-    lede:'У этой архивной страницы нет достаточно содержательного старого текста, чтобы честно «восстановить» прежнюю корпоративную страницу. Поэтому не придумываем офисные новости, праздники и командные истории.',
-    state:'Минимальная архивная страница',
-    stateText:'Маршрут сохраняется для URL continuity. Реальную культуру компании показываем через способ работы, объекты и подтверждённую историю — не через искусственный корпоративный контент.',
+    eyebrow:'Компания / команда и проекты',
+    lede:'Работу AEROVENTA показываем через выполненные объекты, инженерные задачи и команду.',
+    state:'Люди и проекты',
+    stateText:'Познакомьтесь с командой, нашим подходом к монтажу и объектами, на которых работали специалисты AEROVENTA.',
     cards:[
       {tag:'Как работаем',title:'Команда и принцип работы',text:'Постоянное ядро + проверенное усиление под объект.',href:'/about/'},
-      {tag:'Проекты',title:'Реальные объекты',text:'Факты вместо корпоративной витрины.',href:'/portfolio/'},
+      {tag:'Проекты',title:'Реальные объекты',text:'Фотографии объектов и состав выполненных работ.',href:'/portfolio/'},
       {tag:'Практика',title:'Материалы с площадки',text:'Полевой опыт и инженерные решения.',href:'/blog/'}
     ],
-    closeTitle:'Что сейчас важнее корпоративных новостей.',
+    closeTitle:'Узнайте больше о наших проектах',
     closeText:'Текущая работа AEROVENTA лучше видна по проектам и практическим материалам.',
     closeHref:'/portfolio/',
     closeLabel:'Смотреть объекты →'
   },
   '/news/istoriya-kompanii/': {
     eyebrow:'История AEROVENTA',
-    lede:'Не собираем историю компании из неподтверждённых цифр и старых рекламных счётчиков. Используем только объекты и даты, которые сохранились в собственных источниках.',
-    state:'Фактическая линия',
-    stateText:'История здесь — не “мы на рынке N лет”, а последовательность конкретных работ, которые можно открыть и проверить.',
+    lede:'В истории компании — монтаж вентиляции в жилых домах, коммерческих помещениях и на производственных площадках.',
+    state:'Хронология работ',
+    stateText:'Основные этапы представлены через объекты с известными периодами выполнения работ.',
     cards:caseCards,
     closeTitle:'Продолжить по объектам.',
-    closeText:'Каждая точка этой линии ведёт на существующий канонический кейс, а не на новый пересказ.',
+    closeText:'Изучите фотографии и состав работ в разделе портфолио.',
     closeHref:'/portfolio/',
     closeLabel:'Все объекты →'
   },
   '/news/znachimye-sobytiya/': {
-    eyebrow:'Архив / значимые события',
-    lede:'Старый URL сохраняется, но значимым событием считаем только то, что можно подтвердить объектом, датой или другим собственным источником. Не переносим старые health/news заявления как текущую экспертную позицию.',
-    state:'Архив по подтверждённым фактам',
-    stateText:'Вместо абстрактных достижений — несколько доказанных вех из истории объектов.',
+    eyebrow:'История компании / проекты',
+    lede:'Несколько проектов из истории AEROVENTA: промышленная вентиляция, жилые здания, ресторан и объект в Карелии.',
+    state:'Проекты разных лет',
+    stateText:'Посмотрите подробности выполненных работ и фотографии по каждому объекту.',
     cards:[
       {tag:'2017–2018',title:'НТФФ «Полисан»',text:'Длительный производственный / фармацевтический объект.',href:'/blog/detail/ntff-polisan/'},
       {tag:'2020',title:'7 PARK',text:'Интенсивная фаза монтажа в семи домах Павловска.',href:'/blog/detail/kak-my-sdali-7-domov/'},
-      {tag:'2021',title:'Ресторан в «Леонтьевском Мысе»',text:'Подтверждённый ресторанный объект в Санкт-Петербурге.',href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/'},
-      {tag:'2022',title:'Питкяранта, Карелия',text:'Подтверждённая работа за пределами основной географии.',href:'/blog/detail/montazh-ventilyatsii-v-karelii/'}
+      {tag:'2021',title:'Ресторан в «Леонтьевском Мысе»',text:'Монтаж вентиляции ресторана в Санкт-Петербурге.',href:'/blog/detail/restoran-v-zhk-leontevskiy-mys/'},
+      {tag:'2022',title:'Питкяранта, Карелия',text:'Монтаж систем вентиляции в Карелии.',href:'/blog/detail/montazh-ventilyatsii-v-karelii/'}
     ],
-    closeTitle:'Факты подробнее — в кейсах.',
-    closeText:'Не используем архивную страницу для новых рекламных заявлений.',
+    closeTitle:'Подробнее о проектах',
+    closeText:'Подробности по объектам представлены в портфолио.',
     closeHref:'/portfolio/',
-    closeLabel:'Раздел доказательств →'
+    closeLabel:'Смотреть объекты →'
   },
   '/blog/obzory-i-intervyu/': {
-    eyebrow:'Практика / архивный раздел',
-    lede:'Старое название рубрики сохраняется в адресе страницы, но не заставляет новый сайт выдумывать интервью и обзоры. Используем маршрут как дополнительный вход к сильным практическим материалам.',
-    state:'Архивный раздел',
-    stateText:'Содержательная ценность — в конкретных статьях, а не в старом названии категории.',
+    eyebrow:'Технические статьи',
+    lede:'Практические материалы о проходках, буровом оборудовании и инженерных задачах на объектах.',
+    state:'Практические материалы',
+    stateText:'Статьи о реальных технических ситуациях, подготовке и выполнении работ.',
     cards:p0Cards,
-    closeTitle:'Перейти в текущую Практику.',
-    closeText:'Все новые материалы проходят единую редакционную проверку доказательств.',
+    closeTitle:'Все технические статьи',
+    closeText:'Откройте другие материалы и истории выполненных объектов.',
     closeHref:'/blog/',
     closeLabel:'Практика →'
   }
 };
 
+const cardPhotos: Record<string, string> = {
+  '/blog/detail/kak-my-sdali-7-domov/':'/evidence/7park/object-exterior-day.jpg',
+  '/blog/detail/restoran-v-zhk-leontevskiy-mys/':'/evidence/leont/owner-cover-v43.webp',
+  '/blog/detail/ntff-polisan/':'/evidence/polisan/owner-cover-v43.webp',
+  '/blog/detail/kvartira-na-zhukova/':'/evidence/zhukov/owner-cover-v43.webp',
+  '/blog/detail/montazh-ventilyatsii-v-karelii/':'/evidence/karelia/owner-cover-v43.webp',
+  '/blog/detail/kak-vytashchit-zastryavshuyu-koronku-iz-betona/':'/upload/medialibrary/548/5488fb415056eee52ac63ff9d4850c63.jpg',
+  '/blog/detail/almaznoe-burenie-v-styazhke-pod-stoyaki-otopleniya/':'/upload/medialibrary/0a2/0a2f0d1be2900e0a1fe74bcd9604e3f8.jpg',
+  '/blog/detail/stoimost-almaznogo-bureniya-kak-rasschitat-tsenu/':'/upload/medialibrary/fb3/fb3d693282a8085971dd4e2fe87bf28e.jpg',
+  '/blog/detail/gorizontalnoe-almaznoe-burenie/':'/upload/medialibrary/e1c/e1cd51110183f9c6b2e704b70664eba1.jpg',
+};
+const isHistoryIndex = content.path === '/news/';
 const spec=specs[content.path];
 if(!spec) throw new Error('Support spec missing: '+content.path);
 ---
 
-<article class="support-page">
+<article class:list={["support-page av-page av-support", {"av-support--history": isHistoryIndex}]}>
   <header class="support-hero">
     <div class="home-shell support-hero__grid">
       <div><p class="home-kicker">{spec.eyebrow}</p><h1>{content.h1}</h1></div>
-      <div><p class="support-hero__lede">{spec.lede}</p><div class="support-state"><span>{spec.state}</span><p>{spec.stateText}</p></div></div>
+      <div><p class="support-hero__lede">{spec.lede}</p>{!originalArticle && !isHistoryIndex && <div class="support-state"><span>{spec.state}</span><p>{spec.stateText}</p></div>}</div>
+      {isHistoryIndex && <a class="support-history-feature" href="/blog/detail/montazh-ventilyatsii-v-karelii/">
+        <figure><img src="/evidence/karelia/owner-cover-v43.webp" width="1200" height="800" alt="Сервисно-образовательный центр PONSSE в Питкяранте — выполненный объект AEROVENTA" loading="eager" decoding="async" /></figure>
+        <div><p class="home-kicker">Из истории компании · 2022</p><h2>Монтаж вентиляции в Карелии</h2><p>Сервисно-образовательный центр PONSSE в Питкяранте. Фотографии работ и благодарственное письмо заказчика.</p><b>Читать историю объекта →</b></div>
+      </a>}
     </div>
   </header>
 
-  {spec.sections && (
+  {originalArticle && <section class="home-section support-original" aria-labelledby="support-original-title">
+    <div class="home-shell"><p class="section-index">Из истории компании</p><h2 id="support-original-title">Как появилось направление алмазного бурения</h2>
+    <div class="prose" set:html={originalArticle.source_article_html_sanitized}/></div>
+  </section>}
+
+  {spec.sections && !originalArticle && (
     <div class="support-sections">
       {spec.sections.map((section) => (
         <section class="support-section">
@@ -179,15 +204,16 @@ if(!spec) throw new Error('Support spec missing: '+content.path);
   {spec.cards && (
     <section class="home-section support-cards">
       <div class="home-shell">
-        <p class="section-index">Материалы и факты</p>
-        <h2 class="sr-only">Материалы и факты</h2>
-        <div class="support-cards__grid">
-          {spec.cards.map((item,index) => <a href={item.href}><span>{String(index+1).padStart(2,'0')} / {item.tag}</span><h3>{item.title}</h3><p>{item.text}</p><b>Открыть →</b></a>)}
+        <p class="section-index">Материалы по теме</p>
+        <h2 class="sr-only">Материалы по теме</h2>
+        <div class="support-cards__grid" data-card-count={spec.cards.length}>
+          {spec.cards.map((item,index) => <a href={item.href}>{cardPhotos[item.href] && <img src={cardPhotos[item.href]} alt={item.title} width="800" height="450" loading="lazy" decoding="async" />}<span>{String(index+1).padStart(2,'0')} / {item.tag}</span><h3>{item.title}</h3><p>{item.text}</p><b>Открыть →</b></a>)}
         </div>
       </div>
     </section>
   )}
 
+  {isHistoryIndex && <section class="home-section"><nav class="home-shell" aria-label="Команда и сотрудничество"><a class="av-link" href="/news/korporativnaya-zhizn/">Команда AEROVENTA →</a><p><a class="av-link" href="/vakansii/">Сотрудничество со специалистами →</a></p></nav></section>}
   <section class="conversion-close">
     <div class="home-shell">
       <p class="section-index section-index--orange">Следующий шаг</p>
@@ -196,4 +222,23 @@ if(!spec) throw new Error('Support spec missing: '+content.path);
       <a class="button button--light" href={spec.closeHref}>{spec.closeLabel}</a>
     </div>
   </section>
+
 </article>
+
+<style>
+.av-support--history .support-hero__grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:24px 64px;align-items:center;min-height:0}
+.av-support--history .support-hero__grid>div{grid-column:1;min-width:0}
+.av-support--history .support-hero__grid>div:first-child{align-self:end}.av-support--history .support-hero__grid>div:nth-child(2){align-self:start}
+.support-history-feature{grid-column:2;grid-row:1/3;min-width:0;display:block;text-decoration:none;color:inherit}
+.support-history-feature figure{margin:0 0 20px}.support-history-feature img{display:block;width:100%;height:clamp(180px,34svh,340px);object-fit:contain}
+.support-history-feature h2{font-size:clamp(1.3rem,2.2vw,2rem);line-height:1.2;margin:10px 0 12px}.support-history-feature p:not(.home-kicker){font-size:.9rem;line-height:1.6;max-width:53ch}.support-history-feature b{display:inline-block;margin-top:14px;font-size:.85rem;font-weight:550}.support-history-feature:focus-visible{outline:2px solid #9d4329;outline-offset:5px}
+@media(max-width:760px){.av-support--history .support-hero__grid{display:block}.av-support--history .support-hero{padding-block:26px 34px}.av-support--history .support-hero__lede{margin-block:18px 26px}.support-history-feature{margin-top:26px}.support-history-feature figure{margin-bottom:18px}.support-history-feature img{height:clamp(180px,29svh,250px)}.support-history-feature h2{font-size:1.45rem}}
+
+.support-page .support-hero h1{font-size:clamp(2.15rem,4.1vw,3.8rem);line-height:1.12;max-width:24ch}
+.support-original{background:#fff;color:#203a49}
+.support-original>.home-shell{max-width:1180px}
+.support-original .prose{max-width:74ch;margin-top:26px;font-size:1rem;line-height:1.8}
+.support-original .prose :global(h2){font-size:clamp(1.2rem,2.3vw,1.65rem);line-height:1.45;max-width:48ch;margin-block:1.5em 1em;font-weight:550;letter-spacing:-.015em}
+.support-original .prose :global(a){color:#245570;text-underline-offset:4px}
+.support-original .prose :global(:is(b,i,u)){font:inherit;text-decoration:inherit}
+</style>

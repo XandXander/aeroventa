@@ -23,7 +23,7 @@ const requireText = (text, needle, code) => {
   if (!text.includes(needle)) failures.push(code);
 };
 
-requireText(source, "const allowedReleaseModes = new Set(['fixture', 'preview', 'production']);", 'V13_RELEASE_MODES_MISSING');
+requireText(source, "const allowedReleaseModes = new Set(['fixture', 'preview', 'review', 'production', 'incremental']);", 'V13_RELEASE_MODES_MISSING');
 requireText(source, "url.searchParams.set('filter[status][_eq]', 'published');", 'PRODUCTION_STATUS_FILTER_MISSING');
 requireText(source, "url.searchParams.set('filter[owner_approved_at][_nnull]', 'true');", 'PRODUCTION_APPROVAL_FILTER_MISSING');
 requireText(source, "url.searchParams.set('filter[status][_eq]', 'draft');", 'PREVIEW_DRAFT_FILTER_MISSING');
@@ -41,20 +41,20 @@ if (/method\s*:\s*['"](?:POST|PUT|PATCH|DELETE)['"]/i.test(source)) {
   failures.push('CONTENT_SOURCE_CONTAINS_WRITE_METHOD');
 }
 
-requireText(layout, "const preview = import.meta.env.AEROVENTA_RELEASE_MODE === 'preview';", 'PREVIEW_LAYOUT_MODE_MISSING');
+requireText(layout, "const preview = ['preview','review'].includes(", 'PREVIEW_LAYOUT_MODE_MISSING');
 requireText(layout, "'noindex,nofollow,noarchive,nosnippet'", 'PREVIEW_ROBOTS_META_MISSING');
 requireText(layout, 'data-aeroventa-preview="draft"', 'PREVIEW_BANNER_MARKER_MISSING');
 requireText(layout, 'AEROVENTA DRAFT PREVIEW', 'PREVIEW_BANNER_TEXT_MISSING');
 requireText(layout, 'const schema = preview ? null : jsonLd(content);', 'PREVIEW_JSONLD_SUPPRESSION_MISSING');
 requireText(css, '.preview-banner', 'PREVIEW_BANNER_STYLE_MISSING');
 
-requireText(postbuild, "releaseMode === 'preview'", 'PREVIEW_POSTBUILD_MODE_MISSING');
+requireText(postbuild, "releaseMode === 'preview' || releaseMode === 'review'", 'PREVIEW_POSTBUILD_MODE_MISSING');
 requireText(postbuild, "Disallow: /", 'PREVIEW_ROBOTS_FILE_GATE_MISSING');
 requireText(builder, "AEROVENTA_RELEASE_MODE: 'preview'", 'PREVIEW_BUILDER_MODE_MISSING');
 requireText(builder, "DIRECTUS_STATIC_TOKEN is required", 'PREVIEW_BUILDER_TOKEN_GATE_MISSING');
 requireText(builder, "directusUrl.protocol !== 'https:'", 'PREVIEW_BUILDER_HTTPS_GATE_MISSING');
 
-requireText(envTypes, "AEROVENTA_RELEASE_MODE?: 'fixture' | 'preview' | 'production'", 'ENV_PREVIEW_MODE_TYPE_MISSING');
+requireText(envTypes, "AEROVENTA_RELEASE_MODE?: 'fixture' | 'preview' | 'review' | 'production'", 'ENV_PREVIEW_MODE_TYPE_MISSING');
 requireText(contentTypes, 'knowledge_allowed?: boolean;', 'CONTENT_KNOWLEDGE_TYPE_MISSING');
 requireText(contentTypes, 'ai_origin?: boolean;', 'CONTENT_AI_ORIGIN_TYPE_MISSING');
 

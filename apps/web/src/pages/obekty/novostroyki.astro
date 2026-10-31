@@ -1,0 +1,27 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getStaticPageContent } from '@/lib/content-source';
+import ObjectDetailPage from '@/components/pages/ObjectDetailPage.astro';
+import type { ContentRecord } from '@/lib/types';
+const baselineContent: ContentRecord = {
+ path:'/obekty/novostroyki/',title:'Монтаж вентиляции в новостройках и жилых комплексах — AEROVENTA',h1:'Монтаж вентиляции в новостройках и жилых комплексах',
+ content_type:'landing',business_role:'CORE_SERVICE_HUB',status:'fixture_stub',
+ robots_index:false,robots_follow:true,sitemap_include:false,knowledge_allowed:true,ai_origin:false,
+ seo_title:'Монтаж вентиляции в новостройках и жилых комплексах — AEROVENTA',seo_description:'Вентиляция жилых комплексов: монтаж, инженерные трассы и фотографии жилого комплекса «Аквилон» в Янино.',
+ excerpt:'',body_html:'',body_html_safety_status:'not_applicable',owner_approved_at:null
+};
+const constraints:[string,string,string][] = [["01","Повторяемые монтажные узлы","Общие решения и порядок контроля нужно согласовать по проекту."],["02","Готовность корпусов","Стадия каждого корпуса определяет доступность работ."],["03","Логистика","Перемещение оборудования и материалов учитывают в графике."],["04","Усиление команды","Повторяемые объёмы требуют организованного выполнения."]];
+const evidence = [
+ {title:'7 PARK · Павловск',meta:'Санкт-Петербург · 7 домов',detail:'Монтаж приточно-вытяжной вентиляции в жилом квартале.',href:'/blog/detail/kak-my-sdali-7-domov/',image:'/evidence/7park/object-exterior-day.jpg',imageAlt:'Архитектурная визуализация квартала 7 PARK в Павловске'},
+ {title:'На излучине Невы',meta:'Жилой объект · Санкт-Петербург',detail:'Монтаж вентиляции в жилом помещении. Фотографии трасс и монтажных узлов.',href:'/portfolio/obekt/na-izluchine-nevy/',image:'/evidence/residential/neva/IMG_7571.JPG',imageAlt:'Подлинная фотография здания объекта «На излучине Невы»'}
+];
+const drivers = ['Рабочая проектная документация и спецификация','Монтажные зоны и условия доступа','Стадия объекта и смежные инженерные системы','Оборудование, трассы и рабочие сроки'];
+const questions = ['Какие документы передать для расчёта монтажа?','Что согласовать до начала работ?','Какие ограничения объекта влияют на организацию монтажа?'];
+const content = await getStaticPageContent(baselineContent.path, baselineContent);
+---
+<BaseLayout content={content}>
+ <ObjectDetailPage content={content} eyebrow="Новостройки"
+  lede="Монтаж по проекту и повторяемые работы по корпусам требуют согласованной последовательности и контроля качества." constraints={constraints} drivers={drivers} evidence={evidence} questions={questions}
+  proofTitle="Реальные работы в жилых комплексах"
+  heroMedia={{src:'/evidence/owner-portfolio/akvilon-yanino/cover.webp',alt:'Фотография строящегося жилого корпуса ЖК «Аквилон» в Янино',caption:'ЖК «Аквилон» · Янино · реальный объект',href:'/portfolio/obekt/akvilon-yanino/'}}/>
+</BaseLayout>

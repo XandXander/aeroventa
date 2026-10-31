@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import crypto from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import sharp from 'sharp';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..');
@@ -79,6 +80,30 @@ if (notFoundFile) {
 check(await exists(path.join(dist, 'sitemap.xml')), 'sitemap.xml is missing');
 check(await exists(path.join(dist, 'robots.txt')), 'robots.txt is missing');
 
+// Social source readiness is distinct from access by an external crawler.
+// Cover every substantive fixture route, including legacy article fallbacks.
+if (releaseMode === 'fixture') {
+  for (const file of (await fs.readdir(dist, { recursive: true })).filter(f => f.endsWith('index.html'))) {
+    const html = await fs.readFile(path.join(dist, file), 'utf8');
+    if (/http-equiv=["']refresh/i.test(html)) continue;
+    const meta = Object.fromEntries([...html.matchAll(/<meta\b([^>]+)>/g)].map(([, tag]) => {
+      const attr = Object.fromEntries([...tag.matchAll(/([\w:-]+)="([^"]*)"/g)].map(([, key, value]) => [key, value]));
+      return [attr.property || attr.name, attr.content];
+    }));
+    const label = file.replace(/index\.html$/, '') || '/';
+    for (const key of ['og:title', 'og:description', 'og:url', 'og:image', 'og:image:alt', 'twitter:image:alt'])
+      check(Boolean(meta[key]), `Social metadata missing ${key}: ${label}`);
+    check(meta['twitter:card'] === 'summary_large_image' && meta['twitter:image'] === meta['og:image'], `Social card mismatch: ${label}`);
+    check(meta['og:image:type'] === 'image/jpeg' && meta['og:image:width'] === '1200' && meta['og:image:height'] === '630', `Social JPEG/dimensions missing: ${label}`);
+    try {
+      const image = new URL(meta['og:image']);
+      check(['https://aeroventa.ru', 'https://staging.aeroventa.ru'].includes(image.origin) && /^\/share\/[a-z-]+\.jpg$/.test(image.pathname), `Social image URL invalid: ${label}`);
+      const info = await sharp(path.join(dist, image.pathname.replace(/^\//, ''))).metadata();
+      check(info.format === 'jpeg' && info.width === 1200 && info.height === 630, `Social image bytes/dimensions invalid: ${label}`);
+    } catch { failures.push(`Social image unavailable: ${label}`); }
+  }
+}
+
 const html200 = routes.filter((r) => Number(r.http_outcome) === 200 && !String(r.path).startsWith('/upload/'));
 const retainedSeoTitles = new Map();
 const targetedMetaDescriptions = new Set([
@@ -140,6 +165,63 @@ if (await exists(path.join(dist, '.htaccess'))) {
   check((ht.match(/^RedirectMatch gone /gm) || []).length === 54, 'Built .htaccess must contain 54 exact 410 rules');
   check(/RewriteRule \^404\\\.php\$ - \[R=404,L\]/.test(ht), 'Built .htaccess must force legacy /404.php to HTTP 404');
 }
+
+// Focused Owner O22 built-output gate, no new external requests or broad re-audit.
+const portfolioFile=htmlFileFor('/portfolio/');
+if(await exists(portfolioFile)){
+  const html=await fs.readFile(portfolioFile,'utf8');
+  check(/id="featured-case-title"[^>]*>На излучине Невы<\/h2>/.test(html),'Owner 2026-10-23: Neva must be the featured lead');
+  const cards=[...html.matchAll(/<a\b[^>]*class="portfolio-card(?: [^"]*)?"[^>]*>/g)].map(m=>m[0]);
+  check(cards.length===12,'Current Owner: exactly twelve independent cards plus the single Neva leading dossier');
+  const hrefs=cards.map(tag=>tag.match(/href="([^"]+)"/)?.[1]).filter(Boolean);
+  check(hrefs.length===12 && new Set(hrefs).size===12 && !hrefs.includes('/portfolio/obekt/na-izluchine-nevy/') && html.includes('class="av-portfolio-feature__primary"'), 'Current Owner: all twelve grid cards have unique direct routes; Neva exists only in its main dossier');
+  for(const href of hrefs)check(await exists(htmlFileFor(href)), 'Owner O22: card direct route missing '+href);
+  check(html.includes('id="portfolio-sport-title"') && html.includes('Центр адаптивного спорта'),'Owner O22: independent sport section required');
+}
+const nevaFile=htmlFileFor('/portfolio/obekt/na-izluchine-nevy/');
+if(await exists(nevaFile)){
+  const html=await fs.readFile(nevaFile,'utf8');
+  const photos=[...html.matchAll(/<button\b[^>]*data-case-frame="\d+"[^>]*>/g)];
+  check(photos.length===6,'Owner Neva: facade in HERO only, plus exactly six gallery triggers');
+  const thumbs=html.match(/<div\b[^>]*class="owner-case__photos"[^>]*>([\s\S]*?)<\/div>/)?.[1]||'';
+  check((thumbs.match(/data-case-frame=/g)||[]).length===6,'Owner Neva: six photos in lower grid');
+  check(!/IMG_7571\.JPG/.test(thumbs),'Owner Neva: facade cannot repeat in lower gallery');
+  for(const [name,expected] of [
+    ['curated-04.webp','e574fa2d3c8c31c9a885b02ca16189dffd32de67110983bbf11cf1d1902b4a81'],
+    ['curated-05.webp','fc8b4990985c8d4e107790aa1b276b21f37c0ec21ee3c80e670bca9f8727d359'],
+    ['curated-06.webp','91ebc5f2bccb2f9f2bba2b2b63967c83f26063b5977141ddb6678b113ac1f3c4']
+  ]){
+    const file=path.join(dist,'evidence/residential/neva',name);
+    if(!await exists(file)){failures.push('Owner Neva original missing: '+name);continue;}
+    const actual=crypto.createHash('sha256').update(await fs.readFile(file)).digest('hex');
+    check(actual===expected,'Owner Neva media SHA mismatch '+name);
+    check(html.includes('/evidence/residential/neva/'+name),'Owner Neva gallery reference missing: '+name);
+  }
+}
+
+// Final focused Owner J-07/J-08/J-09 + O22-09 customer routing checks.
+for(const [route,needle] of [
+  ['/blog/detail/ntff-polisan/','НТФФ «Полисан»'],
+  ['/obekty/ofisy-i-kommerciya/','/portfolio/obekt/apart-hotel/'],
+]){
+  const html=await fs.readFile(htmlFileFor(route),'utf8').catch(()=>null);
+  check(html?.includes(needle), 'Owner editorial/direct-route check failed: '+route);
+}
+const officeHtml=await fs.readFile(htmlFileFor('/obekty/ofisy-i-kommerciya/'),'utf8').catch(()=>null);
+check(Boolean(officeHtml && !officeHtml.includes('/portfolio/#owner-') &&
+  (officeHtml.match(/src="\/evidence\/owner-portfolio\/apart-hotel\/cover\.webp"/g)||[]).length===1 &&
+  officeHtml.includes('href="/portfolio/obekt/apart-hotel/"') &&
+  officeHtml.includes('src="/evidence/owner-source-20261026/fitness-spb/photo_5226735321473556539_y.jpg"') &&
+  officeHtml.includes('src="/evidence/owner-source-20261026/leont-office/IMG_6686.JPG"') &&
+  officeHtml.includes('data-object-gallery-title="Фитнес-студия СПб"') &&
+  officeHtml.includes('data-object-gallery-title="Офис в Леонтьевском Мысе"') &&
+  !officeHtml.includes('href="/portfolio/obekt/eurospar-vo/"') &&
+  !officeHtml.includes('href="/portfolio/obekt/eurospar-sestroretsk/"') &&
+  !officeHtml.includes('/evidence/owner-portfolio/apart-hotel/gallery-01.webp')),
+  'D-061–D-065 supersede the old retail pair: one hotel HERO, authentic fitness and Leont-office gallery cards');
+const contactHtml=await fs.readFile(htmlFileFor('/contact/'),'utf8').catch(()=>null);
+check(Boolean(contactHtml && !contactHtml.includes('Без технического «идеального брифа»')),
+  'J-09: rejected public lead-form wording remains');
 
 const token = process.env.DIRECTUS_STATIC_TOKEN || '';
 if (token && await exists(dist)) {

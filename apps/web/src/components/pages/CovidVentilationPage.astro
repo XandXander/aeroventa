@@ -1,10 +1,20 @@
 ---
 import type { ContentRecord } from '@/lib/types';
+import legacySourceIndex from '../../../../../migration/legacy-page-source-index.json';
 interface Props { content: ContentRecord; fixture: boolean; }
 const { content } = Astro.props;
+const oldCovid = legacySourceIndex.find(x=>x.path==='/covid-pritochnaya-ventilacia/');
+const originalCovidText = oldCovid?.legacy_text_excerpt || '';
+const retainedMarker = 'Коронавирус COVID-19 и приточно вытяжная вентиляция, предупреждение';
+const originalStart = originalCovidText.lastIndexOf(retainedMarker);
+const originalCovidReading = originalStart>=0 ? originalCovidText.slice(originalStart) : originalCovidText;
+const originalCovidParagraphs = originalCovidReading.split(/\n\s*\n/u).map(x=>x.trim()).filter(Boolean);
+const originalCovidHeadings = oldCovid?.h2 || [];
+if (!originalCovidReading || !originalCovidHeadings.length) throw new Error('Original REHVA 2020 article source missing');
+
 ---
 
-<article class="covid-current">
+<article class="covid-current av-page av-covid">
   <header class="covid-current__hero">
     <div class="home-shell covid-current__hero-grid">
       <div>
@@ -14,7 +24,7 @@ const { content } = Astro.props;
       <div>
         <p class="covid-current__lede">
           Эта страница появилась в 2020 году как разбор рекомендаций REHVA по работе вентиляции во время COVID-19.
-          Сегодня мы сохраняем исходный материал как исторический источник, но отделяем его от того, что инженерно актуально сейчас.
+          В этом материале приведён обзор рекомендаций 2020 года и отдельно рассматриваются современные инженерные подходы к качеству воздуха.
         </p>
         <p class="covid-current__note">
           Это материал о вентиляции и качестве воздуха, а не медицинская рекомендация.
@@ -27,7 +37,7 @@ const { content } = Astro.props;
     <div class="home-shell covid-current__now-grid">
       <div>
         <p class="section-index section-index--orange">01 / Что осталось актуальным</p>
-        <h2 id="covid-now-title">Вентиляция снижает концентрацию аэрозолей. Но не превращает помещение в «безопасное» сама по себе.</h2>
+        <h2 id="covid-now-title">Воздухообмен и качество воздуха</h2><p class="av-lead">Вентиляция снижает концентрацию аэрозолей. Но не превращает помещение в «безопасное» сама по себе.</p>
       </div>
       <div class="covid-current__facts">
         <article>
@@ -55,7 +65,7 @@ const { content } = Astro.props;
   <section class="home-section covid-current__archive" aria-labelledby="covid-archive-title">
     <div class="home-shell covid-current__archive-grid">
       <div class="covid-current__archive-copy">
-        <p class="section-index">02 / Исторический источник</p>
+        <p class="section-index">02 / Рекомендации 2020 года</p>
         <h2 id="covid-archive-title">Что было в исходной статье 2020 года.</h2>
         <p>
           Старый материал пересказывал рекомендации REHVA того периода: увеличивать подачу наружного воздуха,
@@ -70,11 +80,22 @@ const { content } = Astro.props;
           <a class="button button--ghost" href="/upload/medialibrary/fa1/fa1b840c9474c6030bf2ccb0c725c3e4.pdf">Архивный PDF REHVA →</a>
           <span>PDF сохранён как архивное подтверждение, а не как текущая универсальная инструкция.</span>
         </div>
+        <details class="covid-source-text">
+          <summary>Прочитать оригинальный архивный текст статьи 2020 года</summary>
+          <div class="covid-source-text__body">
+            <p class="covid-source-text__notice">Ниже приведён текст публикации 2020 года. Её рекомендации нельзя автоматически применять к современному действующему объекту.</p>
+            {originalCovidParagraphs.map(paragraph=><p>{paragraph}</p>)}
+            <div class="covid-source-text__headings">
+              <strong>Разделы первоначальной публикации</strong>
+              {originalCovidHeadings.map(label=><span>{label}</span>)}
+            </div>
+          </div>
+        </details>
       </div>
 
       <figure class="covid-current__figure">
         <img src="/upload/medialibrary/1e0/1e03a5c54309ab78f133df9068a70b33.jpg" alt="Архивная иллюстрация к материалу AEROVENTA о вентиляции и рекомендациях REHVA" loading="lazy" />
-        <figcaption>Подтверждённая архивная иллюстрация этой страницы. Сохранена вместе с исходным URL.</figcaption>
+        <figcaption>Иллюстрация из материала AEROVENTA о вентиляции и рекомендациях REHVA.</figcaption>
       </figure>
     </div>
   </section>
@@ -83,7 +104,7 @@ const { content } = Astro.props;
     <div class="home-shell covid-current__engineering-grid">
       <div>
         <p class="section-index section-index--orange">03 / Инженерный вывод</p>
-        <h2 id="covid-engineering-title">Начинать надо не со старой памятки, а с того, как реально работает система.</h2>
+        <h2 id="covid-engineering-title">Проверить работу системы</h2>
       </div>
       <div class="covid-current__checklist">
         <div><span>01</span><p><strong>Проверить фактическую работу вентиляции.</strong> Есть ли наружный воздух, какой режим системы, какие зоны она обслуживает.</p></div>
@@ -112,18 +133,18 @@ const { content } = Astro.props;
     </div>
   </section>
 
-  <section class="conversion-close" aria-labelledby="covid-close-title">
-    <div class="home-shell">
-      <p class="section-index section-index--orange">05 / Если вопрос уже про ваш объект</p>
-      <h2 id="covid-close-title">Не переносите режимы из статьи на систему вслепую.</h2>
-      <p class="covid-current__close-copy">
-        Если задача связана с существующей вентиляцией, покажите объект, проект или схему и сформулируйте, что именно требуется:
-        монтаж, изменение системы, оценка существующего решения или исходные данные для следующего инженерного шага.
-      </p>
-      <div class="home-actions">
-        <a class="button button--light" href="/montazh-po-proektu/">Передать проект →</a>
-        <a class="button button--light" href="/contact/?intent=budget">Описать объект →</a>
-      </div>
-    </div>
-  </section>
+  <section class="av-close" aria-labelledby="covid-close-title"><div class="home-shell av-close__grid"><div><p class="av-kicker">Ваша задача по вентиляции</p><h2 id="covid-close-title">Обсудим ваш объект</h2><p>Пришлите проект, схему или описание того, что требуется изменить.</p></div><a class="button button--primary" href="/contact/" data-contact-open data-source="covid_article">Описать задачу →</a></div></section>
 </article>
+
+
+<style>
+.covid-source-text{margin-top:24px;border-top:1px solid #bdcbd2}
+.covid-source-text summary{cursor:pointer;padding:19px 0;font-size:.89rem;line-height:1.5;font-weight:580}
+.covid-source-text summary:focus-visible{outline:2px solid #a9663d;outline-offset:4px}
+.covid-source-text__body{max-width:72ch;padding:4px 0 20px;color:#395569}
+.covid-source-text__body p{font-size:.91rem;line-height:1.75;margin:0 0 16px}
+.covid-source-text__body .covid-source-text__notice{font-size:.81rem;border-left:2px solid #ab724f;padding:8px 0 8px 13px}
+.covid-source-text__headings{display:flex;flex-wrap:wrap;gap:6px 12px;padding-top:12px;border-top:1px solid #c3d1d9}
+.covid-source-text__headings span,.covid-source-text__headings strong{font-size:.75rem}
+.covid-source-text__headings strong{width:100%;margin-bottom:6px}
+</style>

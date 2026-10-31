@@ -27,7 +27,6 @@ const endpoint = (import.meta.env.PUBLIC_LEAD_ENDPOINT || '/api/lead.php').trim(
   novalidate
 >
   <div class="premium-contact-form__intro">
-    <p class="section-index">Запрос по объекту</p>
     <h3>Коротко опишите задачу.</h3>
     <p>Нужны только данные для первого содержательного ответа. Недостающее уточним отдельно.</p>
   </div>
@@ -48,7 +47,7 @@ const endpoint = (import.meta.env.PUBLIC_LEAD_ENDPOINT || '/api/lead.php').trim(
     <div class="field field--wide">
       <label for={`${idPrefix}-task`}>Кратко задача</label>
       <textarea id={`${idPrefix}-task`} name="task" rows={compact ? 3 : 4} maxlength="4000" required></textarea>
-      <span class="field__hint">Без технического «идеального брифа». Достаточно текущей ситуации и ожидаемого результата.</span>
+      <span class="field__hint">Опишите объект и задачу в свободной форме. Остальные подробности уточним при ответе.</span>
       <span class="field__error" data-error-for="task"></span>
     </div>
 

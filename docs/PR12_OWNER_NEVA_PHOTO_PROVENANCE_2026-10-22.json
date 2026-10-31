@@ -1,0 +1,62 @@
+{
+  "type": "AEROVENTA_OWNER_NEVA_AUTHENTIC_PHOTO_PROVENANCE",
+  "checkpoint": "PR12_2026-10-22",
+  "archive": "Новая папка (2).zip",
+  "archive_folder": "КВАРТИРА На излучине Невы СПб",
+  "known_group": "Owner archive, attribution by original folder; technical scene images, no invented equipment characteristics",
+  "protected_facade": "/evidence/residential/neva/IMG_7571.JPG",
+  "new_originals": [
+    {
+      "source": "photo_5226735321473556544_y.jpg",
+      "source_sha256": "21aaa15e7b1ceefd8c0e47c4657bca11083114b86596ec160162ed04fb9b2270",
+      "target": "apps/web/public/evidence/residential/neva/curated-04.webp",
+      "target_sha256": "e574fa2d3c8c31c9a885b02ca16189dffd32de67110983bbf11cf1d1902b4a81",
+      "pixels": [
+        1000,
+        706
+      ]
+    },
+    {
+      "source": "photo_5226735321473556574_y.png",
+      "source_sha256": "0a9cebe79ae67e057abdfe368b2755fa227d35ca52a287e634116f02ad7c72d8",
+      "target": "apps/web/public/evidence/residential/neva/curated-05.webp",
+      "target_sha256": "fc8b4990985c8d4e107790aa1b276b21f37c0ec21ee3c80e670bca9f8727d359",
+      "pixels": [
+        1000,
+        750
+      ]
+    },
+    {
+      "source": "photo_5226735321473556575_y.png",
+      "source_sha256": "85dcfbe779606ae06a46d16ff4f00b41df9f06e6066c7877ae519efc06ad04c6",
+      "target": "apps/web/public/evidence/residential/neva/curated-06.webp",
+      "target_sha256": "91ebc5f2bccb2f9f2bba2b2b63967c83f26063b5977141ddb6678b113ac1f3c4",
+      "pixels": [
+        1000,
+        750
+      ]
+    }
+  ],
+  "processing": "Pillow LANCZOS fit within 1000x800, RGB, WebP quality 75 method 6; no invented compositing",
+  "excluded": [],
+  "release": "staging source only; no production changes",
+  "owner_selected_facade": {
+    "source_archive": "Новая папка (2).zip",
+    "source_member": "КВАРТИРА На излучине Невы СПб/IMG_7571.JPG",
+    "sha256": "f83228bf67af248c14a5170d442ec7fff290297d6c16b2c1860e8d0c1469779e",
+    "pixels": [
+      3264,
+      2448
+    ],
+    "bytes": 2338495,
+    "transfer_status": "COMMITTED_BYTE_EXACT_ORIGINAL",
+    "source_identity": "OWNER_SELECTED_ORIGINAL",
+    "target": "apps/web/public/evidence/residential/neva/IMG_7571.JPG",
+    "retrieved_from": "Library /САЙТ/AEROVENTA_NEVA_IMG_7571_ORIGINAL.JPG; byte-exact original archive member"
+  },
+  "current_facade_asset_status": "OWNER_SELECTED_ORIGINAL_BOUND_ALL_PUBLIC_COVERS_AND_SOCIAL",
+  "superseded_facade": {
+    "path": "/evidence/residential/owner-neva-facade-20261016.jpg",
+    "status": "REJECTED_IDENTITY; source binary retained, not used as Neva proof"
+  }
+}

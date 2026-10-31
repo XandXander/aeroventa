@@ -1,5 +1,6 @@
 ---
 import type { ContentRecord } from '@/lib/types';
+import CmsContentBlocks from '@/components/CmsContentBlocks.astro';
 
 interface EvidenceItem {
   title: string;
@@ -8,6 +9,7 @@ interface EvidenceItem {
   href: string;
   image?: string;
   imageAlt?: string;
+  gallery?: string[];
 }
 
 interface Props {
@@ -20,14 +22,24 @@ interface Props {
   questions: string[];
   proofTitle: string;
   visualVariant?: 'residential' | 'restaurants';
-  heroMedia?: { src: string; alt: string; caption: string };
+  heroMedia?: { src: string; alt: string; caption: string; href?: string; gallery?: string[]; nativeWidth?: number; nativeHeight?: number; editorialSplit?: boolean };
   secondaryMedia?: { src: string; alt: string; caption: string };
 }
 
-const { content, eyebrow, lede, constraints, drivers, evidence, questions, proofTitle, visualVariant, heroMedia, secondaryMedia } = Astro.props;
+const { content, eyebrow, lede, constraints, drivers, evidence, questions, proofTitle, visualVariant,
+  heroMedia: acceptedHero, secondaryMedia } = Astro.props;
+const selectedMedia = String(content.hero_file || '');
+if (selectedMedia && !/^\/cms-media\/[a-f0-9]{64}\.(?:png|jpe?g|webp|avif)$/.test(selectedMedia))
+  throw new Error('CMS HERO image is not immutable staged media: ' + content.path);
+const heroMedia = selectedMedia ? (acceptedHero ? {...acceptedHero,src:selectedMedia} : undefined) : acceptedHero;
+if (selectedMedia && !heroMedia)throw new Error('Cannot replace non-existent accepted HERO: ' + content.path);
+
+// Card placement is explicit Owner content. HERO never silently removes a card;
+// the approved cafe uses distinct photographs of the same object in both slots.
+const hasPhotoViewer=Boolean(heroMedia?.editorialSplit||heroMedia?.gallery?.length||evidence.some(item=>item.gallery?.length));
 ---
 
-<article class:list={['object-detail', visualVariant && `object-detail--${visualVariant}`]}>
+<article class:list={['object-detail','av-page','av-type', visualVariant && `object-detail--${visualVariant}`, heroMedia?.editorialSplit && 'object-detail--editorial-media']}>
   <header class="object-detail__hero">
     <div class="home-shell object-detail__hero-grid">
       <div>
@@ -38,14 +50,14 @@ const { content, eyebrow, lede, constraints, drivers, evidence, questions, proof
         <p class="object-detail__lede">{lede}</p>
         <p class="home-geo">Санкт-Петербург · Ленинградская область · Москва · Карелия</p>
         <div class="home-actions">
-          <a class="button button--primary" href="/montazh-po-proektu/">Монтаж по готовому проекту →</a>
-          <a class="button button--ghost" href="/obekt-bez-gotovogo-proekta/">Подготовка исходных данных</a>
+          <button type="button" class="button button--primary" data-contact-open data-source="object_detail" data-contact-intent="VENTILATION_PROJECT">Обсудить монтаж →</button>
+          <a class="object-detail__secondary-link" href="/montazh-po-proektu/">Как работаем по проекту →</a>
         </div>
       </div>
       {heroMedia && (
         <figure class="object-detail__hero-media">
-          <img src={heroMedia.src} alt={heroMedia.alt} width="800" height="450" fetchpriority="high" />
-          {heroMedia.caption && <figcaption>{heroMedia.caption}</figcaption>}
+          {heroMedia.editorialSplit || heroMedia.gallery?.length ? <button type="button" class="object-detail__photo-button" data-object-photo-caption={heroMedia.caption} data-object-photo-open={!heroMedia.gallery || undefined} data-object-gallery={heroMedia.gallery ? JSON.stringify(heroMedia.gallery) : undefined} data-object-gallery-title={heroMedia.gallery ? heroMedia.caption : undefined} aria-haspopup="dialog" aria-controls="object-photo-dialog"><img src={heroMedia.src} alt={heroMedia.alt} width={heroMedia.nativeWidth || 800} height={heroMedia.nativeHeight || 450} sizes="(max-width: 1050px) calc(100vw - 40px), 45vw" style={heroMedia.nativeWidth ? `max-width:${heroMedia.nativeWidth}px` : undefined} fetchpriority="high" decoding="async" /></button> : <a href={heroMedia.href}><img src={heroMedia.src} alt={heroMedia.alt} width={heroMedia.nativeWidth || 800} height={heroMedia.nativeHeight || 450} sizes="(max-width: 1050px) calc(100vw - 40px), 45vw" style={heroMedia.nativeWidth ? `max-width:${heroMedia.nativeWidth}px` : undefined} fetchpriority="high" decoding="async" /></a>}
+          {heroMedia.caption && <figcaption>{heroMedia.caption} {heroMedia.href && !heroMedia.gallery && <a href={heroMedia.href}>Смотреть объект ↗</a>}{heroMedia.gallery && <span> · Открыть фотографии</span>}</figcaption>}
         </figure>
       )}
     </div>
@@ -55,14 +67,14 @@ const { content, eyebrow, lede, constraints, drivers, evidence, questions, proof
     <div class="home-shell">
       <p class="section-index section-index--orange">01 / Реальные объекты</p>
       <h2 id="object-evidence-title">{proofTitle}</h2>
-      <div class="object-evidence__grid">
+      <div class:list={['object-evidence__grid',evidence.length===1 && 'object-evidence__grid--single']}>
         {evidence.map((item) => (
-          <a href={item.href}>
+          <a href={item.href} data-object-gallery={item.gallery ? JSON.stringify(item.gallery) : undefined} data-object-gallery-title={item.gallery ? item.title : undefined} aria-haspopup={item.gallery ? 'dialog' : undefined} aria-controls={item.gallery ? 'object-photo-dialog' : undefined}>
             {item.image && <img class="object-evidence__photo" src={item.image} alt={item.imageAlt || item.title} width="800" height="450" loading="lazy" />}
             <span>{item.meta}</span>
             <h3>{item.title}</h3>
             <p>{item.detail}</p>
-            <b>Открыть кейс →</b>
+            <b>{item.gallery ? 'Смотреть фотографии →' : 'Открыть кейс →'}</b>
           </a>
         ))}
       </div>
@@ -78,59 +90,115 @@ const { content, eyebrow, lede, constraints, drivers, evidence, questions, proof
   <section class="home-section object-constraints" aria-labelledby="object-constraints-title">
     <div class="home-shell">
       <p class="section-index">02 / Что меняет монтаж</p>
-      <h2 id="object-constraints-title">Особенности объекта важнее типового названия системы.</h2>
+      <h2 id="object-constraints-title">Что учитываем на объекте</h2>
       <div class="object-constraints__grid">
         {constraints.map(([number,title,text]) => (
-          <article><span>{number}</span><h3>{title}</h3><p>{text}</p></article>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="object-drivers" aria-labelledby="object-drivers-title">
-    <div class="home-shell object-drivers__grid">
-      <div>
-        <p class="section-index section-index--orange">03 / Стоимость и срок</p>
-        <h2 id="object-drivers-title">Что реально двигает монтажный объём.</h2>
-        <p>Не публикуем универсальную ставку «за м²»: одинаковая площадь не означает одинаковые трассы, оборудование и условия работ.</p>
-      </div>
-      <div class="driver-list">
-        {drivers.map((item,index) => <div><span>{String(index+1).padStart(2,'0')}</span><strong>{item}</strong></div>)}
-      </div>
-    </div>
-  </section>
-
-  <section class="home-section object-questions" aria-labelledby="object-questions-title">
-    <div class="home-shell object-questions__grid">
-      <div>
-        <p class="section-index">04 / До монтажа</p>
-        <h2 id="object-questions-title">Вопросы, которые лучше закрыть до выхода бригады.</h2>
-        <a href="/faq/">Все инженерные вопросы →</a>
-      </div>
-      <div class="question-list">
-        {questions.map((question,index) => (
-          <a href="/faq/"><span>{String(index+1).padStart(2,'0')}</span>{question}<b aria-hidden="true">→</b></a>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="conversion-close" aria-labelledby="object-close-title">
-    <div class="home-shell">
-      <p class="section-index section-index--orange">05 / Следующий шаг</p>
-      <h2 id="object-close-title">Пришлите то, что уже есть. Не нужно сначала собирать идеальный пакет.</h2>
-      <div class="engagement-index engagement-index--dark engagement-index--close">
-        <a href="/montazh-po-proektu/">
-          <span>01</span>
-          <div><strong>Готовая проектная документация</strong><p>Перейти к монтажному объёму, вопросам исполнения и коммерческому предложению.</p></div>
-          <b aria-hidden="true">→</b>
-        </a>
-        <a href="/obekt-bez-gotovogo-proekta/">
-          <span>02</span>
-          <div><strong>Исходные данные ещё формируются</strong><p>Определить, что требуется до технически корректной оценки монтажа.</p></div>
-          <b aria-hidden="true">→</b>
-        </a>
-      </div>
-    </div>
-  </section>
+          <article><span>{number}</span><h3>{title}</h3><p>{text}</p>
 </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="av-section av-type-considerations" aria-labelledby="object-drivers-title"><div class="av-shell"><div class="av-heading"><div><p class="av-kicker">Объём и условия</p><h2 id="object-drivers-title">Для расчёта монтажа</h2></div><p>По чертежам и условиям площадки определяем перечень работ, оборудование и доступ к монтажным зонам.</p></div><div class="av-type-considerations__grid"><div><h3>Что влияет на состав работ</h3><ul class="av-type-drivers">{drivers.map(item=><li>{item}</li>)}</ul></div><div><h3>Что уточняем до начала</h3><ul class="av-type-questions">{questions.map(question=><li>{question}</li>)}</ul><a class="av-link" href="/faq/">Ответы на вопросы о монтаже →</a>{content.path==='/obekty/magaziny-i-sklady/' && <p><a class="av-link" href="/obekty/sklady/">Складские объекты: фотографии монтажа →</a></p>}{content.path==='/obekty/sklady/' && <p><a class="av-link" href="/obekty/magaziny-i-sklady/">Торговые помещения и склады →</a></p>}{content.path==='/obekty/ofisy-i-kommerciya/' && <p><a class="av-link" href="/obekty/ofisy-i-kommercheskie-pomeshcheniya/">Коммерческие помещения: особенности и примеры →</a></p>}</div></div></div></section>
+  <nav class="av-type-stages" aria-label="Стадия вашего объекта"><div class="av-shell"><a href="/montazh-po-proektu/"><span>Документация готова</span><strong>Монтаж по проекту</strong><b aria-hidden="true">↗</b></a><a href="/obekt-bez-gotovogo-proekta/"><span>Пока есть задача</span><strong>Объект без проекта</strong><b aria-hidden="true">↗</b></a></div></nav>
+</article>
+{Boolean(content.cms_blocks?.length) && <CmsContentBlocks blocks={content.cms_blocks!} />}
+
+{hasPhotoViewer && <dialog id="object-photo-dialog" class="object-photo-dialog" aria-labelledby="object-photo-title">
+ <div class="object-photo-dialog__heading"><strong id="object-photo-title" data-object-photo-title>Фотография объекта</strong><button type="button" data-object-photo-close aria-label="Закрыть фотографию">×</button></div>
+ <div class="object-photo-dialog__stage"><img src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221%22%20height=%221%22/%3E" alt={heroMedia?.alt||'Фотография объекта'} /></div>
+ <nav class="object-photo-dialog__nav" hidden aria-label="Перелистывание фотографий"><button type="button" data-object-photo-prev aria-label="Предыдущая фотография">‹</button><span data-object-photo-count aria-live="polite"></span><button type="button" data-object-photo-next aria-label="Следующая фотография">›</button></nav>
+</dialog>}
+<!-- AEROVENTA_OBJECT_PHOTO_DELIVERY -->
+<script>
+  import {createPhotoPreloader,setViewerPhoto,bindPhotoZoom} from '@/lib/gallery-runtime';
+  const dialog=document.querySelector<HTMLDialogElement>('#object-photo-dialog');
+  if(dialog){
+   const image=dialog.querySelector<HTMLImageElement>('img'),title=dialog.querySelector<HTMLElement>('[data-object-photo-title]'),caption=dialog.querySelector<HTMLElement>('[data-object-photo-caption]'),nav=dialog.querySelector<HTMLElement>('nav'),counter=dialog.querySelector<HTMLElement>('[data-object-photo-count]');
+   type Delivery={width:number;height:number;variants:{width:number;url:string}[]};
+   let delivery:Record<string,Delivery>={};try{delivery=JSON.parse(document.querySelector('#object-photo-delivery')?.textContent||'{}')}catch{}
+   const preview=(src:string)=>{const m=delivery[src];if(!m)return src;const width=Math.min(dialog.classList.contains('object-photo-dialog--gallery')?1400:531,innerWidth-60,(innerHeight-190)*m.width/m.height);const needed=Math.max(1,width)*Math.min(devicePixelRatio||1,2);return m.variants.find(v=>v.width>=needed)?.url||src;};
+   const cache=createPhotoPreloader(6);let photos:string[]=[],index=0,opener:HTMLElement|null=null;
+   const zoom=bindPhotoZoom(dialog,dialog.querySelector<HTMLElement>('.object-photo-dialog__stage'),image,step=>show(index+step));
+   const show=(n:number)=>{
+    if(!photos.length)return;index=(n+photos.length)%photos.length;zoom.reset();
+    const m=delivery[photos[index]];if(image&&m){image.width=m.width;image.height=m.height;}
+    setViewerPhoto(image,preview(photos[index]),(title?.textContent||'Объект')+' — фотография '+(index+1));cache.neighbors(photos.map(preview),index);
+    if(counter)counter.textContent=`Фото ${index+1} из ${photos.length}`;
+   };
+   // Original quality is fetched only when the visitor explicitly zooms.
+   new MutationObserver(()=>{if(Number(dialog.dataset.zoom)>1&&photos[index]&&image?.getAttribute('src')!==photos[index])setViewerPhoto(image,photos[index],image?.alt||'Фотография объекта');}).observe(dialog,{attributes:true,attributeFilter:['data-zoom']});
+   for(const trigger of document.querySelectorAll<HTMLElement>('[data-object-photo-open],[data-object-gallery]'))trigger.addEventListener('click',event=>{
+    let next:string[]=[];
+    if(trigger.dataset.objectGallery){
+     try{const value=JSON.parse(trigger.dataset.objectGallery);if(!Array.isArray(value)||!value.length||!value.every(src=>typeof src==='string'&&src.startsWith('/evidence/')&&Object.prototype.hasOwnProperty.call(delivery,src)))return;next=value;}catch{return;}
+    }else{const src=trigger.querySelector('img')?.getAttribute('src');if(src)next=[src];}
+    if(!next.length)return;event.preventDefault();opener=trigger;photos=next;
+    if(title)title.textContent=trigger.dataset.objectGalleryTitle||trigger.dataset.objectPhotoCaption||'Фотография объекта';
+    if(caption)caption.textContent=trigger.dataset.objectGalleryTitle||trigger.dataset.objectPhotoCaption||'';
+    if(nav)nav.hidden=photos.length<2;dialog.classList.toggle('object-photo-dialog--gallery',photos.length>1);
+    show(0);dialog.showModal();dialog.querySelector<HTMLElement>('[data-object-photo-close]')?.focus({preventScroll:true});
+   });
+   dialog.querySelector('[data-object-photo-close]')?.addEventListener('click',()=>dialog.close());
+   dialog.querySelector('[data-object-photo-prev]')?.addEventListener('click',()=>show(index-1));dialog.querySelector('[data-object-photo-next]')?.addEventListener('click',()=>show(index+1));
+   dialog.addEventListener('keydown',event=>{if(event.key==='ArrowLeft'){event.preventDefault();show(index-1);}if(event.key==='ArrowRight'){event.preventDefault();show(index+1);}});
+   dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close()});
+   dialog.addEventListener('close',()=>{zoom.reset();cache.clear();opener?.focus({preventScroll:true});opener=null;});
+  }
+</script>
+<style>
+.object-detail__secondary-link{display:inline-flex;align-items:center;min-height:44px;font-weight:600;text-underline-offset:5px}
+.object-detail__photo-button{display:block;width:100%;padding:0;border:0;background:transparent;cursor:zoom-in}
+.object-detail__photo-button:focus-visible{outline:3px solid #126eb1;outline-offset:3px}
+.object-photo-dialog{position:fixed;inset:0;margin:auto;box-sizing:border-box;border:0;border-radius:0;padding:0;background:#edf2f3;color:#203a49;width:min(100vw,1400px);max-width:100vw;height:100dvh;max-height:100dvh;overflow:hidden}
+.object-photo-dialog::backdrop{background:rgba(8,23,40,.8)}
+.object-photo-dialog img{display:block;width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain}
+.object-photo-dialog p{position:absolute;bottom:40px;left:52px;right:52px;z-index:2;margin:0;text-align:center;font-size:.8rem;color:#526b77;pointer-events:none}
+.object-photo-dialog [data-object-photo-close]{position:absolute;top:4px;right:10px;z-index:5;border:0;background:transparent;color:#203a49;font:inherit;font-size:2rem;cursor:pointer;width:48px;height:48px}
+.object-photo-dialog__heading{position:absolute;top:0;left:0;right:0;z-index:4;min-height:58px;padding:16px 62px 14px;box-sizing:border-box;text-align:center;background:linear-gradient(#edf2f3 20%,#edf2f300)}
+.object-photo-dialog__heading strong{font-size:1rem;line-height:1.4;font-weight:550}
+.object-photo-dialog__stage{box-sizing:border-box;display:flex;align-items:center;justify-content:center;width:100%;height:100%;min-height:0;padding:68px clamp(45px,6vw,90px) 72px;overflow:hidden}
+.object-photo-dialog__nav{position:absolute;inset:0;z-index:3;display:flex;justify-content:space-between;align-items:center;gap:0;padding:0 4px;pointer-events:none;font-size:.85rem;color:#244454}
+.object-photo-dialog__nav[hidden]{display:none}
+.object-photo-dialog__nav [data-object-photo-count]{position:absolute;bottom:calc(14px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);padding:5px 11px;border-radius:8px;background:#dbe5e9;color:#203a49;pointer-events:none}
+@media(max-width:600px){.object-photo-dialog__stage,.object-photo-dialog--gallery .object-photo-dialog__stage{padding:65px 44px 62px}}
+.object-photo-dialog__nav button{pointer-events:auto;width:48px;height:56px;border:0;background:#dbe5e9;color:#203a49;font:400 2rem/1 Onest,sans-serif;cursor:pointer}
+.object-photo-dialog--gallery[open]{display:block}
+.object-photo-dialog--gallery .object-photo-dialog__heading{padding:16px 62px 14px}
+.object-photo-dialog--gallery .object-photo-dialog__stage{width:100%;height:100%;padding:68px clamp(45px,6vw,90px) 72px;display:flex;align-items:center;justify-content:center}
+.object-photo-dialog--gallery .object-photo-dialog__stage img{width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain}
+.object-photo-dialog--gallery [data-object-photo-caption]{margin:0;padding:0;text-align:center;font-size:.8rem}
+.object-photo-dialog :is(button,a):focus-visible{outline:3px solid #9d4329;outline-offset:3px}
+</style>
+<style>
+/* Original Owner-supplied 531x376 facade: never fake its native resolution. */
+.object-detail--editorial-media .object-detail__hero-media {
+  width:min(100%,531px);margin:0 auto;min-width:0;background:transparent;
+}
+.object-detail--editorial-media .object-detail__hero-media img {
+  display:block;width:100%;max-width:531px;height:auto;aspect-ratio:531/376;object-fit:contain;
+}
+@media(min-width:901px){
+  .object-detail--editorial-media .object-detail__hero-grid {
+    display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);
+    column-gap:clamp(24px,4.5vw,68px);row-gap:clamp(12px,2vw,30px);align-items:center;
+  }
+  .object-detail--editorial-media .object-detail__hero-grid>div:first-child {grid-column:1;grid-row:1;}
+  .object-detail--editorial-media .object-detail__hero-grid>div:nth-child(2) {grid-column:1;grid-row:2;}
+  .object-detail--editorial-media .object-detail__hero-media {
+    grid-column:2;grid-row:1/span 2;justify-self:center;align-self:center;
+  }
+}
+@media(max-width:900px){
+  .object-detail--editorial-media .object-detail__hero-media {max-width:531px;margin-inline:auto;}
+}
+
+/* A mobile image must not create an implicit second grid track. */
+@media(max-width:1050px){
+ .object-detail .object-detail__hero-grid{display:flex;flex-direction:column;align-items:stretch;gap:20px}
+ .object-detail .object-detail__hero-grid>div:first-child{order:0;width:100%}
+ .object-detail .object-detail__hero-media{order:1;grid-column:auto;grid-row:auto;width:100%;margin:0}
+ .object-detail .object-detail__hero-grid>div:nth-child(2){order:2;width:100%}
+}
+</style>

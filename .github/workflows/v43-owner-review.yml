@@ -2,10 +2,14 @@ name: V43 owner review — compiled browser screenshots
 
 on:
   pull_request:
-    branches: [main, aeroventa/v43-owner-visual-implementation-2026-10-09]
+    branches: [main, aeroventa/v43-owner-visual-implementation-2026-10-09, aeroventa/hiend-audit-av-correction-2026-10-12]
     paths:
       - 'apps/web/**'
       - 'scripts/render-v43-owner-review.mjs'
+      - 'scripts/pr12-recovery-browser-qa.mjs'
+      - 'scripts/pr12-sitewide-regression.mjs'
+      - 'scripts/package-pr12-art-review.mjs'
+      - 'docs/recovery/owner-coverage-candidate.json'
       - '.github/workflows/v43-owner-review.yml'
   workflow_dispatch:
 
@@ -14,15 +18,26 @@ permissions:
 
 jobs:
   screenshot-review:
-    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.number == 10 || github.event.pull_request.number == 11
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.number == 10 || github.event.pull_request.number == 11 || github.event.pull_request.number == 12
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - name: Checkout exact review commit
         uses: actions/checkout@v5
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
           persist-credentials: false
+      - name: Select explicitly requested affected regression
+        id: scope
+        shell: bash
+        run: |
+          if git log -1 --format=%B | grep -qEx 'QA-Scope: (object-cover-correction|d061-d065-source-closure)'; then
+            echo 'cover_only=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'cover_only=false' >> "$GITHUB_OUTPUT"
+          fi
+          if git log -1 --format=%B | grep -qx 'QA-Scope: d061-d065-source-closure'; then echo 'source_closure=true' >> "$GITHUB_OUTPUT"; else echo 'source_closure=false' >> "$GITHUB_OUTPUT"; fi
       - name: Set up Node
         uses: actions/setup-node@v6
         with:
@@ -30,18 +45,27 @@ jobs:
       - name: Install project dependencies
         run: npm install --no-audit --no-fund
       - name: Validate and compile fixture site
+        id: fixture-build
         env:
           AEROVENTA_RELEASE_MODE: fixture
+          AEROVENTA_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          PUBLIC_SOCIAL_ORIGIN: https://staging.aeroventa.ru
         run: |
           npm run generate:hosting-rules
           npm run validate
+          # The validation generator rewrites a non-runtime Directus planning artifact.
+          # Restore that generated file to the exact checked-out input, before compiling.
+          git show HEAD:migration/directus-import-plan.json > migration/directus-import-plan.json
+          git diff --exit-code
+          node --check scripts/package-pr12-art-review.mjs
           npm run build:web
           npm run validate:dist
       - name: Install isolated browser test dependency
         run: |
-          npm install --no-save --no-package-lock --no-audit --no-fund playwright@1.56.1
+          npm install --no-save --no-package-lock --no-audit --no-fund playwright@1.56.1 tslib@2.8.1
           npx --no-install playwright install --with-deps chromium
       - name: Launch isolated local HTTP server
+        if: steps.scope.outputs.cover_only != 'true'
         run: |
           nohup python3 -m http.server 4178 --bind 127.0.0.1 --directory apps/web/dist > /tmp/v43-render-http.log 2>&1 &
           echo $! > /tmp/v43-render-http.pid
@@ -51,55 +75,233 @@ jobs:
           done
           cat /tmp/v43-render-http.log
           exit 1
+      - name: Focused current HOME text enlargement regression
+        if: steps.scope.outputs.cover_only != 'true'
+        id: focused-reflow
+        env:
+          RECOVERY_QA_PHASE: interactions
+          RECOVERY_QA_SCENARIO: TEXT_ZOOM_200_PERCENT
+          RECOVERY_QA_OUTPUT: PR12_REFLOW_QA
+        run: node scripts/pr12-recovery-browser-qa.mjs
       - name: Render real compiled HTML at four viewports
+        if: steps.scope.outputs.cover_only != 'true'
         run: node scripts/render-v43-owner-review.mjs
-      - name: Upload browser screenshots and machine report
-        if: always()
+      - name: Sitewide 51-HTML route / 10-viewport geometry and real-click gallery regression
+        if: ${{ !cancelled() && steps.fixture-build.outcome == 'success' && steps.focused-reflow.outcome == 'success' }}
+        env:
+          GITHUB_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/pr12-sitewide-regression.mjs
+      - name: Focused object covers, all fifty route links/media and warehouse galleries
+        if: steps.scope.outputs.cover_only == 'true'
+        env:
+          RECOVERY_QA_PHASE: covers
+          RECOVERY_QA_OWNER_CONTRACT: ${{ steps.scope.outputs.source_closure == 'true' && 'D061_D065' || '' }}
+          RECOVERY_QA_OUTPUT: PR12_COVER_QA
+        run: node scripts/pr12-recovery-browser-qa.mjs
+      - name: Final six categories, eighteen exact placements and authentic source albums
+        if: ${{ !cancelled() && steps.fixture-build.outcome == 'success' && steps.focused-reflow.outcome == 'success' }}
+        env:
+          RECOVERY_QA_PHASE: covers
+          RECOVERY_QA_OWNER_CONTRACT: D061_D065
+          RECOVERY_QA_OUTPUT: PR12_CATEGORIES_FINAL
+        run: node scripts/pr12-recovery-browser-qa.mjs
+
+      - name: Latest Owner first-view, authentic Neva, twelve-object and compact-assistant contract
+        if: ${{ !cancelled() && steps.fixture-build.outcome == 'success' && steps.focused-reflow.outcome == 'success' }}
+        env:
+          RECOVERY_QA_PHASE: owner
+          RECOVERY_QA_OUTPUT: PR12_OWNER_CONTRACT
+        run: node scripts/pr12-recovery-browser-qa.mjs
+      - name: Exact-source complete render, geometry, interactions and states
+        if: ${{ !cancelled() && steps.fixture-build.outcome == 'success' && steps.focused-reflow.outcome == 'success' }}
+        env:
+          RECOVERY_QA_PHASE: all
+          RECOVERY_QA_OUTPUT: PR12_EXACT_QA
+        run: node scripts/pr12-recovery-browser-qa.mjs
+      - name: Actual raster background and computed text contrast
+        if: ${{ !cancelled() && steps.fixture-build.outcome == 'success' && steps.focused-reflow.outcome == 'success' }}
+        env:
+          RECOVERY_QA_PHASE: surfaces
+          RECOVERY_QA_OUTPUT: PR12_EXACT_SURFACES
+        run: node scripts/pr12-recovery-browser-qa.mjs
+      - name: Upload compact sitewide interaction and first-fold evidence
+        if: always() && steps.scope.outputs.cover_only != 'true'
         uses: actions/upload-artifact@v6
         with:
-          name: v43-final-compiled-browser-owner-review
-          path: V43_OWNER_BROWSER_REVIEW
+          name: PR12-SITEWIDE-10-VIEWPORT-AND-REAL-CLICKS
+          path: |
+            PR12_SYSTEMIC_QA/
+            PR12_REFLOW_QA/
+            PR12_OWNER_CONTRACT/
+            PR12_CATEGORIES_FINAL/
           if-no-files-found: warn
+          retention-days: 7
+      - name: Emit compact selected real-render previews into CI evidence log
+        if: ${{ !cancelled() && steps.focused-reflow.outcome == 'success' }}
+        shell: bash
+        run: |
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          const root='V43_OWNER_BROWSER_REVIEW/selected_preview';
+          if (!fs.existsSync(root)) throw new Error('Selected screenshots missing');
+          const files=fs.readdirSync(root).filter(f=>f.endsWith('.jpg')).sort();
+
+          for(const file of files){
+            const b64=fs.readFileSync(path.join(root,file)).toString('base64');
+            const size=12000,total=Math.ceil(b64.length/size);
+            console.log('AV_RENDER_START '+file+' '+total);
+            for(let n=0;n<total;n++) console.log('AV_RENDER_PART '+file+' '+n+' '+b64.slice(n*size,(n+1)*size));
+            console.log('AV_RENDER_END '+file);
+          }
+          console.log('AV_OWNER_SELECT_PREVIEWS '+files.length+' EXACT_SHA_RENDER');
+          if(files.length!==25) throw new Error('Expected 25 Owner previews (14 base + 11 motion/interactions), got '+files.length);
+          JS
+      - name: Emit real Owner first-view frames for executor visual inspection
+        if: ${{ !cancelled() && steps.focused-reflow.outcome == 'success' }}
+        shell: bash
+        run: |
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          const root='PR12_OWNER_CONTRACT';
+          if(fs.existsSync(root))for(const file of fs.readdirSync(root).filter(f=>f.endsWith('.jpg'))){
+            const b64=fs.readFileSync(root+'/'+file).toString('base64'),n=Math.ceil(b64.length/12000);
+            console.log('AV_OWNER_FIRST_START '+file+' '+n);
+            for(let i=0;i<n;i++)console.log('AV_OWNER_FIRST_PART '+file+' '+i+' '+b64.slice(i*12000,(i+1)*12000));
+            console.log('AV_OWNER_FIRST_END '+file);
+          }
+          if(fs.existsSync(root+'/report.json'))console.log('AV_OWNER_CONTRACT_REPORT '+fs.readFileSync(root+'/report.json','utf8'));
+          for(const f of['PR12_EXACT_QA/report.json','PR12_EXACT_SURFACES/report.json'])if(fs.existsSync(f)){const r=JSON.parse(fs.readFileSync(f,'utf8'));console.log('AV_EXACT_DIAGNOSTICS '+JSON.stringify({phase:r.phase,source_sha:r.source_sha,source_dirty:r.source_dirty,issues:r.issues,failed_checks:r.checks.filter(c=>!c.pass)}));}
+          JS
+      - name: Emit complete changed page families for executor visual inspection
+        if: ${{ !cancelled() && steps.focused-reflow.outcome == 'success' }}
+        shell: bash
+        run: |
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          import sharp from 'sharp';
+          const root='PR12_EXACT_QA';
+          const routes=['news','faq','services','montazh-ventiliacii','montazh-po-proektu','obekt-bez-gotovogo-proekta','blog','contact','obekty','obekty__kvartiry-i-doma','obekty__proizvodstvo','obekty__sklady','obekty__restorany-i-kafe','portfolio__obekt__na-izluchine-nevy'];
+          for(const route of routes)for(const width of[1440,390]){
+            const name=route+'__'+width+'.jpg',file=root+'/'+name;
+            if(!fs.existsSync(file))continue;
+            const b64=(await sharp(fs.readFileSync(file)).resize({width:width===390?390:850,withoutEnlargement:true}).jpeg({quality:76}).toBuffer()).toString('base64'),n=Math.ceil(b64.length/12000);
+            console.log('AV_CURRENT_FULL_START '+name+' '+n);
+            for(let i=0;i<n;i++)console.log('AV_CURRENT_FULL_PART '+name+' '+i+' '+b64.slice(i*12000,(i+1)*12000));
+            console.log('AV_CURRENT_FULL_END '+name);
+          }
+          JS
+      - name: Upload browser screenshots and machine report
+        if: always() && steps.scope.outputs.cover_only != 'true'
+        uses: actions/upload-artifact@v6
+        with:
+          name: v43-final-selected-owner-review
+          # Preserve 400-route regression locally, upload only 14 Owner-facing real render proofs.
+          # Never emit another 520 MB screenshot archive for this PR.
+          path: |
+            V43_OWNER_BROWSER_REVIEW/manifest.json
+            V43_OWNER_BROWSER_REVIEW/home__desktop_1440.png
+            V43_OWNER_BROWSER_REVIEW/home__mobile_390.png
+            V43_OWNER_BROWSER_REVIEW/services__desktop_1440.png
+            V43_OWNER_BROWSER_REVIEW/services__mobile_390.png
+            V43_OWNER_BROWSER_REVIEW/about__desktop_1440.png
+            V43_OWNER_BROWSER_REVIEW/about__mobile_390.png
+            V43_OWNER_BROWSER_REVIEW/portfolio__desktop_1440.png
+            V43_OWNER_BROWSER_REVIEW/portfolio__mobile_390.png
+            V43_OWNER_BROWSER_REVIEW/polisan__desktop_1440.png
+            V43_OWNER_BROWSER_REVIEW/leont__desktop_1440.png
+            V43_OWNER_BROWSER_REVIEW/leont__mobile_390.png
+            V43_OWNER_BROWSER_REVIEW/drill_crown__desktop_1440.png
+            V43_OWNER_BROWSER_REVIEW/ponsse_letter_open__mobile_390.png
+            V43_OWNER_BROWSER_REVIEW/consultant_open__mobile_390.png
+            V43_OWNER_BROWSER_REVIEW/selected_preview/*.jpg
+          if-no-files-found: error
           retention-days: 7
       # This artifact must not replace staging authentication or production Bitrix.
       # Browser QA must PASS first. The archive contains compiled site files
       # at ZIP root. Existing staging .htaccess / Basic Auth MUST be preserved.
-      - name: Seal tested staging-only site
-        if: success()
+      - name: Seal one source-bound visual HTML, checked webroot ZIP and manifest
+        if: success() && (github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.number == 12))
         env:
           REVIEW_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-        run: |
-          test -f apps/web/dist/index.html
-          test -f apps/web/dist/.htaccess
-          test -f apps/web/dist/404.html
-          test -f apps/web/dist/sitemap.xml
-          grep -qi 'name="robots" content="noindex' apps/web/dist/index.html
-          printf 'User-agent: *\nDisallow: /\n' > apps/web/dist/robots.txt
-          cat > apps/web/dist/STAGING_ONLY_BUILD_INFO.txt <<EOF
-          AEROVENTA STAGING-ONLY FIXTURE REVIEW BUILD
-          GITHUB_SHA=$REVIEW_SHA
-          TEST=implementation validation + compiled Playwright browser review PASS
-          INDEXING=DISABLED (noindex and robots Disallow)
-          DESTINATION=staging.aeroventa.ru ONLY, after verifying existing Basic Auth
-          EXISTING_STAGING_HTACCESS=DO_NOT_REPLACE
-          ROUTING_RULES_GENERATED=reference-only in STAGING_RULES_REFERENCE_ONLY.txt
-          NOT_A_DIRECTUS_PRODUCTION_BUILD
-          DO_NOT_UPLOAD_TO_PRODUCTION_OR_REPLACE_LIVE_BITRIX
-          EOF
-          grep -q '^Disallow: /' apps/web/dist/robots.txt
-          grep -q '^DO_NOT_UPLOAD_TO_PRODUCTION' apps/web/dist/STAGING_ONLY_BUILD_INFO.txt
-          # Beget staging Basic Auth historically resides inside .htaccess.
-          # Never allow this distributable bundle to overwrite that security
-          # boundary with the raw generated production routing rules.
-          mv apps/web/dist/.htaccess apps/web/dist/STAGING_RULES_REFERENCE_ONLY.txt
-          test ! -f apps/web/dist/.htaccess
-      - name: Upload exact tested staging-only site
-        if: success()
+          PR12_REVIEW_SCOPE: ${{ steps.scope.outputs.cover_only == 'true' && 'covers' || 'full' }}
+        run: node scripts/package-pr12-art-review.mjs
+      - name: Upload one final review delivery (NO deployment)
+        if: success() && (github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.number == 12))
         uses: actions/upload-artifact@v6
         with:
-          name: AEROVENTA_V43_STAGING_ONLY_SITE_DO_NOT_UPLOAD_TO_PRODUCTION
-          path: apps/web/dist/
-          include-hidden-files: true
+          name: ${{ steps.scope.outputs.source_closure == 'true' && 'AEROVENTA_PR12_SOURCE_SCOPE_CANDIDATE' || steps.scope.outputs.cover_only == 'true' && 'AEROVENTA_PR12_OBJECT_COVERS_AND_STAGING_ZIP' || 'AEROVENTA_PR12_FINAL_ART_REVIEW_AND_STAGING_ZIP' }}
+          path: PR12_FINAL_DELIVERY/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 6
+      - name: Enforce all eighteen Owner placements (source HOLD cannot pass)
+        if: steps.scope.outputs.source_closure == 'true'
+        run: |
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          const r=JSON.parse(fs.readFileSync('PR12_COVER_QA/report.json','utf8')).owner_scope;
+          if(!r||r.required!==18||r.checks.length!==18||!r.complete){
+            console.error('SOURCE_SCOPE_HOLD: all18 Owner placements are mandatory. No reduced-count acceptance.');
+            console.error(JSON.stringify(r?.checks.filter(c=>!c.pass)||[],null,2));
+            process.exit(1);
+          }
+          console.log('OWNER18_SOURCE_SCOPE_PASS');
+          JS
+
+  bitrix-preserved-sources:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.number == 12
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout exact PR12 for OFFLINE verified media proof
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Validate recovered legacy source bytes already in PR (NO BITRIX FETCH)
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,pathlib
+          root=pathlib.Path('apps/web/public')
+          source=json.loads(pathlib.Path('migration/bitrix-public-media-500-sha-map.json').read_text(encoding='utf8'))
+          records=source['files']
+          assert source['record_count']==len(records)==500
+          for item in records:
+              name=item['path']
+              assert name.startswith('/upload/') and '..' not in name and '\\' not in name
+              f=root/name.lstrip('/')
+              assert f.is_file() and f.stat().st_size==item['size'],name
+              assert hashlib.sha256(f.read_bytes()).hexdigest()==item['sha256'],name
+          verified=json.loads(pathlib.Path('migration/bitrix-verified-articles-20260817.json').read_text(encoding='utf8'))
+          old=json.loads(pathlib.Path('migration/legacy-page-source-index.json').read_text(encoding='utf8'))
+          original={x['path']:x for x in old}
+          assert verified['count']==len(verified['articles'])==9
+          assert all(original[a['route']]['sha256']==a['source_sha256'] for a in verified['articles'])
+          pdf=json.loads(pathlib.Path('migration/indexed-pdf.json').read_text(encoding='utf8'))
+          p=root/pdf['path'].lstrip('/')
+          assert p.is_file() and p.stat().st_size==pdf['source_bytes']
+          assert hashlib.sha256(p.read_bytes()).hexdigest()==pdf['source_sha256']
+          faq=original.get('/faq/')
+          assert faq and faq['source_state']=='SOURCE_404' and faq['status']==404
+          pathlib.Path('BITRIX_OFFLINE_SOURCE_PROOF.json').write_text(json.dumps({
+              'verified':'500_IMAGE_FILES_SHA256_AND_9_AUGUST_SOURCE_BODIES_AND_INDEXED_PDF',
+              'origin_fetch':'NOT_PERFORMED; CAPTURED_ALREADY',
+              'historical_faq':'SOURCE_404_IN_AUGUST_AND_OCTOBER',
+              'source_parity_29_original_html':'NOT_PROVEN',
+              'publication_authorized':False
+          },ensure_ascii=False,indent=2),encoding='utf8')
+          print('BITRIX_OFFLINE_SOURCE_PROOF PASS: 500 images, 9 historical article bodies, one indexed PDF')
+          print('RELEASE_BLOCKER: historical /faq/ original returned 404; do not claim 29 old HTML 200')
+          print('NO BITRIX SOURCE REQUESTS EXECUTED')
+          PY
+      - name: Upload audited immutable source proof (not production acceptance)
+        uses: actions/upload-artifact@v6
+        with:
+          name: AEROVENTA_PR12_BITRIX_OFFLINE_SHA256_PROOF
+          path: BITRIX_OFFLINE_SOURCE_PROOF.json
           if-no-files-found: error
           retention-days: 7
-          compression-level: 6

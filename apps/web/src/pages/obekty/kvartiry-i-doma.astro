@@ -1,0 +1,30 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getStaticPageContent } from '@/lib/content-source';
+import ObjectDetailPage from '@/components/pages/ObjectDetailPage.astro';
+import sourcePhotos from '../../../../../migration/owner-category-source-media-2026-10-26.json';
+import type { ContentRecord } from '@/lib/types';
+const baselineContent: ContentRecord = {
+ path:'/obekty/kvartiry-i-doma/',title:'Монтаж вентиляции квартир и домов — AEROVENTA',h1:'Монтаж вентиляции квартир и домов',
+ content_type:'landing',business_role:'CORE_SERVICE_HUB',status:'fixture_stub',
+ robots_index:false,robots_follow:true,sitemap_include:false,knowledge_allowed:true,ai_origin:false,
+ seo_title:'Монтаж вентиляции квартир и домов — AEROVENTA',seo_description:'Монтаж вентиляции в жилых помещениях с учётом архитектуры, шума, потолков и эксплуатации.',
+ excerpt:'',body_html:'',body_html_safety_status:'not_applicable',owner_approved_at:null
+};
+const constraints:[string,string,string][] = [["01","Планировка","Трассы и узлы согласуются с интерьером."],["02","Акустика","Требования к шуму закладываются в проект."],["03","Отделка","Последовательность монтажа согласовывают заранее."],["04","Сервис","Доступ к оборудованию предусматривают до закрытия потолков."]];
+const mitrofanievskoe=sourcePhotos.objects.find(item=>item.slug==='mitrofanievskoe');
+if(!mitrofanievskoe||mitrofanievskoe.gallery.length!==13)throw Error('All thirteen Owner Mitrofanievskoe originals are required');
+const evidence = [
+ {title:'Квартира на Маршала Жукова',meta:'Санкт-Петербург',detail:'Приточно-вытяжная вентиляция. Фотографии выполненных работ.',href:'/blog/detail/kvartira-na-zhukova/',image:'/evidence/zhukov/owner-cover-v43.webp',imageAlt:'Жилой дом на Маршала Жукова'},
+ {title:'Дом на Митрофаньевском шоссе',meta:'Жилой объект · Санкт-Петербург',detail:'Фотографии здания, вентиляционного оборудования и воздуховодов.',href:'#object-photo-dialog',image:mitrofanievskoe.cover,imageAlt:'Фасад дома на Митрофаньевском шоссе',gallery:mitrofanievskoe.gallery}
+];
+const drivers = ['Рабочая проектная документация и спецификация','Монтажные зоны и условия доступа','Стадия объекта и смежные инженерные системы','Оборудование, трассы и рабочие сроки'];
+const questions = ['Какие документы передать для расчёта монтажа?','Что согласовать до начала работ?','Какие ограничения объекта влияют на организацию монтажа?'];
+const content = await getStaticPageContent(baselineContent.path, baselineContent);
+---
+<BaseLayout content={content}>
+ <ObjectDetailPage content={content} eyebrow="Квартиры и дома"
+  lede="В жилых помещениях особенно важны размещение трасс, интеграция в интерьер и доступ к обслуживанию. Показываем примеры жилых объектов и учитываем архитектурные ограничения каждого помещения." constraints={constraints} drivers={drivers} evidence={evidence} questions={questions}
+  proofTitle="Жилые объекты"
+  heroMedia={{src:'/evidence/residential/neva/IMG_7571.JPG',alt:'Фасад здания «На излучине Невы» в Санкт-Петербурге',caption:'На излучине Невы · Санкт-Петербург',href:'/portfolio/obekt/na-izluchine-nevy/',nativeWidth:3264,nativeHeight:2448,editorialSplit:true}}/>
+</BaseLayout>

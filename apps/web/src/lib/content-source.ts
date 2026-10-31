@@ -2,6 +2,10 @@ import fixtures from '@/data/content-fixtures.json';
 import expectedRetainedPaths from '@/data/expected-retained-paths.json';
 import coreContentV7 from '@/data/core-content-v7.json';
 import type { ContentRecord } from './types';
+import { EXTRA_ASTRO_STATIC_ROUTES } from './cms-static-routes';
+import { normalizeCmsBlocks } from './cms-blocks';
+import { readFileSync, existsSync } from 'node:fs';
+import { resolve } from 'node:path';
 
 const normalizePath = (path: string) => {
   if (path === '/') return '/';
@@ -11,7 +15,7 @@ const normalizePath = (path: string) => {
 };
 
 const forbiddenPublishedPaths = new Set(['/404.php']);
-const allowedReleaseModes = new Set(['fixture', 'preview', 'production']);
+const allowedReleaseModes = new Set(['fixture', 'preview', 'review', 'production', 'incremental']);
 
 function assertSafeHtml(html: string, itemPath: string) {
   if (!html) return;
@@ -53,7 +57,10 @@ function assertSafePublishedRecord(item: ContentRecord): ContentRecord {
     assertSafeHtml(body, normalizedPath);
   }
 
-  return { ...item, path: normalizedPath };
+  return {
+    ...item, path: normalizedPath,
+    cms_blocks: normalizeCmsBlocks(item.body_blocks, normalizedPath, true),
+  };
 }
 
 function assertSafePreviewRecord(item: ContentRecord): ContentRecord {
@@ -82,6 +89,7 @@ function assertSafePreviewRecord(item: ContentRecord): ContentRecord {
   return {
     ...item,
     path: normalizedPath,
+    cms_blocks: normalizeCmsBlocks(item.body_blocks, normalizedPath, false),
     robots_index: false,
     sitemap_include: false,
     owner_approved_at: null,
@@ -115,20 +123,56 @@ function assertExactPreviewRouteSet(items: ContentRecord[]) {
   }
 }
 
-type DirectusMode = 'preview' | 'production';
+type DirectusMode = 'preview' | 'review' | 'production' | 'incremental';
 
 const directusFields = [
-  'path','title','h1','content_type','business_role','status',
+  'id','path','slug','title','h1','content_type','business_role','status',
   'robots_index','robots_follow','sitemap_include','knowledge_allowed','ai_origin',
   'seo_title','seo_description','canonical_override',
   'og_title','og_description','og_image','schema_type','schema_json_extra',
   'published_at','updated_at_public',
-  'excerpt','body_html','body_html_safety_status','lead_intent','owner_approved_at'
+  'excerpt','body_html','body_html_safety_status','hero_file','lead_intent','owner_approved_at',
+  'body_blocks.sort','body_blocks.block_id.id','body_blocks.block_id.block_type',
+  'body_blocks.block_id.data','body_blocks.block_id.fact_checked'
 ].join(',');
+
+// Only the exact media captured and SHA-locked for this GitHub review may
+// become public image paths. Never render authenticated Directus URLs live.
+function mediaRegistry(): Record<string, {path: string}> {
+  if (!['incremental','review'].includes(String(import.meta.env.AEROVENTA_RELEASE_MODE || ''))) return {};
+  // npm workspace scripts execute with cwd=apps/web, while GitHub media stage
+  // writes at repository root; resolve either root deterministically.
+  const candidate=resolve('release_out/approved-astro/media-registry.json');
+  const file=existsSync(candidate) ? candidate : resolve('../../release_out/approved-astro/media-registry.json');
+  const registry = JSON.parse(readFileSync(file, 'utf8'));
+  if (registry.format !== 'AEROVENTA_CMS_MEDIA_REGISTRY_V1' ||
+      registry.source_sha !== process.env.GITHUB_SHA) {
+    throw new Error('CMS media registry not bound to this immutable source');
+  }
+  return registry.files as Record<string,{path:string}>;
+}
+function hydrateReleaseMedia(item: ContentRecord): ContentRecord {
+  const registry = mediaRegistry();
+  const idPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  const imageKeys = new Set(['image','file','cover','photo','hero_file','og_image','thumbnail']);
+  const value = (source: unknown, key = '', depth = 0): unknown => {
+    if(depth > 12)throw new Error('CMS image graph too deep');
+    if(typeof source==='string' && imageKeys.has(key) && idPattern.test(source)) {
+      const found=registry[source.toLowerCase()];
+      if(!found)throw new Error('CMS image not staged for '+item.path);
+      return found.path;
+    }
+    if(Array.isArray(source))return source.map(v=>value(v,key,depth+1));
+    if(source && typeof source==='object')return Object.fromEntries(
+      Object.entries(source).map(([k,v])=>[k,value(v,k,depth+1)]));
+    return source;
+  };
+  return value(item) as ContentRecord;
+}
 
 async function fetchDirectusPage(base: string, offset: number, mode: DirectusMode): Promise<ContentRecord[]> {
   const url = new URL('/items/content', base);
-  if (mode === 'production') {
+  if (mode === 'production' || mode === 'incremental') {
     url.searchParams.set('filter[status][_eq]', 'published');
     url.searchParams.set('filter[owner_approved_at][_nnull]', 'true');
   } else {
@@ -148,7 +192,10 @@ async function fetchDirectusPage(base: string, offset: number, mode: DirectusMod
 
   const payload = await response.json();
   if (!Array.isArray(payload?.data)) throw new Error('Directus payload.data is not an array');
-  return payload.data.map(mode === 'production' ? assertSafePublishedRecord : assertSafePreviewRecord);
+  return payload.data.map((item: ContentRecord) => {
+    const hydrated = ['incremental','review'].includes(mode) ? hydrateReleaseMedia(item) : item;
+    return ['preview','review'].includes(mode) ? assertSafePreviewRecord(hydrated) : assertSafePublishedRecord(hydrated);
+  });
 }
 
 async function fetchDirectusContent(base: string, mode: DirectusMode): Promise<ContentRecord[]> {
@@ -162,7 +209,9 @@ async function fetchDirectusContent(base: string, mode: DirectusMode): Promise<C
 
   if (!items.length) throw new Error(`DIRECTUS_URL is configured but no ${mode} content was returned`);
   if (mode === 'production') assertCompleteRouteSet(items);
-  else assertExactPreviewRouteSet(items);
+  else if (mode === 'preview') assertExactPreviewRouteSet(items);
+  // Incremental releases intentionally do NOT require all 29 legacy records to
+  // be owner-approved. Only the explicit release selection may be emitted.
   return items;
 }
 
@@ -191,9 +240,20 @@ function getFixtureContent(): ContentRecord[] {
   });
 }
 
+/** Preserve Owner-accepted original markup whenever the Directus record has
+ * no replacement body. A DOM field block edits the compiled Astro element
+ * itself, never removes the original article body or gallery. */
+function mergeSelectedContent(base: ContentRecord, changed: ContentRecord): ContentRecord {
+  const merged={...base,...changed};
+  const hasReplacement=changed.body_html_safety_status==='reviewed_safe' && Boolean(changed.body_html?.trim());
+  if(!hasReplacement) merged.body_html=base.body_html;
+  if(!changed.excerpt?.trim()) merged.excerpt=base.excerpt;
+  return merged;
+}
+
 export async function getAllContent(): Promise<ContentRecord[]> {
   const directusUrl = import.meta.env.DIRECTUS_URL;
-  const releaseMode = import.meta.env.AEROVENTA_RELEASE_MODE || 'fixture';
+  const releaseMode: string = String(import.meta.env.AEROVENTA_RELEASE_MODE || 'fixture');
 
   if (!allowedReleaseModes.has(releaseMode)) {
     throw new Error(`Unsupported AEROVENTA_RELEASE_MODE: ${releaseMode}`);
@@ -205,6 +265,70 @@ export async function getAllContent(): Promise<ContentRecord[]> {
       throw new Error('Directus draft preview requires a dedicated read-only DIRECTUS_STATIC_TOKEN');
     }
     return fetchDirectusContent(directusUrl, 'preview');
+  }
+
+  if (releaseMode === 'review') {
+    if (!directusUrl || !import.meta.env.DIRECTUS_STATIC_TOKEN) {
+      throw new Error('Exact draft visual review requires authenticated read-only Directus');
+    }
+    const selectedPaths = String(import.meta.env.AEROVENTA_INCREMENTAL_PATHS || '')
+      .split(',').map(p=>p.trim()).filter(Boolean);
+    if (selectedPaths.length<1 || selectedPaths.length>15 ||
+        new Set(selectedPaths).size!==selectedPaths.length ||
+        selectedPaths.some(p=>p!==normalizePath(p))) {
+      throw new Error('Visual review must select 1-15 exact normalized draft routes');
+    }
+    const selected = new Set(selectedPaths);
+    const drafts = await fetchDirectusContent(directusUrl, 'review');
+    const byPath = new Map(drafts.map(x=>[x.path,x]));
+    if (selectedPaths.some(p=>!byPath.has(p))) throw new Error('Selected draft is unavailable');
+    const existing = getFixtureContent();
+    const known = new Set(existing.map(x=>x.path));
+    const composed = existing.map(row=>selected.has(row.path)?mergeSelectedContent(row,byPath.get(row.path)!):row);
+    for(const p of selectedPaths) {
+      if(known.has(p) || EXTRA_ASTRO_STATIC_ROUTES.has(p))continue;
+      if(!/^\/blog\/detail\/[a-z0-9-]+\/$/.test(p))throw new Error('New visual review route not allowed');
+      composed.push(byPath.get(p)!);
+    }
+    return composed;
+  }
+
+  if (releaseMode === 'incremental') {
+    if (!directusUrl || !import.meta.env.DIRECTUS_STATIC_TOKEN) {
+      throw new Error('Incremental production requires authenticated read-only Directus');
+    }
+    const exactPathsRaw = String(import.meta.env.AEROVENTA_INCREMENTAL_PATHS || '');
+    const selectedPaths = exactPathsRaw.split(',').map((p) => p.trim()).filter(Boolean);
+    if (!selectedPaths.length || selectedPaths.length > 15 || selectedPaths.some((p) => p !== normalizePath(p))) {
+      throw new Error('Incremental build requires 1-15 explicit, normalized paths');
+    }
+    const selected = new Set(selectedPaths);
+    if (selected.size !== selectedPaths.length) throw new Error('Duplicate incremental paths');
+    const approved = await fetchDirectusContent(directusUrl, 'incremental');
+    const approvedByPath = new Map(approved.map((item) => [item.path, item]));
+    if (selectedPaths.some((p) => !approvedByPath.has(p))) {
+      throw new Error('Selected path is not published + owner approved in Directus');
+    }
+    const base = getFixtureContent();
+    const knownPaths = new Set(base.map((item) => normalizePath(item.path)));
+    const released = base.map((item) => {
+      const change = approvedByPath.get(normalizePath(item.path));
+      return change && selected.has(normalizePath(item.path)) ? mergeSelectedContent(item,change) : item;
+    });
+    for (const path of selectedPaths) {
+      if (knownPaths.has(path) || EXTRA_ASTRO_STATIC_ROUTES.has(path)) continue;
+      // New content is only allowed under the established article path family.
+      // Existing static Astro routes cannot be shadowed through CMS input.
+      if (!new RegExp('^/blog/detail/[a-z0-9-]+/$').test(path)) {
+        throw new Error('A new CMS route must be a /blog/detail/<slug>/ article');
+      }
+      const record = approvedByPath.get(path)!;
+      if (record.content_type !== 'article' && record.content_type !== 'news') {
+        throw new Error('New route must use ArticlePage renderer');
+      }
+      released.push(record);
+    }
+    return released;
   }
 
   if (releaseMode === 'production') {
@@ -222,4 +346,24 @@ export async function getAllContent(): Promise<ContentRecord[]> {
 export async function getByPath(path: string): Promise<ContentRecord | undefined> {
   const normalized = normalizePath(path);
   return (await getAllContent()).find((item) => normalizePath(item.path) === normalized);
+}
+
+/** Static Astro pages are not generated by the catch-all route.
+ *  In a selected review/release, fetch their exact existing Directus record
+ *  without creating a duplicate /[...path] output. Fixture mode is untouched.
+ */
+export async function getStaticPageContent(path: string, fallback: ContentRecord): Promise<ContentRecord> {
+  const normalized = normalizePath(path);
+  if (fallback.path !== normalized || !EXTRA_ASTRO_STATIC_ROUTES.has(normalized))
+    throw new Error('Unknown or mismatched static Astro source route: ' + path);
+  const mode = String(import.meta.env.AEROVENTA_RELEASE_MODE || 'fixture');
+  if (!['incremental','review','production'].includes(mode)) return fallback;
+  const selected = new Set(String(import.meta.env.AEROVENTA_INCREMENTAL_PATHS || '').split(',').map(p=>p.trim()).filter(Boolean));
+  if (mode !== 'production' && !selected.has(normalized)) return fallback;
+  const url = import.meta.env.DIRECTUS_URL;
+  if (!url || !import.meta.env.DIRECTUS_STATIC_TOKEN) throw new Error('Static CMS route needs authenticated build reader');
+  const records = await fetchDirectusContent(url, mode as DirectusMode);
+  const item = records.find(row=>row.path===normalized);
+  if (!item) throw new Error('Source-backed CMS static page missing: '+normalized);
+  return item;
 }

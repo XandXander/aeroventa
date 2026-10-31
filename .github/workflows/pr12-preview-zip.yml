@@ -1,0 +1,49 @@
+name: PR12 — private Directus draft inventory QA (no draft HTML artifact)
+on:
+  pull_request:
+    branches: [aeroventa/hiend-audit-av-correction-2026-10-12]
+    paths: ['.github/workflows/pr12-preview-zip.yml', 'apps/web/**', 'scripts/**', 'migration/**', 'admin/aeroventa-admin/**']
+permissions:
+  contents: read
+jobs:
+  verify-private-drafts:
+    if: github.event.pull_request.number == 12
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+      - name: Read-only reconciliation of 49 retained Directus draft paths
+        env:
+          DIRECTUS_STATIC_TOKEN: ${{ secrets.DIRECTUS_STATIC_TOKEN }}
+        run: |
+          node --input-type=module <<'NODE'
+          import { readAcceptedBlueprint } from './scripts/pr12-cms-blueprint-decode.mjs';
+          const token=process.env.DIRECTUS_STATIC_TOKEN;
+          if(!token)throw Error('Existing read-only Build Reader token unavailable');
+          const plan=JSON.parse((await readAcceptedBlueprint()).toString('utf8'));
+          if(plan.pages.length!==49||plan.summary.fields!==2342)throw Error('Pinned blueprint mismatch');
+          const expected=new Set(plan.pages.map(r=>r.path));
+          if(expected.size!==49)throw Error('Duplicate blueprint route');
+          const url=new URL('https://cms.aeroventa.ru/items/content');
+          url.searchParams.set('fields','id,path,status,owner_approved_at,robots_index,sitemap_include');
+          url.searchParams.set('limit','100');
+          const response=await fetch(url,{redirect:'error',signal:AbortSignal.timeout(25000),
+            headers:{Accept:'application/json',Authorization:'Bearer '+token}});
+          if(!response.ok)throw Error('Directus draft QA HTTP '+response.status);
+          const rows=(await response.json()).data;
+          if(!Array.isArray(rows)||rows.length!==49)throw Error('Expected 49 CMS records, got '+(rows?.length??'invalid'));
+          const actual=new Set(rows.map(r=>r.path));
+          if(actual.size!==49||[...expected].some(p=>!actual.has(p)))throw Error('CMS routes do not equal 49 accepted canonical paths');
+          for(const row of rows){
+            if(row.status!=='draft'||row.owner_approved_at!==null||row.robots_index!==false||row.sitemap_include!==false)
+              throw Error('Unapproved route isolation mismatch '+row.path);
+          }
+          console.log('DIRECTUS_PRIVATE_DRAFT_INVENTORY_PASS routes=49 drafts=49 approved=0');
+          console.log('NO_PRIVATE_DRAFT_HTML_WRITTEN_OR_UPLOADED');
+          NODE

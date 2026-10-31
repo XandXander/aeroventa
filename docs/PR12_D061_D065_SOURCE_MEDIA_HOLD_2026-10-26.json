@@ -1,0 +1,52 @@
+{
+  "contract": "D-061–D-065 at knowledge f7f2128af5a1d289cfd67bf74a3e01491b247bcd",
+  "implementation_base": "305d09fe7764a72e54ee80ecfca05780305bfe10",
+  "verdict": "SOURCE_MEDIA_HOLD_RESOLVED — OWNER ACCEPTANCE PENDING",
+  "policy": "Three approved subject albums recovered from the new Owner attachment. Their exact two residential/office card positions replace the preceding source-HOLD state. No substituted object, new case route or invented project scope.",
+  "verified_source_changes": [
+    "No automatic HERO-to-card filtering",
+    "Six active categories use ObjectDetailPage; the legacy warehouse route retains its URL/status",
+    "Only confirmed HOME/category links changed underD064; HOME art/footer/diagram/cafe detail preserved",
+    "Neva cold-cache preview100274 desktop/32024 mobile bytes; original2338495 bytes requested only on explicit zoom",
+    "Reproduced prohibited aria-label removed from empty generic HOME div; no visual change"
+  ],
+  "previous_missing_slots": [
+    {
+      "subject": "Дом на Митрофаньевском шоссе",
+      "source": "Новая папка (2).zip/Дом Митрофаньевское СПб/",
+      "required_placement": "/obekty/kvartiry-i-doma/ card2"
+    },
+    {
+      "subject": "Фитнес-студия СПб",
+      "source": "офис и склад.zip/ФитнессСтудия СПб/",
+      "required_placement": "/obekty/ofisy-i-kommerciya/ card1"
+    },
+    {
+      "subject": "Офис в Леонтьевском Мысе",
+      "source": "офис и склад.zip/ОФИС ЛЕОНТ МЫС/",
+      "required_placement": "/obekty/ofisy-i-kommerciya/ card2"
+    }
+  ],
+  "missing_current_bytes": [],
+  "source_checks_at_prior_checkpoint": [
+    "No verified, attributed matching originals for these three subjects were surfaced in the current implementation/history and scoped workspace",
+    "RAW132-entry tree has sanitized text/CSV evidence, no ZIP originals",
+    "Exact/simple Library title search and full224-ZIP SITE inventory did not expose the two required archives",
+    "Global Cyrillic ZIP-name page did not expose matching filenames; the different Новая папка.zip belongs to another project and was not read",
+    "Connected Drive exact filename query returned0",
+    "Prior conversation evidence confirms earlier receipt, but surfaced no usable attachment IDs or byte URLs",
+    "Materialized190-row photo location index contains geolocation metadata, not the required albums or object identity proof"
+  ],
+  "resolution": {
+    "input": "Owner attachment контент.zip",
+    "archive_sha256": "500a661ccfb66399944ec60e4326580ed93861d4596fba9e9dcc8246ca5603ec",
+    "originals": 33,
+    "albums": {
+      "Дом Митрофаньевское СПб": 13,
+      "ФитнессСтудия СПб": 5,
+      "ОФИС ЛЕОНТ МЫС": 15
+    },
+    "provenance": "migration/owner-category-source-media-2026-10-26.json",
+    "preservation": "All33 originals added byte-for-byte; responsive variants remain separate build outputs."
+  }
+}

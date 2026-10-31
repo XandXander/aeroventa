@@ -1,0 +1,14 @@
+Options -Indexes
+<FilesMatch "^\.(?!well-known)">
+  Require all denied
+</FilesMatch>
+<FilesMatch "\.(?i:ini|log|bak|sql|zip|env|map|off)$">
+  Require all denied
+</FilesMatch>
+<IfModule mod_headers.c>
+  Header always set X-Robots-Tag "noindex, nofollow, noarchive"
+  Header always set X-Content-Type-Options "nosniff"
+</IfModule>
+<Files "release-bridge.php">
+  Require all denied
+</Files>

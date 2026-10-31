@@ -1,0 +1,669 @@
+{
+  "baseline_sha": "a10c14f86d5cc0b046226e530b5cb46ca030ca17",
+  "contract_date": "2026-10-27",
+  "rows": [
+    {
+      "id": "B01",
+      "route": "Бренд",
+      "section": "Финальный бренд-комплект из 54 файлов",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "54 входных файла и исходный ZIP b80ac69a… проверены; 43 применимых web-ресурса внесены без изменения байтов",
+      "evidence": "migration/brand-assets-20261027.json",
+      "initial_status": "VERIFIED DONE"
+    },
+    {
+      "id": "B02",
+      "route": "Бренд",
+      "section": "Новый знак и wordmark в шапке",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": true,
+      "correction": "Финальный контурный логотип в шапке; на узких экранах отдельный полный wordmark AEROVENTA.RU; flex-сжатие сохраняет меню внутри экрана при 390 px / 125%",
+      "evidence": "Header.astro; desktop/mobile screenshots; existing 400-capture Owner height/zoom gate",
+      "initial_status": "OPEN"
+    },
+    {
+      "id": "B03",
+      "route": "Бренд",
+      "section": "Новый логотип в подвале",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": true,
+      "correction": "Финальный логотип и адаптивный wordmark подвала; сохранены телефон, email, география и legal",
+      "evidence": "Footer.astro; full-page screenshots",
+      "initial_status": "OPEN"
+    },
+    {
+      "id": "B04",
+      "route": "Бренд",
+      "section": "Favicon, Apple Touch, PWA-иконки",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": true,
+      "correction": "Подключены неизменённые SVG/ICO, Apple Touch и PWA manifest с существующими иконками",
+      "evidence": "BaseLayout.astro; brand manifest; final static contract",
+      "initial_status": "OPEN"
+    },
+    {
+      "id": "B05",
+      "route": "Типографика",
+      "section": "Утверждённое написание логотипа; лёгкая иерархия заголовков",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": true,
+      "correction": "Контуры wordmark сохранены; Onest оставлен UI-шрифтом; облегчены HOME/7 PARK; проверены переносы и контраст",
+      "evidence": "PR12_EXACT_QA; PR12_OWNER_CONTRACT; PR12_EXACT_SURFACES",
+      "initial_status": "PARTIAL"
+    },
+    {
+      "id": "B06",
+      "route": "Цвет",
+      "section": "Убрать давящий тёмно-синий фон и применить воздушную палитру",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": true,
+      "correction": "Светлая HOME и нейтральные поверхности 7 PARK/спорта; graphite/air/copper роли, тёмный доступный текст",
+      "evidence": "global.css; sitewide-art-direction.css; before/after",
+      "initial_status": "OPEN"
+    },
+    {
+      "id": "B07",
+      "route": "Open Graph",
+      "section": "Новая брендовая OG-база 1200×630",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": true,
+      "correction": "Новый векторный бренд во всех тематических share cards; supplied OG template дополнен принятой иллюстрацией для fallback",
+      "evidence": "generate-social-cards.mjs; 49 OG references",
+      "initial_status": "PARTIAL"
+    },
+    {
+      "id": "B08",
+      "route": "Бренд",
+      "section": "Версии логотипа на тёмных/светлых поверхностях и при 320px",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": true,
+      "correction": "Цветной знак на светлом header/footer; high-contrast narrow wordmark; белый вариант в контекстных OG",
+      "evidence": "Header.astro; Footer.astro; share images",
+      "initial_status": "OPEN"
+    },
+    {
+      "id": "V01",
+      "route": "HOME",
+      "section": "Сохранить принятую HOME airflow/инженерную визуализацию",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Принятые исходники HOME airflow и обе фотографии 7 PARK сохранены побайтно; новые фото не создавались",
+      "evidence": "baseline-contract-20261027.json; protected-media checks",
+      "initial_status": "VERIFIED DONE"
+    },
+    {
+      "id": "V02",
+      "route": "HOME",
+      "section": "Единый, завершённый первый экран без обрывов и чрезмерной пустоты",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": true,
+      "correction": "Сохранена композиция wide airflow; удалена тяжёлая navy вуаль, текст на светлой подложке; multi-height first views",
+      "evidence": "PR12_OWNER_CONTRACT; before/after HOME",
+      "initial_status": "PARTIAL"
+    },
+    {
+      "id": "V03",
+      "route": "Все шаблоны",
+      "section": "Страницы portfolio/blog/services/contact открываются осмысленно и без пустых first folds",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Исправные шаблоны сохранены; общая высота header учтена в действующем entry token; полные рендеры",
+      "evidence": "PR12_EXACT_QA; PR12_SYSTEMIC_QA",
+      "initial_status": "PARTIAL"
+    },
+    {
+      "id": "V04",
+      "route": "Заголовки",
+      "section": "Редакционная HI-END типографика H1/H2 и интервалов",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": true,
+      "correction": "Облегчены HOME H1 и 7 PARK, остальные корректные иерархии защищены от переписывания",
+      "evidence": "PR12_EXACT_QA; 588 route/viewport samples",
+      "initial_status": "PARTIAL"
+    },
+    {
+      "id": "V05",
+      "route": "Footer",
+      "section": "Не частичная правка телефона, а гармоничная композиция всего подвала",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": true,
+      "correction": "Бренд интегрирован в весь footer; умеренный телефон, сетка контактов и навигации сохранены",
+      "evidence": "Footer.astro; full desktop/mobile screenshots",
+      "initial_status": "PARTIAL"
+    },
+    {
+      "id": "V06",
+      "route": "Header",
+      "section": "Убрать отдельную кнопку Консультант из верхнего меню",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Шапочная pill отсутствует; этот уже выполненный пункт не разрабатывался повторно",
+      "evidence": "Header.astro; Owner single-assistant checks",
+      "initial_status": "VERIFIED DONE"
+    },
+    {
+      "id": "V07",
+      "route": "Консультант",
+      "section": "Оставить один маленький ненавязчивый нижний launcher",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Действующий 46px launcher сохранён; проверены перекрытия, самостоятельное неоткрытие и действия",
+      "evidence": "PR12_OWNER_CONTRACT; dialog interactions",
+      "initial_status": "PARTIAL"
+    },
+    {
+      "id": "V08",
+      "route": "Инженерная графика",
+      "section": "Чёткая, содержательная, подлинная инженерная схема",
+      "candidate_status": "PARTIAL",
+      "change_required": false,
+      "correction": "Имеющийся подлинный источник 1036×338 и читаемые живые подписи сохранены. Более детального исходника в репозитории нет; детализация сверх него не заявлена",
+      "evidence": "D060 live legend checks; original image dimensions",
+      "initial_status": "PARTIAL"
+    },
+    {
+      "id": "O01",
+      "route": "Категории",
+      "section": "/obekty/kvartiry-i-doma/: HERO «На излучине Невы»; две карточки Маршала Жукова; Митрофаньевское шоссе",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Принятое HERO + две карточки сохранено; exact source/photo/href проверены",
+      "evidence": "PR12_CATEGORIES_FINAL owner_scope",
+      "initial_status": "VERIFIED DONE"
+    },
+    {
+      "id": "O02",
+      "route": "Категории",
+      "section": "/obekty/restorany-i-kafe/: HERO Кафе Римского-Корсакова; две карточки Леонтьевский Мыс — ресторан; то же кафе, другая фотография",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Кафе HERO и отдельное фото кафе в карточке сохранены; Leont не заменён",
+      "evidence": "PR12_CATEGORIES_FINAL owner_scope",
+      "initial_status": "VERIFIED DONE"
+    },
+    {
+      "id": "O03",
+      "route": "Категории",
+      "section": "/obekty/ofisy-i-kommerciya/: HERO Апарт-отель/коворкинг Бумажный; две карточки Фитнес-студия СПб; офис Леонтьевский Мыс",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Бумажный + фитнес + офис Леонт сохранены, 33 оригинала подтверждены",
+      "evidence": "PR12_CATEGORIES_FINAL source_media and owner_scope",
+      "initial_status": "VERIFIED DONE"
+    },
+    {
+      "id": "O04",
+      "route": "Категории",
+      "section": "/obekty/proizvodstvo/: HERO НТФФ Полисан; две карточки Химпром; Новатех",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Полисан + Химпром + Новатех сохранены; исправлений состава не требовалось",
+      "evidence": "PR12_CATEGORIES_FINAL owner_scope",
+      "initial_status": "VERIFIED DONE"
+    },
+    {
+      "id": "O05",
+      "route": "Категории",
+      "section": "/obekty/novostroyki/: HERO ЖК Аквилон Янино; две карточки 7 PARK; На излучине Невы",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Аквилон + 7 PARK + Нева сохранены с точными ссылками и без расширения объёма Neva",
+      "evidence": "PR12_CATEGORIES_FINAL owner_scope",
+      "initial_status": "VERIFIED DONE"
+    },
+    {
+      "id": "O06",
+      "route": "Категории",
+      "section": "/obekty/magaziny-i-sklady/: HERO Аверс Разбегаево; две карточки Фарм СПб; EUROSPAR Васильевский остров",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Аверс + Фарм + EUROSPAR ВО сохранены; Фарм не назван магазином",
+      "evidence": "PR12_CATEGORIES_FINAL owner_scope",
+      "initial_status": "VERIFIED DONE"
+    },
+    {
+      "id": "O07",
+      "route": "Категории",
+      "section": "/obekty/kvartiry-i-doma/: художественная и интерактивная приёмка HERO/2 карт",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Фактический desktop/mobile рендер, ссылки и оригинальные галереи квартир проверены",
+      "evidence": "PR12_CATEGORIES_FINAL; first-view screenshots",
+      "initial_status": "UNVERIFIED"
+    },
+    {
+      "id": "O08",
+      "route": "Категории",
+      "section": "/obekty/restorany-i-kafe/: художественная и интерактивная приёмка HERO/2 карт",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Фактический рендер кафе и двух разных подлинных фотографий проверен",
+      "evidence": "PR12_CATEGORIES_FINAL; first-view screenshots",
+      "initial_status": "UNVERIFIED"
+    },
+    {
+      "id": "O09",
+      "route": "Категории",
+      "section": "/obekty/ofisy-i-kommerciya/: художественная и интерактивная приёмка HERO/2 карт",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Фактические галереи фитнеса/офиса декодированы покадрово; keyboard/focus работают",
+      "evidence": "PR12_CATEGORIES_FINAL interactions",
+      "initial_status": "UNVERIFIED"
+    },
+    {
+      "id": "O10",
+      "route": "Категории",
+      "section": "/obekty/proizvodstvo/: художественная и интерактивная приёмка HERO/2 карт",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Фактический рендер и переходы производства проверены; состав не менялся",
+      "evidence": "PR12_CATEGORIES_FINAL; PR12_EXACT_QA",
+      "initial_status": "UNVERIFIED"
+    },
+    {
+      "id": "O11",
+      "route": "Категории",
+      "section": "/obekty/novostroyki/: художественная и интерактивная приёмка HERO/2 карт",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Фактический рендер новостроек и оба перехода проверены",
+      "evidence": "PR12_CATEGORIES_FINAL; PR12_EXACT_QA",
+      "initial_status": "UNVERIFIED"
+    },
+    {
+      "id": "O12",
+      "route": "Категории",
+      "section": "/obekty/magaziny-i-sklady/: художественная и интерактивная приёмка HERO/2 карт",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Фактический рендер, складские галереи и retail переход проверены",
+      "evidence": "PR12_CATEGORIES_FINAL interactions",
+      "initial_status": "UNVERIFIED"
+    },
+    {
+      "id": "O13",
+      "route": "URL",
+      "section": "Не удалять исторический /obekty/sklady/, удерживать HOME Магазины и склады",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Оба различных URL сохранены; HOME по-прежнему ведёт в магазины-и-склады",
+      "evidence": "final static contract; category regression",
+      "initial_status": "VERIFIED DONE"
+    },
+    {
+      "id": "M01",
+      "route": "Фото Neva",
+      "section": "Только подлинный кирпичный фасад IMG_7571.JPG для Невы",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "IMG_7571.JPG имеет исходный SHA f83228bf…; отвергнутый маленький фасад не возвращён",
+      "evidence": "D057 original hash and public-cover tests",
+      "initial_status": "VERIFIED DONE"
+    },
+    {
+      "id": "M02",
+      "route": "Портфолио",
+      "section": "Одна ведущая Нева в светлом dossier, без дублирующей карточки",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Существующее светлое dossier Neva сохранено; в нижних 12 карточках дубля нет",
+      "evidence": "Owner_Neva_plus_twelve_distinct_other_objects",
+      "initial_status": "PARTIAL"
+    },
+    {
+      "id": "M03",
+      "route": "Фотографии",
+      "section": "Все публичные обложки соответствуют реальному названному объекту",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Контекстные публичные covers/кейсы/OG проверены; исходники и назначения не заменялись",
+      "evidence": "PR12_CATEGORIES_FINAL cover_contract and link_media",
+      "initial_status": "UNVERIFIED"
+    },
+    {
+      "id": "M04",
+      "route": "Галереи",
+      "section": "Кнопки zoom должны увеличивать видимую фотографию",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": true,
+      "correction": "Измеритель сравнивает painted photograph. Исправлен intrinsic-size cap: zoom считается от видимого FIT",
+      "evidence": "gallery-runtime.ts; 24 zoom_measurements",
+      "initial_status": "UNVERIFIED"
+    },
+    {
+      "id": "M05",
+      "route": "Галереи",
+      "section": "Просмотр без огромных пустых областей и крошечных фото",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "FIT, портретные и landscape кадры проверены по видимым пикселям и stage; лишнее изменение viewer не требовалось",
+      "evidence": "PR12_EXACT_QA; Neva/warehouse/sport frames",
+      "initial_status": "PARTIAL"
+    },
+    {
+      "id": "M06",
+      "route": "Галереи",
+      "section": "Быстро открывать и перелистывать фото без блокировки интерфейса",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Существующие preloader/preview сохранены; измерены open/next decode, отказ загрузки не блокирует следующий клик",
+      "evidence": "PR12_LOADING_QA; GALLERY_NETWORK_FAILURE_NEXT_CLICK",
+      "initial_status": "PARTIAL"
+    },
+    {
+      "id": "M07",
+      "route": "Галереи",
+      "section": "Не потерять 12 кадров спортивного объекта",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Все 12 спортивных кадров существуют, уникальны и декодируются при последовательном первом клике",
+      "evidence": "SPORT_ALL_12_FIRST_CLICK",
+      "initial_status": "VERIFIED DONE"
+    },
+    {
+      "id": "M08",
+      "route": "Галереи",
+      "section": "Не потерять 6 монтажных фотографий Невы",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Все 6 монтажных кадров Neva и отдельный фасад доступны, не подменены",
+      "evidence": "NEVA_ALL_6_AND_FACADE; source hash",
+      "initial_status": "VERIFIED DONE"
+    },
+    {
+      "id": "M09",
+      "route": "Галереи",
+      "section": "Одинаковая фотография не повторяется в одном блоке, кроме явной оговорки о разных кафе-фото",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Шесть категорий и leading Neva не содержат дублей одной обложки в одном блоке; разные кафе-фото сохранены",
+      "evidence": "PR12_CATEGORIES_FINAL duplicate checks",
+      "initial_status": "PARTIAL"
+    },
+    {
+      "id": "M10",
+      "route": "Галереи",
+      "section": "Один незаключённый в прямоугольник X для закрытия модальных окон",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Принятый единый unboxed X сохранён; close/Escape/focus проверены в реальных диалогах",
+      "evidence": "PR12_EXACT_QA dialog checks",
+      "initial_status": "PARTIAL"
+    },
+    {
+      "id": "S01",
+      "route": "SEO",
+      "section": "Уникальные title, description, canonical, H1 в content pages",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "49 title/description/canonical/H1/main text/JSON-LD полностью совпадают с a10c14f8",
+      "evidence": "FINAL_CONTRACT_QA.json; baseline snapshot",
+      "initial_status": "VERIFIED DONE"
+    },
+    {
+      "id": "S02",
+      "route": "SEO",
+      "section": "Staging не индексировать",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Все содержательные HTML noindex; robots Disallow /, sitemap пустая; это только staging fixture",
+      "evidence": "FINAL_CONTRACT_QA.json; ZIP manifest",
+      "initial_status": "VERIFIED DONE"
+    },
+    {
+      "id": "S03",
+      "route": "SEO релиз",
+      "section": "Production indexing, sitemap, canonical и ссылки должны быть действительными",
+      "candidate_status": "BLOCKED",
+      "change_required": false,
+      "correction": "Доступная source-подготовка выполнена. Реальная Directus production сборка и live indexing требуют действующего Build Reader и разрешённого release gate",
+      "evidence": "Directus preview CI; release HOLD",
+      "initial_status": "BLOCKED"
+    },
+    {
+      "id": "S04",
+      "route": "URL",
+      "section": "Не сломать внутренние маршруты и связи",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Внутренние target paths проверены после сборки, сломанных ссылок нет; IA не менялась",
+      "evidence": "FINAL_CONTRACT_QA.json internal links",
+      "initial_status": "VERIFIED DONE"
+    },
+    {
+      "id": "S05",
+      "route": "Legacy SEO",
+      "section": "Сохранить полный контракт 29 исторических маршрутов: body, media, HTTP, canonical",
+      "candidate_status": "PARTIAL",
+      "change_required": false,
+      "correction": "29 destinations/canonical, 13 redirect и 54 gone declarations сохранены; 9 полных исторических article bodies и 500 media подтверждены. Полные 29 старых HTML и Apache live readback не доступны; не выдуманы",
+      "evidence": "FINAL_CONTRACT_QA.json; BITRIX_OFFLINE_SOURCE_PROOF",
+      "initial_status": "UNVERIFIED"
+    },
+    {
+      "id": "S06",
+      "route": "Legacy content",
+      "section": "Не повредить 11 удерживаемых H1/title и технические статьи",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Проверены все 11 удерживаемых locks: 10 совпадают с legacy буквально; Полисан сохраняет принятое исправление 7fedfbb5/JG-06. Старое Нтфф не возвращено",
+      "evidence": "FINAL_CONTRACT_QA.json retained title checks",
+      "initial_status": "UNVERIFIED"
+    },
+    {
+      "id": "S07",
+      "route": "Достоверность",
+      "section": "Никаких ложных объёмов, объектов, заказчиков/условий и юридических фактов",
+      "candidate_status": "PARTIAL",
+      "change_required": false,
+      "correction": "Все публичные тексты и предметные фотографии совпадают с baseline; новых цифр/имён/объёмов не добавлено. Полная независимая аттестация всех прежних claims не заявлена",
+      "evidence": "49 main_text_sha256; provenance maps",
+      "initial_status": "PARTIAL"
+    },
+    {
+      "id": "S08",
+      "route": "AI поиск",
+      "section": "Семантический SSR, доступные тексты, JSON-LD без вымысла",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Серверный HTML и 49 JSON-LD наборов сохранены, JSON разбирается без JS",
+      "evidence": "FINAL_CONTRACT_QA.json",
+      "initial_status": "VERIFIED DONE"
+    },
+    {
+      "id": "S09",
+      "route": "AI агенты",
+      "section": "Внешние браузерные агенты могут найти услугу, доказательства и оставить заявку",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Путь услуга → кейс → вопрос → контакт доступен через именованные links/buttons/labels и клавиатуру. Приём почты отдельно T04",
+      "evidence": "browser agent path; consultant handoff and dialog tests",
+      "initial_status": "UNVERIFIED"
+    },
+    {
+      "id": "S10",
+      "route": "OG",
+      "section": "Социальные OG/Twitter теги и локальные изображения существуют в сборке",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": true,
+      "correction": "49 OG/Twitter наборов с существующими локальными 1200×630 ресурсами; изображения остаются контекстными, бренд обновлён",
+      "evidence": "validate-built-site; FINAL_CONTRACT_QA.json",
+      "initial_status": "VERIFIED DONE"
+    },
+    {
+      "id": "S11",
+      "route": "Telegram",
+      "section": "Публичный Telegram preview реальной ссылки, а не лишь meta source",
+      "candidate_status": "BLOCKED",
+      "change_required": false,
+      "correction": "Публичный Telegram preview новой версии требует разрешённой публичной публикации; Basic Auth staging сохранён",
+      "evidence": "production/Telegram gate NOT PERFORMED",
+      "initial_status": "BLOCKED"
+    },
+    {
+      "id": "S12",
+      "route": "Изображения",
+      "section": "Крупные изображения не вызывают измеренный layout shift",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Реальные cold-load CLS на 6 critical routes при desktop/mobile измерены до/после; значимого сдвига нет. Полевые CWV не заявлены",
+      "evidence": "PR12_LOADING_QA 24 cold samples",
+      "initial_status": "UNVERIFIED"
+    },
+    {
+      "id": "S13",
+      "route": "Конверсия",
+      "section": "Понятное предложение, кейсы и CTA: есть проект → смета / обсудить",
+      "candidate_status": "PARTIAL",
+      "change_required": false,
+      "correction": "Коммерческие переходы и error/retry UI проверены; подтверждённое получение контакта адресатом зависит от T04",
+      "evidence": "PR12_EXACT_QA form handoff; T04",
+      "initial_status": "PARTIAL"
+    },
+    {
+      "id": "S14",
+      "route": "Legacy media",
+      "section": "Сохранить 8 внешне связанных путей медиа",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Все 8 защищённых путей имеют точные прежние байты и существуют в собранном webroot; live host отдельно",
+      "evidence": "FINAL_CONTRACT_QA.json 8 protected media",
+      "initial_status": "UNVERIFIED"
+    },
+    {
+      "id": "T01",
+      "route": "CSS",
+      "section": "Не копить конфликтующие глобальные overrides",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": true,
+      "correction": "Удалены 24 устаревших logo rules, устранён конфликт frame/image 7 PARK; правились действующие tokens/правила. Массового important cleanup нет",
+      "evidence": "scoped CSS diff; real geometry/contrast regression",
+      "initial_status": "PARTIAL"
+    },
+    {
+      "id": "T02",
+      "route": "Responsive",
+      "section": "Сохранить текущую техническую геометрию адаптива",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Выполнены sitewide геометрия и реальные клики на итоговой сборке; исправные layouts не переписывались",
+      "evidence": "PR12_EXACT_QA; PR12_SYSTEMIC_QA",
+      "initial_status": "VERIFIED DONE"
+    },
+    {
+      "id": "T03",
+      "route": "Browser QA",
+      "section": "Все реальные действия галерей должны иметь доказательную приёмку",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": true,
+      "correction": "Все 11 исходных FAIL разобраны: 10 false DOM-box comparisons, 1 intrinsic zoom cap; проверки не отключались",
+      "evidence": "before report; 24 painted zoom proofs; Browser CI",
+      "initial_status": "UNVERIFIED"
+    },
+    {
+      "id": "T04",
+      "route": "Контакты",
+      "section": "Production lead и отправка вложенного проекта должны доставляться реально",
+      "candidate_status": "BLOCKED",
+      "change_required": true,
+      "correction": "Дефекты retry/dedup исправлены и sandbox проверен, но реальный recipient receipt/вложения требуют отдельно разрешённой отправки",
+      "evidence": "PHP 20/20 sandbox; no outbound mail; release HOLD",
+      "initial_status": "BLOCKED"
+    },
+    {
+      "id": "T05",
+      "route": "Консультант",
+      "section": "Мини-виджет и честный ответ + переход в заявку",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Существующий честный deterministic consultant и переход с контекстом в заявку сохранены; платный AI не добавлен",
+      "evidence": "CONSULTANT_QUESTION_AND_CONTEXT; form tests",
+      "initial_status": "PARTIAL"
+    },
+    {
+      "id": "T06",
+      "route": "CMS",
+      "section": "Directus → preview → approval → rebuild, без фиктивного fixture PASS",
+      "candidate_status": "BLOCKED",
+      "change_required": false,
+      "correction": "Directus workflow сохранён fail-closed. Секрет Build Reader не раскрывался и не создавался; authenticated publish loop недоступен",
+      "evidence": "Directus preview CI missing token",
+      "initial_status": "BLOCKED"
+    },
+    {
+      "id": "T07",
+      "route": "Стенд",
+      "section": "Сравнивать код и реально установленный staging только при совпадении SHA",
+      "candidate_status": "PARTIAL",
+      "change_required": true,
+      "correction": "Подготовлен source-bound ZIP с внутренним per-file manifest; установка и readback staging требуют отдельного разрешения",
+      "evidence": "AEROVENTA_STAGE_MANIFEST.json; staging NOT INSTALLED",
+      "initial_status": "PARTIAL"
+    },
+    {
+      "id": "T08",
+      "route": "Production",
+      "section": "Только отдельно разрешённый cutover после owner art PASS",
+      "candidate_status": "BLOCKED",
+      "change_required": false,
+      "correction": "Production, merge, Bitrix/Beget/n8n/AUNELA/Directus не менялись. Cutover только после Owner acceptance и отдельного разрешения",
+      "evidence": "release gates; PR remains draft",
+      "initial_status": "BLOCKED"
+    },
+    {
+      "id": "T09",
+      "route": "Команда",
+      "section": "Фото команды соответствуют должностям и людям, без ложной атрибуции",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Сохранены 4 Owner-mapped имени/роли и 5 точных team assets из 7c9eff9/c85fe24; старый оранжевый group не возвращён. Новые идентичности не присваивались",
+      "evidence": "Owner team SHA checks; About renders",
+      "initial_status": "UNVERIFIED"
+    },
+    {
+      "id": "T10",
+      "route": "Performance",
+      "section": "Измеренные loading/CWV, а не оценка по размеру CSS",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": true,
+      "correction": "24 controlled cold-load measurements до/после с CPU×4, RTT80ms, 4Mbps: существенной регрессии нет; field CWV отдельно не измерялись",
+      "evidence": "PR12_LOADING_QA/report.json",
+      "initial_status": "UNVERIFIED"
+    },
+    {
+      "id": "T11",
+      "route": "Accessibility",
+      "section": "Клавиатура, мобильные жесты, focus, reduced-motion на изменённых элементах",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": false,
+      "correction": "Keyboard, Tab trap/return, Escape, touch swipe, menu и reduced-motion проверены; сохранён принятый motion",
+      "evidence": "PR12_EXACT_QA interactions/states; Owner review",
+      "initial_status": "PARTIAL"
+    },
+    {
+      "id": "T12",
+      "route": "Формы",
+      "section": "Не допустить дублей при повторном отправлении PHP и потерю вложений",
+      "candidate_status": "VERIFIED DONE",
+      "change_required": true,
+      "correction": "503 допускает немедленный повтор, успешная заявка даёт 409 на дубль; изменённый файл с прежним именем принимается, attachment bytes проверены",
+      "evidence": "test_lead_local.py 10/10; test_project_local.py 10/10",
+      "initial_status": "UNVERIFIED"
+    }
+  ],
+  "summary": {
+    "VERIFIED DONE": 55,
+    "PARTIAL": 5,
+    "BLOCKED": 5
+  },
+  "gates": {
+    "SOURCE_READY": "subject to exact-SHA build/CI evidence",
+    "BROWSER_VERIFIED": "subject to exact-SHA browser evidence",
+    "STAGING_VERIFIED": false,
+    "OWNER_ACCEPTED": false,
+    "PRODUCTION_VERIFIED": false
+  },
+  "boundary": "Engineering/browser verification never implies Owner artistic acceptance or deployment"
+}

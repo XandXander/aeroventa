@@ -1,0 +1,46 @@
+name: PR12 - Directus one-case editorial pilot (no deployment)
+
+on:
+  push:
+    branches: [aeroventa/hiend-seo-owner-recovery-2026-10-13]
+    paths:
+      - .github/workflows/pr12-directus-one-case-pilot.yml
+      - scripts/validate-directus-pilot-preview.mjs
+      - apps/web/src/components/pages/EvidenceCasePage.astro
+permissions:
+  contents: read
+jobs:
+  single-draft-to-html:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      AEROVENTA_RELEASE_MODE: preview
+      AEROVENTA_DIRECTUS_PILOT_PATH: /blog/detail/ntff-polisan/
+      DIRECTUS_URL: https://cms.aeroventa.ru
+      DIRECTUS_STATIC_TOKEN: ${{ secrets.DIRECTUS_STATIC_TOKEN }}
+      AEROVENTA_REQUIRE_OWNER_TEAM_MEDIA: "true"
+    steps:
+      - name: Checkout exact PR source
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+      - name: Install and validate
+        run: |
+          npm install --no-audit --no-fund
+          npm run generate:hosting-rules
+          npm run validate
+      - name: Build isolated Directus preview
+        run: node scripts/build-directus-v13-preview.mjs
+      - name: Verify exact excerpt in one page only
+        run: node scripts/validate-directus-pilot-preview.mjs
+      - name: Upload small read-only proof
+        uses: actions/upload-artifact@v6
+        with:
+          name: AEROVENTA_DIRECTUS_ONE_CASE_PILOT
+          path: reports/DIRECTUS_SINGLE_CASE_PILOT.json
+          if-no-files-found: error
+          retention-days: 7
